@@ -11,3 +11,23 @@ Text Domain: modulairehuisvesting
 */
 
 
+@font-face {
+    font-family: 'Balgin-Bold';
+    src: url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff2') format('woff2'),
+         url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+:root {
+  --color-primary:   #0884CC; /* blauw */
+  --color-secondary: #FF8C2C; /* oranje */
+  --color-tertiary:  #0884CC; /* ook blauw */
+}
+
+.body {
+  width: 100vw; 
+}
