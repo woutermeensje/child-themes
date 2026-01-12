@@ -2,8 +2,8 @@
 
 
 
+require_once get_stylesheet_directory() . '/job_manager/functions.php';
 
-require_once('job_manager/functions.php');
 
 add_theme_support('job-manager-templates');
 

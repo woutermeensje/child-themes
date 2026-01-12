@@ -49,6 +49,14 @@ foreach ($selected as $key => &$value) {
 unset($value);
 ?>
 
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+
+
 <form class="job_filters">
     <?php do_action('job_manager_job_filters_start', $atts); ?>
 
@@ -435,7 +443,6 @@ document.addEventListener("DOMContentLoaded", () => {
   color: #333333;
   margin-bottom: 15px;
   display: inline;
-  background: linear-gradient(transparent 30%, rgba(255, 140, 44, 0.5) 60%);
   font-weight: bold;
   border-radius: 2px;
 }
@@ -471,7 +478,7 @@ body .filter-header a.unstyled-newsletter-link:hover {
 .search-basic input[type="text"] {
   width: 100%;
   padding: 12px 14px 12px 38px;
-  font-size: 16px;
+  font-size: 16px; 
   border: 1px solid #ccc;
   border-radius: 0;
   background-color: white;
@@ -485,6 +492,14 @@ body .filter-header a.unstyled-newsletter-link:hover {
   border-color: #0a6b8d;
   box-shadow: 0 2px 8px rgba(10, 107, 141, 0.25);
 }
+
+.search_keywords input::placeholder,
+.search_location input::placeholder {
+    color: #333;
+    font-size: 16px !important;
+    font-style: italic;
+}
+
 
 .search_keywords::before {
   content: '🔍';
@@ -545,13 +560,12 @@ select.sj-hidden-select {
   justify-content: space-between;
 
   border-radius: 6px;
-  border: 1px solid #E0E0E0;
-  background-color: #fcfbfa;
+  border: 1px solid #E0E0E0 !important;
+  background-color: white !important;
 
   padding: 12px 12px;
   min-height: 44px;
 
-  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.10) inset;
   cursor: pointer;
   user-select: none;
 
@@ -699,4 +713,22 @@ select.sj-hidden-select {
   border-color: #0a6b8d;
   box-shadow: 0 0 0 2px rgba(10, 107, 141, 0.2);
 }
+
+
+/* FORCEER YouTube look: altijd wit */
+.sj-select-btn {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+
+/* Ook bij hover / focus / active */
+.sj-select-btn:hover,
+.sj-select.active .sj-select-btn,
+.sj-select-btn:focus {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+
+
+
 </style>
