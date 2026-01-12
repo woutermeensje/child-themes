@@ -1,0 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/*
+Theme Name: deReceptionist.nl
+Theme URI: https://dereceptionist.nl/
+Description: Child theme voor deReceptionist.nl gebaseerd op Hello Elementor.
+Author: [Jouw naam of bedrijf]
+Author URI: https://dereceptionist.nl/
+Template: hello-elementor
+Version: 1.0
+Text Domain: dereceptionist-nl
+*/
+
+@import url("../hello-elementor/style.css");
+
+@font-face {
+    font-family: 'Balgin-Bold';
+    src: url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff2') format('woff2'),
+         url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+:root {
+  /* 🔁 Verwisselbaar kleurenpalet voor branding */
+  --color-primary: #46517A;
+  --color-secondary: #DFBCE2; 
+  --color-tertiary: #DFBCE2;
+  --color-accent: #92E9AB;;
+
+  /* 🧱 Vaste kleuren voor tekst en contrast */
+  --color-text: #333333;
+  --color-text-muted: #777777;
+
+  /* 🧱 Vaste kleuren voor achtergronden en borders */
+  --color-bg: #ffffff;
+  --color-bg-light: #f8f8f8;
+  --color-border: #e0e0e0;
+  --color-border-light: #cccccc;
+
+  /* ✅ Speciale semantische kleuren */
+  --color-success: #28a745;
+  --color-success-hover: #155724;
+}
+
+
+html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: visible;
+}

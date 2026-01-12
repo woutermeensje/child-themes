@@ -1,0 +1,407 @@
+/*
+Theme Name: Fondsen.org Child
+Template: hello-elementor
+Description: Child theme voor Fondsen.org op basis van Hello Elementor
+Author: Wouter Meens
+Version: 1.0.0
+*/
+
+
+
+@font-face {
+    font-family: 'Balgin-Bold';
+    src: url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff2') format('woff2'),
+         url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+
+:root {
+  --color-primary:   #0884CC; /* blauw */
+  --color-secondary: #FF8C2C; /* oranje */
+  --color-tertiary:  #0884CC; /* ook blauw */
+}
+
+.body {
+  width: 100vw; 
+}
+
+
+/* ===== Single file upload ===== */
+.gform_wrapper .ginput_container_fileupload input[type="file"]{
+  width:100%;
+  height:48px;
+  border:1px solid #D0D5DD;
+  border-radius:12px;
+  padding:10px 12px;
+  background:#fff;
+  font:inherit;
+  color:#111827;
+  cursor:pointer;
+}
+
+/* De “Choose file”-knop */
+.gform_wrapper .ginput_container_fileupload input[type="file"]::file-selector-button{
+  border:0;
+  padding:10px 14px;
+  margin-right:12px;
+  border-radius:10px;
+  background:#0884CC;   /* primair */
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+.gform_wrapper .ginput_container_fileupload input[type="file"]::-webkit-file-upload-button{
+  /* Safari fallback */
+  border:0;
+  padding:10px 14px;
+  margin-right:12px;
+  border-radius:10px;
+  background:#0884CC;
+  color:#fff;
+  font-weight:600;
+  cursor:pointer;
+}
+
+/* Focus states */
+.gform_wrapper .ginput_container_fileupload input[type="file"]:focus{
+  outline:2px solid #0884CC;
+  outline-offset:2px;
+}
+
+/* Regels onder het veld (toegestane bestandstypen, max size) */
+.gform_wrapper .gform_fileupload_rules{
+  margin-top:8px;
+  font-size:14px;
+  color:#667085;
+}
+
+/* ===== Wrapper van het uploadveld ===== */
+.ginput_container_post_image.gform-grid-row {
+    display: block;              /* i.p.v. rare flex-layouts */
+}
+
+/* ===== Het daadwerkelijke file-input veld ===== */
+.ginput_container_post_image .ginput_full.gform-grid-col input[type="file"] {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid #D0D5DD;
+    border-radius: 6px;
+    background: #FFFFFF;
+    font: inherit;
+    color: #111827;
+    cursor: pointer;
+}
+
+/* De "Bestand kiezen"-knop in het veld */
+.ginput_container_post_image .ginput_full.gform-grid-col input[type="file"]::file-selector-button {
+    border: 0;
+    margin-right: 12px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    background: #111827;          /* pas aan naar jouw primaire kleur */
+    color: #FFFFFF;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Safari fallback */
+.ginput_container_post_image .ginput_full.gform-grid-col input[type="file"]::-webkit-file-upload-button {
+    border: 0;
+    margin-right: 12px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    background: #F3F3F3; 
+    color: #505A66;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Hover/focus states */
+.ginput_container_post_image .ginput_full.gform-grid-col input[type="file"]:focus {
+    outline: 2px solid #111827;   /* zelfde als knopkleur */
+    outline-offset: 2px;
+}
+
+/* Mobile styling voor fondsen-oproepen overzicht (logo verbergen, alles gestapeld) */
+
+@media (max-width: 768px) {
+    .fonds-header {
+        display: block;
+    }
+
+    .fonds-logo-wrapper {
+        display: none;
+    }
+
+    .fonds-text {
+        display: block;
+        width: 100%;
+    }
+
+    .fonds-button {
+        display: inline-block;
+        width: auto;
+    }
+}
+
+
+
+
+/* Fondsenwerving pagina */
+
+
+.fondsen-oproepen {
+    margin: 2rem 0;
+}
+
+.fonds-item {
+    margin-bottom: 2rem;
+    border: 1px solid #eee;
+    padding: 1.5rem;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.fonds-header {
+    display: table;
+    width: 100%;
+}
+
+.fonds-logo-wrapper {
+    display: table-cell;
+    width: 120px;
+    vertical-align: top;
+    padding-right: 1rem;
+}
+
+.fonds-logo {
+    width: 100%;
+    height: auto;
+    max-width: 100px;
+    border-radius: 4px;
+}
+
+.fonds-text {
+    display: table-cell;
+    vertical-align: top;
+}
+
+.fonds-title {
+    font-family: 'Balgin Bold', sans-serif;
+    font-size: 1.4rem;
+    color: #333333;
+    margin-bottom: 0.5rem;
+}
+
+.fonds-excerpt {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #333333;
+    margin-bottom: 1rem;
+}
+
+.fonds-button {
+    display: inline-block;
+    background-color: #0884CC;
+    color: white !important;
+    text-decoration: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 5px;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+		font-family: Balgin-bold; 
+}
+
+.fonds-button:hover {
+    background-color: #FF8C2C;
+}
+
+
+
+
+
+/* Einde Fondsenwerving pagina */
+
+
+/* Algemene aanpassingen voor fondsen.org */
+
+
+
+
+
+
+/* ===== FILTERBALK BOVEN DE LIJST ===== */
+
+.childpages-filter {
+    margin-bottom: 2.5rem;
+    padding: 1.25rem 1.5rem;
+    background: white; 
+    border-radius: 0px;
+    border: 1px solid #e1e7ef;
+}
+
+.childpages-filter-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+}
+
+.childpages-filter-item {
+    display: flex;
+    flex-direction: column;
+    min-width: 220px;
+    flex: 1 1 220px;
+}
+
+.childpages-filter-item label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 0.25rem;
+    color: #333333;
+}
+
+.childpages-filter-item input,
+.childpages-filter-item select {
+    padding: 0.55rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #d0d5dd;
+    font-size: 0.95rem;
+    outline: none;
+    background-color: #ffffff;
+}
+
+.childpages-filter-item input:focus,
+.childpages-filter-item select:focus {
+    border-color: #0884CC; /* Fondsen blauw */
+    box-shadow: 0 0 0 1px rgba(8,132,204,0.12);
+}
+
+/* Submit knop */
+.childpages-filter-submit {
+    align-self: flex-end;
+    min-width: 160px;
+}
+
+.childpages-filter-submit button {
+    width: 100%;
+    margin-top: 1.45rem;
+    padding: 0.6rem 1rem;
+    border-radius: opx; 
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    background: #0884CC; /* Fondsen blauw */
+    color: #ffffff;
+    transition: background-color 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.childpages-filter-submit button:hover {
+    background: #066096;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+/* Op mobiel: filteritems onder elkaar */
+@media (max-width: 600px) {
+    .childpages-filter-row {
+        flex-direction: column;
+    }
+
+    .childpages-filter-submit {
+        align-self: stretch;
+    }
+}
+
+/* ===== GRID MET GOEDE DOELEN (3 KOLOMMEN) ===== */
+
+.childpages-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.75rem;
+}
+
+/* 2 kolommen op tablet */
+@media (max-width: 900px) {
+    .childpages-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* 1 kolom op mobiel */
+@media (max-width: 600px) {
+    .childpages-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.childpage-card {
+    background: #ffffff;
+    border-radius: 5px;
+    border: 1px solid light-grey;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
+}
+
+.childpage-thumb {
+    margin-bottom: 0.75rem;
+}
+
+.childpage-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    display: block;
+    object-fit: cover;
+}
+
+.childpage-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: auto;
+}
+
+.childpage-excerpt {
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    color: #4b5563;
+}
+
+/* Titel als knop */
+.childpage-button {
+   	font-family: Poppins !important; 
+    text-decoration: none;
+   
+    font-weight: 600;
+    font-size: 18px; 
+    background: white; 
+    color: #ffffff;
+    
+}
+
+.childpage-button:hover {
+   color: #0884CC !important;
+	background: white; 
+	border: none; 
+	box-shadow: none; 
+}
+
+a.top-section-link {
+    color: white;
+}
+
+
+a.top-section-link:hover {
+  background-color: #FF8C2C;   
+	color: white;
+}

@@ -1,0 +1,93 @@
+/*
+Theme Name: Overlijdens-berichten.nl
+Theme URI: https://overlijdens-berichten.nl/
+Description: Child theme voor Overlijdens-berichten.nl gebaseerd op Hello Elementor.
+Author: Wouter Meens
+Author URI: https://overlijdens-berichten.nl/
+Template: hello-elementor
+Version: 1.0
+Text Domain: Overlijdens-berichten.nl
+*/
+
+body {
+    font-family: "Merriweather", serif;
+}
+
+h1, h2, h3, h4 {
+    font-family: "Merriweather", serif;
+}
+
+/* Grid: 1 kolom mobiel, 3 kolommen desktop */
+.ob-posts-grid {
+     display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem 1rem;
+    align-items: start; /* <<< Belangrijk */
+}
+
+@media (min-width: 900px) {
+    .ob-posts-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Individuele item */
+.ob-post-item {
+    font-family: "Merriweather", serif;
+    border: 1px solid black; 
+    padding: 24px; 
+}
+
+/* Titel in groot serif font zoals culturele-vacatures */
+.ob-post-title {
+    font-family: "Merriweather", serif;
+    font-weight: 700;
+    font-size: 2rem;
+    line-height: 1.2;
+    margin: 0 0 1rem;
+}
+
+.ob-post-title a {
+    text-decoration: none !important;
+    color: #000;
+}
+
+.ob-post-title a:hover {
+    text-decoration: none; 
+}
+
+/* Korte tekst */
+.ob-post-excerpt {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+}
+
+/* Meta regel onderaan met dunne lijn naar rechts */
+.ob-post-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.ob-post-date,
+.ob-post-cats {
+font-family: "Merriweather", serif;
+}
+
+.ob-post-meta-line {
+    flex: 1;
+    height: 1px;
+    background-color: #ddd;
+    margin-left: 0.75rem;
+}
+
+/* Optioneel: iets meer ruimte tussen rijen op kleinere schermen */
+@media (max-width: 600px) {
+    .ob-posts-grid {
+        gap: 3rem;
+    }
+}

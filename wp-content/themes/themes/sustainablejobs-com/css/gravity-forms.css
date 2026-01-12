@@ -1,0 +1,103 @@
+/* Gravity Forms custom styling for Sustainablejobs.com */
+
+@font-face {
+  font-family: 'Balgin-Bold';
+  src: url('/wp-content/themes/sustainablejobs-com/fonts/Balgin-Bold.woff2') format('woff2'),
+       url('/wp-content/themes/sustainablejobs-com/fonts/Balgin-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+label.gfield_label.gform-field-label {
+  font-family: Poppins;
+  font-size: 15px;
+  font-weight: 300;
+  color: var(--color-text);
+  line-height: 0.8;
+  margin-bottom: 10px;
+}
+
+.gform_wrapper input[type="submit"] {
+  background-color: var(--color-primary) !important;
+  color: var(--color-bg) !important;
+  padding: 20px !important;
+  border: none !important;
+  border-radius: 5px !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  font-family: "Balgin Bold", sans-serif !important;
+}
+
+.gform_wrapper input[type="submit"]:hover {
+  background-color: var(--color-tertiary) !important;
+  color: var(--color-primary) !important;
+  border: 2px solid var(--color-primary) !important;
+}
+
+.gform_wrapper input[type="text"],
+.gform_wrapper input[type="email"],
+.gform_wrapper input[type="url"],
+.gform_wrapper textarea {
+  padding: 15px !important;
+  border-color: var(--color-primary) !important;
+}
+
+.gform_wrapper input[type="text"]:focus,
+.gform_wrapper input[type="email"]:focus,
+.gform_wrapper input[type="url"]:focus,
+.gform_wrapper textarea:focus {
+  border: 2px solid var(--color-primary) !important;
+  outline: none;
+}
+
+.gform_wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: var(--color-bg);
+  border: 1px solid var(--color-border-light);
+  padding: 15px;
+  font-size: 1rem;
+  border-radius: 4px;
+  width: 100%;
+  background-size: 1rem;
+}
+
+.gform_wrapper h3.gsection_title {
+  font-size: 1.5rem;
+  color: var(--color-primary);
+  margin-bottom: 20px;
+  font-family: 'Balgin Bold';
+  padding-bottom: 5px;
+}
+
+.gform_wrapper .gform-body.gform_body {
+  padding: 30px;
+  background-color: var(--color-bg);
+  border-radius: 5px;
+  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--color-tertiary);
+}
+
+/* ✅ Mobiele styling */
+@media (max-width: 768px) {
+  .gform_wrapper input[type="submit"],
+  .gform_wrapper input[type="text"],
+  .gform_wrapper select {
+    width: 100% !important;
+    font-size: 1rem !important;
+  }
+
+  .gform_wrapper .gform-body.gform_body {
+    padding: 20px;
+  }
+
+  .gform_wrapper h3.gsection_title {
+    font-size: 1.25rem;
+  }
+
+  label.gfield_label.gform-field-label {
+    font-size: 14px;
+  }
+}
