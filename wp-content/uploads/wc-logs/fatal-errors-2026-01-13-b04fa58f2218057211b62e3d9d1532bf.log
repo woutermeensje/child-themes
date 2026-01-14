@@ -1,0 +1,866 @@
+2026-01-13T08:07:14+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 08:07:14' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=83, last_attempt_gmt='2026-01-13 08:07:14', last_attempt_local='2026-01-13 08:07:14'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T08:44:04+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 08:44:04' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=84, last_attempt_gmt='2026-01-13 08:44:04', last_attempt_local='2026-01-13 08:44:04'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T11:55:28+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 11:55:28' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=85, last_attempt_gmt='2026-01-13 11:55:28', last_attempt_local='2026-01-13 11:55:28'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T11:55:56+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 11:55:56' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=86, last_attempt_gmt='2026-01-13 11:55:56', last_attempt_local='2026-01-13 11:55:56'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T11:57:59+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 11:57:59' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=87, last_attempt_gmt='2026-01-13 11:57:59', last_attempt_local='2026-01-13 11:57:59'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T11:58:00+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 11:58:00' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=88, last_attempt_gmt='2026-01-13 11:58:00', last_attempt_local='2026-01-13 11:58:00'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:00:00+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:00:00' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=89, last_attempt_gmt='2026-01-13 12:00:00', last_attempt_local='2026-01-13 12:00:00'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:00:00+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:00:00' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=90, last_attempt_gmt='2026-01-13 12:00:00', last_attempt_local='2026-01-13 12:00:00'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:02:01+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:02:01' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=91, last_attempt_gmt='2026-01-13 12:02:01', last_attempt_local='2026-01-13 12:02:01'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:02:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:02:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=92, last_attempt_gmt='2026-01-13 12:02:02', last_attempt_local='2026-01-13 12:02:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:04:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:04:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=93, last_attempt_gmt='2026-01-13 12:04:02', last_attempt_local='2026-01-13 12:04:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:04:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:04:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=94, last_attempt_gmt='2026-01-13 12:04:02', last_attempt_local='2026-01-13 12:04:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:06:03+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:06:03' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=95, last_attempt_gmt='2026-01-13 12:06:03', last_attempt_local='2026-01-13 12:06:03'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:06:03+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:06:03' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=96, last_attempt_gmt='2026-01-13 12:06:03', last_attempt_local='2026-01-13 12:06:03'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:37:53+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:37:53' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=97, last_attempt_gmt='2026-01-13 12:37:53', last_attempt_local='2026-01-13 12:37:53'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:39:11+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:39:11' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=98, last_attempt_gmt='2026-01-13 12:39:11', last_attempt_local='2026-01-13 12:39:11'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:39:11+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:39:11' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=99, last_attempt_gmt='2026-01-13 12:39:11', last_attempt_local='2026-01-13 12:39:11'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:40:16+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:40:16' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=100, last_attempt_gmt='2026-01-13 12:40:16', last_attempt_local='2026-01-13 12:40:16'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:40:17+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:40:17' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=101, last_attempt_gmt='2026-01-13 12:40:17', last_attempt_local='2026-01-13 12:40:17'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:41:23+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:41:23' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=102, last_attempt_gmt='2026-01-13 12:41:23', last_attempt_local='2026-01-13 12:41:23'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:42:19+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:42:19' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=103, last_attempt_gmt='2026-01-13 12:42:19', last_attempt_local='2026-01-13 12:42:19'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:42:27+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:42:27' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=104, last_attempt_gmt='2026-01-13 12:42:27', last_attempt_local='2026-01-13 12:42:27'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:44:01+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:44:01' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=105, last_attempt_gmt='2026-01-13 12:44:01', last_attempt_local='2026-01-13 12:44:01'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:44:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:44:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=106, last_attempt_gmt='2026-01-13 12:44:02', last_attempt_local='2026-01-13 12:44:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:46:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:46:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=107, last_attempt_gmt='2026-01-13 12:46:02', last_attempt_local='2026-01-13 12:46:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T12:46:03+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 12:46:03' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=108, last_attempt_gmt='2026-01-13 12:46:03', last_attempt_local='2026-01-13 12:46:03'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:13:33+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:13:33' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=109, last_attempt_gmt='2026-01-13 13:13:33', last_attempt_local='2026-01-13 13:13:33'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:13:33+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:13:33' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=110, last_attempt_gmt='2026-01-13 13:13:33', last_attempt_local='2026-01-13 13:13:33'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:27:00+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:27:00' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=111, last_attempt_gmt='2026-01-13 13:27:00', last_attempt_local='2026-01-13 13:27:00'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:27:01+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:27:01' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=112, last_attempt_gmt='2026-01-13 13:27:01', last_attempt_local='2026-01-13 13:27:01'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:29:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:29:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=113, last_attempt_gmt='2026-01-13 13:29:02', last_attempt_local='2026-01-13 13:29:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:29:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:29:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=114, last_attempt_gmt='2026-01-13 13:29:02', last_attempt_local='2026-01-13 13:29:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:31:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:31:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=115, last_attempt_gmt='2026-01-13 13:31:02', last_attempt_local='2026-01-13 13:31:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:31:03+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:31:03' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=116, last_attempt_gmt='2026-01-13 13:31:03', last_attempt_local='2026-01-13 13:31:03'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:32:31+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:32:31' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=117, last_attempt_gmt='2026-01-13 13:32:31', last_attempt_local='2026-01-13 13:32:31'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:32:32+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:32:32' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=118, last_attempt_gmt='2026-01-13 13:32:32', last_attempt_local='2026-01-13 13:32:32'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:33:32+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:33:32' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=119, last_attempt_gmt='2026-01-13 13:33:32', last_attempt_local='2026-01-13 13:33:32'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:34:32+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:34:32' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=120, last_attempt_gmt='2026-01-13 13:34:32', last_attempt_local='2026-01-13 13:34:32'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:34:33+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:34:33' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=121, last_attempt_gmt='2026-01-13 13:34:33', last_attempt_local='2026-01-13 13:34:33'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:40:21+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:40:21' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=122, last_attempt_gmt='2026-01-13 13:40:21', last_attempt_local='2026-01-13 13:40:21'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:40:22+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:40:22' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=123, last_attempt_gmt='2026-01-13 13:40:22', last_attempt_local='2026-01-13 13:40:22'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:43:22+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:43:22' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=124, last_attempt_gmt='2026-01-13 13:43:22', last_attempt_local='2026-01-13 13:43:22'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:43:23+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:43:23' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=125, last_attempt_gmt='2026-01-13 13:43:23', last_attempt_local='2026-01-13 13:43:23'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:44:25+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:44:25' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=126, last_attempt_gmt='2026-01-13 13:44:25', last_attempt_local='2026-01-13 13:44:25'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T13:44:25+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 13:44:25' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=127, last_attempt_gmt='2026-01-13 13:44:25', last_attempt_local='2026-01-13 13:44:25'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:01:19+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:01:19' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=128, last_attempt_gmt='2026-01-13 14:01:19', last_attempt_local='2026-01-13 14:01:19'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:01:19+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:01:19' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=129, last_attempt_gmt='2026-01-13 14:01:19', last_attempt_local='2026-01-13 14:01:19'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:12:47+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:12:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=130, last_attempt_gmt='2026-01-13 14:12:47', last_attempt_local='2026-01-13 14:12:47'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:12:48+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:12:48' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=131, last_attempt_gmt='2026-01-13 14:12:48', last_attempt_local='2026-01-13 14:12:48'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:14:01+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:14:01' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=132, last_attempt_gmt='2026-01-13 14:14:01', last_attempt_local='2026-01-13 14:14:01'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:14:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:14:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=133, last_attempt_gmt='2026-01-13 14:14:02', last_attempt_local='2026-01-13 14:14:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:15:02+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:15:02' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=134, last_attempt_gmt='2026-01-13 14:15:02', last_attempt_local='2026-01-13 14:15:02'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:15:03+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:15:03' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=135, last_attempt_gmt='2026-01-13 14:15:03', last_attempt_local='2026-01-13 14:15:03'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:17:03+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:17:03' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=136, last_attempt_gmt='2026-01-13 14:17:03', last_attempt_local='2026-01-13 14:17:03'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:17:03+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:17:03' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=137, last_attempt_gmt='2026-01-13 14:17:03', last_attempt_local='2026-01-13 14:17:03'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:19:04+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:19:04' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=138, last_attempt_gmt='2026-01-13 14:19:04', last_attempt_local='2026-01-13 14:19:04'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:19:04+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:19:04' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=139, last_attempt_gmt='2026-01-13 14:19:04', last_attempt_local='2026-01-13 14:19:04'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:50:32+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:50:32' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=140, last_attempt_gmt='2026-01-13 14:50:32', last_attempt_local='2026-01-13 14:50:32'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:50:34+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:50:34' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=141, last_attempt_gmt='2026-01-13 14:50:34', last_attempt_local='2026-01-13 14:50:34'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:52:48+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:52:48' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=142, last_attempt_gmt='2026-01-13 14:52:48', last_attempt_local='2026-01-13 14:52:48'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:52:49+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:52:49' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=143, last_attempt_gmt='2026-01-13 14:52:49', last_attempt_local='2026-01-13 14:52:49'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:54:49+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:54:49' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=144, last_attempt_gmt='2026-01-13 14:54:49', last_attempt_local='2026-01-13 14:54:49'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:54:49+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:54:49' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=145, last_attempt_gmt='2026-01-13 14:54:49', last_attempt_local='2026-01-13 14:54:49'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:56:41+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:56:41' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=146, last_attempt_gmt='2026-01-13 14:56:41', last_attempt_local='2026-01-13 14:56:41'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:56:42+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:56:42' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=147, last_attempt_gmt='2026-01-13 14:56:42', last_attempt_local='2026-01-13 14:56:42'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:57:46+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:57:46' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=148, last_attempt_gmt='2026-01-13 14:57:46', last_attempt_local='2026-01-13 14:57:46'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:57:46+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:57:46' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=149, last_attempt_gmt='2026-01-13 14:57:46', last_attempt_local='2026-01-13 14:57:46'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:58:19+00:00 CRITICAL Out of memory (allocated 4194304) (tried to allocate 4194304 bytes) CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/vendor/automattic/jetpack-connection/src/class-manager.php","line":2131},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:58:50+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:58:50' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=150, last_attempt_gmt='2026-01-13 14:58:50', last_attempt_local='2026-01-13 14:58:50'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T14:58:51+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 14:58:51' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=151, last_attempt_gmt='2026-01-13 14:58:51', last_attempt_local='2026-01-13 14:58:51'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:00:28+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:00:28' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=152, last_attempt_gmt='2026-01-13 15:00:28', last_attempt_local='2026-01-13 15:00:28'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:00:29+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:00:29' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=153, last_attempt_gmt='2026-01-13 15:00:29', last_attempt_local='2026-01-13 15:00:29'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:02:29+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:02:29' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=154, last_attempt_gmt='2026-01-13 15:02:29', last_attempt_local='2026-01-13 15:02:29'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:02:30+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:02:30' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=155, last_attempt_gmt='2026-01-13 15:02:30', last_attempt_local='2026-01-13 15:02:30'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:03:36+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:03:36' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=156, last_attempt_gmt='2026-01-13 15:03:36', last_attempt_local='2026-01-13 15:03:36'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:03:38+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:03:38' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=157, last_attempt_gmt='2026-01-13 15:03:38', last_attempt_local='2026-01-13 15:03:38'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:04:54+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:04:54' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=158, last_attempt_gmt='2026-01-13 15:04:54', last_attempt_local='2026-01-13 15:04:54'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:04:55+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:04:55' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=159, last_attempt_gmt='2026-01-13 15:04:55', last_attempt_local='2026-01-13 15:04:55'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:06:32+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:06:32' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=160, last_attempt_gmt='2026-01-13 15:06:32', last_attempt_local='2026-01-13 15:06:32'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:06:33+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:06:33' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=161, last_attempt_gmt='2026-01-13 15:06:33', last_attempt_local='2026-01-13 15:06:33'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:08:56+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:08:56' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=162, last_attempt_gmt='2026-01-13 15:08:56', last_attempt_local='2026-01-13 15:08:56'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:08:57+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:08:57' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=163, last_attempt_gmt='2026-01-13 15:08:57', last_attempt_local='2026-01-13 15:08:57'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:10:16+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:10:16' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=164, last_attempt_gmt='2026-01-13 15:10:16', last_attempt_local='2026-01-13 15:10:16'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:10:19+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:10:19' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=165, last_attempt_gmt='2026-01-13 15:10:19', last_attempt_local='2026-01-13 15:10:19'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:12:25+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:12:25' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=166, last_attempt_gmt='2026-01-13 15:12:25', last_attempt_local='2026-01-13 15:12:25'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:12:27+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:12:27' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=167, last_attempt_gmt='2026-01-13 15:12:27', last_attempt_local='2026-01-13 15:12:27'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:28:49+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:28:49' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=168, last_attempt_gmt='2026-01-13 15:28:49', last_attempt_local='2026-01-13 15:28:49'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:28:50+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:28:50' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=169, last_attempt_gmt='2026-01-13 15:28:50', last_attempt_local='2026-01-13 15:28:50'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T15:55:10+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 15:55:10' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=170, last_attempt_gmt='2026-01-13 15:55:10', last_attempt_local='2026-01-13 15:55:10'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:01:57+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:01:57' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=171, last_attempt_gmt='2026-01-13 20:01:57', last_attempt_local='2026-01-13 20:01:57'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:03:12+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:03:12' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=172, last_attempt_gmt='2026-01-13 20:03:12', last_attempt_local='2026-01-13 20:03:12'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:03:15+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:03:15' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=173, last_attempt_gmt='2026-01-13 20:03:15', last_attempt_local='2026-01-13 20:03:15'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:04:16+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:04:16' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=174, last_attempt_gmt='2026-01-13 20:04:16', last_attempt_local='2026-01-13 20:04:16'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:04:18+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:04:18' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=175, last_attempt_gmt='2026-01-13 20:04:18', last_attempt_local='2026-01-13 20:04:18'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:05:16+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:05:16' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=176, last_attempt_gmt='2026-01-13 20:05:16', last_attempt_local='2026-01-13 20:05:16'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:06:05+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:06:05' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=177, last_attempt_gmt='2026-01-13 20:06:05', last_attempt_local='2026-01-13 20:06:05'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:06:11+00:00 CRITICAL Out of memory (allocated 6291456) (tried to allocate 8388608 bytes) CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/src/Admin/Notes/DataStore.php","line":13},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:08:48+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:08:48' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=178, last_attempt_gmt='2026-01-13 20:08:48', last_attempt_local='2026-01-13 20:08:48'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:11:25+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:11:24' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=179, last_attempt_gmt='2026-01-13 20:11:24', last_attempt_local='2026-01-13 20:11:24'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:11:27+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:11:27' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=180, last_attempt_gmt='2026-01-13 20:11:27', last_attempt_local='2026-01-13 20:11:27'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:12:33+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:12:33' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=181, last_attempt_gmt='2026-01-13 20:12:33', last_attempt_local='2026-01-13 20:12:33'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:12:35+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:12:35' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=182, last_attempt_gmt='2026-01-13 20:12:35', last_attempt_local='2026-01-13 20:12:35'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:13:35+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:13:35' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=183, last_attempt_gmt='2026-01-13 20:13:35', last_attempt_local='2026-01-13 20:13:35'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:13:38+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:13:38' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=184, last_attempt_gmt='2026-01-13 20:13:38', last_attempt_local='2026-01-13 20:13:38'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:14:52+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:14:52' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=185, last_attempt_gmt='2026-01-13 20:14:52', last_attempt_local='2026-01-13 20:14:52'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:14:56+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:14:56' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=186, last_attempt_gmt='2026-01-13 20:14:56', last_attempt_local='2026-01-13 20:14:56'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:16:26+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:16:26' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=187, last_attempt_gmt='2026-01-13 20:16:26', last_attempt_local='2026-01-13 20:16:26'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:16:29+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:16:29' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=188, last_attempt_gmt='2026-01-13 20:16:29', last_attempt_local='2026-01-13 20:16:29'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:17:32+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:17:32' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=189, last_attempt_gmt='2026-01-13 20:17:32', last_attempt_local='2026-01-13 20:17:32'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}
+2026-01-13T20:19:08+00:00 CRITICAL Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-01-13 20:19:08' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=190, last_attempt_gmt='2026-01-13 20:19:08', last_attempt_local='2026-01-13 20:19:08'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_i CONTEXT: {"error":{"type":1,"file":"/var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php","line":1019},"remote-logging":true,"backtrace":[{"file":"/var/www/html/wp-content/plugins/woocommerce/includes/class-woocommerce.php","line":454,"function":"critical","class":"WC_Logger","type":"->"},{"function":"log_errors","class":"WooCommerce","type":"->"}]}

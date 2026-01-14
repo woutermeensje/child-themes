@@ -71,13 +71,16 @@ $classes = wc_get_product_class( 'sj-card', $product );
     /* Product grid cards */
 .woocommerce ul.products {
   display: grid;
-  gap: 18px;
+  gap: 24px;
+  
 }
 
 .woocommerce ul.products li.product.sj-card {
   list-style: none;
   margin: 0;
-  padding: 0;
+  padding: 10;
+  border: 1px solid #e1e1e1;
+  border-radius: 0px; 
 }
 
 .sj-card__link {
@@ -86,7 +89,7 @@ $classes = wc_get_product_class( 'sj-card', $product );
 }
 
 .sj-card__media {
-  border-radius: 12px;
+  
   overflow: hidden;
   background: #fff;
 }
@@ -140,7 +143,12 @@ $classes = wc_get_product_class( 'sj-card', $product );
 .sj-card__footer a.button {
   width: 100%;
   text-align: center;
-  border-radius: 10px;
+  border-radius: 0px;
+  padding: 12px 16px;
+  font-family: Poppins, sans-serif;
+    font-weight: 600;
+    background-color: #0456ab;
+    color: #ffffff;
 }
 
 </style>
