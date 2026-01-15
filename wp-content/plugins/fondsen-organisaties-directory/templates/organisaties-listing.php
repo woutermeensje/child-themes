@@ -24,10 +24,10 @@ $query = $context['query'];
 
 .org-card {
     border: 1px solid #E4E7EC;
-    border-radius: 12px;
+    border-radius: 5px;
     background: #fff;
     overflow: hidden;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,.10);
+    box-shadow: 0 10px 40px -5px rgba(0,0,0,.15);
     display: flex;
     flex-direction: column;
     min-height: 100%;
@@ -55,6 +55,9 @@ $query = $context['query'];
     margin: 0 0 10px;
     font-size: 18px;
     line-height: 1.25;
+    font-family: Poppins ,sans-serif;
+    font-weight: 600;
+    color: #333333;
 }
 
 .org-card__title a {
@@ -89,9 +92,10 @@ $query = $context['query'];
                         </a>
                     </h3>
 
-                    <p class="org-card__excerpt">
-                        <?php echo esc_html( get_the_excerpt() ); ?>
+                   <p class="org-card__excerpt">
+                        <?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '…' ) ); ?>
                     </p>
+
                 </div>
             </article>
         <?php endwhile; ?>

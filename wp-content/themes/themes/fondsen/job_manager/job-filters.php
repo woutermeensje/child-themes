@@ -10,7 +10,6 @@ $selected = [
     'organization_type' => [],
     'job_sector'    => [],
     'job_types'     => [],
-    // 'certificering' => [],  // ❌ verwijderd
     'job_listing_category' => [],
 ];
 
@@ -19,7 +18,6 @@ $shortcode_atts = shortcode_atts([
     'organization_type' => '',
     'job_sector' => '',
     'job_listing_type' => '',
-    // 'certificering' => '', // ❌ verwijderd
     'job_listing_category' => '',
 ], $atts);
 
@@ -140,6 +138,10 @@ unset($value);
         </div>
 
     </div>
+
+    <!-- ✅ Actieve filters tonen onder de filter-box -->
+    <div class="active-filters" id="active-filters" aria-live="polite"></div>
+
 </form>
 
 <?php do_action('job_manager_job_filters_after', $atts); ?>
@@ -175,6 +177,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const closeAll = () => {
     document.querySelectorAll(".sj-select.active").forEach(el => el.classList.remove("active"));
+  };
+
+  // ✅ Active filters (chips onder de filters)
+  const activeFiltersEl = document.getElementById("active-filters");
+
+  const renderActiveFilters = () => {
+    if (!activeFiltersEl) return;
+
+    activeFiltersEl.innerHTML = "";
+
+    const selects = document.querySelectorAll("select.js-custom-select");
+    selects.forEach((select) => {
+      const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
+
+      selectedOptions.forEach((opt) => {
+        const chip = document.createElement("span");
+        chip.className = "active-filter";
+        chip.innerHTML = `<span class="active-filter-text"></span><button type="button" class="active-filter-x" aria-label="Verwijder filter">×</button>`;
+        chip.querySelector(".active-filter-text").textContent = opt.textContent;
+
+        chip.querySelector(".active-filter-x").addEventListener("click", (e) => {
+          e.preventDefault();
+          opt.selected = false;
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+        });
+
+        activeFiltersEl.appendChild(chip);
+      });
+    });
+
+    activeFiltersEl.style.display = activeFiltersEl.children.length ? "flex" : "none";
   };
 
   const buildSelect = (select) => {
@@ -231,7 +264,6 @@ document.addEventListener("DOMContentLoaded", () => {
       row.setAttribute("aria-selected", opt.selected ? "true" : "false");
 
       row.innerHTML = `<span class="sj-option-text"></span>`;
-
       row.querySelector(".sj-option-text").textContent = opt.textContent;
 
       const syncSelected = () => {
@@ -294,25 +326,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      placeholderEl.style.display = "none";
-      tagsEl.style.display = "inline-flex";
+      // ✅ MULTI: géén chips in de filter-knop tonen
+placeholderEl.textContent = placeholder;  // bv "Sector" / "Type organisatie"
+placeholderEl.style.display = "inline";
+tagsEl.style.display = "none";
+tagsEl.innerHTML = "";
+return;
 
-      selectedOptions.forEach((o) => {
-        const chip = document.createElement("span");
-        chip.className = "sj-chip";
-        chip.innerHTML = `<span class="sj-chip-text"></span><button type="button" class="sj-chip-x" aria-label="Verwijder">×</button>`;
-        chip.querySelector(".sj-chip-text").textContent = o.textContent;
-
-        chip.querySelector(".sj-chip-x").addEventListener("click", (e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          o.selected = false;
-          renderState();
-          select.dispatchEvent(new Event("change", { bubbles: true }));
-        });
-
-        tagsEl.appendChild(chip);
-      });
     };
 
     renderState();
@@ -327,6 +347,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     select.addEventListener("change", () => {
       renderState();
+      renderActiveFilters(); // ✅ update actieve filters onderaan
       wpjmFilter();
     });
 
@@ -337,6 +358,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll("select.js-custom-select").forEach(buildSelect);
 
+  // ✅ initial render
+  renderActiveFilters();
+
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".sj-select")) closeAll();
   });
@@ -346,6 +370,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 </script>
+
 
 
 
@@ -547,6 +572,10 @@ select.sj-hidden-select {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  color: #333333;
+  font-size: 15px;
 }
 
 .sj-tags{
@@ -687,6 +716,78 @@ select.sj-hidden-select {
 .sj-select-btn:focus {
   background: #ffffff !important;
   color: #111111 !important;
+}
+
+/* Actieve filters onder de filter-box */
+.active-filters {
+  display: none; /* wordt automatisch 'flex' als er iets geselecteerd is */
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 20px 0;
+}
+
+.active-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: #e9f2ff;
+  border-radius: 20px;
+  font-size: 14px;
+}
+
+.active-filter-x {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ❌ Verberg het kruisje (clear) in de filter zelf */
+.sj-select-btn .sj-clear {
+  display: none !important;
+}
+
+/* Optioneel: haal extra spacing weg die door de clear-knop ontstond */
+.sj-select-btn .sj-actions {
+  gap: 0 !important;
+}
+
+/* Container onderaan */
+.active-filters {
+  margin: 14px 20px 0;
+  gap: 10px;
+}
+
+/* Chip styling */
+.active-filter {
+  background: #ffffff;                 /* wit */
+  border: 1px solid #d7e6ff;           /* zachte blauwe lijn */
+  border-radius: 999px;
+  padding: 8px 12px;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+/* Tekst */
+.active-filter-text {
+  color: #333333;
+}
+
+/* Kruisje in chip (onderaan) */
+.active-filter-x {
+  color: #d0002d;                      /* beetje rood zoals je huidige */
+  font-size: 20px;
+  font-weight: 600
+  margin-left: 6px;
+  line-height: 1;
+  padding: 0;
+}
+
+/* Hover */
+.active-filter:hover {
+  border-color: #0884CC;               /* Fondsen blauw */
 }
 
 
