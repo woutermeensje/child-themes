@@ -779,7 +779,7 @@ select.sj-hidden-select {
 .active-filter-x {
   color: #d0002d;                      /* beetje rood zoals je huidige */
   font-size: 20px;
-  font-weight: 600
+  font-weight: 600;
   margin-left: 6px;
   line-height: 1;
   padding: 0;
