@@ -7,19 +7,19 @@ do_action('job_manager_job_filters_before', $atts);
 // ✅ Vul $selected met waarden vanuit: $_GET > $_POST > Shortcode
 $selected = [
     'job_company'   => [],
-    'job_tag'       => [],
+    'organization_type' => [],
     'job_sector'    => [],
     'job_types'     => [],
-    'certificering' => [],
+    // 'certificering' => [],  // ❌ verwijderd
     'job_listing_category' => [],
 ];
 
 $shortcode_atts = shortcode_atts([
     'job_company' => '',
-    'job_tag' => '',
+    'organization_type' => '',
     'job_sector' => '',
     'job_listing_type' => '',
-    'certificering' => '',
+    // 'certificering' => '', // ❌ verwijderd
     'job_listing_category' => '',
 ], $atts);
 
@@ -49,13 +49,10 @@ foreach ($selected as $key => &$value) {
 unset($value);
 ?>
 
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
-
-
 
 <form class="job_filters">
     <?php do_action('job_manager_job_filters_start', $atts); ?>
@@ -111,22 +108,7 @@ unset($value);
             </select>
         </div>
 
-        <!-- Certificering (multi) -->
-        <div class="job_certificering">
-            <select name="filter_certificering[]"
-                    id="filter_certificering"
-                    class="js-custom-select job_certificering"
-                    data-placeholder="Certificering"
-                    multiple>
-                <?php foreach (get_terms(['taxonomy' => 'certificering', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['certificering'], true)); ?>>
-                        <?php echo esc_html($term->name); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <!-- Organisatie (single) - wil je dit multi maken? Voeg `multiple` toe + name="filter_job_company[]" -->
+        <!-- Organisatie (single) -->
         <div class="job_company">
             <select name="filter_job_company"
                     id="filter_job_company"
@@ -142,15 +124,15 @@ unset($value);
             </select>
         </div>
 
-        <!-- Tags (multi) -->
-        <div class="job_tag">
-            <select name="filter_job_tag[]"
-                    id="filter_job_tag"
-                    class="js-custom-select job_tag"
-                    data-placeholder="Tags"
+        <!-- Organization Type (multi) -->
+        <div class="organization_type">
+            <select name="filter_organization_type[]"
+                    id="filter_organization_type"
+                    class="js-custom-select organization_type"
+                    data-placeholder="Type organisatie"
                     multiple>
-                <?php foreach (get_terms(['taxonomy' => 'job_tag', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_tag'], true)); ?>>
+                <?php foreach (get_terms(['taxonomy' => 'organization_type', 'hide_empty' => true]) as $term) : ?>
+                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['organization_type'], true)); ?>>
                         <?php echo esc_html($term->name); ?>
                     </option>
                 <?php endforeach; ?>
@@ -162,13 +144,11 @@ unset($value);
 
 <?php do_action('job_manager_job_filters_after', $atts); ?>
 
-
 <script>
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form.job_filters");
   if (!form) return;
 
-  // --- WPJM trigger ---
   const wpjmFilter = () => {
     if (window.job_manager_job_filters && typeof window.job_manager_job_filters.filter_jobs === "function") {
       window.job_manager_job_filters.filter_jobs();
@@ -178,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // debounce voor tekstvelden
   const debounce = (fn, delay = 250) => {
     let t;
     return () => { clearTimeout(t); t = setTimeout(fn, delay); };
@@ -194,28 +173,24 @@ document.addEventListener("DOMContentLoaded", () => {
     wpjmFilter();
   });
 
-  // --- Custom Select / Multi-select ---
   const closeAll = () => {
     document.querySelectorAll(".sj-select.active").forEach(el => el.classList.remove("active"));
   };
 
   const buildSelect = (select) => {
     const isMultiple = select.multiple === true;
-    const forceMode = select.dataset.mode; // "single" optional
+    const forceMode = select.dataset.mode;
     const isSingle = forceMode === "single" ? true : !isMultiple;
 
     const placeholder = select.dataset.placeholder || "Selecteer";
 
-    // wrap
     const wrap = document.createElement("div");
     wrap.className = "sj-select-wrap";
     select.parentNode.insertBefore(wrap, select);
     wrap.appendChild(select);
 
-    // hide real select (CSS does it)
     select.classList.add("sj-hidden-select");
 
-    // component
     const root = document.createElement("div");
     root.className = "sj-select";
     root.dataset.type = isSingle ? "single" : "multi";
@@ -234,13 +209,10 @@ document.addEventListener("DOMContentLoaded", () => {
       </span>
     `;
 
-    // nested button issue fix: replace actions buttons with div (keep semantics)
-    const actions = btn.querySelector(".sj-actions");
     const clearBtn = btn.querySelector(".sj-clear");
     clearBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
-
       [...select.options].forEach(o => o.selected = false);
       renderState();
       select.dispatchEvent(new Event("change", { bubbles: true }));
@@ -251,7 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
     list.setAttribute("role", "listbox");
     if (!isSingle) list.setAttribute("aria-multiselectable", "true");
 
-    // options
     const makeOptionRow = (opt) => {
       const row = document.createElement("div");
       row.className = "sj-option";
@@ -259,10 +230,8 @@ document.addEventListener("DOMContentLoaded", () => {
       row.setAttribute("role", "option");
       row.setAttribute("aria-selected", opt.selected ? "true" : "false");
 
-      row.innerHTML = `
-        <span class="sj-option-check" aria-hidden="true"></span>
-        <span class="sj-option-text"></span>
-      `;
+      row.innerHTML = `<span class="sj-option-text"></span>`;
+
       row.querySelector(".sj-option-text").textContent = opt.textContent;
 
       const syncSelected = () => {
@@ -274,21 +243,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
       row.addEventListener("click", (e) => {
         e.preventDefault();
-
         if (opt.disabled) return;
 
         if (isSingle) {
-          // single: select exactly this (or clear if placeholder style)
           [...select.options].forEach(o => o.selected = false);
           opt.selected = true;
           closeAll();
           root.classList.remove("active");
         } else {
-          // multi: toggle
           opt.selected = !opt.selected;
         }
 
-        // update UI and trigger WPJM
         renderState();
         select.dispatchEvent(new Event("change", { bubbles: true }));
       });
@@ -298,7 +263,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const optionRows = [];
     [...select.options].forEach((opt) => {
-      // Skip empty placeholder option in dropdown list for single selects
       if (isSingle && opt.value === "") return;
       const { row, syncSelected } = makeOptionRow(opt);
       optionRows.push({ opt, row, syncSelected });
@@ -309,7 +273,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const placeholderEl = btn.querySelector(".sj-placeholder");
 
     const renderState = () => {
-      // sync option row selected classes
       optionRows.forEach(({ opt, syncSelected }) => syncSelected());
 
       const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
@@ -331,7 +294,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // multi tags
       placeholderEl.style.display = "none";
       tagsEl.style.display = "inline-flex";
 
@@ -353,21 +315,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     };
 
-    // initial render
     renderState();
 
-    // toggle open/close
     btn.addEventListener("click", (e) => {
-      // ignore clicks on clear button area
       if (e.target.closest(".sj-clear")) return;
-
       e.preventDefault();
       const wasOpen = root.classList.contains("active");
       closeAll();
       if (!wasOpen) root.classList.add("active");
     });
 
-    // when real select changes (e.g. shortcode prefill), update UI + trigger filter
     select.addEventListener("change", () => {
       renderState();
       wpjmFilter();
@@ -380,17 +337,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll("select.js-custom-select").forEach(buildSelect);
 
-  // close when clicking outside
   document.addEventListener("click", (e) => {
     if (!e.target.closest(".sj-select")) closeAll();
   });
 
-  // close on ESC
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") closeAll();
   });
 });
 </script>
+
+
 
 
 <style>
@@ -479,12 +436,15 @@ body .filter-header a.unstyled-newsletter-link:hover {
   width: 100%;
   padding: 12px 14px 12px 38px;
   font-size: 16px; 
-  border: 1px solid #ccc;
+  border: 1px solid #0884CC;
   border-radius: 0;
   background-color: white;
   color: #222;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+
 }
 
 .search-basic input[type="text"]:focus {

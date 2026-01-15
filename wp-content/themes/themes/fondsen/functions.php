@@ -10,11 +10,7 @@ add_theme_support('job-manager-templates');
 // // Exit if accessed directly
 if (!defined('ABSPATH')) exit;
 
-/**
- * Algemene includes
- */
-require_once get_stylesheet_directory() . '/inc/shortcodes-fondsen.php';
-// eventueel meer:
+
 
 
 function fondsen_enqueue_styles() {
@@ -53,48 +49,6 @@ function fondsen_enqueue_styles() {
 add_action( 'wp_enqueue_scripts', 'fondsen_enqueue_styles' );
 
 
-// BENODIGD VOOR RSS FEEDS //
-function include_only_custom_post_type_in_feed($query)
-{
-    if (is_feed()) {
-        // Set the query to only include your custom post type
-        $query->set('post_type', 'job_listing');
-    }
-}
-add_action('pre_get_posts', 'include_only_custom_post_type_in_feed');
-
-function download_feed_content()
-{
-    $url = 'http://fondsen.org/feed/';
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-        'Content-Type: application/rss+xml', // Set content type header
-    ));
-    $xml_content = curl_exec($ch);
-
-    // Check for cURL errors
-    if (curl_errno($ch)) {
-        $error_message = curl_error($ch);
-        curl_close($ch);
-        return 'Error fetching XML feed: ' . $error_message;
-    }
-
-    // Check for HTTP status code
-    $http_status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    if ($http_status_code !== 200) {
-        curl_close($ch);
-        return 'HTTP request failed with status code: ' . $http_status_code;
-    }
-
-    curl_close($ch);
-
-    return $xml_content;
-}
-// BENODIGD VOOR RSS FEEDS //
-
-
 
 
 /**
@@ -128,13 +82,13 @@ add_action('init', function () {
         'rewrite' => ['slug' => 'organisatie'],
     ]);
 
-    register_taxonomy('job_tag', 'job_listing', [
-        'label' => 'Tags',
+    register_taxonomy('organization_type', 'job_listing', [
+        'label' => 'Organization Type',
         'hierarchical' => true,
         'show_ui' => true,
         'show_admin_column' => true,
         'show_in_rest' => true,
-        'rewrite' => ['slug' => 'tag'],
+        'rewrite' => ['slug' => 'organization_type'],
     ]);
 
     register_taxonomy('job_sector', 'job_listing', [
@@ -154,6 +108,7 @@ add_action('init', function () {
         'show_in_rest' => true,
         'rewrite' => ['slug' => 'certificering'],
     ]);
+
 });
 
 
