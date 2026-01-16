@@ -1,4 +1,10 @@
-<?php if (!defined('ABSPATH')) exit; ?>
+<?php
+if (!defined('ABSPATH')) exit;
+
+get_header();
+
+if (have_posts()) : while (have_posts()) : the_post();
+?>
 
 <article class="mh-unit-single">
 
@@ -26,7 +32,7 @@
                 </p>
 
                 <a class="mh-btn mh-btn-primary"
-                   href="/contact/?unit=<?php echo esc_attr(get_the_ID()); ?>">
+                   href="/offerte-aanvragen/?unit=<?php echo esc_attr(get_the_ID()); ?>">
                     Offerte aanvragen
                 </a>
             </div>
@@ -77,6 +83,7 @@
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  height: 425px; 
 }
 
 .mh-unit-single-image img{
@@ -175,3 +182,8 @@
   }
 }
 </style>
+
+<?php
+endwhile; endif;
+
+get_footer();

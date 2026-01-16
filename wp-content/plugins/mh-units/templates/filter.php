@@ -134,7 +134,8 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
 
 /* Header */
 .mh-filter-header h1{
-  font-family: 'Poppins', sans-serif;
+  font-family: Balgin Bold !important;
+  font-weight: 700 !important;
   font-size: 28px;
   line-height: 1.2;
   margin: 0 0 10px 0;

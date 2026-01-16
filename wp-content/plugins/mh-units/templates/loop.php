@@ -15,11 +15,29 @@
 <style>
 /* ===== UNITS OVERZICHT: 1 onder elkaar (full width) ===== */
 
+/* ===== UNITS OVERZICHT: 1 onder elkaar (full width) ===== */
+
 .mh-units-list{
   display: flex;
   flex-direction: column;
-  width: 1050px; 
+  width: 1050px;
   margin: 0 auto;
- 
 }
+
+/* ✅ Tablet: laat 'm meeschalen */
+@media (max-width: 1100px){
+  .mh-units-list{
+    width: 100%;
+    padding: 0 16px;   /* ruimte links/rechts */
+    box-sizing: border-box;
+  }
+}
+
+/* ✅ Mobiel: iets meer padding (mag ook 12px) */
+@media (max-width: 600px){
+  .mh-units-list{
+    padding: 0 12px;
+  }
+}
+
 </style>

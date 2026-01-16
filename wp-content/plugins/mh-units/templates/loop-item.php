@@ -35,7 +35,7 @@
   border: 1px solid #ededed;
   overflow: hidden;
   text-decoration: none;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,.15);
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,.15) !important;
   margin-bottom: 24px;
   margin-top: 24px; 
   height: 325px; 
@@ -68,15 +68,17 @@
 }
 
 .mh-unit-row-title{
-  margin: 0 0 8px;
+    margin: 0 0 16px; /* meer ruimte onder de titel */
   line-height: 1.2;
   font-family: 'Poppins', sans-serif;
     color: #333;
     font-size: 24px;
+    font-family: Balgin Bold; 
 }
 
 .mh-unit-row-excerpt{
-  margin: 0 0 12px;
+    margin: 0 0 20px; /* meer witruimte onder tekst */
+
   line-height: 1.5;
   font-family: 'Poppins', sans-serif;
     color: #333;
@@ -85,11 +87,16 @@
 
 /* “Knop” styling (span, omdat de hele card al een link is) */
 .mh-unit-row-btn{
-  display: inline-block;
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  width: fit-content;
+  padding: 14px;
+  border-radius: 0px;
+            width: 33%; 
+    margin-top: 16px;
+    background-color: #0456ABFA; 
+    color: #fff;
+    font-family: Balgin Bold; 
+    font-size: 14px;
+    text-align: center; 
+    text-decoration: none !important; 
 }
 
 /* Hover effect */
