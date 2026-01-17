@@ -290,6 +290,88 @@ $condities = get_terms([
     padding: 16px;
   }
 }
+
+
+/* ✅ Checkboxjes verbergen, maar functionaliteit behouden */
+.mh-multi-option input[type="checkbox"]{
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+}
+
+/* Zorg dat de label/option de klikbare rij blijft */
+.mh-multi-option{
+  position: relative;
+  padding: 10px 10px;       /* iets ruimer */
+  gap: 0;                   /* checkbox gap niet meer nodig */
+}
+
+/* Selected state: als checkbox checked is, geef de rij styling */
+.mh-multi-option input[type="checkbox"]:checked + span{
+  font-weight: 600;
+}
+
+/* Selected state: achtergrond + rand op de hele rij */
+.mh-multi-option:has(input[type="checkbox"]:checked){
+  background: #eef6ff;
+  border: 1px solid #cfe6ff;
+}
+
+/* Voeg een klein “check” bolletje rechts (zonder echte checkbox) */
+.mh-multi-option:after{
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  border: 0px solid #c7c7c7;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.mh-multi-option:has(input[type="checkbox"]:checked):after{
+  border-color: #0884CC;
+  background: #0884CC;
+}
+
+/* Button: altijd wit met donkere tekst, ook bij focus/active */
+.mh-multi-btn,
+.mh-multi-btn:hover,
+.mh-multi-btn:focus,
+.mh-multi-btn:active,
+.mh-multi-btn:focus-visible{
+  background: #fff !important;
+  color: #333 !important;
+  outline: none;
+}
+
+/* Zorg dat alle teksten binnen de button ook donker blijven */
+.mh-multi-btn .mh-multi-placeholder,
+.mh-multi-btn .mh-multi-caret{
+  color: #333 !important;
+}
+
+/* Opties: wit met donkere tekst */
+.mh-multi-option,
+.mh-multi-option:hover,
+.mh-multi-option:active{
+  background: #fff !important;
+  color: #333 !important;
+}
+
+.mh-multi-option span{
+  color: #333 !important;
+}
+
+/* Geselecteerd: lichte highlight (optioneel) */
+.mh-multi-option:has(input[type="checkbox"]:checked){
+  background: #eef6ff !important;
+  border: 1px solid #cfe6ff;
+}
+
+
+
 </style>
 
 

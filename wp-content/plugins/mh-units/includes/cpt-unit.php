@@ -34,7 +34,7 @@ add_action('init', function () {
     ],
     'public' => true,
     'rewrite' => ['slug' => 'conditie'],
-    'hierarchical' => false,     // conditie is meestal "tags", geen boomstructuur
+    'hierarchical' => true,     // conditie is meestal "tags", geen boomstructuur
     'show_in_rest' => true,
     'show_admin_column' => true, // handig in overzicht
 ]);
