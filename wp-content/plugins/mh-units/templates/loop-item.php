@@ -21,6 +21,30 @@
             ?>
         </p>
 
+        <?php
+$terms_type = get_the_terms(get_the_ID(), 'mh_unit_type');
+$terms_cond = get_the_terms(get_the_ID(), 'mh_unit_conditie');
+
+if (
+  (!is_wp_error($terms_type) && !empty($terms_type)) ||
+  (!is_wp_error($terms_cond) && !empty($terms_cond))
+): ?>
+  <div class="mh-unit-row-tax">
+    <?php if (!is_wp_error($terms_type) && !empty($terms_type)): ?>
+      <?php foreach ($terms_type as $term): ?>
+        <span class="mh-unit-tax-badge mh-unit-tax-type"><?php echo esc_html($term->name); ?></span>
+      <?php endforeach; ?>
+    <?php endif; ?>
+
+    <?php if (!is_wp_error($terms_cond) && !empty($terms_cond)): ?>
+      <?php foreach ($terms_cond as $term): ?>
+        <span class="mh-unit-tax-badge mh-unit-tax-conditie"><?php echo esc_html($term->name); ?></span>
+      <?php endforeach; ?>
+    <?php endif; ?>
+  </div>
+<?php endif; ?>
+
+
         <span class="mh-unit-row-btn">Unit bekijken</span>
     </div>
 </a>
@@ -159,8 +183,55 @@
     padding: 10px 12px;
   }
 
-  
+
 }
+
+/* ===== Taxonomy badges onder excerpt ===== */
+
+.mh-unit-row-tax{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 18px;
+}
+
+/* Basis badge */
+.mh-unit-tax-badge{
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  text-decoration: none !important;     /* ❌ geen underline */
+  border: 2px solid transparent;
+  white-space: nowrap;
+}
+
+/* TYPE UNIT – lichtblauw */
+.mh-unit-tax-type{
+  background: #EAF2FF;
+  border-color: #C7DBFF;
+  color: #0456AB;
+}
+
+/* CONDITIE – donkerder blauw */
+.mh-unit-tax-conditie{
+  background: #DCE9FF;
+  border-color: #9EBEFF;
+  color: #0456AB;
+}
+
+
+
+
+
+@media (max-width: 700px){
+  .mh-unit-tax-badge{ font-size: 12px; padding: 5px 9px; }
+}
+
 
 
 </style>

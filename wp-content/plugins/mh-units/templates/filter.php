@@ -20,8 +20,10 @@ $condities = get_terms([
 
   <div class="mh-filter-header">
     <h1>Doorzoek alle modulaire units</h1>
-    <p>Of plaats jouw units in het netwerk van ModulaireHuisvesting.nl</p>
-  </div>
+      <p>Of <a href="https://modulairehuisvesting.nl/offerte-aanvragen/" class="mh-filter-header-link">plaats jouw units</a>
+        in het netwerk van ModulaireHuisvesting.nl
+      </p>
+    </div>
 
   <form class="mh-units-filter" method="get">
 
@@ -117,7 +119,7 @@ $condities = get_terms([
 
 /* Header */
 .mh-filter-header h1{
-  font-family: 'Poppins', sans-serif;
+  font-family: Balgin Bold; 
   font-size: 28px;
   line-height: 1.2;
   margin: 0 0 10px 0;
@@ -131,6 +133,14 @@ $condities = get_terms([
   margin: 0 0 18px 0;
   color: #333;
 }
+
+.mh-filter-header-link{
+  color: #0456ABFA !important;
+  text-decoration: none !important;
+  font-weight: 400;
+}
+
+
 
 /* ✅ Nieuwe top row: 50% / 25% / 25% */
 .mh-filter-top-row{
@@ -301,6 +311,7 @@ $condities = get_terms([
   height: 1px;
 }
 
+
 /* Zorg dat de label/option de klikbare rij blijft */
 .mh-multi-option{
   position: relative;
@@ -381,8 +392,6 @@ $condities = get_terms([
 
 
 
-
-
 <script>
 (function(){
   function closeAll(except){
@@ -422,6 +431,11 @@ $condities = get_terms([
       : checked.length + ' geselecteerd';
   }
 
+  function submitFormFrom(el){
+    const form = el.closest('form');
+    if(form) form.submit();
+  }
+
   // Init: sla default placeholder op
   document.querySelectorAll('.mh-multi').forEach(multi=>{
     const placeholderEl = multi.querySelector('.mh-multi-placeholder');
@@ -439,16 +453,29 @@ $condities = get_terms([
       btn.setAttribute('aria-expanded', (!isOpen) ? 'true' : 'false');
     });
 
-    // Change
+    // Change => update hidden inputs + ✅ auto-submit
     multi.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
       cb.addEventListener('change', function(){
         updateHiddenInputs(multi);
+        submitFormFrom(multi);   // ✅ direct filteren zonder enter/knop
       });
     });
 
     // initial
     updateHiddenInputs(multi);
   });
+
+  // ✅ Live zoeken zonder enter (debounce)
+  const searchInput = document.querySelector('#mh_search');
+  if(searchInput){
+    let t;
+    searchInput.addEventListener('input', function(){
+      clearTimeout(t);
+      t = setTimeout(function(){
+        submitFormFrom(searchInput);
+      }, 400);
+    });
+  }
 
   // Close on outside click
   document.addEventListener('click', function(e){
