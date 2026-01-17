@@ -26,4 +26,19 @@ add_action('init', function () {
         'hierarchical' => true,
         'show_in_rest' => true,
     ]);
+
+    register_taxonomy('mh_unit_conditie', ['mh_unit'], [
+    'labels' => [
+        'name' => 'Conditie',
+        'singular_name' => 'Conditie',
+    ],
+    'public' => true,
+    'rewrite' => ['slug' => 'conditie'],
+    'hierarchical' => false,     // conditie is meestal "tags", geen boomstructuur
+    'show_in_rest' => true,
+    'show_admin_column' => true, // handig in overzicht
+]);
+
 });
+
+

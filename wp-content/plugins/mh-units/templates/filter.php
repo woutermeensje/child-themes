@@ -1,39 +1,42 @@
 <?php if (!defined('ABSPATH')) exit;
 
+// fallback als deze variabelen niet zijn meegegeven vanuit shortcode
+$search = isset($search) ? $search : '';
+$types_selected = isset($types_selected) && is_array($types_selected) ? $types_selected : [];
+$condities_selected = isset($condities_selected) && is_array($condities_selected) ? $condities_selected : [];
+
 $types = get_terms([
     'taxonomy' => 'mh_unit_type',
     'hide_empty' => false,
 ]);
 
-// Voor nu demo-opties voor 2 extra multiselects (later vervangen door echte taxonomie/meta bronnen)
-$condities = ['Nieuwstaat', 'Goed', 'Gebruikt', 'Opknapper'];
-$afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
+$condities = get_terms([
+    'taxonomy' => 'mh_unit_conditie',
+    'hide_empty' => false,
+]);
 ?>
 
 <div class="mh-units-filter-wrap">
 
   <div class="mh-filter-header">
     <h1>Doorzoek alle modulaire units</h1>
-    <p>Vul hier je eigen tekst in over de units, levering, types, of wat je maar wil.</p>
+    <p>Of plaats jouw units in het netwerk van ModulaireHuisvesting.nl</p>
   </div>
 
   <form class="mh-units-filter" method="get">
 
-      <!-- 1) Zoekbalk op eigen lijn -->
-      <div class="mh-filter-search-row">
+      <div class="mh-filter-top-row">
+
+          <!-- Zoek (50%) -->
           <div class="mh-filter-item mh-filter-search">
               <label for="mh_search">Zoek</label>
               <input id="mh_search" name="mh_search" type="text"
                      placeholder="Zoek op naam, trefwoord..."
                      value="<?php echo esc_attr($search); ?>">
           </div>
-      </div>
 
-      <!-- 2) Drie multiselects eronder -->
-      <div class="mh-units-filter-row mh-filter-multi-row">
-
-          <!-- MULTI 1: Type unit (op basis van taxonomy terms) -->
-          <div class="mh-filter-item">
+          <!-- MULTI 1: Type unit -->
+          <div class="mh-filter-item mh-filter-type">
               <label>Type unit</label>
 
               <div class="mh-multi" data-name="mh_type[]">
@@ -47,7 +50,9 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
                       <div class="mh-multi-options">
                           <?php foreach ($types as $t): ?>
                               <label class="mh-multi-option">
-                                  <input type="checkbox" value="<?php echo esc_attr($t->slug); ?>">
+                                  <input type="checkbox"
+                                         value="<?php echo esc_attr($t->slug); ?>"
+                                         <?php checked(in_array($t->slug, $types_selected, true)); ?>>
                                   <span><?php echo esc_html($t->name); ?></span>
                               </label>
                           <?php endforeach; ?>
@@ -58,8 +63,8 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
               </div>
           </div>
 
-          <!-- MULTI 2: Conditie (demo) -->
-          <div class="mh-filter-item">
+          <!-- MULTI 2: Conditie -->
+          <div class="mh-filter-item mh-filter-conditie">
               <label>Conditie</label>
 
               <div class="mh-multi" data-name="mh_conditie[]">
@@ -73,34 +78,10 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
                       <div class="mh-multi-options">
                           <?php foreach ($condities as $c): ?>
                               <label class="mh-multi-option">
-                                  <input type="checkbox" value="<?php echo esc_attr($c); ?>">
-                                  <span><?php echo esc_html($c); ?></span>
-                              </label>
-                          <?php endforeach; ?>
-                      </div>
-                  </div>
-
-                  <div class="mh-multi-hidden"></div>
-              </div>
-          </div>
-
-          <!-- MULTI 3: Afmeting (demo) -->
-          <div class="mh-filter-item">
-              <label>Afmeting</label>
-
-              <div class="mh-multi" data-name="mh_afmeting[]">
-                  <button type="button" class="mh-multi-btn" aria-expanded="false">
-                      <span class="mh-multi-placeholder">Selecteer afmeting</span>
-                      <span class="mh-multi-tags" aria-hidden="true"></span>
-                      <span class="mh-multi-caret">▾</span>
-                  </button>
-
-                  <div class="mh-multi-panel" role="listbox">
-                      <div class="mh-multi-options">
-                          <?php foreach ($afmetingen as $a): ?>
-                              <label class="mh-multi-option">
-                                  <input type="checkbox" value="<?php echo esc_attr($a); ?>">
-                                  <span><?php echo esc_html($a); ?></span>
+                                  <input type="checkbox"
+                                         value="<?php echo esc_attr($c->slug); ?>"
+                                         <?php checked(in_array($c->slug, $condities_selected, true)); ?>>
+                                  <span><?php echo esc_html($c->name); ?></span>
                               </label>
                           <?php endforeach; ?>
                       </div>
@@ -112,7 +93,6 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
 
       </div>
 
-      <!-- ✅ Reset knop onder de filters -->
       <div class="mh-filter-reset-row">
           <a class="reset-link" href="<?php echo esc_url(get_permalink()); ?>">Reset</a>
       </div>
@@ -120,6 +100,9 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
   </form>
 
 </div>
+
+
+
 
 <style>
 /* ✅ Container zoals Fondsen blok */
@@ -134,8 +117,7 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
 
 /* Header */
 .mh-filter-header h1{
-  font-family: Balgin Bold !important;
-  font-weight: 700 !important;
+  font-family: 'Poppins', sans-serif;
   font-size: 28px;
   line-height: 1.2;
   margin: 0 0 10px 0;
@@ -150,39 +132,12 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
   color: #333;
 }
 
-/* 1) Zoekbalk op eigen lijn */
-.mh-filter-search-row{
-  display: flex;
-  margin-bottom: 18px;
-}
-
-.mh-filter-search{
-  width: 50%;
-  min-width: 320px;
-}
-
-/* Rij met multiselects */
-.mh-units-filter-row{
+/* ✅ Nieuwe top row: 50% / 25% / 25% */
+.mh-filter-top-row{
   display: flex;
   gap: 20px;
-  flex-wrap: wrap;
   align-items: flex-end;
-
 }
-
-/* ✅ Reset knop onder filters */
-.mh-filter-reset-row{
-  margin-top: 16px;
-}
-
-.reset-link {
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  color: #333 !important;
-  text-decoration: none !important;
-  font-weight: 700; 
-}
-
 
 /* Labels */
 .mh-filter-item label{
@@ -191,6 +146,18 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
   font-weight: 600;
   margin-bottom: 6px;
   color: #333;
+}
+
+/* Kolombreedtes */
+.mh-filter-search{
+  flex: 0 0 calc(50% - 10px); /* -10px = helft van gap (20px) */
+  min-width: 320px;
+}
+
+.mh-filter-type,
+.mh-filter-conditie{
+  flex: 1 1 0;  /* beide nemen gelijk deel van resterende ruimte (25/25) */
+  min-width: 220px;
 }
 
 /* Zoek input */
@@ -204,6 +171,7 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
   color: #333;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   font-family: 'Poppins', sans-serif;
+  box-sizing: border-box;
 }
 
 /* Focus */
@@ -213,26 +181,10 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
   box-shadow: 0 2px 8px rgba(10, 107, 141, 0.25);
 }
 
-/* Reset button */
-.mh-btn-ghost{
-  padding: 12px 16px;
-  border-radius: 6px;
-  border: 1px solid #E0E0E0;
-  background: #fff;
-  color: #333;
-  font-family: 'Poppins', sans-serif;
-  text-decoration: none;
-  display: inline-block;
-}
-
-.mh-btn-ghost:hover{
-  border-color: #bdbdbd;
-}
-
-/* ===== Custom multiselect (Fondsen-like) ===== */
+/* ===== Custom multiselect ===== */
 .mh-multi{
   position: relative;
-  width: 260px;
+  width: 100%;              /* ✅ geen vaste 260px meer */
 }
 
 .mh-multi-btn{
@@ -250,6 +202,7 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
   align-items: center;
   justify-content: space-between;
   gap: 10px;
+  box-sizing: border-box;
 }
 
 .mh-multi-placeholder{
@@ -258,13 +211,8 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
   text-overflow: ellipsis;
 }
 
-.mh-multi-tags{
-  display: none; /* jij wilde eerder geen chips; als je later chips wil: display:flex */
-}
-
-.mh-multi-caret{
-  opacity: .7;
-}
+.mh-multi-tags{ display:none; }
+.mh-multi-caret{ opacity:.7; }
 
 .mh-multi-panel{
   display: none;
@@ -310,16 +258,48 @@ $afmetingen = ['< 15 m²', '15–30 m²', '30–50 m²', '> 50 m²'];
   height: 16px;
 }
 
-/* Mobile */
+/* Reset onder filters */
+.mh-filter-reset-row{
+  margin-top: 16px;
+}
+
+.reset-link{
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  text-decoration: underline;
+}
+
+/* ✅ Responsive: stacken op mobiel/tablet */
 @media (max-width: 900px){
-  .mh-filter-search{ width: 100%; }
-  .mh-multi{ width: 100%; }
+  .mh-filter-top-row{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mh-filter-search,
+  .mh-filter-type,
+  .mh-filter-conditie{
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+  }
 }
 
 @media (max-width: 600px){
-  .mh-units-filter-wrap{ padding: 16px; }
+  .mh-units-filter-wrap{
+    padding: 16px;
+  }
 }
 </style>
+
+
+
+
+
+
+
+
+
 
 <script>
 (function(){
