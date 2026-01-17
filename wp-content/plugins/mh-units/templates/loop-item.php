@@ -1,6 +1,15 @@
 <?php if (!defined('ABSPATH')) exit; ?>
 
 <a class="mh-unit-row" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr(get_the_title()); ?>">
+
+    <?php
+    $aanbod_terms = get_the_terms(get_the_ID(), 'mh_unit_aanbod');
+    $aanbod_label = (!is_wp_error($aanbod_terms) && !empty($aanbod_terms)) ? $aanbod_terms[0]->name : '';
+    ?>
+    <?php if ($aanbod_label): ?>
+      <span class="mh-unit-aanbod-badge"><?php echo esc_html($aanbod_label); ?></span>
+    <?php endif; ?>
+
     <div class="mh-unit-row-image">
         <?php if (has_post_thumbnail()): ?>
             <?php the_post_thumbnail('medium_large'); ?>
@@ -45,11 +54,61 @@ if (
 <?php endif; ?>
 
 
-        <span class="mh-unit-row-btn">Unit bekijken</span>
+       <?php
+$price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
+?>
+
+<div class="mh-unit-row-cta">
+    <span class="mh-unit-row-btn">Unit bekijken</span>
+
+    <?php if ($price_note): ?>
+        <span class="mh-unit-row-price-note">
+            <?php echo esc_html($price_note); ?>
+        </span>
+    <?php endif; ?>
+</div>
+
+
     </div>
 </a>
 
 <style>
+/* Card moet relative zijn zodat badge kan positioneren */
+.mh-unit-row{
+  position: relative;
+}
+
+/* Aanbod badge rechtsboven – warm contrast met blauw */
+.mh-unit-aanbod-badge{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+
+  background: #FFF4DD;          /* licht amber */
+  color: #7A5200;               /* warme donkere tekst */
+  border: 2px solid #F4B740;    /* goud/amber rand */
+
+  padding: 8px 14px;
+  border-radius: 5px;
+
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1;
+}
+
+
+@media (max-width: 700px){
+  .mh-unit-aanbod-badge{
+    top: 10px;
+    right: 10px;
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+}
+
+
 /* ===== UNIT ITEM (ROW) ===== */
 
 .mh-unit-row{
@@ -232,6 +291,33 @@ if (
   .mh-unit-tax-badge{ font-size: 12px; padding: 5px 9px; }
 }
 
+/* CTA + prijsindicatie */
+.mh-unit-row-cta{
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+
+/* Prijsindicatie tekst */
+.mh-unit-row-price-note{
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px){
+  .mh-unit-row-cta{
+    gap: 12px;
+  }
+
+  .mh-unit-row-price-note{
+    font-size: 13px;
+  }
+}
 
 
 </style>

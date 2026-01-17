@@ -39,6 +39,20 @@ add_action('init', function () {
     'show_admin_column' => true, // handig in overzicht
 ]);
 
+// Aanbod: Koop / Huur / Koop & Huur
+register_taxonomy('mh_unit_aanbod', ['mh_unit'], [
+    'labels' => [
+        'name'          => 'Aanbod',
+        'singular_name' => 'Aanbod',
+    ],
+    'public'            => true,
+    'rewrite'           => ['slug' => 'aanbod'],
+    'hierarchical'      => true,  // tag-achtig
+    'show_in_rest'      => true,
+    'show_admin_column' => true,
+]);
+
+
 });
 
 
