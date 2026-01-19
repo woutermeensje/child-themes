@@ -47,6 +47,59 @@ if (have_posts()) : while (have_posts()) : the_post();
 
 </article>
 
+<footer class="main-footer">
+
+<div class="footer-contact-advisors">
+  <div class="footer-contact-advisors-content">
+    <p>Kom in contact met één van onze adviseurs.</p>
+  </div>
+
+  <div class="footer-contact-advisors-link">
+    <a href="" class="contact-link">Contact opnemen</a>
+  </div>
+  </div>
+</footer>
+
+
+<style>
+
+  .main-footer {
+    background-color: #0456AB;
+    width: 100%;
+  }
+
+  .footer-contact-advisors {
+    background-color: #0456AB;
+    padding: 20px 0;
+    text-align: center;
+    margin: 0 auto;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    justify-content: space-between;
+    gap: 20px;
+    width: 80%;
+  }
+
+.footer-contact-advisors-content p {
+    margin: 0;
+    font-size: 16px;
+    color: #fff;
+    font-family: Balgin Bold; 
+    font-weight: 500;
+  }
+
+  .footer-contact-advisors-link {
+    border: 1px solid #80D424;
+    display: inline-block;
+    border-radius: 5px;
+    background-color: #80D424;
+    font-family: Balgin Bold; 
+    padding: 10px 20px;
+  }
+
+</style>
+
 <style>
 /* ===== SINGLE UNIT LAYOUT ===== */
 
@@ -64,9 +117,10 @@ if (have_posts()) : while (have_posts()) : the_post();
 }
 
 .mh-unit-single-title{
-  font-size: 34px;
+  font-size: 24px;
   line-height: 1.2;
   margin: 0;
+  color: #333; 
 }
 
 /* Top section */
@@ -80,9 +134,9 @@ if (have_posts()) : while (have_posts()) : the_post();
 /* Image */
 .mh-unit-single-image{
   width: 100%;
-  border-radius: 12px;
+  border-radius: 5px;
   overflow: hidden;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   height: 425px; 
 }
 
@@ -99,10 +153,10 @@ if (have_posts()) : while (have_posts()) : the_post();
 
 .mh-unit-sidebar-box{
   border: 1px solid #e5e5e5;
-  border-radius: 12px;
+  border-radius: 5px;
   padding: 24px;
   background: #fff;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.08);
   position: sticky;
   top: 24px;
 }
@@ -124,6 +178,9 @@ if (have_posts()) : while (have_posts()) : the_post();
   max-width: 800px;
   font-size: 16px;
   line-height: 1.7;
+  border: 1px solid #EDEDED;
+  border-radius: 5px;
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 }
 
 .mh-unit-single-content h2,
