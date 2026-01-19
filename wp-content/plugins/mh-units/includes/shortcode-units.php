@@ -3,30 +3,41 @@ if (!defined('ABSPATH')) exit;
 
 add_shortcode('mh_units', function ($atts) {
 
+    // Shortcode defaults (support comma-separated values)
     $atts = shortcode_atts([
-        'per_page' => 12,
-        'type'     => '', // optioneel: vooraf filteren op type slug
-    ], $atts);
+        'per_page'  => 12,
+        'type'      => '', // bv: "kantine" of "kantine,kantoor"
+        'conditie'  => '', // bv: "nieuwstaat" of "goed,gebruikt"
+    ], $atts, 'mh_units');
 
-    // Search
+    // Search (GET heeft altijd prioriteit)
     $search = isset($_GET['mh_search']) ? sanitize_text_field($_GET['mh_search']) : '';
 
-    // Types (multiselect: mh_type[]), fallback: shortcode attribute
+    /**
+     * TYPE (mh_type[])
+     * - Eerst: GET (user interactie)
+     * - Anders: shortcode attribuut (default prefilter)
+     */
     $types_selected = [];
     if (isset($_GET['mh_type'])) {
-        // Kan string of array zijn (afhankelijk van inputname)
         $raw = $_GET['mh_type'];
         $types_selected = is_array($raw) ? $raw : [$raw];
     } elseif (!empty($atts['type'])) {
-        $types_selected = [$atts['type']];
+        $types_selected = array_map('trim', explode(',', $atts['type']));
     }
     $types_selected = array_values(array_filter(array_map('sanitize_title', $types_selected)));
 
-    // Conditie (multiselect: mh_conditie[])
+    /**
+     * CONDITIE (mh_conditie[])
+     * - Eerst: GET (user interactie)
+     * - Anders: shortcode attribuut (default prefilter)
+     */
     $condities_selected = [];
     if (isset($_GET['mh_conditie'])) {
         $raw = $_GET['mh_conditie'];
         $condities_selected = is_array($raw) ? $raw : [$raw];
+    } elseif (!empty($atts['conditie'])) {
+        $condities_selected = array_map('trim', explode(',', $atts['conditie']));
     }
     $condities_selected = array_values(array_filter(array_map('sanitize_title', $condities_selected)));
 
@@ -56,6 +67,7 @@ add_shortcode('mh_units', function ($atts) {
         $tax_query = array_merge([['relation' => 'AND']], $tax_query);
     }
 
+    // Query args
     $query_args = [
         'post_type'      => 'mh_unit',
         'posts_per_page' => (int) $atts['per_page'],

@@ -41,13 +41,13 @@ if (
   <div class="mh-unit-row-tax">
     <?php if (!is_wp_error($terms_type) && !empty($terms_type)): ?>
       <?php foreach ($terms_type as $term): ?>
-        <span class="mh-unit-tax-badge mh-unit-tax-type"><?php echo esc_html($term->name); ?></span>
+        <span class="mh-unit-tax-badge"><?php echo esc_html($term->name); ?></span>
       <?php endforeach; ?>
     <?php endif; ?>
 
     <?php if (!is_wp_error($terms_cond) && !empty($terms_cond)): ?>
       <?php foreach ($terms_cond as $term): ?>
-        <span class="mh-unit-tax-badge mh-unit-tax-conditie"><?php echo esc_html($term->name); ?></span>
+        <span class="mh-unit-tax-badge"><?php echo esc_html($term->name); ?></span>
       <?php endforeach; ?>
     <?php endif; ?>
   </div>
@@ -59,7 +59,7 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
 ?>
 
 <div class="mh-unit-row-cta">
-    <span class="mh-unit-row-btn">Unit bekijken</span>
+    <span class="mh-unit-row-btn">Bekijk aanbod</span>
 
     <?php if ($price_note): ?>
         <span class="mh-unit-row-price-note">
@@ -171,7 +171,7 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
 /* “Knop” styling (span, omdat de hele card al een link is) */
 .mh-unit-row-btn{
   padding: 14px;
-  border-radius: 0px;
+  border-radius: 5px;
             width: 33%; 
     margin-top: 16px;
     background-color: #0456ABFA; 
@@ -258,31 +258,18 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
 .mh-unit-tax-badge{
   display: inline-flex;
   align-items: center;
-  padding: 8px 14px;
-  border-radius: 999px;
+  padding: 6px 12px;
+  border-radius: 5px;
   font-size: 13px;
-  line-height: 1;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   text-decoration: none !important;     /* ❌ geen underline */
   border: 2px solid transparent;
   white-space: nowrap;
-}
-
-/* TYPE UNIT – lichtblauw */
-.mh-unit-tax-type{
   background: #EAF2FF;
   border-color: #C7DBFF;
   color: #0456AB;
 }
-
-/* CONDITIE – donkerder blauw */
-.mh-unit-tax-conditie{
-  background: #DCE9FF;
-  border-color: #9EBEFF;
-  color: #0456AB;
-}
-
 
 
 
@@ -302,11 +289,14 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
 
 /* Prijsindicatie tekst */
 .mh-unit-row-price-note{
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: #555;
-  white-space: nowrap;
+    padding: 14px;
+    margin-top: 16px;
+    color: #333; 
+    font-family: Poppins; 
+    font-size: 15px;
+    font-weight: 400;
+    text-align: center; 
+    text-decoration: none !important; 
 }
 
 @media (max-width: 700px){
