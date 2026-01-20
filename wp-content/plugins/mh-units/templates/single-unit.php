@@ -32,7 +32,7 @@ if (have_posts()) : while (have_posts()) : the_post();
 
                 <a class="mh-btn mh-btn-primary"
                    href="/offerte-aanvragen/?unit=<?php echo esc_attr(get_the_ID()); ?>">
-                    Offerte aanvragen
+                    Informatie aanvragen
                 </a>
             </div>
         </aside>
@@ -54,7 +54,7 @@ if (have_posts()) : while (have_posts()) : the_post();
   </div>
 
   <div class="footer-contact-advisors-link">
-    <a href="" class="contact-link">Contact opnemen</a>
+    <a href="/advies/" class="contact-link">Contact opnemen</a>
   </div>
   </div>
 </footer>
@@ -95,6 +95,7 @@ if (have_posts()) : while (have_posts()) : the_post();
     background-color: #80D424;
     font-family: Balgin Bold; 
     padding: 10px 20px;
+    color: white; 
   }
 
 </style>
@@ -201,6 +202,7 @@ if (have_posts()) : while (have_posts()) : the_post();
   text-decoration: none;
   font-size: 15px;
   font-family: Balgin Bold; 
+  color: white; 
 }
 
 .mh-btn-primary{
