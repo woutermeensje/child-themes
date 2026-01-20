@@ -20,9 +20,9 @@ $types = get_terms([
 <div class="si-opdrachten-filter-wrap">
 
   <div class="si-filter-header">
-    <h1>Doorzoek alle freelance opdrachten</h1>
+    <h1>Doorzoek alle Opdrachten!</h1>
     <p>
-      Of <a href="/opdracht-plaatsen/" class="si-filter-header-link">plaats jouw opdracht</a>
+      Of <a href="/opdracht-plaatsen/" class="si-filter-header-link">gratis plaats jouw opdracht</a>
       op Studentinhuren.nl
     </p>
   </div>

@@ -71,10 +71,6 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
   margin-bottom: 24px;
 }
 
-.si-opd-card:hover{
-  border: 2px solid #DEDEDE; 
-}
-
 /* Hele kaart klikbaar */
 .si-opd-card-link{
   display: block;
@@ -105,15 +101,6 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
   line-height: 1.3;
   margin: 0 0 6px 0;
   color: #111827;
-}
-
-/* Excerpt */
-.si-opd-excerpt{
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  margin: 0 0 12px 0;
-  color: #4B5563;
 }
 
 /* Tags */
@@ -188,21 +175,88 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
    Responsive
    ============================== */
 
+/* ==============================
+   Responsive – Mobile optimalisatie
+   ============================== */
+
+/* Tablet en kleiner */
 @media (max-width: 768px){
-  .si-opd-card-inner{
+.si-opd-card-inner{
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px;
   }
 
+  .si-opd-title{
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .si-opd-excerpt{
+    font-size: 13px;
+    -webkit-line-clamp: 3; /* iets meer context op mobiel */
+  }
+
+  /* Tags compacter */
+  .si-opd-meta{
+    gap: 6px;
+  }
+
+  .si-opd-tag{
+    padding: 6px 10px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
+
+  /* CTA als "row" onder content, voelt geïntegreerd */
   .si-opd-side{
+    display: none; 
+  }
+
+  .si-opd-cta{
     width: 100%;
-    justify-content: flex-end; /* CTA rechts onder */
-    margin-top: 4px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    background: rgba(58, 137, 255, 0.10);
+    color: #3a89ff;
+    font-weight: 600;
+    justify-content: center; /* voelt als actie, zonder button */
+  }
+
+  .si-opd-cta::after{
+    margin-left: 6px;
+  }
+
+  .si-opd-side {
+    margin-top: 0;
   }
 }
 
-@media (max-width: 640px){
-  .si-opd-title{ font-size: 17px; }
+/* Kleinere telefoons */
+@media (max-width: 480px){
+  .si-opd-card{
+    margin-top: 14px;
+    margin-bottom: 14px;
+  }
+
+  .si-opd-card-inner{
+    padding: 14px;
+  }
+
+  .si-opd-title{
+    font-size: 15px;
+  }
+
+  .si-opd-tag{
+    font-size: 11px;
+    padding: 6px 9px;
+  }
+
+    .si-opd-side{
+    display: none; 
+  }
+
 }
 
 

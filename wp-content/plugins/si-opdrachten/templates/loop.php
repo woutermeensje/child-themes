@@ -24,19 +24,25 @@
    ============================== */
 
 .si-opd-grid{
+  display: grid;
+  grid-template-columns: 1fr; /* jouw cards zijn full-width, dus 1 kolom */
+  gap: 18px;
   align-items: stretch;
-  margin: 0 auto; 
-  width: 1050px; 
+
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 0 16px; /* ademruimte op mobiel */
+  box-sizing: border-box;
 }
 
-/* Zorg dat cards netjes dezelfde hoogte mogen pakken */
+/* Cards vullen de rij */
 .si-opd-grid .si-opd-card{
   height: 100%;
+  margin: 0; /* jij geeft margin in card zelf; als je die laat staan, krijg je dubbele spacing */
 }
 
 /* Empty state */
 .si-opd-empty{
-  grid-column: 1 / -1;
   padding: 18px 20px;
   border: 1px dashed #D1D5DB;
   border-radius: 10px;
@@ -50,19 +56,11 @@
    Responsive
    ============================== */
 
-/* Tablet */
-@media (max-width: 1024px){
+@media (max-width: 768px){
   .si-opd-grid{
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 16px;
-  }
-}
-
-/* Mobile */
-@media (max-width: 640px){
-  .si-opd-grid{
-    grid-template-columns: 1fr;
     gap: 14px;
+    padding: 0 12px;
+    width: 100%; 
   }
 }
 
