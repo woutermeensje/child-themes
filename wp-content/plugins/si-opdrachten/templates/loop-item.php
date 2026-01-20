@@ -21,7 +21,7 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
         $content = get_the_content();
         $content = strip_shortcodes($content);
         $content = wp_strip_all_tags($content);
-        $excerpt = wp_trim_words($content, 24, '…');
+        $excerpt = wp_trim_words($content, 16, '…');
       }
 
       if ($excerpt):
@@ -63,17 +63,16 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
 
 .si-opd-card{
   background: #fff;
-  border: 1px solid #E5E7EB;
-  border-radius: 10px;
+  border: 1px solid #DEDEDE; 
+  border-radius: 5px;
   overflow: hidden;
-  transition: box-shadow .25s ease, transform .25s ease;
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   margin-top: 24px;
   margin-bottom: 24px;
 }
 
 .si-opd-card:hover{
-  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
-  transform: translateY(-2px);
+  border: 2px solid #DEDEDE; 
 }
 
 /* Hele kaart klikbaar */
@@ -124,21 +123,20 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
   gap: 8px;
 }
 
+/* Categorie (primair) */
 .si-opd-tag{
   display: inline-block;
-  padding: 4px 10px;
-  font-size: 12px;
+  padding: 8px 10px;
+  font-size: 14px;
   font-family: 'Poppins', sans-serif;
-  border-radius: 999px;
-  background: #EEF2FF;
-  color: #3730A3;
+  font-weight: 700;
+  border-radius: 5px;
+  background: rgba(58, 137, 255, 0.12); /* #3a89ff met zachtere tint */
+  color: #3a89ff;
   white-space: nowrap;
 }
 
-.si-opd-tag--alt{
-  background: #ECFEFF;
-  color: #155E75;
-}
+
 
 /* Rechterzijde */
 .si-opd-side{
@@ -168,6 +166,23 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
 .si-opd-card:hover .si-opd-cta::after{
   transform: translateX(3px);
 }
+
+/* Opdracht preview (excerpt uit content) */
+.si-opd-excerpt{
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 300; 
+  color: #333333;
+  margin: 0 0 10px 0;
+  max-width: 80%; 
+
+  /* Max 2 regels tonen */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 
 /* ==============================
    Responsive

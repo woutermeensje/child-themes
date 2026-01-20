@@ -10,7 +10,7 @@ add_action('init', function () {
         ],
         'public'       => true,
         'has_archive'  => true,
-        'rewrite'      => ['slug' => 'freelance-opdrachten'],
+        'rewrite'      => ['slug' => 'opdrachten'],
         'menu_icon'    => 'dashicons-clipboard',
         // We gebruiken thumbnail als "logo" (uitgelichte afbeelding) – maar we tonen hem klein in de listings.
         'supports'     => ['title', 'editor', 'excerpt', 'thumbnail'],
