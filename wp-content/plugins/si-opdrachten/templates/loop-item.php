@@ -12,9 +12,23 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
       <div class="si-opd-main">
         <h3 class="si-opd-title"><?php the_title(); ?></h3>
 
-        <?php if (has_excerpt()): ?>
-          <p class="si-opd-excerpt"><?php echo esc_html(get_the_excerpt()); ?></p>
-        <?php endif; ?>
+       <?php
+      $excerpt = '';
+
+      if (has_excerpt()) {
+        $excerpt = get_the_excerpt();
+      } else {
+        $content = get_the_content();
+        $content = strip_shortcodes($content);
+        $content = wp_strip_all_tags($content);
+        $excerpt = wp_trim_words($content, 24, '…');
+      }
+
+      if ($excerpt):
+      ?>
+        <p class="si-opd-excerpt"><?php echo esc_html($excerpt); ?></p>
+      <?php endif; ?>
+
 
         <div class="si-opd-meta">
           <?php if (!empty($cats) && !is_wp_error($cats)): ?>
