@@ -27,8 +27,7 @@ if (have_posts()) : while (have_posts()) : the_post();
                 <h3>Interesse in deze unit?</h3>
 
                 <p>
-                    Vraag vrijblijvend een offerte aan of neem contact met ons op
-                    voor beschikbaarheid, levering en transport.
+                    Neem contact op voor een bezichtiging of vrijblijvende offerte. 
                 </p>
 
                 <a class="mh-btn mh-btn-primary"
@@ -78,7 +77,7 @@ if (have_posts()) : while (have_posts()) : the_post();
     justify-content: center;
     justify-content: space-between;
     gap: 20px;
-    width: 80%;
+    width: 50%;
   }
 
 .footer-contact-advisors-content p {
@@ -165,6 +164,7 @@ if (have_posts()) : while (have_posts()) : the_post();
   margin-top: 0;
   margin-bottom: 12px;
   font-size: 20px;
+  font-family: Balgin Bold; 
 }
 
 .mh-unit-sidebar-box p{
@@ -196,10 +196,11 @@ if (have_posts()) : while (have_posts()) : the_post();
 .mh-btn{
   display: inline-block;
   padding: 12px 18px;
-  border-radius: 8px;
+  border-radius: 5px;
   border: 1px solid #ddd;
   text-decoration: none;
   font-size: 15px;
+  font-family: Balgin Bold; 
 }
 
 .mh-btn-primary{
@@ -208,9 +209,7 @@ if (have_posts()) : while (have_posts()) : the_post();
   border-color: #0884CC;
 }
 
-.mh-btn-primary:hover{
-  opacity: .9;
-}
+
 
 /* ===== Responsive ===== */
 
