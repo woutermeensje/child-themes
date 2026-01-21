@@ -12,6 +12,32 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
       <div class="si-opd-main">
         <h3 class="si-opd-title"><?php the_title(); ?></h3>
 
+        <p class="si-opd-date">
+  <?php echo esc_html( get_the_date('j F Y') ); ?>
+</p>
+
+
+<style>
+
+  /* Publicatiedatum */
+.si-opd-date{
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #6B7280;
+  margin: 0 0 10px 0;
+}
+
+
+@media (max-width: 768px){
+  .si-opd-date{
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+}
+
+</style>
+
        <?php
       $excerpt = '';
 

@@ -54,7 +54,7 @@
   margin: 0 auto 28px auto;
   width: 90%;
 
-  border: 1px solid var(--color-bg);
+  border: 1px solid #DEDEDE;
   background-color: var(--color-bg);
   border-radius: 5px;
 
