@@ -7,137 +7,162 @@ do_action( 'job_manager_job_filters_before', $atts );
 
 /**
  * ✅ Selected values come from: $_GET > $_POST > shortcode atts
- * We support both key and filter_key.
+ * Supports both key and filter_key (WPJM uses filter_*).
  */
-
 $selected = [
-    'job_company'   => [],
-    'job_sector'    => [],
-    'job_types'     => [],
-    'certificering' => [],
+  'job_company'   => [],
+  'job_sector'    => [],
+  'job_types'     => [],
+  'certificering' => [],
 ];
 
 $shortcode_atts = shortcode_atts([
-    'job_company'       => '',
-    'job_sector'        => '',
-    'job_listing_type'  => '',
-    'certificering'     => '',
+  'job_company'      => '',
+  'job_sector'       => '',
+  'job_listing_type' => '',
+  'certificering'    => '',
 ], $atts);
 
 // helper: get value from request (supports both key and filter_key)
 if ( ! function_exists( 'sj_get_req_value' ) ) {
-function sj_get_req_value( $key ) {
+  function sj_get_req_value( $key ) {
     $filter_key = 'filter_' . $key;
 
-    if ( ! empty( $_GET[ $key ] ) ) return (array) $_GET[ $key ];
+    if ( ! empty( $_GET[ $key ] ) )        return (array) $_GET[ $key ];
     if ( ! empty( $_GET[ $filter_key ] ) ) return (array) $_GET[ $filter_key ];
 
     if ( ! empty( $_POST[ $filter_key ] ) ) return (array) $_POST[ $filter_key ];
-    if ( ! empty( $_POST[ $key ] ) ) return (array) $_POST[ $key ];
+    if ( ! empty( $_POST[ $key ] ) )        return (array) $_POST[ $key ];
 
     return [];
-}
+  }
 }
 
+// map selected key -> request key (because WPJM uses filter_job_types)
+$req_map = [
+  'job_types' => 'job_types', // we read filter_job_types via helper below by passing "job_types"? nope.
+];
+
+// IMPORTANT: for job_types we must read filter_job_types, not filter_job_types[]? helper reads filter_{key}
+// so for job_types we pass "job_types" and it reads filter_job_types? Actually filter_key becomes filter_job_types if key is "job_types" -> yes.
 foreach ( $selected as $key => &$value ) {
-    $shortcode_key = $key === 'job_types' ? 'job_listing_type' : $key;
+  $shortcode_key = ( $key === 'job_types' ) ? 'job_listing_type' : $key;
 
-    $req = sj_get_req_value( $key );
-    if ( ! empty( $req ) ) {
-        $value = $req;
-    } elseif ( ! empty( $shortcode_atts[ $shortcode_key ] ) ) {
-        $value = array_filter( array_map( 'trim', explode( ',', sanitize_text_field( $shortcode_atts[ $shortcode_key ] ) ) ) );
-    }
+  $req = sj_get_req_value( $key );
+  if ( ! empty( $req ) ) {
+    $value = $req;
+  } elseif ( ! empty( $shortcode_atts[ $shortcode_key ] ) ) {
+    $value = array_filter( array_map( 'trim', explode( ',', sanitize_text_field( $shortcode_atts[ $shortcode_key ] ) ) ) );
+  }
 }
 unset( $value );
+
+// (optional) read keyword/location from WPJM vars if available
+$keywords = isset( $keywords ) ? $keywords : ( $_GET['search_keywords'] ?? '' );
+$location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
 ?>
 
 <form class="job_filters">
-    <?php do_action( 'job_manager_job_filters_start', $atts ); ?>
+  <?php do_action( 'job_manager_job_filters_start', $atts ); ?>
 
-    <div class="filter-header" style="padding: 0 20px 10px 20px;">
-        <h2>Bekijk alle Duurzame Vacatures in ons Netwerk!</h2>
-        <p>Of schrijf je in voor de <a href="https://sustainablejobs.nl/nieuwsbrief/" target="_blank" class="unstyled-newsletter-link" rel="noopener">vacature nieuwsbrief</a>!</p>
+  <div class="filter-header" style="padding: 0 20px 10px 20px;">
+    <h2>Bekijk alle Duurzame Vacatures in ons Netwerk!</h2>
+    <p>Of schrijf je in voor de <a href="https://sustainablejobs.nl/nieuwsbrief/" target="_blank" class="unstyled-newsletter-link" rel="noopener">vacature nieuwsbrief</a>!</p>
+  </div>
+
+  <div class="search-basic">
+    <?php do_action( 'job_manager_job_filters_search_jobs_start', $atts ); ?>
+
+    <div class="search_keywords">
+      <input type="text" name="search_keywords" id="search_keywords"
+             placeholder="Functienaam, sector of onderwerp.."
+             value="<?php echo esc_attr( $keywords ); ?>" />
     </div>
 
-    <div class="search-basic">
-        <?php do_action( 'job_manager_job_filters_search_jobs_start', $atts ); ?>
-
-        <div class="search_keywords">
-            <input type="text" name="search_keywords" id="search_keywords" placeholder="Functienaam, sector of onderwerp.." value="<?php echo esc_attr( $keywords ); ?>" />
-        </div>
-
-        <div class="search_location">
-            <input type="text" name="search_location" id="search_location" placeholder="Stad of plaats" value="<?php echo esc_attr( $location ); ?>" />
-        </div>
-
-        <?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
+    <div class="search_location">
+      <input type="text" name="search_location" id="search_location"
+             placeholder="Stad of plaats"
+             value="<?php echo esc_attr( $location ); ?>" />
     </div>
 
-    <div class="filter-box">
+    <?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
+  </div>
 
-        <!-- Dienstverband (single) -->
-        <div class="job_type">
-            <select name="filter_job_types" id="filter_job_types"
-                    class="js-custom-select job_types"
-                    data-placeholder="Dienstverband"
-                    data-mode="single">
-                <option value=""><?php _e( 'Selecteer dienstverband', 'wp-job-manager' ); ?></option>
-                <?php foreach ( get_job_listing_types() as $type ) : ?>
-                    <option value="<?php echo esc_attr( $type->slug ); ?>" <?php selected( in_array( $type->slug, $selected['job_types'], true ) ); ?>>
-                        <?php echo esc_html( $type->name ); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+  <div class="filter-box">
 
-        <!-- Sector (multi) -->
-        <div class="job_sector">
-            <select name="filter_job_sector[]" id="filter_job_sector"
-                    class="js-custom-select job_sector"
-                    data-placeholder="Sector"
-                    multiple>
-                <?php foreach ( get_terms( [ 'taxonomy' => 'job_sector', 'hide_empty' => true ] ) as $term ) : ?>
-                    <option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( in_array( $term->slug, $selected['job_sector'], true ) ); ?>>
-                        <?php echo esc_html( $term->name ); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
 
-        <!-- Certificering (multi) -->
-        <div class="job_certificering">
-            <select name="filter_certificering[]" id="filter_certificering"
-                    class="js-custom-select job_certificering"
-                    data-placeholder="Certificering"
-                    multiple>
-                <?php foreach ( get_terms( [ 'taxonomy' => 'certificering', 'hide_empty' => true ] ) as $term ) : ?>
-                    <option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( in_array( $term->slug, $selected['certificering'], true ) ); ?>>
-                        <?php echo esc_html( $term->name ); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
 
-        <!-- Organisatie (single) -->
-        <div class="job_company">
-            <select name="filter_job_company" id="filter_job_company"
-                    class="js-custom-select job_company"
-                    data-placeholder="Organisatie"
-                    data-mode="single">
-                <option value=""><?php _e( '💼 Selecteer organisatie', 'wp-job-manager' ); ?></option>
-                <?php foreach ( get_terms( [ 'taxonomy' => 'job_company', 'hide_empty' => true ] ) as $term ) : ?>
-                    <option value="<?php echo esc_attr( $term->slug ); ?>" <?php selected( in_array( $term->slug, $selected['job_company'], true ) ); ?>>
-                        <?php echo esc_html( $term->name ); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
+    <!-- Dienstverband (MULTI) -->
+    <div class="job_type">
+      <select name="filter_job_types[]" id="filter_job_types"
+              class="js-custom-select job_types"
+              data-placeholder="Dienstverband"
+              multiple>
+        <?php foreach ( get_job_listing_types() as $type ) : ?>
+          <option value="<?php echo esc_attr( $type->slug ); ?>"
+            <?php selected( in_array( $type->slug, $selected['job_types'], true ) ); ?>>
+            <?php echo esc_html( $type->name ); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
     </div>
 
-    <!-- Active filters (chips onder de filters) -->
-    <div class="active-filters" id="active-filters" aria-live="polite"></div>
+    <!-- Sector (MULTI) -->
+    <div class="job_sector">
+      <select name="filter_job_sector[]" id="filter_job_sector"
+              class="js-custom-select job_sector"
+              data-placeholder="Sector"
+              multiple>
+        <?php foreach ( get_terms( [ 'taxonomy' => 'job_sector', 'hide_empty' => true ] ) as $term ) : ?>
+          <option value="<?php echo esc_attr( $term->slug ); ?>"
+            <?php selected( in_array( $term->slug, $selected['job_sector'], true ) ); ?>>
+            <?php echo esc_html( $term->name ); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <!-- Certificering (MULTI) -->
+    <div class="job_certificering">
+      <select name="filter_certificering[]" id="filter_certificering"
+              class="js-custom-select job_certificering"
+              data-placeholder="Certificering"
+              multiple>
+        <?php foreach ( get_terms( [ 'taxonomy' => 'certificering', 'hide_empty' => true ] ) as $term ) : ?>
+          <option value="<?php echo esc_attr( $term->slug ); ?>"
+            <?php selected( in_array( $term->slug, $selected['certificering'], true ) ); ?>>
+            <?php echo esc_html( $term->name ); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <!-- Organisatie (MULTI) -->
+    <div class="job_company">
+      <select name="filter_job_company[]" id="filter_job_company"
+              class="js-custom-select job_company"
+              data-placeholder="Organisatie"
+              multiple>
+        <?php foreach ( get_terms( [ 'taxonomy' => 'job_company', 'hide_empty' => true ] ) as $term ) : ?>
+          <option value="<?php echo esc_attr( $term->slug ); ?>"
+            <?php selected( in_array( $term->slug, $selected['job_company'], true ) ); ?>>
+            <?php echo esc_html( $term->name ); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+          <div class="filter-actions">
+        <button type="button" id="reset-filters" class="reset-filters">
+          Reset filters
+        </button>
+      </div>
+
+
+  </div>
+
+  <!-- Active filters (chips onder de filters) -->
+  <div class="active-filters" id="active-filters" aria-live="polite"></div>
 
 </form>
 
@@ -152,7 +177,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (window.job_manager_job_filters && typeof window.job_manager_job_filters.filter_jobs === "function") {
       window.job_manager_job_filters.filter_jobs();
     } else {
-      console.warn("job_manager_job_filters.filter_jobs() niet gevonden.");
       form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
     }
   };
@@ -180,17 +204,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const renderActiveFilters = () => {
     if (!activeFiltersEl) return;
-
     activeFiltersEl.innerHTML = "";
 
-    const selects = document.querySelectorAll("select.js-custom-select");
-    selects.forEach((select) => {
+    document.querySelectorAll("select.js-custom-select").forEach((select) => {
       const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
 
       selectedOptions.forEach((opt) => {
         const chip = document.createElement("span");
         chip.className = "active-filter";
-        chip.innerHTML = `<span class="active-filter-text"></span><button type="button" class="active-filter-x" aria-label="Verwijder filter">×</button>`;
+        chip.innerHTML = `
+          <span class="active-filter-text"></span>
+          <button type="button" class="active-filter-x" aria-label="Verwijder filter">×</button>
+        `;
         chip.querySelector(".active-filter-text").textContent = opt.textContent;
 
         chip.querySelector(".active-filter-x").addEventListener("click", (e) => {
@@ -208,9 +233,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const buildSelect = (select) => {
     const isMultiple = select.multiple === true;
-    const forceMode = select.dataset.mode;
-    const isSingle = forceMode === "single" ? true : !isMultiple;
-
     const placeholder = select.dataset.placeholder || "Selecteer";
 
     const wrap = document.createElement("div");
@@ -222,10 +244,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const root = document.createElement("div");
     root.className = "sj-select";
-    root.dataset.type = isSingle ? "single" : "multi";
+    root.dataset.type = isMultiple ? "multi" : "single";
 
-    // NOTE: do NOT nest a <button> inside a <button> (invalid HTML).
-    // We use a div with role="button" as the clickable control.
+    // Use a div as control (no nested button)
     const btn = document.createElement("div");
     btn.className = "sj-select-btn";
     btn.setAttribute("role", "button");
@@ -253,9 +274,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const list = document.createElement("div");
     list.className = "sj-options";
     list.setAttribute("role", "listbox");
-    if (!isSingle) list.setAttribute("aria-multiselectable", "true");
+    list.setAttribute("aria-multiselectable", "true");
 
-    const makeOptionRow = (opt) => {
+    const optionRows = [];
+
+    [...select.options].forEach((opt) => {
+      if (!opt.value) return; // no empty option
+
       const row = document.createElement("div");
       row.className = "sj-option";
       row.dataset.value = opt.value;
@@ -265,72 +290,39 @@ document.addEventListener("DOMContentLoaded", () => {
       row.innerHTML = `<span class="sj-option-text"></span>`;
       row.querySelector(".sj-option-text").textContent = opt.textContent;
 
-      const syncSelected = () => {
+      const sync = () => {
         row.classList.toggle("is-selected", opt.selected);
         row.setAttribute("aria-selected", opt.selected ? "true" : "false");
       };
 
-      syncSelected();
+      sync();
 
       row.addEventListener("click", (e) => {
         e.preventDefault();
         if (opt.disabled) return;
-
-        if (isSingle) {
-          [...select.options].forEach(o => o.selected = false);
-          opt.selected = true;
-          closeAll();
-          root.classList.remove("active");
-        } else {
-          opt.selected = !opt.selected;
-        }
+        opt.selected = !opt.selected;
 
         renderState();
         select.dispatchEvent(new Event("change", { bubbles: true }));
       });
 
-      return { row, syncSelected };
-    };
-
-    const optionRows = [];
-    [...select.options].forEach((opt) => {
-      if (isSingle && opt.value === "") return; // hide empty option in dropdown for single selects
-      const { row, syncSelected } = makeOptionRow(opt);
-      optionRows.push({ opt, row, syncSelected });
+      optionRows.push({ opt, row, sync });
       list.appendChild(row);
     });
 
-    const tagsEl = btn.querySelector(".sj-tags");
     const placeholderEl = btn.querySelector(".sj-placeholder");
 
     const renderState = () => {
-      optionRows.forEach(({ opt, syncSelected }) => syncSelected());
-
+      optionRows.forEach(({ sync }) => sync());
       const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
-      tagsEl.innerHTML = "";
 
       if (selectedOptions.length === 0) {
         placeholderEl.textContent = placeholder;
-        placeholderEl.style.display = "inline";
-        tagsEl.style.display = "none";
         clearBtn.style.display = "none";
-        return;
+      } else {
+        placeholderEl.textContent = placeholder; // no chips in button
+        clearBtn.style.display = "inline-flex";
       }
-
-      clearBtn.style.display = "inline-flex";
-
-      if (isSingle) {
-        placeholderEl.textContent = selectedOptions[0].textContent;
-        placeholderEl.style.display = "inline";
-        tagsEl.style.display = "none";
-        return;
-      }
-
-      // MULTI: no chips inside the button (chips are rendered below)
-      placeholderEl.textContent = placeholder;
-      placeholderEl.style.display = "inline";
-      tagsEl.style.display = "none";
-      tagsEl.innerHTML = "";
     };
 
     renderState();
@@ -361,7 +353,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.querySelectorAll("select.js-custom-select").forEach(buildSelect);
 
-  // initial render
   renderActiveFilters();
 
   document.addEventListener("click", (e) => {
@@ -372,7 +363,36 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeAll();
   });
 });
+
+
+const resetBtn = document.getElementById("reset-filters");
+
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+
+    // 1. Leeg zoekvelden
+    document.querySelectorAll(
+      'input[name="search_keywords"], input[name="search_location"]'
+    ).forEach(input => input.value = "");
+
+    // 2. Leeg alle selects
+    document.querySelectorAll("select.js-custom-select").forEach(select => {
+      [...select.options].forEach(opt => opt.selected = false);
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+
+    // 3. Sluit open dropdowns
+    document.querySelectorAll(".sj-select.active").forEach(el => {
+      el.classList.remove("active");
+    });
+
+    // 4. Forceer WPJM refresh
+    wpjmFilter();
+  });
+}
+
 </script>
+
 
 <style>
 /* =========================
@@ -386,6 +406,7 @@ document.addEventListener("DOMContentLoaded", () => {
   border: 1px solid #DEDEDE;
   box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
   border-radius: 5px; 
+  
 }
 
 .filter-box {
@@ -528,9 +549,10 @@ select.sj-hidden-select {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-radius: 6px;
-  border: 1px solid #E0E0E0 !important;
+  border-radius: 999px;
+  border: 1px solid #dedede !important;
   background-color: white !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   padding: 12px 12px;
   min-height: 44px;
   cursor: pointer;
@@ -554,7 +576,7 @@ select.sj-hidden-select {
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: 'Poppins', sans-serif;
-  font-weight: 400;
+  font-weight: 700;
   color: #333333;
   font-size: 15px;
 }
@@ -645,10 +667,15 @@ select.sj-hidden-select {
   align-items: center;
   gap: 6px;
   background: #ffffff;
-  border: 1px solid #d7e6ff;
+  border: 1px solid rgba(0,0,0,0.12);
   border-radius: 999px;
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   padding: 8px 12px;
-  font-size: 14px;
+  font-size: 16px;
+  color: #111;
+  font-weight: 700 !important;
+  cursor: pointer;
+
 }
 
 .active-filter-text { color: #333333; }
@@ -656,15 +683,48 @@ select.sj-hidden-select {
 .active-filter-x {
   border: none;
   background: none;
-  cursor: pointer;
-  color: #d0002d;
+  cursor: move;
+  color: #0A6B8D;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 900;
   margin-left: 6px;
   line-height: 1;
   padding: 0;
 }
 
-.active-filter:hover { border-color: #0a6b8d; }
+.active-filter-x:hover { 
+  border-color: #0a6b8d; 
+  background-color: #0A6B8D;
+  font-weight: 700;
+  padding: 0 4px;
+}
+
+
+  .filter-actions{
+
+  display: flex;
+  
+}
+
+.reset-filters{
+  border: none; 
+  background-color: none; 
+  color: #0A6B8D;
+  border-radius: 6px;
+  padding: 8px 14px;
+  font-size: 14px;
+  font-family: Poppins, sans-serif;
+  font-weight: 400;
+  cursor: pointer;
+  transition: all .2s ease;
+}
+
+.reset-filters:hover{
+  background-color: #E0D0E1; 
+  color: #0A6B8D;  
+  border-radius: 999px;
+  border: 1px solid #0A6B8D;
+}
+
 
 </style>

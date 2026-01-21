@@ -1,47 +1,47 @@
 <li class="job-listing-simple" <?php job_listing_class(); ?>>
 
-    <a class="job-card-link"
-       href="<?php the_job_permalink(); ?>"
-       aria-label="<?php echo esc_attr( wpjm_get_the_job_title() ); ?>">
-    </a>
+  <a class="job-card-link"
+     href="<?php the_job_permalink(); ?>"
+     aria-label="<?php echo esc_attr( wpjm_get_the_job_title() ); ?>">
+  </a>
 
-    <div class="job-logo">
-        <?php the_company_logo(); ?>
+  <div class="job-logo">
+    <?php the_company_logo(); ?>
+  </div>
+
+  <div class="job-details">
+    <div class="job-title-line">
+      <h2 class="job-title">
+        <?php wpjm_the_job_title(); ?>
+      </h2>
+      <span class="job-date"><?php echo get_the_date('d-m-Y'); ?></span>
     </div>
 
-    <div class="job-details">
-        <div class="job-title-line">
-            <h2 class="job-title">
-                <a href="<?php the_job_permalink(); ?>"><?php wpjm_the_job_title(); ?></a>
-            </h2>
-            <span class="job-date"><?php echo get_the_date('d-m-Y'); ?></span>
-        </div>
-
-        <div class="job-meta">
-            <?php
-            $terms = wp_get_post_terms(get_the_ID(), 'job_company');
-            if (!empty($terms) && !is_wp_error($terms)) {
-                foreach ($terms as $term) {
-                    echo '<a style="text-decoration: none;" class="company-name" href="' . esc_url(home_url('/vacatures/' . sanitize_title($term->name))) . '">' . esc_html($term->name) . '</a>';
-                }
-            }
-            ?>
-            <span class="job-location"><?php the_job_location(); ?></span>
-            <span class="job-type">
-                <?php if (get_option('job_manager_enable_types')) wpjm_the_job_types(); ?>
-            </span>
-        </div>
-
-        <div class="job-description">
-            <?php echo wp_trim_words(get_the_excerpt(), 12, '...'); ?>
-        </div>
+    <div class="job-meta">
+      <?php
+      $terms = wp_get_post_terms(get_the_ID(), 'job_company');
+      if (!empty($terms) && !is_wp_error($terms)) {
+        foreach ($terms as $term) {
+          echo '<a class="company-name" href="' . esc_url(home_url('/vacatures/' . sanitize_title($term->name))) . '">' . esc_html($term->name) . '</a>';
+        }
+      }
+      ?>
+      <span class="job-location"><?php the_job_location(); ?></span>
+      <span class="job-type">
+        <?php if (get_option('job_manager_enable_types')) wpjm_the_job_types(); ?>
+      </span>
     </div>
+
+    <div class="job-description">
+      <?php echo wp_trim_words(get_the_excerpt(), 12, '...'); ?>
+    </div>
+  </div>
+
 </li>
 
 <style>
-
-    /* ===============================
-   Job listing card (klikbaar blok)
+  /* ===============================
+   Job listing card (hele blok klikbaar)
    =============================== */
 
 .job-listing-simple{
@@ -68,32 +68,44 @@
   transform: translateY(-1px);
 }
 
-/* Keyboard focus: als overlay-link focus krijgt, highlight hele card */
-.job-listing-simple:has(.job-card-link:focus){
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(8,132,204,0.18), 0 10px 40px -5px rgba(0,0,0,0.15);
-}
-
-/* De klik-overlay (maakt hele blok klikbaar) */
+/* ✅ Overlay link bovenop: vangt clicks op de kaart */
 .job-listing-simple .job-card-link{
   position: absolute;
   inset: 0;
-  z-index: 1;
+  z-index: 5;
   border-radius: 5px;
+  display: block;
   text-decoration: none;
 }
 
-/* Focus zichtbaar (toetsenbord) */
+/* ✅ Keyboard focus zichtbaar + highlight card */
 .job-listing-simple .job-card-link:focus{
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
 }
 
-/* Zorg dat echte content boven overlay zit (links blijven klikbaar) */
+.job-listing-simple:focus-within{
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(8,132,204,0.18), 0 10px 40px -5px rgba(0,0,0,0.15);
+}
+
+/* ✅ Content containers: clicks doorlaten naar overlay */
 .job-listing-simple .job-logo,
 .job-listing-simple .job-details{
   position: relative;
   z-index: 2;
+  pointer-events: none;
+}
+
+/* ✅ Echte interactieve elementen blijven klikbaar */
+.job-listing-simple a:not(.job-card-link),
+.job-listing-simple button,
+.job-listing-simple input,
+.job-listing-simple select,
+.job-listing-simple textarea{
+  pointer-events: auto;
+  position: relative;
+  z-index: 6;
 }
 
 /* ===============================
@@ -141,6 +153,7 @@
   flex-direction: column;
   gap: 8px;
   min-width: 0; /* voorkomt overflow bij lange titels */
+  margin-top: 12px; 
 }
 
 /* Titel + datum */
@@ -150,7 +163,9 @@
   align-items: center;
   gap: 10px;
   margin-right: 10px;
+  font-family: 'Inter', sans-serif;
 }
+
 
 .job-title{
   font-size: 20px;
@@ -158,14 +173,16 @@
   color: var(--color-text);
   margin: 0;
   min-width: 0;
+  font-family: 'Inter', sans-serif;
 }
 
+/* Als je titel nog een <a> heeft, blijft die klikbaar door de override hierboven */
 .job-title a{
   color: var(--color-text);
   text-decoration: none;
   transition: color .2s ease-in-out;
 
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', sans-serif !important;
   font-weight: 700;
 
   display: inline-block;
@@ -173,6 +190,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-family: 'Inter', sans-serif;
 }
 
 .job-title a:hover{
@@ -248,7 +266,7 @@ a.google_map_link:hover{
   padding: 5px 10px;
 }
 
-/* Locatie (komt uit the_job_location; vaak geen <a>, dus stijl als pill) */
+/* Locatie */
 .job-location{
   font-family: Poppins, sans-serif;
   font-weight: 700;
