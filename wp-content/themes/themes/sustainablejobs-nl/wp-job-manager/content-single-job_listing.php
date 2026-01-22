@@ -118,7 +118,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 }
 
 .top-section-link{
-    color: var(--color-bg) !important;
+    color: white !important; 
     border: 1px solid var(--color-tertiary);
     background: var(--color-tertiary);
     font-family: Balgin-Bold;

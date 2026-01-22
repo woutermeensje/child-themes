@@ -47,7 +47,7 @@ add_action('wp_footer', function () {
     ?>
     <div id="sj-feedback-root" class="fpsj" aria-live="polite">
         <button id="sj-feedback-btn" class="fpsj__btn" type="button" aria-expanded="false" aria-controls="sj-feedback-panel">
-            Stel je vraag<br>of geef feedback!
+            Stel je vraag!
         </button>
 
         <div id="sj-feedback-panel" class="fpsj__panel" hidden>
