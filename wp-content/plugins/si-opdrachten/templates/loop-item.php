@@ -47,7 +47,7 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
         $content = get_the_content();
         $content = strip_shortcodes($content);
         $content = wp_strip_all_tags($content);
-        $excerpt = wp_trim_words($content, 16, '…');
+        $excerpt = wp_trim_words($content, 10, '…');
       }
 
       if ($excerpt):
@@ -136,18 +136,40 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
   gap: 8px;
 }
 
-/* Categorie (primair) */
-.si-opd-tag{
+/* Basis tag styling (vorm/typografie) */
+.si-opd-meta .si-opd-tag{
   display: inline-block;
-  padding: 8px 10px;
-  font-size: 14px;
+  padding: 4px 8px;
+  font-size: 13px;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   border-radius: 5px;
-  background: rgba(58, 137, 255, 0.12); /* #3a89ff met zachtere tint */
-  color: #3a89ff;
   white-space: nowrap;
+
+  border: 1px solid transparent;
 }
+
+/* 1) Blauw */
+.si-opd-meta .si-opd-tag:nth-child(3n+1){
+  color: #3A89FF;
+  border-color: #3A89FF;
+  background: rgba(58, 137, 255, 0.14);
+}
+
+/* 2) Paars */
+.si-opd-meta .si-opd-tag:nth-child(3n+2){
+  color: #7C5CFA;
+  border-color: #7C5CFA;
+  background: rgba(124, 92, 250, 0.14);
+}
+
+/* 3) Roze */
+.si-opd-meta .si-opd-tag:nth-child(3n+3){
+  color: #F472B6;
+  border-color: #F472B6;
+  background: rgba(244, 114, 182, 0.14);
+}
+
 
 
 
@@ -224,16 +246,14 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
     -webkit-line-clamp: 3; /* iets meer context op mobiel */
   }
 
-  /* Tags compacter */
-  .si-opd-meta{
-    gap: 6px;
-  }
 
-  .si-opd-tag{
-    padding: 6px 10px;
+  .si-opd-meta .si-opd-tag{
     font-size: 12px;
+    padding: 6px 10px;
     border-radius: 6px;
   }
+
+
 
   /* CTA als "row" onder content, voelt geïntegreerd */
   .si-opd-side{

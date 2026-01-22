@@ -41,11 +41,47 @@ while (have_posts()) : the_post();
       <?php the_content(); ?>
     </div>
 
-  </div>
-</div>
 
-<?php
-endwhile;
+
+  </div>
+
+        <?php
+    $first = get_post_meta(get_the_ID(), '_si_contact_first_name', true);
+    $last  = get_post_meta(get_the_ID(), '_si_contact_last_name', true);
+    $email = get_post_meta(get_the_ID(), '_si_contact_email', true);
+
+    $has_contact = ($first || $last || $email);
+    ?>
+
+    <?php if ($has_contact): ?>
+      <section class="si-opd-contact-block">
+        <h2>Contactgegevens Opdrachtever</h2>
+
+        <div class="si-opd-contact-grid">
+          <?php if ($first || $last): ?>
+            <div class="si-opd-contact-item">
+              <span class="si-opd-contact-label">Contactpersoon</span>
+              <span class="si-opd-contact-value">
+                <?php echo esc_html(trim($first . ' ' . $last)); ?>
+              </span>
+            </div>
+          <?php endif; ?>
+
+          <?php if ($email): ?>
+            <div class="si-opd-contact-item">
+              <span class="si-opd-contact-label">E-mail</span>
+              <a class="si-opd-contact-value si-opd-contact-link" href="mailto:<?php echo esc_attr($email); ?>">
+                <?php echo esc_html($email); ?>
+              </a>
+            </div>
+          <?php endif; ?>
+        </div>
+      </section>
+    <?php endif; ?>
+    </div>
+
+    <?php
+    endwhile;
 
 get_footer();
 
@@ -97,30 +133,53 @@ get_footer();
   color: #111827;
 }
 
-/* Tags */
+/* Meta wrappers (listing + single) */
+.si-opd-meta,
 .si-opd-single-meta{
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 6px;
 }
 
-/* Hergebruik tags (zelfde als listing) */
-.si-opd-tag{
+/* Basis tag styling */
+.si-opd-meta .si-opd-tag,
+.si-opd-single-meta .si-opd-tag{
   display: inline-block;
-  padding: 4px 10px;
+  padding: 8px 10px;
   font-size: 12px;
   font-family: 'Poppins', sans-serif;
-  border-radius: 999px;
-  background: #EEF2FF;
-  color: #3730A3;
+  font-weight: 700;
+  border-radius: 5px;
   white-space: nowrap;
+
+  border: 1px solid transparent;
+  background-clip: padding-box; /* voorkomt witte rand */
 }
 
-.si-opd-tag--alt{
-  background: #ECFEFF;
-  color: #155E75;
+/* 1) Blauw */
+.si-opd-meta .si-opd-tag:nth-child(3n+1),
+.si-opd-single-meta .si-opd-tag:nth-child(3n+1){
+  color: #3A89FF;
+  border-color: #3A89FF;
+  background: rgba(58, 137, 255, 0.14);
 }
+
+/* 2) Paars */
+.si-opd-meta .si-opd-tag:nth-child(3n+2),
+.si-opd-single-meta .si-opd-tag:nth-child(3n+2){
+  color: #7C5CFA;
+  border-color: #7C5CFA;
+  background: rgba(124, 92, 250, 0.14);
+}
+
+/* 3) Roze */
+.si-opd-meta .si-opd-tag:nth-child(3n+3),
+.si-opd-single-meta .si-opd-tag:nth-child(3n+3){
+  color: #F472B6;
+  border-color: #F472B6;
+  background: rgba(244, 114, 182, 0.14);
+}
+
 
 /* Content */
 .si-opd-single-content{
@@ -213,3 +272,65 @@ get_footer();
 
 </style>
    
+
+<style>
+/* Contactblok */
+.si-opd-contact-block{
+  margin-top: 20px;
+  padding: 20px 22px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.si-opd-contact-block h2{
+  font-family: 'Poppins', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 12px 0;
+  color: #111827;
+}
+
+.si-opd-contact-grid{
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 18px;
+}
+
+.si-opd-contact-item{
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.si-opd-contact-label{
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  color: #333;
+  font-weight: 300; 
+}
+
+.si-opd-contact-value{
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+}
+
+.si-opd-contact-link{
+  text-decoration: none;
+  color: #7C5CFA !important;
+}
+
+.si-opd-contact-link:hover{
+  text-decoration: underline;
+}
+
+/* Mobiel */
+@media (max-width: 768px){
+  .si-opd-contact-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
+</style>

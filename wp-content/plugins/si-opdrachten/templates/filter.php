@@ -19,13 +19,23 @@ $types = get_terms([
 
 <div class="si-opdrachten-filter-wrap">
 
-  <div class="si-filter-header">
-    <h1>Doorzoek alle Opdrachten!</h1>
-    <p>
-      Of <a href="/opdracht-plaatsen/" class="si-filter-header-link"> plaats jouw opdracht gratis</a>
-      op Studentinhuren.nl
-    </p>
+<div class="si-filter-header">
+
+  <div class="si-filter-header-top">
+    <div class="si-filter-header-text">
+      <h1>Doorzoek alle Opdrachten!</h1>
+      <p>
+        Of <a href="/opdracht-plaatsen/" class="si-filter-header-link">plaats jouw opdracht gratis</a> op Studentinhuren.nl
+      </p>
+    </div>
+
+    <a class="si-filter-header-btn" href="/opdracht-plaatsen/">
+      Gratis opdracht plaatsen
+    </a>
   </div>
+
+</div>
+
 
   <form class="si-opdrachten-filter" method="get">
 
@@ -489,4 +499,65 @@ $types = get_terms([
 })();
 </script>
 
+
+
+  <style>
+
+  /* Header layout: tekst links, knop rechts */
+.si-filter-header-top{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.si-filter-header-text{
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Opvallende knop naast blauw */
+.si-filter-header-btn{
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 5px;
+  background: rgba(124, 92, 250, 0.12); /* lichte variant van #7C5CFA */
+  color: #7C5CFA !important; /* donkergrijs i.p.v. wit */
+  border: 1px solid #7C5CFA;
+  text-decoration: none !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.14);
+  transition: transform .15s ease, filter .15s ease;
+}
+
+.si-filter-header-btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(0.95);
+}
+
+.si-filter-header-btn:active{
+  transform: translateY(0);
+}
+
+/* Mobiel: knop onder de tekst, full width */
+@media (max-width: 768px){
+  .si-filter-header-top{
+    flex-direction: column;
+    align-items: stretch;
+    margin-top: 16px; 
+    margin-bottom: 16px; 
+  }
+
+  .si-filter-header-btn{
+    width: 100%;
+  }
+}
+
+  </style>
 

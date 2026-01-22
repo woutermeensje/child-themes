@@ -13,6 +13,8 @@ define('SI_OPD_URL', plugin_dir_url(__FILE__));
 require_once SI_OPD_PATH . 'includes/cpt-opdracht.php';
 require_once SI_OPD_PATH . 'includes/template-loader.php';
 require_once SI_OPD_PATH . 'includes/shortcode-opdrachten.php';
+require_once SI_OPD_PATH . 'includes/admin-contact-meta.php';
+
 
 add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('si-opdrachten', SI_OPD_URL . 'assets/css/opdrachten.css', [], '0.1.0');
