@@ -17,7 +17,60 @@ $types = get_terms([
 ]);
 ?>
 
+<div class="summary-website">
+  <div>
+    <p class="summary-text">
+      Hét platform voor het vinden van een studenten, flexwerker of freelancer!
+    </p>
+  </div>
+  <div>
+     <a class="si-filter-header-btn" href="/opdracht-plaatsen/">
+      Gratis opdracht plaatsen
+    </a>
+  </div>
+</div>
+
+<style>
+ .summary-website {
+  max-width: 1050px;
+  margin: 20px auto;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
+  border-radius: 5px; 
+  gap: 20px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center; /* centreert items verticaal */
+}
+
+/* Beide kolommen netjes centreren */
+.summary-website > div{
+  display: flex;
+  align-items: center;
+}
+
+/* Linkerkant mag ruimte pakken */
+.summary-website > div:first-child{
+  flex: 1 1 auto;
+}
+
+.summary-text {
+  font-family: Balgin Bold; 
+  font-size: 18px; 
+  font-weight: 700; 
+  color: #333;
+  margin: 0;              /* 🔥 DIT is de sleutel */
+  line-height: 1.3;       /* optioneel: iets strakker */
+}
+
+
+</style>
+
 <div class="si-opdrachten-filter-wrap">
+  
 
 <div class="si-filter-header">
 
@@ -29,9 +82,7 @@ $types = get_terms([
       </p>
     </div>
 
-    <a class="si-filter-header-btn" href="/opdracht-plaatsen/">
-      Gratis opdracht plaatsen
-    </a>
+   
   </div>
 
 </div>
@@ -529,7 +580,7 @@ $types = get_terms([
   border: 1px solid #7C5CFA;
   text-decoration: none !important;
   font-family: 'Poppins', sans-serif;
-  font-weight: 700;
+  font-weight: 700  !important;
   font-size: 14px;
   line-height: 1;
   box-shadow: 0 10px 24px rgba(0,0,0,0.14);
