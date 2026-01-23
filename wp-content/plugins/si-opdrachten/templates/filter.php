@@ -1,98 +1,57 @@
 <?php if (!defined('ABSPATH')) exit;
 
 // fallback als deze variabelen niet zijn meegegeven vanuit shortcode/template
-$search = isset($search) ? $search : '';
-$categorie_selected = isset($categorie_selected) && is_array($categorie_selected) ? $categorie_selected : [];
-$type_selected      = isset($type_selected) && is_array($type_selected) ? $type_selected : [];
+$search         = isset($search) ? $search : '';
+$cats_selected  = isset($cats_selected) && is_array($cats_selected) ? $cats_selected : [];
+$types_selected = isset($types_selected) && is_array($types_selected) ? $types_selected : [];
 
 // Terms ophalen
 $categorieen = get_terms([
-    'taxonomy'   => 'si_opdracht_categorie',
-    'hide_empty' => false,
+  'taxonomy'   => 'si_opdracht_categorie',
+  'hide_empty' => false,
 ]);
 
 $types = get_terms([
-    'taxonomy'   => 'si_opdracht_type',
-    'hide_empty' => false,
+  'taxonomy'   => 'si_opdracht_type',
+  'hide_empty' => false,
 ]);
 ?>
 
+
+
+<!-- SUMMARY BLOK (boven de filter) -->
 <div class="summary-website">
-  <div>
+  <div class="summary-left">
     <p class="summary-text">
-      Hét platform voor het vinden van een studenten, flexwerker of freelancer!
+      Hét platform voor het vinden van een student, flexwerker of freelancer!
     </p>
   </div>
-  <div>
-     <a class="si-filter-header-btn" href="/opdracht-plaatsen/">
+  <div class="summary-right">
+    <a class="si-filter-header-btn" href="/opdracht-plaatsen/">
       Gratis opdracht plaatsen
     </a>
   </div>
 </div>
 
-<style>
- .summary-website {
-  max-width: 1050px;
-  margin: 20px auto;
-  padding: 24px;
-  background: #fff;
-  border: 1px solid #E0E0E0;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
-  border-radius: 5px; 
-  gap: 20px;
-
-  display: flex;
-  justify-content: space-between;
-  align-items: center; /* centreert items verticaal */
-}
-
-/* Beide kolommen netjes centreren */
-.summary-website > div{
-  display: flex;
-  align-items: center;
-}
-
-/* Linkerkant mag ruimte pakken */
-.summary-website > div:first-child{
-  flex: 1 1 auto;
-}
-
-.summary-text {
-  font-family: Balgin Bold; 
-  font-size: 18px; 
-  font-weight: 700; 
-  color: #333;
-  margin: 0;              /* 🔥 DIT is de sleutel */
-  line-height: 1.3;       /* optioneel: iets strakker */
-}
-
-
-</style>
-
+<!-- FILTER BLOK -->
 <div class="si-opdrachten-filter-wrap">
-  
 
-<div class="si-filter-header">
-
-  <div class="si-filter-header-top">
-    <div class="si-filter-header-text">
-      <h1>Doorzoek alle Opdrachten!</h1>
-      <p>
-        Of <a href="/opdracht-plaatsen/" class="si-filter-header-link">plaats jouw opdracht gratis</a> op Studentinhuren.nl
-      </p>
+  <div class="si-filter-header">
+    <div class="si-filter-header-top">
+      <div class="si-filter-header-text">
+        <h1>Doorzoek alle opdrachten</h1>
+        <p>
+          Of <a href="/updates-ontvangen/" class="si-filter-header-link">schrijf je in</a> en ontvang de laatste opdrachten!
+        </p>
+      </div>
     </div>
-
-   
   </div>
-
-</div>
-
 
   <form class="si-opdrachten-filter" method="get">
 
     <div class="si-filter-top-row">
 
-      <!-- Zoek (50%) -->
+      <!-- Zoek -->
       <div class="si-filter-item si-filter-search">
         <label for="si_search">Zoek</label>
         <input
@@ -123,7 +82,7 @@ $types = get_terms([
                     <input
                       type="checkbox"
                       value="<?php echo esc_attr($cat->slug); ?>"
-                      <?php checked(in_array($cat->slug, $categorie_selected, true)); ?>
+                      <?php checked(in_array($cat->slug, $cats_selected, true)); ?>
                     >
                     <span><?php echo esc_html($cat->name); ?></span>
                   </label>
@@ -157,7 +116,7 @@ $types = get_terms([
                     <input
                       type="checkbox"
                       value="<?php echo esc_attr($t->slug); ?>"
-                      <?php checked(in_array($t->slug, $type_selected, true)); ?>
+                      <?php checked(in_array($t->slug, $types_selected, true)); ?>
                     >
                     <span><?php echo esc_html($t->name); ?></span>
                   </label>
@@ -183,7 +142,85 @@ $types = get_terms([
 </div>
 
 
-<style>/* ✅ Container zoals blok */
+<style>
+/* ==============================
+   SUMMARY BLOK
+   ============================== */
+.summary-website{
+  max-width: 1050px;
+  margin: 20px auto;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.summary-left,
+.summary-right{
+  display: flex;
+  align-items: center;
+}
+
+.summary-left{
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.summary-text{
+  font-family: Balgin Bold;
+  font-size: 18px;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  line-height: 1.3;
+}
+
+/* CTA knop (paars) */
+.si-filter-header-btn{
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 5px;
+  background: rgba(124, 92, 250, 0.12);
+  color: #7C5CFA !important;
+  border: 1px solid #7C5CFA;
+  text-decoration: none !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700 !important;
+  font-size: 14px;
+  line-height: 1;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.14);
+  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+}
+
+.si-filter-header-btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(0.98);
+  box-shadow: 0 12px 28px rgba(124, 92, 250, 0.18);
+}
+
+/* mobile summary */
+@media (max-width: 768px){
+  .summary-website{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .si-filter-header-btn{
+    width: 100%;
+  }
+}
+
+/* ==============================
+   FILTER WRAP
+   ============================== */
 .si-opdrachten-filter-wrap{
   max-width: 1050px;
   margin: 20px auto;
@@ -191,6 +228,8 @@ $types = get_terms([
   background: #fff;
   border: 1px solid #E0E0E0;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
+  border-radius: 5px;
+  box-sizing: border-box;
 }
 
 /* Header */
@@ -216,7 +255,7 @@ $types = get_terms([
   font-weight: 400;
 }
 
-/* ✅ Nieuwe top row: 50% / 25% / 25% */
+/* Layout: 50/25/25 */
 .si-filter-top-row{
   display: flex;
   gap: 20px;
@@ -232,7 +271,7 @@ $types = get_terms([
   color: #333;
 }
 
-/* Kolombreedtes */
+/* widths */
 .si-filter-search{
   flex: 0 0 calc(50% - 10px);
   min-width: 320px;
@@ -243,7 +282,7 @@ $types = get_terms([
   min-width: 220px;
 }
 
-/* Zoek input */
+/* Text input */
 .si-filter-item input[type="text"]{
   width: 100%;
   padding: 12px 14px;
@@ -252,19 +291,20 @@ $types = get_terms([
   border-radius: 6px;
   background: #fff;
   color: #333;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
 }
 
-/* Focus */
 .si-filter-item input:focus{
   outline: none;
-  border-color: #0a6b8d;
-  box-shadow: 0 2px 8px rgba(10, 107, 141, 0.25);
+  border-color: #7C5CFA;
+  box-shadow: 0 2px 8px rgba(124, 92, 250, 0.25);
 }
 
-/* ===== Custom multiselect ===== */
+/* ==============================
+   Custom multi-select
+   ============================== */
 .si-multi{
   position: relative;
   width: 100%;
@@ -295,7 +335,7 @@ $types = get_terms([
 }
 
 .si-multi-tags{ display:none; }
-.si-multi-caret{ opacity:.7; }
+.si-multi-caret{ opacity: .7; }
 
 .si-multi-panel{
   display: none;
@@ -311,9 +351,7 @@ $types = get_terms([
   padding: 10px;
 }
 
-.si-multi.is-open .si-multi-panel{
-  display: block;
-}
+.si-multi.is-open .si-multi-panel{ display:block; }
 
 .si-multi-options{
   max-height: 240px;
@@ -332,50 +370,9 @@ $types = get_terms([
   position: relative;
 }
 
-.si-multi-option:hover{
-  background: #f6f7f9;
-}
+.si-multi-option:hover{ background: #f6f7f9; }
 
-.si-multi-option input{
-  width: 16px;
-  height: 16px;
-}
-
-/* Reset onder filters */
-.si-filter-reset-row{
-  margin-top: 16px;
-}
-
-.si-reset-link{
-  font-family: 'Poppins', sans-serif;
-  color: #333 !important;
-  text-decoration: none !important;
-  font-weight: 700;
-}
-
-/* ✅ Responsive */
-@media (max-width: 900px){
-  .si-filter-top-row{
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .si-filter-search,
-  .si-filter-categorie,
-  .si-filter-type{
-    flex: 1 1 auto;
-    width: 100%;
-    min-width: 0;
-  }
-}
-
-@media (max-width: 600px){
-  .si-opdrachten-filter-wrap{
-    padding: 16px;
-  }
-}
-
-/* ✅ Checkboxjes verbergen, maar functionaliteit behouden */
+/* hide checkboxes but keep functionality */
 .si-multi-option input[type="checkbox"]{
   position: absolute;
   opacity: 0;
@@ -384,62 +381,26 @@ $types = get_terms([
   height: 1px;
 }
 
-/* Selected state */
 .si-multi-option input[type="checkbox"]:checked + span{
   font-weight: 600;
 }
 
 .si-multi-option:has(input[type="checkbox"]:checked){
-  background: #eef6ff;
-  border: 1px solid #cfe6ff;
+  background: rgba(124, 92, 250, 0.10);
+  border: 1px solid rgba(124, 92, 250, 0.25);
 }
 
-/* Klein “check” bolletje rechts */
 .si-multi-option:after{
   content: "";
   width: 10px;
   height: 10px;
   border-radius: 999px;
-  border: 0px solid #c7c7c7;
+  border: 0;
   margin-left: auto;
-  flex: 0 0 auto;
 }
 
 .si-multi-option:has(input[type="checkbox"]:checked):after{
-  border-color: #0884CC;
-  background: #0884CC;
-}
-
-/* Button force wit */
-.si-multi-btn,
-.si-multi-btn:hover,
-.si-multi-btn:focus,
-.si-multi-btn:active,
-.si-multi-btn:focus-visible{
-  background: #fff !important;
-  color: #333 !important;
-  outline: none;
-}
-
-.si-multi-btn .si-multi-placeholder,
-.si-multi-btn .si-multi-caret{
-  color: #333 !important;
-}
-
-.si-multi-option,
-.si-multi-option:hover,
-.si-multi-option:active{
-  background: #fff;
-  color: #333;
-}
-
-.si-multi-option span{
-  color: #333;
-}
-
-.si-multi-option:has(input[type="checkbox"]:checked){
-  background: #eef6ff !important;
-  border: 1px solid #cfe6ff;
+  background: #7C5CFA;
 }
 
 .si-multi-empty{
@@ -448,11 +409,40 @@ $types = get_terms([
   padding: 8px 4px;
   color: #666;
 }
+
+/* Reset */
+.si-filter-reset-row{ margin-top: 16px; }
+.si-reset-link{
+  font-family: 'Poppins', sans-serif;
+  color: #333 !important;
+  text-decoration: none !important;
+  font-weight: 700;
+}
+
+/* Responsive filter */
+@media (max-width: 900px){
+  .si-filter-top-row{
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .si-filter-search,
+  .si-filter-categorie,
+  .si-filter-type{
+    width: 100%;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+}
+
+@media (max-width: 600px){
+  .si-opdrachten-filter-wrap{
+    padding: 16px;
+  }
+}
 </style>
 
 
-
-  <script>
+<script>
 (function(){
   function closeAll(except){
     document.querySelectorAll('.si-multi.is-open').forEach(el=>{
@@ -486,9 +476,7 @@ $types = get_terms([
       return;
     }
 
-    placeholderEl.textContent = checked.length === 1
-      ? '1 geselecteerd'
-      : checked.length + ' geselecteerd';
+    placeholderEl.textContent = checked.length === 1 ? '1 geselecteerd' : checked.length + ' geselecteerd';
   }
 
   function submitFormFrom(el){
@@ -496,14 +484,13 @@ $types = get_terms([
     if(form) form.submit();
   }
 
-  // Init: sla default placeholder op
+  // Init
   document.querySelectorAll('.si-multi').forEach(multi=>{
     const placeholderEl = multi.querySelector('.si-multi-placeholder');
     if(placeholderEl){
       placeholderEl.setAttribute('data-default', placeholderEl.textContent.trim());
     }
 
-    // Open/close
     const btn = multi.querySelector('.si-multi-btn');
     btn.addEventListener('click', function(e){
       e.preventDefault();
@@ -513,7 +500,6 @@ $types = get_terms([
       btn.setAttribute('aria-expanded', (!isOpen) ? 'true' : 'false');
     });
 
-    // Change => update hidden inputs + auto-submit
     multi.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
       cb.addEventListener('change', function(){
         updateHiddenInputs(multi);
@@ -521,11 +507,10 @@ $types = get_terms([
       });
     });
 
-    // initial
     updateHiddenInputs(multi);
   });
 
-  // Live zoeken zonder enter (debounce)
+  // Live search debounce
   const searchInput = document.querySelector('#si_search');
   if(searchInput){
     let t;
@@ -537,78 +522,15 @@ $types = get_terms([
     });
   }
 
-  // Close on outside click
+  // Outside click closes
   document.addEventListener('click', function(e){
     const inside = e.target.closest('.si-multi');
     if(!inside) closeAll(null);
   });
 
-  // Escape close
+  // Escape closes
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape') closeAll(null);
   });
 })();
 </script>
-
-
-
-  <style>
-
-  /* Header layout: tekst links, knop rechts */
-.si-filter-header-top{
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.si-filter-header-text{
-  flex: 1 1 auto;
-  min-width: 0;
-}
-
-/* Opvallende knop naast blauw */
-.si-filter-header-btn{
-  flex: 0 0 auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 16px;
-  border-radius: 5px;
-  background: rgba(124, 92, 250, 0.12); /* lichte variant van #7C5CFA */
-  color: #7C5CFA !important; /* donkergrijs i.p.v. wit */
-  border: 1px solid #7C5CFA;
-  text-decoration: none !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700  !important;
-  font-size: 14px;
-  line-height: 1;
-  box-shadow: 0 10px 24px rgba(0,0,0,0.14);
-  transition: transform .15s ease, filter .15s ease;
-}
-
-.si-filter-header-btn:hover{
-  transform: translateY(-1px);
-  filter: brightness(0.95);
-}
-
-.si-filter-header-btn:active{
-  transform: translateY(0);
-}
-
-/* Mobiel: knop onder de tekst, full width */
-@media (max-width: 768px){
-  .si-filter-header-top{
-    flex-direction: column;
-    align-items: stretch;
-    margin-top: 16px; 
-    margin-bottom: 16px; 
-  }
-
-  .si-filter-header-btn{
-    width: 100%;
-  }
-}
-
-  </style>
-

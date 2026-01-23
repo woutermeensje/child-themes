@@ -139,8 +139,8 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
 /* Basis tag styling (vorm/typografie) */
 .si-opd-meta .si-opd-tag{
   display: inline-block;
-  padding: 4px 8px;
-  font-size: 13px;
+  padding: 4px 4px;
+  font-size: 12px;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   border-radius: 5px;
