@@ -55,6 +55,35 @@ if (!$hero_bg) {
 </section>
 
 
+<section class="home-disciplines">
+  <div class="disciplines-inner">
+
+    <span class="disciplines-kicker">
+      Het platform voor het vinden van een:
+    </span>
+
+    <div class="disciplines-list">
+      <span class="discipline-chip">Online marketeer</span>
+      <span class="discipline-chip">Social media specialist</span>
+      <span class="discipline-chip">Grafisch vormgever</span>
+      <span class="discipline-chip">Webdesigner</span>
+      <span class="discipline-chip">WordPress specialist</span>
+      <span class="discipline-chip">Developer</span>
+      <span class="discipline-chip">SEO-specialist</span>
+      <span class="discipline-chip">Data-analist</span>
+      <span class="discipline-chip"><span>Recruitment marketeer</span>
+    </div>
+
+  </div>
+</section>
+
+<style>
+
+  
+</style>
+
+
+
 <section class="home-shortcode">
   <div class="home-shortcode-inner">
 
@@ -147,7 +176,7 @@ body{
 .home-hero{
   position: relative;
   width: 100%;
-  height: 500px;
+  height: 400px;
   padding: 20px;
 
   background-size: cover;
@@ -374,8 +403,7 @@ body{
 *, *::before, *::after { box-sizing: border-box; }
 
 .split-left{
-    
- background: #7C5CFA;
+background: #7C5CFA;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -384,7 +412,7 @@ body{
 
 /* De pill groter + content netjes geplaatst */
 .split-pill{
-  width: min(420px, 100%);     /* groter dan 420px, maar nooit buiten kolom */
+  width: min(524px, 100%);     /* groter dan 420px, maar nooit buiten kolom */
   max-width: none;
 
   height: 320px;              /* iets ruimer dan 400 als je wilt */
@@ -497,6 +525,91 @@ body{
     width: 100%;
     max-width: 520px;
     border-radius: 999px; /* op mobiel mooier als capsule */
+  }
+}
+
+</style>
+
+
+<style>
+
+    /* ==============================
+   DISCIPLINES STRIP (FULL WIDTH)
+   ============================== */
+.home-disciplines{
+  width: 100vw;
+  height: 124px;
+
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+
+  background: var(--purple);
+  display: flex;
+  align-items: center;
+}
+
+/* Inner content */
+.disciplines-inner{
+  max-width: 1050px;
+  width: 100%;
+  margin: 0 auto;
+
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Intro text */
+.disciplines-kicker{
+  color: #EDE9FF;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* List of disciplines */
+.disciplines-list{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+  .discipline-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid var(--border);
+    background: #FBFAF8;
+    text-decoration: none;
+
+    color: #7C5CFA !important;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1;
+    transition: transform .15s ease, background .15s ease, border-color .15s ease;
+    }
+
+
+/* ==============================
+   RESPONSIVE
+   ============================== */
+@media (max-width: 900px){
+  .home-disciplines{
+    height: auto;
+    padding: 14px 16px;
+  }
+
+  .disciplines-inner{
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .disciplines-list{
+    gap: 8px;
   }
 }
 
