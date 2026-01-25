@@ -150,7 +150,7 @@ $types = get_terms([
   max-width: 1050px;
   margin: 20px auto;
   padding: 24px;
-  background: #fff;
+  background: #FBFAF8;
   border: 1px solid #E0E0E0;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
   border-radius: 5px;
@@ -225,7 +225,7 @@ $types = get_terms([
   max-width: 1050px;
   margin: 20px auto;
   padding: 24px;
-  background: #fff;
+  background: #FBFAF8;
   border: 1px solid #E0E0E0;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
   border-radius: 5px;
