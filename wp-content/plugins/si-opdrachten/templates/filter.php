@@ -21,6 +21,8 @@ $types = get_terms([
 
 <!-- SUMMARY BLOK (boven de filter) -->
 <div class="summary-website">
+  <div class="summary-website-extra">
+
   <div class="summary-left">
     <p class="summary-text">
       Hét platform voor het vinden van een student, flexwerker of freelancer!
@@ -32,6 +34,17 @@ $types = get_terms([
     </a>
   </div>
 </div>
+  </div>
+
+  <style>
+
+    .summary-website-extra {
+      border: 1px solid #DEDEDE; 
+      background-color: #FBFAF8;
+      padding: 24px; 
+    }
+    
+  </style>
 
 <!-- FILTER BLOK -->
 <div class="si-opdrachten-filter-wrap">

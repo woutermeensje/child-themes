@@ -40,10 +40,7 @@ if (!$hero_bg) {
         
         </div>
 
-        <div class="hero-trust">
-          <span class="dot"></span>
-          <span>Gemiddeld binnen 24 uur reacties</span>
-        </div>
+    
 
       </div>
     </div>
@@ -54,33 +51,121 @@ if (!$hero_bg) {
   </div>
 </section>
 
-
 <section class="home-disciplines">
-  <div class="disciplines-inner">
 
-    <span class="disciplines-kicker">
-      Het platform voor het vinden van een:
-    </span>
+  <!-- CARD 1: FREELANCE ONLINE MARKETING -->
+  <div class="disciplines-card" data-disciplines-card>
+
+    <h3 class="disciplines-kicker">Specialisaties</h3>
 
     <div class="disciplines-list">
-      <span class="discipline-chip">Online marketeer</span>
-      <span class="discipline-chip">Social media specialist</span>
-      <span class="discipline-chip">Grafisch vormgever</span>
-      <span class="discipline-chip">Webdesigner</span>
-      <span class="discipline-chip">WordPress specialist</span>
-      <span class="discipline-chip">Developer</span>
-      <span class="discipline-chip">SEO-specialist</span>
-      <span class="discipline-chip">Data-analist</span>
-      <span class="discipline-chip"><span>Recruitment marketeer</span>
+      <!-- zichtbaar -->
+      <a class="discipline-chip" href="/online-marketeer/">Online Marketing</a>
+      <a class="discipline-chip" href="/social-media-specialist/">Social Media</a>
+      <a class="discipline-chip" href="/grafisch-vormgever/">Grafisch Vormgever</a>
+      <a class="discipline-chip" href="/webdesigner/">Webdesigner</a>
+      <a class="discipline-chip" href="/wordpress-specialist/">WordPress</a>
+      <a class="discipline-chip" href="/developer/">Developer</a>
+      <a class="discipline-chip" href="/seo-specialist/">SEO</a>
+      <a class="discipline-chip" href="/data-analist/">Data</a>
+      <a class="discipline-chip" href="/recruitment-marketeer/">Recruitment Marketing</a>
+      <a class="discipline-chip" href="/recruitment-marketeer/">Fotografie</a>
+      <a class="discipline-chip" href="/recruitment-marketeer/">Exact Online</a>
+
+      <!-- verborgen -->
+      <span class="disciplines-more is-hidden" data-disciplines-more>
+        <a class="discipline-chip" href="/online-marketing-student/">Online marketing student</a>
+        <a class="discipline-chip" href="/shopify-developer/">Shopify developer</a>
+        <a class="discipline-chip" href="/website-laten-maken/">Website laten maken</a>
+        <a class="discipline-chip" href="/ict-student/">ICT student</a>
+        <a class="discipline-chip" href="/grafisch-ontwerper/">Grafisch ontwerper</a>
+        <a class="discipline-chip" href="/sea/">SEA</a>
+        <a class="discipline-chip" href="/emailmarketing/">E-mailmarketing</a>
+        <a class="discipline-chip" href="/ai-specialist/">Artificial Intelligence</a>
+        <a class="discipline-chip" href="/laravel-developer/">Laravel developer</a>
+        <a class="discipline-chip" href="/php-developer/">PHP developer</a>
+      </span>
+    </div>
+
+    <button class="disciplines-toggle" type="button" data-disciplines-toggle>
+      Laad meer categorieën
+    </button>
+
+  </div>
+
+
+  <!-- CARD 2: KLUSJES & UITVOEREND WERK -->
+  <div class="disciplines-card" data-disciplines-card>
+
+    <h3 class="disciplines-kicker">Klusjes &  Vakkundig</h3>
+
+    <div class="disciplines-list">
+      <!-- zichtbaar -->
+      <a class="discipline-chip chip-orange" href="/verhuizers/">Verhuizers</a>
+      <a class="discipline-chip chip-orange" href="/montage/">Montage</a>
+      <a class="discipline-chip chip-orange" href="/sjouwers/">Sjouwers</a>
+      <a class="discipline-chip chip-orange" href="/transport/">Transport</a>
+      <a class="discipline-chip chip-orange" href="/timmerwerk/">Timmerwerk</a>
+      <a class="discipline-chip chip-orange" href="/cable-management/">Cable management</a>
+      <a class="discipline-chip chip-orange" href="/ict-verhuizing/">ICT verhuizing</a>
+      <a class="discipline-chip chip-orange" href="/werkplek-montage/">Werkplek-montage</a>
+      <a class="discipline-chip chip-orange" href="/handyman/">Handyman</a>
+
+      <!-- verborgen -->
+      <span class="disciplines-more is-hidden" data-disciplines-more>
+        <a class="discipline-chip chip-orange" href="/floorwalkers/">Floorwalkers</a>
+        <a class="discipline-chip chip-orange" href="/ontruimingen/">Ontruimingen</a>
+        <a class="discipline-chip chip-orange" href="/woning-ontruimen/">Woning ontruimen</a>
+        <a class="discipline-chip chip-orange" href="/bijrijders/">Bijrijders</a>
+        <a class="discipline-chip chip-orange" href="/verhuisteam/">Verhuisteam</a>
+        <a class="discipline-chip chip-orange" href="/bureaukabels-wegwerken/">Bureaukabels wegwerken</a>
+        <a class="discipline-chip chip-orange" href="/ict-support/">ICT support</a>
+        <a class="discipline-chip chip-orange" href="/administratief/">Administratief</a>
+        <a class="discipline-chip chip-orange" href="/koeriers/">Koeriers</a>
+        <a class="discipline-chip chip-orange" href="/hardware-migratie/">Hardware migratie</a>
+      </span>
+    </div>
+
+    <button class="disciplines-toggle" type="button" data-disciplines-toggle>
+      Laad meer categorieën
+    </button>
+
+  </div>
+
+</section>
+
+
+
+
+
+
+
+
+<!-- SECTION 2: 500px split block -->
+<section class="home-split">
+  <div class="split-inner">
+
+    <!-- Links: paars vlak + pill -->
+    <div class="split-left" style="background-image: url('<?php echo esc_url($hero_bg); ?>');">
+    </div>
+
+    <!-- Rechts: tekst -->
+    <div class="split-right">
+      <h2>Waarom Studentinhuren.nl?</h2>
+
+      <ul class="split-benefits">
+        <li>Snel opdracht plaatsen en direct zichtbaar</li>
+        <li>Bereik studenten, freelancers en young professionals</li>
+        <li>Filters op type, categorie en locatie</li>
+        <li>Heldere communicatie en snelle reacties</li>
+        <li>Professionele uitstraling voor jouw merk</li>
+      </ul>
+
+      <a class="btn-primary" href="#">Plaats een opdracht</a>
     </div>
 
   </div>
 </section>
-
-<style>
-
-  
-</style>
 
 
 
@@ -105,43 +190,20 @@ if (!$hero_bg) {
         width: 1200px;
         margin: 24px auto; 
         border-radius: 5px; 
+        padding: 24px; 
+
     }
+
+    .home-shortcode-inner {
+        border: 1px solid #DEDEDE; 
+        border-radius: 5px; 
+        background: white; 
+    }
+
 </style>
 
 
 
-<!-- SECTION 2: 500px split block -->
-<section class="home-split">
-  <div class="split-inner">
-
-    <!-- Links: paars vlak + pill -->
-    <div class="split-left" >
-      <div class="split-pill" style="background-image: url('<?php echo esc_url($hero_bg); ?>');">
-        <div class="pill-content">
-          <div class="pill-kicker">Voor opdrachtgevers</div>
-          <div class="pill-title">Alles geregeld in één platform</div>
-          <div class="pill-sub">Plaatsen, beheren en reacties ontvangen — zonder gedoe.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Rechts: tekst -->
-    <div class="split-right">
-      <h2>Waarom Studentinhuren.nl?</h2>
-
-      <ul class="split-benefits">
-        <li>Snel opdracht plaatsen en direct zichtbaar</li>
-        <li>Bereik studenten, freelancers en young professionals</li>
-        <li>Filters op type, categorie en locatie</li>
-        <li>Heldere communicatie en snelle reacties</li>
-        <li>Professionele uitstraling voor jouw merk</li>
-      </ul>
-
-      <a class="btn-primary" href="#">Plaats een opdracht</a>
-    </div>
-
-  </div>
-</section>
 
 
 <?php get_footer(); ?>
@@ -278,7 +340,7 @@ body{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 4px 4px; 
+  padding: 8px;  
   height: 38px;
   border-radius: var(--radius);
   font-weight: 600;
@@ -370,17 +432,20 @@ body{
    FULL WIDTH SPLIT SECTION
    ============================== */
 .home-split{
-   width: 100vw;                     /* volledige schermbreedte */
+   width: 1200px;                     /* volledige schermbreedte */
   margin-left: calc(50% - 50vw);    /* breekt uit container links */
   margin-right: calc(50% - 50vw);   /* breekt uit container rechts */   
   
 
   height: 525px;
   margin: 24px auto;
-  background-color: var(--bg);
   border-radius: 5px; 
   border: 1px solid #DEDEDE; 
-  box-shadow: 0 10px 40px 05px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+  padding: 24px; 
+
+       background-color: var(--bg) !important; 
+
 
 }
 
@@ -389,6 +454,7 @@ body{
   width: 100%;
   height: 100%;
   display: flex;
+ 
 }
 
 /* 50/50 verdeling */
@@ -396,6 +462,10 @@ body{
 .split-right{
   width: 50%;
   min-width: 0;
+  border: 1px solid #DEDEDE; 
+  border-radius: 5px; 
+  margin-left: 8px; 
+  background-color: white !important; 
 }
 
 
@@ -403,10 +473,19 @@ body{
 *, *::before, *::after { box-sizing: border-box; }
 
 .split-left{
-background: #7C5CFA;
+  background: color-mix(in srgb, var(--purple) 70%, transparent);
+opacity: 70%; 
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  border-radius: 5px; 
+  border: 1px solid #DEDEDE; 
+   position: relative;
+  background-size: cover;        /* of contain, zie uitleg */
+  background-position: center;
+  background-repeat: no-repeat;
+
+
 }
 
 
@@ -417,17 +496,6 @@ background: #7C5CFA;
 
   height: 320px;              /* iets ruimer dan 400 als je wilt */
  
-  position: relative;
-  background-size: cover;        /* of contain, zie uitleg */
-  background-position: center;
-  background-repeat: no-repeat;
-
-  opacity: 95%; 
-
-  border-top-left-radius: 72px;
-  border-bottom-left-radius: 5px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 72px;
 
   /* ⭐ belangrijk: content “in” het vlak zetten */
   display: flex;
@@ -435,8 +503,8 @@ background: #7C5CFA;
   justify-content: flex-start;
 
   /* ⭐ belangrijk: extra ruimte links vanwege de curve */
-  padding: 70px 48px 48px 140px;
-  margin-right: 24px; 
+ 
+ 
 }
 
 
@@ -532,66 +600,136 @@ background: #7C5CFA;
 
 
 <style>
-
-    /* ==============================
-   DISCIPLINES STRIP (FULL WIDTH)
+ /* ==============================
+   CARD
    ============================== */
-.home-disciplines{
-  width: 100vw;
-  height: 124px;
+.home-disciplines {
+    width: 1200px; 
+    background: var(bg); 
+   border: 1px solid #DEDEDE;
+   border-radius: 5px;
+   padding: 24px; 
 
-  margin-left: calc(50% - 50vw);
-  margin-right: calc(50% - 50vw);
+   display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
 
-  background: var(--purple);
-  display: flex;
-  align-items: center;
+  margin: 48px auto;
 }
 
-/* Inner content */
-.disciplines-inner{
-  max-width: 1050px;
-  width: 100%;
-  margin: 0 auto;
+.disciplines-card{
+  background: #ffffff;
+  border: 1px solid #DEDEDE;
+  border-radius: 5px;
+  padding: 24px;
 
   display: flex;
-  align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 
-/* Intro text */
+/* ==============================
+   TITLE
+   ============================== */
 .disciplines-kicker{
-  color: #EDE9FF;
-  font-size: 14px;
-  font-weight: 600;
-  white-space: nowrap;
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 16px;
+  font-family: Balgin Bold; 
 }
 
-/* List of disciplines */
+/* ==============================
+   LIST
+   ============================== */
 .disciplines-list{
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 10px;
 }
 
-  .discipline-chip {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+/* ==============================
+   CHIPS (default = blauw)
+   ============================== */
+.discipline-chip{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 
-    padding: 8px 12px;
-    border-radius: 5px;
-    border: 1px solid var(--border);
-    background: #FBFAF8;
-    text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 5px;
 
-    color: #7C5CFA !important;
-    font-weight: 700;
-    font-size: 14px;
-    line-height: 1;
-    transition: transform .15s ease, background .15s ease, border-color .15s ease;
-    }
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+
+  color: #3A89FF !important;
+  border: 1px solid #3A89FF;
+  background: rgba(58,137,255,0.14);
+
+
+}
+
+.discipline-chip:hover{
+  
+}
+
+/* ==============================
+   ORANGE VARIANT
+   ============================== */
+.chip-orange{
+  color: #7C5CFA  !important; 
+  background:  #7C5CFA45!important;
+  color: #7C5CFA  !important;
+  border: 1px solid #7C5CFA !important;  
+}
+
+
+/* ==============================
+   HIDDEN EXTRA CATEGORIES
+   ============================== */
+.disciplines-more{
+  display: contents;
+}
+
+.disciplines-more.is-hidden{
+  display: none;
+}
+
+/* ==============================
+   LOAD MORE BUTTON
+   ============================== */
+.disciplines-toggle{
+  margin-top: 20px;
+  align-self: flex-start;
+
+  border: 1px solid #7C5CFA;
+  border-radius: 5px;
+
+  padding: 8px 8px;
+
+  font-size: 14px;
+  font-family: Balgin Bold; 
+  color: #7C5CFA;
+  background: #7C5CFA45; 
+
+  cursor: pointer;
+
+}
+
+
+/* ==============================
+   DISCIPLINES TOGGLE BUTTON FIX
+   ============================== */
+
+.disciplines-toggle:hover,
+.disciplines-toggle:focus,
+.disciplines-toggle:active,
+.disciplines-toggle:visited{
+   color: #7C5CFA45 !important; 
+  background: #7C5CFA !important;
+  color: white !important;
+}
 
 
 /* ==============================
@@ -599,18 +737,41 @@ background: #7C5CFA;
    ============================== */
 @media (max-width: 900px){
   .home-disciplines{
-    height: auto;
-    padding: 14px 16px;
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin: 32px auto;
   }
 
-  .disciplines-inner{
-    flex-direction: column;
-    align-items: flex-start;
+  .disciplines-card{
+    padding: 20px;
   }
 
-  .disciplines-list{
-    gap: 8px;
+  .disciplines-kicker{
+    font-size: 18px;
   }
 }
 
 </style>
+
+
+ <script>
+document.addEventListener('DOMContentLoaded', function () {
+  document.querySelectorAll('[data-disciplines-card]').forEach(function(card){
+    const btn = card.querySelector('[data-disciplines-toggle]');
+    const more = card.querySelector('[data-disciplines-more]');
+    if(!btn || !more) return;
+
+    btn.addEventListener('click', function(){
+      const isHidden = more.classList.contains('is-hidden');
+
+      if(isHidden){
+        more.classList.remove('is-hidden');
+        btn.textContent = 'Toon minder categorieën';
+      } else {
+        more.classList.add('is-hidden');
+        btn.textContent = 'Laad meer categorieën';
+      }
+    });
+  });
+});
+</script>
