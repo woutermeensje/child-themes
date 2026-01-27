@@ -384,6 +384,30 @@ $types = get_terms([
   box-sizing: border-box;
 }
 
+button.si-multi-btn:hover {
+  background: white; 
+  color: #333; 
+}
+
+button.si-multi-btn:active {
+   background: white; 
+  color: #333; 
+}
+
+
+button.si-multi-btn:focus-visible {
+    background: white; 
+  color: #333; 
+}
+
+button.si-multi-btn[aria-expanded="true"]{
+  background: #fff !important;
+  color: #333 !important;
+  border-color: #DEDEDE !important;
+}
+
+
+
 .si-multi-placeholder{
   white-space: nowrap;
   overflow: hidden;
