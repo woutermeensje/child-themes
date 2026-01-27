@@ -77,19 +77,20 @@ unset($value);
     <div class="filter-box">
 
         <!-- Dienstverband (single) -->
-        <div class="job_type">
-            <select name="filter_job_types" id="filter_job_types"
-                    class="js-custom-select job_types"
-                    data-placeholder="Dienstverband"
-                    data-mode="single">
-                <option value=""><?php _e('Selecteer dienstverband', 'wp-job-manager'); ?></option>
-                <?php foreach (get_job_listing_types() as $type) : ?>
-                    <option value="<?php echo esc_attr($type->slug); ?>" <?php selected(in_array($type->slug, $selected['job_types'], true)); ?>>
-                        <?php echo esc_html($type->name); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+       <div class="job_type">
+    <select name="filter_job_types[]"
+            id="filter_job_types"
+            class="js-custom-select job_types"
+            data-placeholder="Dienstverband"
+            multiple>
+        <?php foreach (get_job_listing_types() as $type) : ?>
+            <option value="<?php echo esc_attr($type->slug); ?>" <?php selected(in_array($type->slug, $selected['job_types'], true)); ?>>
+                <?php echo esc_html($type->name); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
 
         <!-- Sector (multi) -->
         <div class="job_sector">
@@ -107,20 +108,20 @@ unset($value);
         </div>
 
         <!-- Organisatie (single) -->
-        <div class="job_company">
-            <select name="filter_job_company"
-                    id="filter_job_company"
-                    class="js-custom-select job_company"
-                    data-placeholder="Organisatie"
-                    data-mode="single">
-                <option value=""><?php _e('💼 Selecteer organisatie', 'wp-job-manager'); ?></option>
-                <?php foreach (get_terms(['taxonomy' => 'job_company', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_company'], true)); ?>>
-                        <?php echo esc_html($term->name); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
+      <div class="job_company">
+    <select name="filter_job_company[]"
+            id="filter_job_company"
+            class="js-custom-select job_company"
+            data-placeholder="Organisatie"
+            multiple>
+        <?php foreach (get_terms(['taxonomy' => 'job_company', 'hide_empty' => true]) as $term) : ?>
+            <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_company'], true)); ?>>
+                <?php echo esc_html($term->name); ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+</div>
+
 
         <!-- Organization Type (multi) -->
         <div class="organization_type">
@@ -383,7 +384,7 @@ return;
   width: 95%;
   padding: 20px 0;
   margin: 20px auto;
-  background-color: white;
+  background-color: #FBFAF8;
   box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
   border-radius: 6px;
   border: 1px solid #E0E0E0;
@@ -461,7 +462,7 @@ body .filter-header a.unstyled-newsletter-link:hover {
   width: 100%;
   padding: 12px 14px 12px 38px;
   font-size: 16px; 
-  border: 1px solid #0884CC;
+  border: 1px solid #dedede;
   border-radius: 0;
   background-color: white;
   color: #222;
@@ -792,4 +793,39 @@ select.sj-hidden-select {
 
 
 
+</style>
+
+
+<style>
+
+
+/* Individuele filter-chip */
+span.active-filter {
+      display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid rgba(0, 0, 0, 0.12);
+    border-radius: 999px;
+    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
+    padding: 8px 12px;
+    font-size: 16px;
+    color: #111;
+    font-weight: 700 !important;
+    cursor: pointer;
+}
+
+button.active-filter-x {
+  color: #0884CC; 
+  font-weight: 700; 
+  background: none; 
+}
+
+button.active-filter-x:hover {
+  color: #0884CC; 
+  font-weight: 700; 
+  background: none; 
+}
+
+/*
 </style>

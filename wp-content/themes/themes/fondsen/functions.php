@@ -230,15 +230,6 @@ add_filter( 'wpseo_breadcrumb_separator', function( $separator ) {
 
 // hier komt de code voor de fondsen oproepen en de shortcode voor de goede doelen lijst
 
-//register the Shortcode handler
-add_shortcode('include', 'include_file');
-//END amberpanther.com code
-//shortcode with sample query string:
-//[include filepath="/get-posts.php?format=grid&taxonomy=testing&term=stuff&posttype=work"]
-
-
-
-
 
 
 // hieronder komt de shortcode voor de fondsenwervingen
