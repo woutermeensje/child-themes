@@ -136,7 +136,16 @@ if (!$hero_bg) {
 
 
 
+<section class="home-shortcode">
+  <div class="home-shortcode-inner">
 
+    <?php
+      // Vervang de shortcode hieronder door jouw eigen shortcode
+      echo do_shortcode('[si_latest_opdrachten]');
+    ?>
+
+  </div>
+</section>
 
 
 
@@ -169,17 +178,6 @@ if (!$hero_bg) {
 
 
 
-<section class="home-shortcode">
-  <div class="home-shortcode-inner">
-
-    <?php
-      // Vervang de shortcode hieronder door jouw eigen shortcode
-      echo do_shortcode('[si_latest_opdrachten]');
-    ?>
-
-  </div>
-</section>
-
 <style>
 
     .home-shortcode {
@@ -188,7 +186,7 @@ if (!$hero_bg) {
         background-color: #FBFAF8;
         padding: 24px; 
         width: 1200px;
-        margin: 24px auto; 
+        margin: 48px auto; 
         border-radius: 5px; 
         padding: 24px; 
 
@@ -457,8 +455,7 @@ body{
  
 }
 
-/* 50/50 verdeling */
-.split-left,
+
 .split-right{
   width: 50%;
   min-width: 0;
@@ -468,13 +465,22 @@ body{
   background-color: white !important; 
 }
 
+/* 50/50 verdeling */
+.split-left {
+
+ width: 50%;
+  min-width: 0;
+  border: 1px solid #DEDEDE; 
+  border-radius: 5px; 
+  margin-left: 8px; 
+
+}
+
 
 /* Zorg dat padding/width logisch blijven */
 *, *::before, *::after { box-sizing: border-box; }
 
 .split-left{
-  background: color-mix(in srgb, var(--purple) 70%, transparent);
-opacity: 70%; 
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -485,8 +491,29 @@ opacity: 70%;
   background-position: center;
   background-repeat: no-repeat;
 
+  margin-right: 4px; 
+
 
 }
+
+
+
+/* Paarse overlay */
+.split-left::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(124, 92, 250, 0.7); /* #7C5CFA met 70% */
+  z-index: 1;
+  border-radius: 5px; 
+}
+
+/* Alles wat IN split-left zit boven de overlay */
+.split-left > *{
+  position: relative;
+  z-index: 2;
+}
+
 
 
 /* De pill groter + content netjes geplaatst */
@@ -615,6 +642,9 @@ opacity: 70%;
   gap: 24px;
 
   margin: 48px auto;
+
+    box-shadow: 5px 10px 40px -5px rgba(0,0,0,0.15);
+
 }
 
 .disciplines-card{

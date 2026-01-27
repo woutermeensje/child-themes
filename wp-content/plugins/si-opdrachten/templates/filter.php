@@ -29,8 +29,8 @@ $types = get_terms([
     </p>
   </div>
   <div class="summary-right">
-    <a class="si-filter-header-btn" href="/opdracht-plaatsen/">
-      Gratis opdracht plaatsen
+    <a class="si-filter-header-btn" href="/freelance-platform/">
+      Opties bekijken
     </a>
   </div>
 </div>
@@ -38,16 +38,14 @@ $types = get_terms([
 
   <style>
 
-    .summary-website-extra {
-      border: 1px solid #DEDEDE; 
-      background-color: #FBFAF8;
-      padding: 24px; 
-    }
-    
+  
+
   </style>
 
 <!-- FILTER BLOK -->
 <div class="si-opdrachten-filter-wrap">
+
+<div class="filter-header-extra">
 
   <div class="si-filter-header">
     <div class="si-filter-header-top">
@@ -151,6 +149,7 @@ $types = get_terms([
     </div>
 
   </form>
+  </div>
 
 </div>
 
@@ -167,12 +166,25 @@ $types = get_terms([
   border: 1px solid #E0E0E0;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
   border-radius: 5px;
-  display: flex;
+  
+  
+}
+
+  .summary-website-extra {
+      border: 1px solid #DEDEDE; 
+      background-color: white;
+      padding: 24px; 
+      width: 100%; 
+      border-radius: 5px;
+      
+      display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 20px;
   box-sizing: border-box;
-}
+    }
+
+
 
 .summary-left,
 .summary-right{
@@ -200,14 +212,13 @@ $types = get_terms([
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 12px 16px;
+  padding: 8px; 
   border-radius: 5px;
   background: rgba(124, 92, 250, 0.12);
   color: #7C5CFA !important;
   border: 1px solid #7C5CFA;
   text-decoration: none !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700 !important;
+  font-family: Balgin Bold; 
   font-size: 14px;
   line-height: 1;
   box-shadow: 0 10px 24px rgba(0,0,0,0.14);
@@ -243,6 +254,14 @@ $types = get_terms([
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
   border-radius: 5px;
   box-sizing: border-box;
+}
+
+
+.filter-header-extra {
+    background: white; 
+    border-radius: 5px; 
+    border: 1px solid #DEDEDE; 
+    padding: 24px; 
 }
 
 /* Header */

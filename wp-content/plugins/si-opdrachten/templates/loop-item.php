@@ -5,6 +5,18 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
 ?>
 
 <article class="si-opd-card">
+  <div class="si-opd-card-extra">
+
+  <style>
+
+    .si-opd-card-extra {
+       
+      border: 1px solid #DEDEDE; 
+      background: white; 
+    }
+  </style>
+
+  
   <a class="si-opd-card-link" href="<?php the_permalink(); ?>">
 
     <div class="si-opd-card-inner">
@@ -16,27 +28,6 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
   <?php echo esc_html( get_the_date('j F Y') ); ?>
 </p>
 
-
-<style>
-
-  /* Publicatiedatum */
-.si-opd-date{
-  font-family: 'Poppins', sans-serif;
-  font-size: 12px;
-  font-weight: 400;
-  color: #6B7280;
-  margin: 0 0 10px 0;
-}
-
-
-@media (max-width: 768px){
-  .si-opd-date{
-    font-size: 12px;
-    margin-bottom: 8px;
-  }
-}
-
-</style>
 
        <?php
       $excerpt = '';
@@ -78,7 +69,9 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
     </div>
 
   </a>
+  </div>
 </article>
+
 
 
 <style>
@@ -95,6 +88,10 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   margin-top: 24px;
   margin-bottom: 24px;
+
+  padding: 24px; 
+      border: 1px solid #DEDEDE; 
+      background: #FBFAF8;
 }
 
 /* Hele kaart klikbaar */
@@ -303,6 +300,24 @@ $types = get_the_terms(get_the_ID(), 'si_opdracht_type');
     display: none; 
   }
 
+}
+
+
+  /* Publicatiedatum */
+.si-opd-date{
+  font-family: 'Poppins', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  color: #6B7280;
+  margin: 0 0 10px 0;
+}
+
+
+@media (max-width: 768px){
+  .si-opd-date{
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
 }
 
 
