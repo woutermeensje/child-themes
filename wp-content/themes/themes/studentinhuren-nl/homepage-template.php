@@ -202,6 +202,16 @@ if (!$hero_bg) {
 
 
 
+<!-- ✅ Elementor / WP content area -->
+<main class="page-content">
+  <?php
+  if ( have_posts() ) :
+    while ( have_posts() ) : the_post();
+      the_content(); // <-- dit is wat Elementor nodig heeft
+    endwhile;
+  endif;
+  ?>
+</main>
 
 
 <?php get_footer(); ?>
@@ -708,10 +718,9 @@ body{
    ORANGE VARIANT
    ============================== */
 .chip-orange{
-  color: #7C5CFA  !important; 
-  background:  #7C5CFA45!important;
-  color: #7C5CFA  !important;
-  border: 1px solid #7C5CFA !important;  
+  color: #22C5A2 !important; 
+  background:  #22C5A22B !important;
+  border: 1px solid #22C5A2 !important;  
 }
 
 

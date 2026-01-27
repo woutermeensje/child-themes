@@ -36,11 +36,7 @@ $types = get_terms([
 </div>
   </div>
 
-  <style>
 
-  
-
-  </style>
 
 <!-- FILTER BLOK -->
 <div class="si-opdrachten-filter-wrap">
@@ -231,16 +227,44 @@ $types = get_terms([
   box-shadow: 0 12px 28px rgba(124, 92, 250, 0.18);
 }
 
-/* mobile summary */
 @media (max-width: 768px){
-  .summary-website{
+
+.summary-website {
+  width: 95%; 
+}
+
+
+  .summary-website-extra{
     flex-direction: column;
-    align-items: stretch;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px;
+    
   }
-  .si-filter-header-btn{
+
+  .summary-left,
+  .summary-right{
     width: 100%;
   }
+
+  .summary-text{
+    font-size: 15px;
+    line-height: 1.5;
+  }
+
+  .summary-right{
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .si-filter-header-btn{
+    width: 100%;
+    text-align: center;
+    padding: 10px 14px;
+    font-size: 15px;
+  }
 }
+
 
 /* ==============================
    FILTER WRAP
@@ -469,6 +493,7 @@ $types = get_terms([
 @media (max-width: 600px){
   .si-opdrachten-filter-wrap{
     padding: 16px;
+    width: 95%; 
   }
 }
 </style>
