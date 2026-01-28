@@ -2,7 +2,10 @@
 
 
 
-require_once get_stylesheet_directory() . '/job_manager/functions.php';
+$jm_functions = get_stylesheet_directory() . '/job_manager/functions.php';
+if (file_exists($jm_functions)) {
+    require_once $jm_functions;
+}
 
 
 add_theme_support('job-manager-templates');
@@ -485,95 +488,221 @@ add_filter('job_manager_output_jobs_defaults', function($defaults) {
 });
 
 
-// Vacature Plaatsing na invullen formulier automatisch aanmaken. 
 
 
-add_action('gform_after_submission_14', 'create_job_listing_from_gravity_forms_14', 10, 2);
-function create_job_listing_from_gravity_forms_14($entry, $form) {
-    // Controleer of de functie bestaat
-    if (!function_exists('wp_insert_post')) {
-        return;
+/**
+ * WPJM extras (verplaatst uit /job_manager/functions.php)
+ */
+
+if (!function_exists('display_tax_terms')) {
+    function display_tax_terms($tax, $post_id) {
+        $terms = wp_get_post_terms($post_id, $tax, array('fields' => 'names'));
+        return implode(',', $terms);
     }
+}
 
-    // Haal gegevens op uit Gravity Forms
-    $job_title = rgar($entry, '8'); // Vacaturetitel
-    $job_location = rgar($entry, '22'); // Locatie
-    $job_description = rgar($entry, '16'); // Vacaturebeschrijving
-    $job_url = rgar($entry, '18'); // Link naar Vacature
-    $job_logo = rgar($entry, '29'); // Logo URL
-    $job_image = rgar($entry, '30'); // Afbeelding bij vacature
+if (!function_exists('get_secondary_imageurl')) {
+    function get_secondary_imageurl($post_id) {
+        $image_id = get_post_meta($post_id, '_uncode_secondary_thumbnail_id', true);
+        return wp_get_attachment_image_url($image_id, 'large');
+    }
+}
 
-    // Vacature aanmaken in WP Job Manager
-    $job_post = array(
-        'post_title'    => wp_strip_all_tags($job_title),
-        'post_content'  => $job_description,
-        'post_status'   => 'pending', // Of 'pending' als je goedkeuring wilt
-        'post_type'     => 'job_listing',
+if (!function_exists('create_thankyou_page_pageview')) {
+    add_action('job_manager_job_submitted_content_after', 'create_thankyou_page_pageview');
+    function create_thankyou_page_pageview() {
+        echo "<script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('event', 'page_view',{
+                'page_title': 'Vacature geplaatst',
+                'page_location': '/plaats-een-vacature/',
+                'page_path': '/plaats-een-vacature/bedankt',
+                'send_to': 'G-G3HL6WW75F'
+            });
+        </script>";
+    }
+}
+
+/** Indeed */
+add_filter('submit_job_form_fields', function($fields){
+    $fields['company']['company_indeed'] = array(
+        'label'       => __('Indeed', 'job_manager'),
+        'type'        => 'text',
+        'required'    => false,
+        'placeholder' => 'Indeed link',
+        'priority'    => 5
     );
+    return $fields;
+});
 
-    $post_id = wp_insert_post($job_post);
+add_filter('job_manager_job_listing_data_fields', function($fields){
+    $fields['_company_indeed'] = array(
+        'label'       => __('Indeed', 'job_manager'),
+        'type'        => 'text',
+        'placeholder' => 'Indeed link',
+        'description' => ''
+    );
+    return $fields;
+});
 
-    if ($post_id) {
-        // Koppel custom meta-velden aan de vacature
-        update_post_meta($post_id, '_job_location', $job_location);
-        update_post_meta($post_id, '_application_url', $job_url);
+/** Facebook */
+add_filter('submit_job_form_fields', function($fields){
+    $fields['company']['company_facebook'] = array(
+        'label'       => __('Facebook', 'job_manager'),
+        'type'        => 'text',
+        'required'    => false,
+        'placeholder' => 'https://facebook.com/your-company',
+        'priority'    => 5
+    );
+    return $fields;
+});
 
-        // Bedrijfslogo opslaan (indien aanwezig)
-        if (!empty($job_logo)) {
-            update_post_meta($post_id, '_company_logo', esc_url($job_logo));
-        }
+add_filter('job_manager_job_listing_data_fields', function($fields){
+    $fields['_company_facebook'] = array(
+        'label'       => __('Facebook', 'job_manager'),
+        'type'        => 'text',
+        'placeholder' => 'https://facebook.com/your-company',
+        'description' => ''
+    );
+    return $fields;
+});
 
-        // Afbeelding bij vacature instellen als uitgelichte afbeelding (featured image)
-        if (!empty($job_image)) {
-            $image_id = media_sideload_image($job_image, $post_id, '', 'id');
-            if (!is_wp_error($image_id)) {
-                set_post_thumbnail($post_id, $image_id);
-            }
-        }
+/** LinkedIn */
+add_filter('submit_job_form_fields', function($fields){
+    $fields['company']['company_linkedin'] = array(
+        'label'       => __('LinkedIn', 'job_manager'),
+        'type'        => 'text',
+        'required'    => false,
+        'placeholder' => 'https://linkedin.com/your-company',
+        'priority'    => 5
+    );
+    return $fields;
+});
+
+add_filter('job_manager_job_listing_data_fields', function($fields){
+    $fields['_company_linkedin'] = array(
+        'label'       => __('LinkedIn', 'job_manager'),
+        'type'        => 'text',
+        'placeholder' => 'https://linkedin.com/in/your-company',
+        'description' => ''
+    );
+    return $fields;
+});
+
+/** Cover image */
+add_filter('submit_job_form_fields', function($fields){
+    $fields['job']['cover_image'] = array(
+        'label'    => __('Cover afbeelding', 'job_manager'),
+        'type'     => 'file',
+        'accept'   => 'image/png, image/jpeg',
+        'required' => false,
+        'priority' => 7
+    );
+    return $fields;
+});
+
+add_filter('job_manager_job_listing_data_fields', function($fields){
+    $fields['_cover_image'] = array(
+        'label' => __('Cover afbeelding', 'job_manager'),
+        'type'  => 'file',
+    );
+    return $fields;
+});
+
+
+
+
+
+
+
+// Front-end submit form (plaats vacature)
+add_filter('submit_job_form_fields', function($fields){
+
+  // Voeg een sectie/velden toe onder "company" (of kies 'job' als je wil)
+  $fields['company']['contact_first_name'] = [
+    'label'       => __('Contactpersoon voornaam', 'job_manager'),
+    'type'        => 'text',
+    'required'    => false,
+    'placeholder' => __('Bijv. Sophie', 'job_manager'),
+    'priority'    => 35,
+  ];
+
+  $fields['company']['contact_last_name'] = [
+    'label'       => __('Contactpersoon achternaam', 'job_manager'),
+    'type'        => 'text',
+    'required'    => false,
+    'placeholder' => __('Bijv. Jansen', 'job_manager'),
+    'priority'    => 36,
+  ];
+
+  $fields['company']['contact_email'] = [
+    'label'       => __('Contactpersoon e-mailadres', 'job_manager'),
+    'type'        => 'text', // WPJM heeft ook 'text' + we valideren hieronder
+    'required'    => false,
+    'placeholder' => __('Bijv. sophie@organisatie.nl', 'job_manager'),
+    'priority'    => 37,
+  ];
+
+  return $fields;
+});
+
+// Admin velden (in wp-admin bij vacature bewerken)
+add_filter('job_manager_job_listing_data_fields', function($fields){
+
+  $fields['_contact_first_name'] = [
+    'label'       => __('Contactpersoon voornaam', 'job_manager'),
+    'type'        => 'text',
+    'description' => '',
+    'priority'    => 35,
+  ];
+
+  $fields['_contact_last_name'] = [
+    'label'       => __('Contactpersoon achternaam', 'job_manager'),
+    'type'        => 'text',
+    'description' => '',
+    'priority'    => 36,
+  ];
+
+  $fields['_contact_email'] = [
+    'label'       => __('Contactpersoon e-mail', 'job_manager'),
+    'type'        => 'text',
+    'description' => '',
+    'priority'    => 37,
+  ];
+
+  return $fields;
+});
+
+// Valideer email op front-end submit
+add_filter('submit_job_form_validate_fields', function($passed, $fields, $values){
+
+  if (!empty($values['company']['contact_email'])) {
+    $email = trim($values['company']['contact_email']);
+    if (!is_email($email)) {
+      $passed = false;
+      // WPJM toont errors via wp_die of notices; deze werkt in de praktijk goed
+      if (function_exists('wpjm_add_error')) {
+        wpjm_add_error(__('Vul een geldig e-mailadres in voor de contactpersoon.', 'job_manager'));
+      }
     }
-}
+  }
+
+  return $passed;
+}, 10, 3);
+
+// Opslaan naar meta (front-end)
+add_action('job_manager_update_job_data', function($job_id, $values){
+
+  // Values komen uit submit_job_form_fields (company sectie)
+  $fn = $values['company']['contact_first_name'] ?? '';
+  $ln = $values['company']['contact_last_name'] ?? '';
+  $em = $values['company']['contact_email'] ?? '';
+
+  update_post_meta($job_id, '_contact_first_name', sanitize_text_field($fn));
+  update_post_meta($job_id, '_contact_last_name', sanitize_text_field($ln));
+  update_post_meta($job_id, '_contact_email', sanitize_email($em));
+
+}, 10, 2);
 
 
-// Media upload vanuit Gravity Forms 
-
-
-// Voeg een actie toe voor het verzenden van het formulier
-add_action("gform_after_submission", "process_uploaded_media", 10, 2);
-
-function process_uploaded_media($entry, $form) {
-    // Hier vervang je 1 met het ID van je formulier.
-    if ($form["id"] == 3) {
-        // Haal het bestandsveld op aan de hand van het veld-ID (vervang 1 door het werkelijke veld-ID).
-        $file_field_id = 1;
-        
-        // Haal het bestand op uit het formulierinzending.
-        $file_url = rgar($entry, "14" . $file_field_id);
-        
-        // Haal de bestandsnaam uit de URL.
-        $file_name = basename($file_url);
-        
-        // Bouw het pad naar de uploadmap in WordPress.
-        $upload_dir = wp_upload_dir();
-        $upload_path = $upload_dir["/applications/your_app/public_html"] . "/" . $file_name;
-        
-        // Download het bestand en sla het op in de uploadmap.
-        if (copy($file_url, $upload_path)) {
-            // Voeg het bestand toe aan de mediabibliotheek.
-            $attachment = array(
-                "post_title" => $file_name,
-                "post_content" => "",
-                "post_status" => "inherit"
-            );
-            $attachment_id = wp_insert_attachment($attachment, $upload_path);
-            
-            // Genereer metadata voor het bijgevoegde bestand en sla het op.
-            require_once(ABSPATH . "wp-admin/includes/image.php");
-            $attachment_data = wp_generate_attachment_metadata($attachment_id, $upload_path);
-            wp_update_attachment_metadata($attachment_id, $attachment_data);
-            
-            // Optioneel: koppel het bijgevoegde bestand aan een specifieke post of pagina.
-            // Vervang 0 door de post-ID waaraan je het wilt koppelen.
-            // update_post_meta(0, "_thumbnail_id", $attachment_id);
-        }
-    }
-}
