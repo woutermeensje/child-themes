@@ -5,22 +5,24 @@ global $post;
 
 if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
 
-  <div class="custom-top-section">
+<div class="sj-wrap">
+    
+<div class="custom-top-section">
     <div class="top-section-text">
-      <?php
-      if ( function_exists( 'yoast_breadcrumb' ) ) {
-        yoast_breadcrumb( '<p class="broodkruimels">','</p>' );
-      }
-      ?>
-      <div>
+        <p>
+            Blijf op de hoogte van de laatste vacatures!
+        </p>
+     <div>
         <a href="https://www.fondsen.org/vacature-alert-instellen/" class="top-section-link">Vacature Alert instellen</a>
       </div>
     </div>
-  </div>
+</div>
 
-  <div class="sj-wrap">
+  
 
-    <div class="single_job_listing sj-card">
+  
+
+    <div class="sj-card">
       <?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
         <div class="job-manager-info"><?php _e( 'This listing has expired.', 'wp-job-manager' ); ?></div>
       <?php else : ?>
@@ -28,20 +30,19 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
         <?php
         $company_name    = function_exists('get_the_company_name') ? get_the_company_name() : '';
         $company_website = get_post_meta( $post->ID, '_company_website', true );
+
+        $company_slug = $company_name ? sanitize_title( $company_name ) : '';
+        $company_url  = $company_slug ? home_url( '/organisaties/' . $company_slug . '/' ) : '';
         ?>
 
         <div class="sj-meta">
           <span class="sj-chip">🗓️ <?php echo esc_html( date_i18n( 'j F Y', get_post_time( 'U' ) ) ); ?></span>
           <span class="sj-chip">🏷️ <?php the_job_type(); ?></span>
-          <?php if ( ! empty( $company_name ) ) : ?>
-            <?php
-            $company_name = get_the_company_name();
-            $company_slug = sanitize_title( $company_name );
-            $company_url  = home_url( '/organisaties/' . $company_slug . '/' );
-            ?>
-        <a href="<?php echo esc_url( $company_url ); ?>" class="sj-chip sj-chip--link">
-        🏢 <?php echo esc_html( $company_name ); ?>
-        </a>
+
+          <?php if ( ! empty( $company_name ) && ! empty( $company_url ) ) : ?>
+            <a href="<?php echo esc_url( $company_url ); ?>" class="sj-chip sj-chip--link">🏢 <?php echo esc_html( $company_name ); ?></a>
+          <?php elseif ( ! empty( $company_name ) ) : ?>
+            <span class="sj-chip">🏢 <?php echo esc_html( $company_name ); ?></span>
           <?php endif; ?>
         </div>
 
@@ -82,7 +83,7 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
 
     <?php if ( $has_contact ) : ?>
       <section class="sj-contact sj-card">
-        <h2 class="sj-contact-title">Contactpersoon - Sollicitaties</h2>
+        <h2 class="sj-contact-title">Contactpersoon Vacature</h2>
 
         <div class="sj-contact-grid">
           <?php if ( ! empty($cf) || ! empty($cl) ) : ?>
@@ -131,34 +132,30 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
         <ul class="sj-recent-grid">
           <?php while ( $recent_jobs->have_posts() ) : $recent_jobs->the_post(); ?>
             <?php
-            $recent_company = function_exists('get_the_company_name') ? get_the_company_name() : '';
-            $recent_title   = function_exists('wpjm_get_the_job_title') ? wpjm_get_the_job_title() : get_the_title();
-            $recent_excerpt = wp_trim_words( get_the_excerpt(), 12, '…' );
+              $rc_name    = function_exists('get_the_company_name') ? get_the_company_name() : '';
+              $rc_title   = function_exists('wpjm_get_the_job_title') ? wpjm_get_the_job_title() : get_the_title();
+              $rc_excerpt = wp_trim_words( get_the_excerpt(), 14, '…' );
             ?>
             <li class="sj-recent-item" <?php job_listing_class(); ?>>
-             
-            <a class="sj-recent-link" href="<?php the_job_permalink(); ?>" aria-label="<?php echo esc_attr( wpjm_get_the_job_title() ); ?>">
+              <a class="sj-recent-link" href="<?php the_job_permalink(); ?>" aria-label="<?php echo esc_attr( $rc_title ); ?>">
 
                 <div class="sj-recent-logo">
-                    <?php the_company_logo(); ?>
+                  <?php the_company_logo(); ?>
                 </div>
 
-                <div class="sj-recent-content">
-                    <div class="sj-recent-company">
-                    <?php echo esc_html( get_the_company_name() ); ?>
-                    </div>
+                <div class="sj-recent-body">
+                  <?php if ( ! empty($rc_name) ) : ?>
+                    <div class="sj-recent-company"><?php echo esc_html( $rc_name ); ?></div>
+                  <?php endif; ?>
 
-                    <h3 class="sj-recent-jobtitle">
-                    <?php echo esc_html( wpjm_get_the_job_title() ); ?>
-                    </h3>
+                  <h3 class="sj-recent-jobtitle"><?php echo esc_html( $rc_title ); ?></h3>
 
-                    <p class="sj-recent-excerpt">
-                    <?php echo esc_html( wp_trim_words( get_the_excerpt(), 14, '…' ) ); ?>
-                    </p>
+                  <?php if ( ! empty($rc_excerpt) ) : ?>
+                    <p class="sj-recent-excerpt"><?php echo esc_html( $rc_excerpt ); ?></p>
+                  <?php endif; ?>
                 </div>
 
-                </a>
-
+              </a>
             </li>
           <?php endwhile; ?>
         </ul>
@@ -173,91 +170,109 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
   <?php get_job_manager_template_part( 'access-denied', 'single-job_listing' ); ?>
 <?php endif; ?>
 
+
+
 <style>
-    /* =========================================================
+/* =========================================================
    Fondsen.org – Single job modern styling (Studentinhuren-ish)
-   Gebruik: plak in je child theme style.css (liefst), of in template.
    ========================================================= */
 
-/* ---------- Design tokens (veilig: overridable) ---------- */
 :root{
   --sj-ink: #111827;
   --sj-muted: #6B7280;
   --sj-border: #E5E7EB;
-  --sj-bg: #FBFAF8;
   --sj-card: #FFFFFF;
-  --sj-blue: #0884CC;   /* Fondsen blauw */
-  --sj-orange: #FF8C2C; /* Fondsen oranje */
+  --sj-blue: #0884CC;
+  --sj-orange: #FF8C2C;
   --sj-radius: 12px;
   --sj-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
 }
 
-/* ---------- Layout wrapper ---------- */
+
+
+html, body{
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+
 .sj-wrap{
-  width: 900px;
-  max-width: calc(100% - 24px);
-  margin: 20px auto 40px;
+  max-width: 900px;
+  width: 100%;
+  margin: 20px auto;
+  padding: 0 16px;
   display: grid;
   gap: 16px;
 }
 
-/* ---------- Generic card ---------- */
-.sj-card{
-  background: var(--sj-card);
-  border: 1px solid var(--sj-border);
-  border-radius: var(--sj-radius);
-  box-shadow: var(--sj-shadow);
+.job_description,
+.sj-content{
+  overflow-wrap: anywhere;
+  word-break: break-word !important;
 }
 
-/* ---------- Top section (breadcrumb + CTA) ---------- */
-.custom-top-section{
-  background-color: var(--sj-blue);
-  color: #fff;
-  padding: 20px;
-  width: 100vw;
-  margin-left: calc(-50vw + 50%);
-  position: relative;
-  display: flex;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+
+
+.sj-card{
+  padding: 24px; 
+  border: 1px solid #DEDEDE;
+    box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
+    border-radius: 5px; 
+
+
+
 }
+
+.custom-top-section{
+  width: 100%;
+  max-width: 900px;
+  margin: 24px auto;
+  color: #333;
+  border: 1px solid #DEDEDE;
+  box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
+  border-radius: 5px;
+  background: #fff;
+}
+
 
 .top-section-text{
-  width: 900px;
-  max-width: calc(100% - 24px);
-  margin: 0 auto;
-  text-align: left;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
-.broodkruimels,
-.broodkruimels a,
-.broodkruimels span,
-.broodkruimels .breadcrumb_last{
-  color: #fff;
+/* Link-blok (knop) */
+.top-section-text > div{
+  flex: 0 0 auto;
+}
+
+/* Tekst rechts neemt de rest van de ruimte */
+.top-section-text p{
   margin: 0;
+  flex: 1 1 auto;
   font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 400;
-  font-size: 14px;
-  text-decoration: none;
-  line-height: 1.4;
+  font-size: 18px;
+  color: #333;
+  font-weight: 600; 
 }
 
-.broodkruimels a:hover{ opacity: .9; }
-
+/* Knop */
 .top-section-link{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 14px;
   padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(255, 140, 44, 0.15);
-  color: #fff !important;
-  border: 1px solid rgba(255, 140, 44, 0.55);
+  border-radius: 8px;
+  background: rgba(8, 132, 204, 0.15);
+  color: #0884CC !important;
+  border: 1px solid #0884CC;
   text-decoration: none !important;
   font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
-  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 }
 
 .top-section-link:hover{
@@ -266,7 +281,20 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 }
 
-/* ---------- Single job card ---------- */
+/* Mobiel: knop boven, tekst eronder */
+@media (max-width: 640px){
+  .top-section-text{
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .top-section-link{
+    width: 100%;
+  }
+}
+
+
+/* Single job */
 .single_job_listing{
   padding: 22px;
 }
@@ -280,7 +308,7 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
   color: var(--sj-ink);
 }
 
-/* Meta chips */
+/* Chips */
 .sj-meta{
   display: flex;
   flex-wrap: wrap;
@@ -295,17 +323,19 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
   padding: 8px 10px;
   border-radius: 999px;
   border: 1px solid #DEDEDE;
-  background: white; 
-  color: #333; 
-  font-family: Poppins; 
+  background: #fff;
+  color: #333;
+  font-family: Poppins, system-ui, sans-serif;
   font-weight: 700;
   font-size: 14px;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 }
 
-a.sj-chip.sj-chip--link {
-    color: #333; 
-    text-decoration: none; 
+.sj-chip--link{
+  text-decoration: none !important;
+}
+.sj-chip--link:hover{
+  border-color: rgba(8,132,204,.35);
 }
 
 /* Header */
@@ -313,7 +343,7 @@ a.sj-chip.sj-chip--link {
   padding-bottom: 14px;
   border-bottom: 1px solid var(--sj-border);
   margin-bottom: 16px;
-  margin-top: 24px; 
+  margin-top: 24px;
 }
 
 .sj-title{
@@ -327,158 +357,100 @@ a.sj-chip.sj-chip--link {
 
 .sj-subtitle{
   margin: 8px 0 0 0;
-  font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: Poppins, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 600;
   color: var(--sj-blue);
 }
 
-/* Content / job description */
+/* Content */
 .sj-content{
-  font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: Poppins, system-ui, sans-serif;
   color: var(--sj-ink);
   font-size: 15px;
   line-height: 1.75;
 }
 
 .sj-content p{ margin: 0 0 14px 0; }
-.sj-content h2, .sj-content h3{
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  color: var(--sj-ink);
-  margin: 20px 0 10px;
-  line-height: 1.25;
-}
-.sj-content ul, .sj-content ol{
-  margin: 0 0 14px 18px;
-}
 
-/* CTA */
+/* Button */
 .sj-actions{
   margin-top: 18px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
 }
 
 .sj-btn{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
-  border-radius: 5px;
+  padding: 10px 14px;
+  border-radius: 10px;
   background: rgba(8, 132, 204, 0.15);
-
   color: var(--sj-blue) !important;
   text-decoration: none !important;
   border: 1px solid var(--sj-blue);
-  font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: Poppins, system-ui, sans-serif;
   font-weight: 700;
   font-size: 14px;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
 }
-
 .sj-btn:hover{
   transform: translateY(-1px);
-  filter: brightness(.98);
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 }
 
-/* Hide default entry title if theme outputs it */
+/* Hide entry title */
 h1.entry-title{ display:none; }
 
-
-
-/* ==============================
-   CONTACT CARD (Studentinhuren look)
-   ============================== */
-
+/* Contact (Studentinhuren style) */
 .sj-contact{
-  padding: 22px 26px;            /* lekker ruim */
+  padding: 24px;
 }
 
-.sj-contact-title{
-  margin: 0 0 18px 0;
-  font-family: Poppins;
-  font-weight: 700;
+h2.sj-contact-title{
+  
+  font-family: Poppins; 
+ font-weight: 600; 
   font-size: 20px;
-  color: var(--sj-ink);
+  color: #333; 
 }
 
-/* 2 kolommen zoals in Studentinhuren */
 .sj-contact-grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 28px 56px;
-  align-items: start;
 }
 
-/* rij: label boven value */
 .sj-contact-row{
   display: grid;
   gap: 8px;
-  min-width: 0;
 }
 
 .sj-contact-label{
-  font-family: Poppins;
+  font-family: Poppins, system-ui, sans-serif;
   font-size: 16px;
-  font-weight: 400;
-  color: #7A7F87;                /* lichtgrijs label */
+  font-weight: 600;
+  color: #7A7F87;
 }
 
 .sj-contact-value{
-  font-family: Poppins;
-  font-size: 16px;
-  font-weight: 700;
+  font-family: Poppins, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
   color: #333;
   line-height: 1.25;
   word-break: break-word;
 }
 
-/* e-mail link in “Studentinhuren paars” */
 .sj-contact-link{
   color: var(--sj-blue) !important;
   text-decoration: none !important;
-  font-weight: 700;
 }
-
 .sj-contact-link:hover{
   text-decoration: underline !important;
-  opacity: 0.95;
 }
 
-/* Mobile: onder elkaar */
-@media (max-width: 768px){
-  .sj-contact{
-    padding: 18px 18px;
-  }
-
-  .sj-contact-grid{
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .sj-contact-title{
-    font-size: 20px;
-    margin-bottom: 14px;
-  }
-
-  .sj-contact-label{
-    font-size: 15px;
-  }
-
-  .sj-contact-value{
-    font-size: 17px;
-  }
-}
-
-
-/* ---------- Recente vacatures ---------- */
-/* ==============================
-   RECENTE VACATURES – MODERN CARD GRID
-   ============================== */
-
+/* Recente vacatures */
 .sj-recent{
   padding: 24px;
 }
@@ -496,13 +468,12 @@ h1.entry-title{ display:none; }
 }
 
 .sj-recent-sub{
-  margin-top: 6px;
+  margin: 6px 0 0 0;
   font-family: Poppins, system-ui, sans-serif;
   font-size: 14px;
   color: var(--sj-muted);
 }
 
-/* GRID */
 .sj-recent-grid{
   list-style: none;
   padding: 0;
@@ -512,7 +483,6 @@ h1.entry-title{ display:none; }
   gap: 18px;
 }
 
-/* CARD */
 .sj-recent-item{
   background: #fff;
   border: 1px solid var(--sj-border);
@@ -528,7 +498,6 @@ h1.entry-title{ display:none; }
   box-shadow: 0 18px 44px rgba(16,24,40,.14);
 }
 
-/* LINK = VERTICAL LAYOUT */
 .sj-recent-link{
   display: flex;
   flex-direction: column;
@@ -536,48 +505,48 @@ h1.entry-title{ display:none; }
   padding: 18px;
   text-decoration: none !important;
   color: inherit;
+  align-items: flex-start;
 }
 
-/* LOGO BOVEN */
-
-/* ==============================
-   LOGO – ZONDER WRAPPER STYLING
-   ============================== */
-
+/* Logo: geen extra “kaart/box” eromheen */
 .sj-recent-logo{
   display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
-/* WP Job Manager logo */
-.sj-recent-logo img{
+/* Force left (WPJM kan margin:auto zetten) */
+.sj-recent-logo img,
+.sj-recent-logo .company_logo{
   display: block;
-  width: 100px;
-  height: auto;
-  max-height: 100px;
-  object-fit: contain;
-  border: 1px solid #DEDEDE; 
-  border-radius: 5px; 
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
-
+  margin: 0 !important;
 }
 
+/* Logo groter */
+.sj-recent-logo img{
+  width: 120px;
+  height: auto;
+  max-height: 80px;
+  object-fit: contain;
+}
 
-/* CONTENT ONDER LOGO */
+/* Text */
 .sj-recent-body{
   display: flex;
   flex-direction: column;
   gap: 6px;
+  min-width: 0;
 }
 
-/* BEDRIJFSNAAM */
 .sj-recent-company{
   font-family: Poppins, system-ui, sans-serif;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--sj-blue);
 }
 
-/* TITEL */
 .sj-recent-jobtitle{
   margin: 0;
   font-family: Inter, system-ui, sans-serif;
@@ -592,7 +561,6 @@ h1.entry-title{ display:none; }
   overflow: hidden;
 }
 
-/* EXCERPT */
 .sj-recent-excerpt{
   margin: 0;
   font-family: Poppins, system-ui, sans-serif;
@@ -610,64 +578,83 @@ h1.entry-title{ display:none; }
   color: var(--sj-blue);
 }
 
-/* ==============================
-   RESPONSIVE
-   ============================== */
-
-@media (max-width: 900px){
-  .sj-recent-grid{
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 520px){
-  .sj-recent-grid{
-    grid-template-columns: 1fr;
-  }
-
-  .sj-recent-logo{
-    min-height: 120px;
-  }
-
-  .sj-recent-logo img{
-    width: 110px;
-    height: 110px;
-  }
-}
 
 
-@media (max-width: 600px){
-  /* voorkom 100vw overflow op mobiel */
-  .custom-top-section{
-    width: 100% !important;
-    margin-left: 0 !important;
-  }
+@media (max-width: 768px){
 
-  .sj-wrap{
-    max-width: calc(100% - 20px);
-    margin: 16px auto 30px;
-  }
-
-  .single_job_listing,
-  .sj-contact,
-  .sj-recent{
-    padding: 16px;
-  }
-
-  .sj-title{
-    font-size: 22px;
-  }
-
-
-
-  .sj-contact-row{
-    grid-template-columns: 1fr;
+  /* kill 100vw tricks (deze is 99% van de gevallen de boosdoener) */
+  .top-section-text{
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .top-section-link{
     width: 100%;
-    margin-top: 12px;
+  }
+
+  /* zorg dat alles binnen het scherm blijft */
+  
+  .sj-wrap,
+  .single_job_listing,
+  .sj-contact,
+  .sj-recent,
+  .sj-card{
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* sj-wrap is jouw container: die moet niet breder worden door padding */
+  .sj-wrap{
+    
+  }
+
+  /* voorkom dat grids/flex kinderen breder worden dan hun container */
+  .sj-meta,
+  .sj-recent-grid,
+  .sj-recent-link,
+  .sj-contact-grid{
+    min-width: 0 !important;
+  }
+
+  /* images kunnen soms overflow veroorzaken */
+  img{
+    max-width: 100%;
+    height: auto;
   }
 }
+
+
+@media (max-width: 768px){
+
+  /* Zorg dat ALLES netjes binnen de viewport valt */
+  *, *::before, *::after{
+    box-sizing: border-box;
+  }
+
+  .sj-wrap{
+    padding: 0 16px;
+  }
+
+  .custom-top-section{
+    margin: 16px auto;
+  }
+
+  .top-section-text{
+    padding: 16px;
+  }
+
+  /* Contact grid onder elkaar */
+  .sj-contact-grid{
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  /* Recente vacatures: 1 of 2 kolommen */
+  .sj-recent-grid{
+    grid-template-columns: 1fr;
+  }
+}
+
 
 </style>
