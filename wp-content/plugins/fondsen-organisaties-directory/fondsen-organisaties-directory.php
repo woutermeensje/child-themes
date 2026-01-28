@@ -47,12 +47,17 @@ class Fondsen_Organisaties_Directory {
         ]);
     }
 
-    public function register_assets() {
-        $handle = 'fondsen-organisaties-directory';
-        $src    = plugin_dir_url(__FILE__) . 'assets/organisaties.js';
+   public function register_assets() {
+    $js_handle  = 'fondsen-organisaties-directory';
+    $js_src     = plugin_dir_url(__FILE__) . 'assets/organisaties.js';
 
-        wp_register_script($handle, $src, [], '1.0.0', true);
-    }
+    $css_handle = 'fondsen-organisaties-directory-css';
+    $css_src    = plugin_dir_url(__FILE__) . 'assets/organisaties.css';
+
+    wp_register_script($js_handle, $js_src, [], '1.0.1', true);
+    wp_register_style($css_handle, $css_src, [], '1.0.1');
+}
+
 
     private function plugin_path($relative = '') {
         return plugin_dir_path(__FILE__) . ltrim($relative, '/');
@@ -133,7 +138,8 @@ class Fondsen_Organisaties_Directory {
         $query = new WP_Query($args);
 
         // Assets alleen laden als shortcode gebruikt wordt
-        wp_enqueue_script('fondsen-organisaties-directory');
+wp_enqueue_script('fondsen-organisaties-directory');
+wp_enqueue_style('fondsen-organisaties-directory-css');
 
         // Data doorgeven aan JS (optioneel, handig voor uitbreiden)
         wp_localize_script('fondsen-organisaties-directory', 'FondsenOrgDir', [
