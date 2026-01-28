@@ -461,8 +461,8 @@ h2.sj-contact-title{
 
 .sj-recent-title{
   margin: 0;
-  font-family: Inter, system-ui, sans-serif;
-  font-weight: 800;
+  font-family: Poppins; 
+  font-weight: 700;
   font-size: 20px;
   color: var(--sj-ink);
 }
@@ -486,9 +486,9 @@ h2.sj-contact-title{
 .sj-recent-item{
   background: #fff;
   border: 1px solid var(--sj-border);
-  border-radius: 18px;
+  border-radius: 5px;
   overflow: hidden;
-  box-shadow: 0 12px 32px rgba(16,24,40,.08);
+  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
 }
 
@@ -522,6 +522,7 @@ h2.sj-contact-title{
 .sj-recent-logo .company_logo{
   display: block;
   margin: 0 !important;
+
 }
 
 /* Logo groter */
@@ -530,6 +531,7 @@ h2.sj-contact-title{
   height: auto;
   max-height: 80px;
   object-fit: contain;
+
 }
 
 /* Text */
@@ -547,11 +549,11 @@ h2.sj-contact-title{
   color: var(--sj-blue);
 }
 
-.sj-recent-jobtitle{
+h3.sj-recent-jobtitle{
   margin: 0;
-  font-family: Inter, system-ui, sans-serif;
-  font-size: 18px;
-  font-weight: 800;
+  font-family: Poppins; 
+  font-size: 16px;
+  font-weight: 700;
   line-height: 1.25;
   color: var(--sj-ink);
 
