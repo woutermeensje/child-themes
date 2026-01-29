@@ -233,8 +233,8 @@
 }
 
 .si-filter-header h1{
-  font-family: Balgin Bold, sans-serif;
-  font-size: 28px;
+  font-family: Inter; 
+  font-size: 24px;
   line-height: 1.2;
   margin: 0 0 10px 0;
   color: #333 !important;
