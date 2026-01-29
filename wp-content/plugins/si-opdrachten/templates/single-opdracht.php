@@ -12,13 +12,64 @@ while (have_posts()) : the_post();
   $logo_url = $logo_id ? wp_get_attachment_image_url($logo_id, 'medium') : '';
 ?>
 
+
+
+<div class="update-header">
+  <div class="opdrachten-update">
+    <p>
+      Ontvang de laatste opdrachten & projecten in de e-mail! 
+    </p>
+    <a href="/updates-ontvangen/" class="update-link">
+      Opdrachten Update
+    </a>
+  </div>
+</div>
+
+<style>
+
+  .update-header {
+    width: 1050px; 
+    margin: 24px auto; 
+    padding: 0 16px; /* ademruimte op mobiel */
+  }
+
+  .opdrachten-update {
+    padding: 24px; 
+    border: 1px solid #DEDEDE; 
+    border-radius: 5px; 
+    box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
+    display: flex; 
+    justify-content: space-between; /* 🔥 dit is de key */
+    align-items: center;            /* verticaal netjes uitlijnen */
+    width: 100%;
+
+  }
+
+  .opdrachten-update p {
+    color: #333; 
+    margin: 0; /* 🔥 dit fixeert 90% van dit soort issues */
+    font-weight: 700; 
+    font-size: 18px; 
+
+  }
+
+  .update-link {
+    color: #3A89FF;
+    border-color: #3A89FF;
+    background: rgba(58, 137, 255, 0.14);
+    font-family: Poppins; 
+    font-weight: 700; 
+    padding: 8px; 
+    border: 1px solid #3A89FF;
+    border-radius: 5px; 
+    }
+
+</style>
+
 <div class="si-opd-single-wrap">
   <div class="si-opd-single">
 
     <header class="si-opd-single-header">
-      <?php if ($logo_url): ?>
-        <img class="si-opd-single-logo" src="<?php echo esc_url($logo_url); ?>" alt="<?php echo esc_attr(get_the_title()); ?>" />
-      <?php endif; ?>
 
       <h1 class="si-opd-single-title"><?php the_title(); ?></h1>
 
@@ -101,7 +152,7 @@ get_footer();
 .si-opd-single{
   background: #fff;
   border: 1px solid #E5E7EB;
-  border-radius: 12px;
+  border-radius: 5px;
   box-shadow: 0 10px 40px -10px rgba(0,0,0,0.10);
   overflow: hidden;
 }
@@ -117,7 +168,7 @@ get_footer();
   height: 72px;
   object-fit: contain;
   border: 1px solid #E5E7EB;
-  border-radius: 10px;
+  border-radius: 5px;
   background: #fff;
   padding: 8px;
   margin: 0 0 14px 0;
@@ -236,7 +287,7 @@ get_footer();
   border-left: 3px solid #0456AB;
   background: #F9FAFB;
   color: #374151;
-  border-radius: 8px;
+  border-radius: 5px;
 }
 
 /* Afbeeldingen in content */
@@ -279,7 +330,7 @@ get_footer();
   margin-top: 20px;
   padding: 20px 22px;
   border: 1px solid #E5E7EB;
-  border-radius: 12px;
+  border-radius: 5px;
   background: #fff;
 }
 
