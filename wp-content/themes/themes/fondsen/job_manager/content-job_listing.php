@@ -179,11 +179,15 @@ ul.job_listings li.job_listing {
 
 /* Card container */
 .job-card {
-    background: #ffffff;
+    background: #FBFAF8;
     border-radius: 6px;
     box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
     padding: 24px;
     border: 1px solid #E0E0E0;
+}
+
+a.title-link {
+    background-color: #FBFAF8 !important;
 }
 
 /* IMPORTANT: voorkomt “breken” door te brede children */
@@ -303,7 +307,6 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
 
 /* Titel-link */
 a.title-link {
-    background-color: white !important;
     padding: 0 !important;
     color: #333333;
     text-decoration: none;

@@ -1,181 +1,206 @@
 <?php
 /**
- * Plugin Name: Fondsen.org Organisaties Directory
- * Description: Shortcode [organisaties] die childpagina's onder /organisaties/ toont met filters (zoek, type organisatie, sector).
- * Version: 1.0.0
- * Author: Fondsen.org
+ * Plugin Name: Fondsen.org – Organisaties Directory
+ * Description: Directory + filters + load more voor organisaties (pages).
+ * Version: 1.1.0
  */
 
-if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! defined('ABSPATH') ) exit;
 
 class Fondsen_Organisaties_Directory {
 
-    const SHORTCODE = 'organisaties';
-
-    // Pas dit aan als jouw sector-taxonomy anders heet
-    const TAX_SECTOR = 'job_sector';
-
-    // Nieuwe taxonomy voor "type organisatie"
-    const TAX_TYPE_ORG = 'org_type';
+    const TAX_SECTOR   = 'job_sector';
+    const TAX_TYPE_ORG = 'organization_type';
 
     public function __construct() {
-        add_action( 'init', [ $this, 'register_taxonomy_org_type' ] );
-        add_action( 'wp_enqueue_scripts', [ $this, 'register_assets' ] );
-        add_shortcode( self::SHORTCODE, [ $this, 'render_shortcode' ] );
+        add_shortcode('fondsen_organisaties', [$this, 'render_shortcode']);
+
+        add_action('wp_enqueue_scripts', [$this, 'register_assets']);
+
+        add_action('wp_ajax_fondsen_org_dir_load_more', [$this, 'ajax_load_more']);
+        add_action('wp_ajax_nopriv_fondsen_org_dir_load_more', [$this, 'ajax_load_more']);
     }
 
-    public function register_taxonomy_org_type() {
-        $labels = [
-            'name'              => 'Type organisatie',
-            'singular_name'     => 'Type organisatie',
-            'search_items'      => 'Zoek types',
-            'all_items'         => 'Alle types',
-            'edit_item'         => 'Bewerk type',
-            'update_item'       => 'Update type',
-            'add_new_item'      => 'Nieuw type toevoegen',
-            'new_item_name'     => 'Nieuwe type naam',
-            'menu_name'         => 'Type organisatie',
-        ];
+    /* ======================================================
+     * Assets
+     * ====================================================== */
+    public function register_assets() {
+        $handle = 'fondsen-organisaties-directory';
 
-        register_taxonomy(self::TAX_TYPE_ORG, ['page'], [
-            'hierarchical'      => true,
-            'labels'            => $labels,
-            'show_ui'           => true,
-            'show_admin_column' => true,
-            'show_in_rest'      => true,
-            'rewrite'           => ['slug' => 'type-organisatie'],
+        wp_register_script(
+            $handle,
+            plugin_dir_url(__FILE__) . 'assets/organisaties.js',
+            ['jquery'],
+            '1.1.0',
+            true
+        );
+
+        wp_localize_script($handle, 'FOND_DIR', [
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce'    => wp_create_nonce('fond_dir_nonce'),
         ]);
     }
 
-   public function register_assets() {
-    $js_handle  = 'fondsen-organisaties-directory';
-    $js_src     = plugin_dir_url(__FILE__) . 'assets/organisaties.js';
-
-    $css_handle = 'fondsen-organisaties-directory-css';
-    $css_src    = plugin_dir_url(__FILE__) . 'assets/organisaties.css';
-
-    wp_register_script($js_handle, $js_src, [], '1.0.1', true);
-    wp_register_style($css_handle, $css_src, [], '1.0.1');
-}
-
-
-    private function plugin_path($relative = '') {
-        return plugin_dir_path(__FILE__) . ltrim($relative, '/');
-    }
-
-    private function get_parent_organisaties_id() {
-        $page = get_page_by_path('organisaties');
-        return ($page instanceof WP_Post) ? (int) $page->ID : 0;
-    }
-
-    private function sanitize_slugs_array($value) {
-        $arr = is_array($value) ? $value : [];
-        $arr = array_map('wp_unslash', $arr);
-        $arr = array_map('sanitize_text_field', $arr);
-        $arr = array_filter($arr);
-        return array_values($arr);
-    }
-
+    /* ======================================================
+     * Shortcode
+     * ====================================================== */
     public function render_shortcode($atts) {
-        $parent_id = $this->get_parent_organisaties_id();
-        if ( ! $parent_id ) {
-            return '<p>Parentpagina /organisaties/ niet gevonden.</p>';
-        }
 
-        // --- Filters uit URL ---
-        $search_query   = isset($_GET['org_search']) ? sanitize_text_field( wp_unslash($_GET['org_search']) ) : '';
-        $selected_types = isset($_GET['org_type'])   ? $this->sanitize_slugs_array($_GET['org_type']) : [];
-        $selected_sector= isset($_GET['org_sector']) ? $this->sanitize_slugs_array($_GET['org_sector']) : [];
+        wp_enqueue_script('fondsen-organisaties-directory');
 
-        // Terms ophalen
-        $types = get_terms([
-            'taxonomy'   => self::TAX_TYPE_ORG,
-            'hide_empty' => true,
-        ]);
+        $atts = shortcode_atts([
+            'per_page' => 30,            // 3 × 10
+            'sector'   => '',            // "klimaat,gezondheid"
+            'type'     => '',            // "ngo,stichting"
+        ], $atts, 'fondsen_organisaties');
 
-        $sectors = get_terms([
-            'taxonomy'   => self::TAX_SECTOR,
-            'hide_empty' => true,
-        ]);
+        // GET filters hebben voorrang
+        $search = isset($_GET['org_search']) ? sanitize_text_field($_GET['org_search']) : '';
 
-        // Query
-        $args = [
-            'post_type'      => 'page',
-            'post_parent'    => $parent_id,
-            'posts_per_page' => -1,
-            'orderby'        => 'title',
-            'order'          => 'ASC',
-        ];
+        $sector_selected = isset($_GET['org_sector'])
+            ? (array) $_GET['org_sector']
+            : array_filter(array_map('trim', explode(',', $atts['sector'])));
 
-        if ( $search_query !== '' ) {
-            $args['s'] = $search_query;
-        }
+        $type_selected = isset($_GET['org_type'])
+            ? (array) $_GET['org_type']
+            : array_filter(array_map('trim', explode(',', $atts['type'])));
 
-        $tax_query = [ 'relation' => 'AND' ];
+        $query = new WP_Query(
+            $this->build_query_args([
+                'paged'      => 1,
+                'per_page'   => (int) $atts['per_page'],
+                's'          => $search,
+                'org_sector' => $sector_selected,
+                'org_type'   => $type_selected,
+            ])
+        );
 
-        if ( ! empty($selected_types) ) {
-            $tax_query[] = [
-                'taxonomy' => self::TAX_TYPE_ORG,
-                'field'    => 'slug',
-                'terms'    => $selected_types,
-                'operator' => 'IN',
-            ];
-        }
-
-        if ( ! empty($selected_sector) ) {
-            $tax_query[] = [
-                'taxonomy' => self::TAX_SECTOR,
-                'field'    => 'slug',
-                'terms'    => $selected_sector,
-                'operator' => 'IN',
-            ];
-        }
-
-        if ( count($tax_query) > 1 ) {
-            $args['tax_query'] = $tax_query;
-        }
-
-        $query = new WP_Query($args);
-
-        // Assets alleen laden als shortcode gebruikt wordt
-wp_enqueue_script('fondsen-organisaties-directory');
-wp_enqueue_style('fondsen-organisaties-directory-css');
-
-        // Data doorgeven aan JS (optioneel, handig voor uitbreiden)
-        wp_localize_script('fondsen-organisaties-directory', 'FondsenOrgDir', [
-            'autoSubmitDelay' => 350,
-        ]);
-
-        // Data beschikbaar maken voor templates
-        $context = [
-            'search_query'    => $search_query,
-            'types'           => $types,
-            'sectors'         => $sectors,
-            'selected_types'  => $selected_types,
-            'selected_sector' => $selected_sector,
-            'query'           => $query,
+        $data = [
+            'search'           => $search,
+            'sectors_selected' => $this->sanitize_slugs_array($sector_selected),
+            'types_selected'   => $this->sanitize_slugs_array($type_selected),
+            'posts'            => $query->posts,
+            'max_pages'        => (int) $query->max_num_pages,
+            'per_page'         => (int) $atts['per_page'],
         ];
 
         ob_start();
 
-        $filter_template  = $this->plugin_path('templates/organisaties-filter.php');
-        $listing_template = $this->plugin_path('templates/organisaties-listing.php');
 
-        if ( file_exists($filter_template) ) {
-            include $filter_template;
-        } else {
-            echo '<p>Template ontbreekt: organisaties-filter.php</p>';
-        }
+                // Terms ophalen voor dropdowns/multiselect
+        $types = get_terms([
+        'taxonomy'   => self::TAX_TYPE_ORG,
+        'hide_empty' => false,
+        ]);
 
-        if ( file_exists($listing_template) ) {
-            include $listing_template;
-        } else {
-            echo '<p>Template ontbreekt: organisaties-listing.php</p>';
-        }
+        $sectors = get_terms([
+        'taxonomy'   => self::TAX_SECTOR,
+        'hide_empty' => false,
+        ]);
 
-        wp_reset_postdata();
+        // Variabelen die de templates verwachten
+        $search_query    = $data['search'] ?? '';
+        $selected_types  = $data['types_selected'] ?? [];
+        $selected_sector = $data['sectors_selected'] ?? [];
+
+
+        include $this->plugin_path('templates/organisaties-filter.php');
+        include $this->plugin_path('templates/organisaties-listing.php');
 
         return ob_get_clean();
+    }
+
+    /* ======================================================
+     * AJAX Load More
+     * ====================================================== */
+    public function ajax_load_more() {
+        check_ajax_referer('fond_dir_nonce', 'nonce');
+
+        $page     = isset($_POST['page']) ? (int) $_POST['page'] : 1;
+        $per_page = isset($_POST['per_page']) ? (int) $_POST['per_page'] : 30;
+
+        $query = new WP_Query(
+            $this->build_query_args([
+                'paged'      => $page,
+                'per_page'   => $per_page,
+                's'          => sanitize_text_field($_POST['org_search'] ?? ''),
+                'org_sector' => (array) ($_POST['org_sector'] ?? []),
+                'org_type'   => (array) ($_POST['org_type'] ?? []),
+            ])
+        );
+
+        ob_start();
+        foreach ($query->posts as $post) {
+            setup_postdata($post);
+            include $this->plugin_path('templates/organisaties-grid-item.php');
+        }
+        wp_reset_postdata();
+
+        wp_send_json_success([
+            'html'      => ob_get_clean(),
+            'has_more'  => $page < (int) $query->max_num_pages,
+            'next_page' => $page + 1,
+        ]);
+    }
+
+    /* ======================================================
+     * Query helpers
+     * ====================================================== */
+    private function build_query_args($params = []) {
+
+        $parent_id = $this->get_parent_organisaties_id();
+
+        $args = [
+            'post_type'      => 'page',
+            'post_status'    => 'publish',
+            'post_parent'    => $parent_id,
+            'posts_per_page' => max(1, (int) ($params['per_page'] ?? 30)),
+            'paged'          => max(1, (int) ($params['paged'] ?? 1)),
+        ];
+
+        if (!empty($params['s'])) {
+            $args['s'] = sanitize_text_field($params['s']);
+        }
+
+        $tax_query = [];
+
+        $sector = $this->sanitize_slugs_array($params['org_sector'] ?? []);
+        if ($sector) {
+            $tax_query[] = [
+                'taxonomy' => self::TAX_SECTOR,
+                'field'    => 'slug',
+                'terms'    => $sector,
+            ];
+        }
+
+        $type = $this->sanitize_slugs_array($params['org_type'] ?? []);
+        if ($type) {
+            $tax_query[] = [
+                'taxonomy' => self::TAX_TYPE_ORG,
+                'field'    => 'slug',
+                'terms'    => $type,
+            ];
+        }
+
+        if ($tax_query) {
+            $args['tax_query'] = $tax_query;
+        }
+
+        return $args;
+    }
+
+    private function sanitize_slugs_array($values) {
+        if (!is_array($values)) return [];
+        return array_values(array_filter(array_map('sanitize_title', $values)));
+    }
+
+    private function get_parent_organisaties_id() {
+        $page = get_page_by_path('organisaties');
+        return $page ? (int) $page->ID : 0;
+    }
+
+    private function plugin_path($relative) {
+        return plugin_dir_path(__FILE__) . ltrim($relative, '/');
     }
 }
 
