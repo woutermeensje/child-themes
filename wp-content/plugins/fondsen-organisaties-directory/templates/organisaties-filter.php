@@ -6,7 +6,7 @@
     <div class="si-filter-header">
       <div class="si-filter-header-top">
         <div class="si-filter-header-text">
-          <h1>Bekijk alle organisaties in onze directory</h1>
+          <h1>Doorzoek Fondsen, Goede Doelen, Stichtingen & Verenigingen</h1>
           <p>Zoek en filter op type organisatie en sector.</p>
         </div>
       </div>

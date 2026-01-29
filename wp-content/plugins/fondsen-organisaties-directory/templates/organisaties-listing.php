@@ -55,8 +55,9 @@ if ( ! defined('ABSPATH') ) exit;
 }
 
 .fod-org-grid-wrap {
-    width: 1050px; 
-    margin: 0 auto; 
+   margin: 20px auto;
+  padding: 24px;
+  width: 1050px; 
 }
 
 /* Responsive */
