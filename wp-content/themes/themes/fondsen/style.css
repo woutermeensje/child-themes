@@ -17,6 +17,17 @@ Version: 1.0.0
     font-display: swap;
 }
 
+@font-face {
+  font-family: "Inter";
+  src: url("/path/to/fonts/Inter-Regular.woff2") format("woff2"),
+       url("/path/to/fonts/Inter-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* herhaal voor 500, 600, 700, 800 */
+
+
 
 
 :root {

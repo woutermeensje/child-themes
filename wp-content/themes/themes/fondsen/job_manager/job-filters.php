@@ -22,17 +22,10 @@ $shortcode_atts = shortcode_atts([
 ], $atts);
 
 // helper: haal value uit request (support zowel key als filter_key)
-function srmb_get_req_value($key) {
-    $filter_key = 'filter_' . $key;
+// hier heb ik dus iets verwijderd. 
 
-    if (!empty($_GET[$key])) return (array) $_GET[$key];
-    if (!empty($_GET[$filter_key])) return (array) $_GET[$filter_key];
 
-    if (!empty($_POST[$filter_key])) return (array) $_POST[$filter_key];
-    if (!empty($_POST[$key])) return (array) $_POST[$key];
 
-    return [];
-}
 
 foreach ($selected as $key => &$value) {
     $shortcode_key = $key === 'job_types' ? 'job_listing_type' : $key;
@@ -826,6 +819,39 @@ button.active-filter-x:hover {
   font-weight: 700; 
   background: none; 
 }
+
+/* =========================
+   MOBILE: filter net zo breed als de job cards
+   ========================= */
+@media (max-width: 960px) {
+
+  /* Zelfde horizontale marge/gevoel als jouw job listings */
+  form.job_filters{
+    width: 100% !important;
+    margin: 12px auto !important;
+    padding: 0 !important; /* we sturen padding per blok */
+    box-sizing: border-box;
+  }
+
+  /* Inhoud binnenin dezelfde "gutter" als listings (12px) */
+  form.job_filters .filter-header{
+    padding: 0 12px 10px 12px !important;
+  }
+
+  form.job_filters .search-basic{
+    padding: 0 12px !important;
+  }
+
+  form.job_filters .filter-box{
+    padding: 12px !important;
+  }
+
+  /* Active filters chips ook uitlijnen */
+  form.job_filters .active-filters{
+    margin: 12px 12px 0 !important;
+  }
+}
+
 
 /*
 </style>

@@ -658,5 +658,18 @@ h3.sj-recent-jobtitle{
   }
 }
 
+.sj-header{
+  min-width: 0;                 =
+}
+
+.sj-title{
+  max-width: 100%;
+  white-space: normal !important;
+  overflow-wrap: anywhere;       
+  word-break: break-word;       
+  hyphens: auto;                 
+}
+
+
 
 </style>
