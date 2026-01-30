@@ -8,7 +8,7 @@ class VP_Taxonomies {
     register_taxonomy('vp_job_type', $cpt, [
       'labels' => [ 'name' => __('Job type', 'vacature-plugin') ],
       'public' => true,
-      'hierarchical' => false,
+      'hierarchical' => true,
       'rewrite' => [ 'slug' => 'job-type' ],
       'show_in_rest' => true,
     ]);
@@ -24,16 +24,24 @@ class VP_Taxonomies {
     register_taxonomy('vp_org_type', $cpt, [
       'labels' => [ 'name' => __('Type organisatie', 'vacature-plugin') ],
       'public' => true,
-      'hierarchical' => false,
+      'hierarchical' => true,
       'rewrite' => [ 'slug' => 'organisatie-type' ],
       'show_in_rest' => true,
     ]);
 
-    register_taxonomy('vp_company', $cpt, [
-      'labels' => [ 'name' => __('Bedrijf', 'vacature-plugin') ],
+    register_taxonomy('bedrijfsnaam', $cpt, [
+      'labels' => [ 'name' => __('Bedrijfsnaam', 'vacature-plugin') ],
       'public' => true,
-      'hierarchical' => false,
-      'rewrite' => [ 'slug' => 'bedrijf' ],
+      'hierarchical' => true,
+      'rewrite' => [ 'slug' => 'bedrijfsnaam' ],
+      'show_in_rest' => true,
+    ]);
+
+   register_taxonomy('vp_regio', $cpt, [
+      'labels' => [ 'name' => __('Regio', 'vacature-plugin') ],
+      'public' => true,
+      'hierarchical' => true,
+      'rewrite' => [ 'slug' => 'regio' ],
       'show_in_rest' => true,
     ]);
   }

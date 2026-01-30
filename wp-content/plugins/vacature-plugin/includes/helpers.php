@@ -33,3 +33,11 @@ function vp_clean_slugs($arr) {
   $arr = array_map('sanitize_title', $arr);
   return array_values(array_filter(array_unique($arr)));
 }
+
+function vp_setting($key, $default = '') {
+  $opt = get_option('vp_settings', []);
+  if (is_array($opt) && array_key_exists($key, $opt) && $opt[$key] !== '') {
+    return $opt[$key];
+  }
+  return $default;
+}

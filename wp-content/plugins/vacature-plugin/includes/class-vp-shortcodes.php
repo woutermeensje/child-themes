@@ -12,7 +12,8 @@ class VP_Shortcodes {
       'job_type'   => '',
       'categorie'  => '',
       'org_type'   => '',
-      'bedrijf'    => '',
+      'regio'      => '',
+      'bedrijfsnaam' => '',
     ], $atts, 'vacature_plugin');
 
     // enqueue assets
@@ -24,7 +25,8 @@ class VP_Shortcodes {
       'job_type'  => [],
       'categorie' => [],
       'org_type'  => [],
-      'bedrijf'   => [],
+      'regio'     => [],
+      'bedrijfsnaam' => [],
     ];
 
     foreach ($selected as $k => &$v) {
@@ -49,17 +51,16 @@ class VP_Shortcodes {
     ]);
 
     // initial render (server) – JS pakt daarna AJAX over
-    $wrap .= '<div id="vpjobs-results">';
-    $wrap .= vp_template('listings.php', [
-      'query' => VP_AJAX::build_query([
-        'keywords' => $keywords,
-        'location' => $location,
-        'selected' => $selected,
-        'per_page' => (int)$atts['per_page'],
-        'paged'    => 1,
-      ]),
+    $wrap = '<div class="vpjobs-wrap" data-component="vpjobs">';
+    $wrap .= vp_template('filter.php', [
+    'atts'     => $atts,
+    'selected' => $selected,
+    'keywords' => $keywords,
+    'location' => $location,
     ]);
     $wrap .= '</div>';
+
+return $wrap;
 
     $wrap .= '</div>';
 

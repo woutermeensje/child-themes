@@ -8,6 +8,7 @@ require_once VP_PLUGIN_DIR . 'includes/class-vp-shortcodes.php';
 require_once VP_PLUGIN_DIR . 'includes/class-vp-ajax.php';
 require_once VP_PLUGIN_DIR . 'includes/class-vp-schema.php';
 require_once VP_PLUGIN_DIR . 'includes/class-vp-templates.php';
+require_once VP_PLUGIN_DIR . 'includes/class-vp-settings.php';
 
 final class VP_Plugin {
   private static $instance = null;
@@ -24,6 +25,7 @@ final class VP_Plugin {
     add_action('init', [ 'VP_AJAX', 'register' ]);
     add_action('init', [ 'VP_Templates', 'register' ]); // ✅ toevoegen
     add_action('wp',  [ 'VP_Schema', 'hook' ]);
+    add_action('init', [ 'VP_Settings', 'register' ]); // of admin-only
 
     add_action('wp_enqueue_scripts', [ $this, 'enqueue_frontend' ]);
     add_action('admin_enqueue_scripts', [ $this, 'enqueue_admin' ]);

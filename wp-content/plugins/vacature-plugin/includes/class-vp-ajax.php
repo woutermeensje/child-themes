@@ -18,7 +18,8 @@ class VP_AJAX {
       'job_type'  => vp_clean_slugs(vp_get_req_array('job_type')),
       'categorie' => vp_clean_slugs(vp_get_req_array('categorie')),
       'org_type'  => vp_clean_slugs(vp_get_req_array('org_type')),
-      'bedrijf'   => vp_clean_slugs(vp_get_req_array('bedrijf')),
+      'regio'     => vp_clean_slugs(vp_get_req_array('regio')),
+      'bedrijfsnaam' => vp_clean_slugs(vp_get_req_array('bedrijfsnaam')),
     ];
 
     $keywords = vp_get_req_string('search_keywords', '');
@@ -51,7 +52,8 @@ class VP_AJAX {
       'job_type'  => 'vp_job_type',
       'categorie' => 'vp_category',
       'org_type'  => 'vp_org_type',
-      'bedrijf'   => 'vp_company',
+      'regio'     => 'vp_regio',
+      'bedrijfsnaam' => 'bedrijfsnaam',
     ];
 
     foreach ($map as $key => $tax) {
