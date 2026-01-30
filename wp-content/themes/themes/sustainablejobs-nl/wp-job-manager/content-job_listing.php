@@ -331,6 +331,9 @@ a.google_map_link:hover{
 
   .job-title{
     font-size: 1.25rem;
+     white-space: normal !important;   /* 🔥 laat wrappen */
+    overflow: visible !important;
+    text-overflow: unset !important;
   }
 
   .job-date{
@@ -343,4 +346,62 @@ a.google_map_link:hover{
   }
 }
 
+</style>
+
+<style>
+
+
+  @media (max-width: 768px){
+
+  /* Zorg dat meta kan wrappen */
+  .job-meta{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    max-width: 100%;
+  }
+
+  /* Alle pills: nooit breder dan scherm, afkappen met ... */
+  .job-meta > *{
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Bedrijfsnaam/link pill */
+  .company-name{
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+  }
+
+  /* Locatie (of linkvariant) */
+  .job-location,
+  a.google_map_link{
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+  }
+
+  /* Job type pill */
+  .job-type{
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 768px){
+  .job-listing-simple,
+  .job-details{
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+}
 </style>
