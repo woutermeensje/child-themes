@@ -10,7 +10,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 <div class="update-header">
   <div class="opdrachten-update">
     <p>
-      Ontvang de laatste opdrachten & projecten in de e-mail! 
+      Blijf op de hoogte van de nieuwste vacatures!
     </p>
     <a href="/job-alerts/" class="update-link">
       Vacature Alert
@@ -119,12 +119,6 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                             <p>🏢 <?php the_company_name(); ?></p>
                         </div>
 
-                        <!-- Mobile meta (zoals Fondsen.org) -->
-                        <div class="meta-information-mobile">
-                            <p>🗓️ <?php echo esc_html( date_i18n( 'j F Y', get_post_time( 'U', true, $post_id ) ) ); ?></p>
-                            <p>🏷️ <?php wpjm_the_job_types(); ?></p>
-                            <p>🏢 <?php the_company_name(); ?></p>
-                        </div>
 
                         <div class="job-title">
                             <h1><?php wpjm_the_job_title(); ?> | <?php the_company_name(); ?></h1>
@@ -166,21 +160,15 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 
 
 <style>
-
-
-
-
 /* ===== SINGLE JOB CARD ===== */
 .single_job_listing{
     max-width: 100%;  
     width: 900px; 
     margin: 24px auto; 
     padding: 24px; /* ademruimte op mobiel */
-
     background: var(--color-bg);
     border-radius: 5px;
     box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
-  
     border: 1px solid var(--color-border);
 }
 
@@ -212,8 +200,9 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 
 .job-title h1{
     padding-bottom: 10px;
-    border-bottom: 2px solid var(--color-primary);
-    font-family: Balgin Bold;
+    border-bottom: 1px solid #DEDEDE;;
+    font-family: Inter, sans-serif; 
+    font-weight: 700; 
     font-size: 20px;
     padding-top: 20px;
 }
@@ -402,5 +391,35 @@ a.google_map_link{
 
 /* Verberg standaard WP page title */
 h1.entry-title{ display: none; }
+
+@media (max-width: 768px) {
+
+  .meta-information-single{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .meta-information-single p{
+    width: auto;
+    height: auto;
+
+    padding: 10px 14px;
+    border-radius: 999px;
+
+    font-size: 14px;
+    line-height: 1.2;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    white-space: nowrap; /* 🔥 essentieel */
+    flex: 0 0 auto;      /* 🔥 NIET laten stretchen */
+  }
+}
+
+
+
 
 </style>

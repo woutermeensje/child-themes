@@ -1,22 +1,30 @@
 <li class="job-listing-simple" <?php job_listing_class(); ?>>
 
-  <a class="job-card-link"
-     href="<?php the_job_permalink(); ?>"
-     aria-label="<?php echo esc_attr( wpjm_get_the_job_title() ); ?>">
-  </a>
-
   <div class="job-logo">
-    <?php the_company_logo(); ?>
+    <a class="job-main-link" href="<?php the_job_permalink(); ?>" aria-label="<?php echo esc_attr( wpjm_get_the_job_title() ); ?>">
+      <?php the_company_logo(); ?>
+    </a>
   </div>
 
   <div class="job-details">
-    <div class="job-title-line">
-      <h2 class="job-title">
-        <?php wpjm_the_job_title(); ?>
-      </h2>
-      <span class="job-date"><?php echo get_the_date('d-m-Y'); ?></span>
-    </div>
 
+    <!-- ✅ Click-zone voor vacature: titel + excerpt + "wit gedeelte" -->
+    <a class="job-main-link job-main-area"
+       href="<?php the_job_permalink(); ?>"
+       aria-label="<?php echo esc_attr( wpjm_get_the_job_title() ); ?>">
+
+      <div class="job-title-line">
+        <h2 class="job-title"><?php wpjm_the_job_title(); ?></h2>
+        <span class="job-date"><?php echo get_the_date('d-m-Y'); ?></span>
+      </div>
+
+      <div class="job-description">
+        <?php echo wp_trim_words(get_the_excerpt(), 12, '...'); ?>
+      </div>
+
+    </a>
+
+    <!-- ✅ Meta blijft buiten click-zone -->
     <div class="job-meta">
       <?php
       $terms = wp_get_post_terms(get_the_ID(), 'job_company');
@@ -32,20 +40,19 @@
       </span>
     </div>
 
-    <div class="job-description">
-      <?php echo wp_trim_words(get_the_excerpt(), 12, '...'); ?>
-    </div>
   </div>
 
 </li>
 
 <style>
+  
+
   /* ===============================
-   Job listing card (hele blok klikbaar)
+   Job listing card (NIET meer alles klikbaar)
    =============================== */
 
 .job-listing-simple{
-  position: relative;               /* nodig voor overlay-link */
+  position: relative;
   display: flex;
   align-items: center;
   gap: 20px;
@@ -60,52 +67,50 @@
 
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   transition: border-color .2s ease-in-out, transform .2s ease-in-out, box-shadow .2s ease-in-out;
-  cursor: pointer;
 }
 
+/* hover op de kaart mag wel, maar zonder “alles is klikbaar” */
 .job-listing-simple:hover{
   border-color: var(--color-primary);
   transform: translateY(-1px);
 }
 
-/* ✅ Overlay link bovenop: vangt clicks op de kaart */
-.job-listing-simple .job-card-link{
-  position: absolute;
-  inset: 0;
-  z-index: 5;
-  border-radius: 5px;
-  display: block;
+/* ===============================
+   Links / Click zones
+   =============================== */
+
+/* algemene link reset binnen card */
+.job-listing-simple a{
   text-decoration: none;
 }
 
-/* ✅ Keyboard focus zichtbaar + highlight card */
-.job-listing-simple .job-card-link:focus{
+/* ✅ Logo link */
+.job-logo a{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ✅ Klikbare zone naar vacature (titel + excerpt + wit vlak) */
+.job-main-area{
+  display: block;
+  color: inherit;
+  border-radius: 5px;
+  padding: 6px 0;              /* maakt “wit deel” in details ook klikbaar */
+}
+
+/* hover effect alleen op de klikzone */
+.job-main-area:hover .job-title{
+  color: var(--color-primary);
+}
+
+/* focus zichtbaar (toetsenbord) */
+.job-main-area:focus,
+.job-logo a:focus,
+.company-name:focus{
   outline: 2px solid var(--color-primary);
   outline-offset: 3px;
-}
-
-.job-listing-simple:focus-within{
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(8,132,204,0.18), 0 10px 40px -5px rgba(0,0,0,0.15);
-}
-
-/* ✅ Content containers: clicks doorlaten naar overlay */
-.job-listing-simple .job-logo,
-.job-listing-simple .job-details{
-  position: relative;
-  z-index: 2;
-  pointer-events: none;
-}
-
-/* ✅ Echte interactieve elementen blijven klikbaar */
-.job-listing-simple a:not(.job-card-link),
-.job-listing-simple button,
-.job-listing-simple input,
-.job-listing-simple select,
-.job-listing-simple textarea{
-  pointer-events: auto;
-  position: relative;
-  z-index: 6;
+  border-radius: 6px;
 }
 
 /* ===============================
@@ -152,7 +157,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  min-width: 0; /* voorkomt overflow bij lange titels */
+  min-width: 0;
   margin-top: 12px; 
 }
 
@@ -162,10 +167,10 @@
   justify-content: space-between;
   align-items: center;
   gap: 10px;
+
   margin-right: 10px;
   font-family: 'Inter', sans-serif;
 }
-
 
 .job-title{
   font-size: 20px;
@@ -173,14 +178,6 @@
   color: var(--color-text);
   margin: 0;
   min-width: 0;
-  font-family: 'Inter', sans-serif;
-}
-
-/* Als je titel nog een <a> heeft, blijft die klikbaar door de override hierboven */
-.job-title a{
-  color: var(--color-text);
-  text-decoration: none;
-  transition: color .2s ease-in-out;
 
   font-family: 'Inter', sans-serif !important;
   font-weight: 700;
@@ -190,12 +187,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-family: 'Inter', sans-serif;
-}
-
-.job-title a:hover{
-  color: var(--color-primary);
-  text-decoration: none;
 }
 
 .job-date{
@@ -206,7 +197,10 @@
   white-space: nowrap;
 }
 
-/* Meta info */
+/* ===============================
+   Meta info (NIET klikbaar behalve bedrijfsnaam)
+   =============================== */
+
 .job-meta{
   margin: 5px 0;
   display: flex;
@@ -215,6 +209,7 @@
   align-items: center;
 }
 
+/* ✅ Bedrijfsnaam = link naar bedrijfspagina */
 .company-name{
   font-family: Poppins, sans-serif;
   font-weight: 700;
@@ -227,6 +222,8 @@
   border-radius: 5px;
   padding: 5px 10px;
   text-decoration: none;
+  display: inline-flex;
+  align-items: center;
 }
 
 .company-name:hover{
@@ -234,25 +231,7 @@
   filter: brightness(0.98);
 }
 
-a.google_map_link{
-  font-family: Poppins, sans-serif;
-  font-weight: 700;
-  font-size: 12px;
-
-  color: var(--color-primary);
-  border: 1px solid var(--color-primary);
-  background-color: var(--color-accent);
-
-  border-radius: 5px;
-  padding: 5px 10px;
-  text-decoration: none;
-}
-
-a.google_map_link:hover{
-  text-decoration: none;
-  filter: brightness(0.98);
-}
-
+/* ✅ Job type pill (span, niet klikbaar) */
 .job-type{
   font-family: Poppins, sans-serif;
   font-weight: 700;
@@ -264,10 +243,17 @@ a.google_map_link:hover{
 
   border-radius: 5px;
   padding: 5px 10px;
+
+  display: inline-flex;
+  align-items: center;
 }
 
-/* Locatie */
-.job-location{
+/* ===============================
+   Locatie - FIX dubbele border
+   =============================== */
+
+/* Als WPJM locatie als link rendert: style de link als pill */
+a.google_map_link{
   font-family: Poppins, sans-serif;
   font-weight: 700;
   font-size: 12px;
@@ -278,9 +264,46 @@ a.google_map_link:hover{
 
   border-radius: 5px;
   padding: 5px 10px;
+
+  display: inline-flex;
+  align-items: center;
 }
 
-/* Beschrijving */
+a.google_map_link:hover{
+  text-decoration: none;
+  filter: brightness(0.98);
+}
+
+/* Maak job-location neutraal, zodat je niet 2x pill/border krijgt */
+.job-location{
+  font-family: Poppins, sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  color: var(--color-primary);
+
+  border: 0;
+  background: transparent;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Als job-location plain text is (geen google_map_link),
+   kun je hieronder de pill aanzetten door deze override te gebruiken:
+
+.job-location{
+  border: 1px solid var(--color-primary);
+  background-color: #fff;
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+*/
+
+/* ===============================
+   Beschrijving
+   =============================== */
+
 .job-description{
   font-size: 14px;
   line-height: 1.7;
@@ -312,6 +335,11 @@ a.google_map_link:hover{
 
   .job-date{
     display: none;
+  }
+
+  /* meta pills blijven netjes wrappen op mobiel */
+  .job-meta{
+    gap: 10px;
   }
 }
 
