@@ -64,6 +64,37 @@ while (have_posts()) : the_post();
     border-radius: 5px; 
     }
 
+ @media (max-width: 768px) {
+
+  .update-header {
+    width: 100%;
+    margin: 16px auto;
+    padding: 0 12px;
+  }
+
+  .opdrachten-update {
+    flex-direction: column;   /* 🔥 onder elkaar */
+    align-items: stretch;     /* knop volle breedte */
+    gap: 16px;                /* ruimte tussen tekst en knop */
+    padding: 20px;
+    text-align: left;
+  }
+
+  .opdrachten-update p {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .update-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+}
+   
+
 </style>
 
 <div class="si-opd-single-wrap">

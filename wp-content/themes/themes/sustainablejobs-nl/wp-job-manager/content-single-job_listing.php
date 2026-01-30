@@ -7,23 +7,96 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 ?>
 
 <!-- TOP SECTION (zoals Fondsen.org, maar kleuren via CSS vars) -->
-<div class="custom-top-section">
-    <div class="top-section-text">
-
-        <?php
-        if ( function_exists( 'yoast_breadcrumb' ) ) {
-            yoast_breadcrumb( '<p class="broodkruimels">','</p>' );
-        }
-        ?>
-
-        <div>
-            <a href="https://sustainablejobs.nl/job-alerts/" class="top-section-link">Job alert instellen</a>
-        </div>
-
-    </div>
+<div class="update-header">
+  <div class="opdrachten-update">
+    <p>
+      Ontvang de laatste opdrachten & projecten in de e-mail! 
+    </p>
+    <a href="/job-alerts/" class="update-link">
+      Vacature Alert
+    </a>
+  </div>
 </div>
 
-<div class="single-job-wrapper">
+<style>
+
+  .update-header {
+    max-width: 100%;  
+    width: 900px; 
+   margin: auto; 
+   
+  }
+
+  .opdrachten-update {
+    padding: 24px; 
+     margin: 24px auto; 
+    border: 1px solid #DEDEDE; 
+    border-radius: 5px; 
+    box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
+    display: flex; 
+    justify-content: space-between; /* 🔥 dit is de key */
+    align-items: center;            /* verticaal netjes uitlijnen */
+    width: 100%;
+
+  }
+
+  .opdrachten-update p {
+    color: #333; 
+    margin: 0; /* 🔥 dit fixeert 90% van dit soort issues */
+    font-weight: 700; 
+    font-size: 18px; 
+
+  }
+
+  .update-link {
+    color: #0A6B8D !important;
+    background: #E0D0E1; 
+    font-family: Poppins; 
+    font-weight: 700; 
+    padding: 8px; 
+    border: 1px solid #0A6B8D !important;
+    border-radius: 5px; 
+    text-decoration: none !important; 
+    }
+
+    .update-link:hover {
+      background: #0A6B8D !important;
+      color: #B9D1B3  !important;
+    }
+
+ @media (max-width: 768px) {
+
+  .update-header {
+    width: 100%;
+    margin: 16px auto;
+    padding: 0 12px;
+  }
+
+  .opdrachten-update {
+    flex-direction: column;   /* 🔥 onder elkaar */
+    align-items: stretch;     /* knop volle breedte */
+    gap: 16px;                /* ruimte tussen tekst en knop */
+    padding: 20px;
+    text-align: left;
+  }
+
+  .opdrachten-update p {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .update-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+}
+   
+</style>
+
+
 
     <?php if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) : ?>
 
@@ -41,15 +114,15 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 
                         <!-- Desktop meta (pills) -->
                         <div class="meta-information-single">
-                            <p><?php the_job_publish_date(); ?></p>
-                            <p><?php the_job_type(); ?></p>
-                            <p><?php the_company_name(); ?></p>
+                            <p>🗓️ <?php the_job_publish_date(); ?></p>
+                            <p>🏷️ <?php wpjm_the_job_types(); ?></p>
+                            <p>🏢 <?php the_company_name(); ?></p>
                         </div>
 
                         <!-- Mobile meta (zoals Fondsen.org) -->
                         <div class="meta-information-mobile">
                             <p>🗓️ <?php echo esc_html( date_i18n( 'j F Y', get_post_time( 'U', true, $post_id ) ) ); ?></p>
-                            <p>🏷️ <?php the_job_type(); ?></p>
+                            <p>🏷️ <?php wpjm_the_job_types(); ?></p>
                             <p>🏢 <?php the_company_name(); ?></p>
                         </div>
 
@@ -86,102 +159,28 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 
     <?php endif; ?>
 
-</div>
+
+
 
 
 
 
 <style>
-/* ===== TOP SECTION (Fondsen structuur, Sustainable kleuren) ===== */
-.custom-top-section {
-    background-color: var(--color-primary);
-    color: var(--color-bg);
-    padding: 20px;
-    text-align: center;
-    font-family: "Balgin Bold", sans-serif;
-    font-size: 18px;
-    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
-
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-
-    position: relative;
-    display: flex;
-}
 
 
-.top-section-text{
-    text-align: left;
-    width: 900px;
-    margin: 0 auto;
-}
 
-.top-section-link{
-    color: white !important; 
-    border: 1px solid var(--color-tertiary);
-    background: var(--color-tertiary);
-    font-family: Balgin-Bold;
-    font-size: 16px;
-    border-radius: 5px;
-    cursor: pointer;
-    position: relative;
-    display: inline-block;
-    text-decoration: none !important;
-    margin-top: 24px;
-    padding: 10px 20px;
-}
-
-a.top-section-link {
-    font-family: Balgin Bold;
-    font-size: 16px; 
-    color: var(--color-primary) !important;
-}
-
-.top-section-link:hover{
-    color: var(--color-bg);
-    opacity: 0.95;
-}
-
-/* Yoast broodkruimels */
-.broodkruimels{
-    color: white !important; 
-    margin: 0;
-    font-family: Poppins, sans-serif;
-    font-weight: 400;
-    font-size: 15px;
-}
-
-.broodkruimels a{
-    color: var(--color-bg);
-    text-decoration: none;
-    font-family: Poppins, sans-serif;
-    font-weight: 400;
-    font-size: 15px;
-}
-
-.broodkruimels a:hover{
-    text-decoration: none;
-    opacity: 0.85;
-}
-
-.broodkruimels span,
-.broodkruimels .breadcrumb_last{
-    color: var(--color-bg);
-    font-family: Poppins, sans-serif;
-    font-weight: 400;
-    font-size: 15px;
-}
 
 /* ===== SINGLE JOB CARD ===== */
 .single_job_listing{
-    max-width: 100%;
-    width: 900px;
-    margin: 20px auto;
+    max-width: 100%;  
+    width: 900px; 
+    margin: 24px auto; 
+    padding: 24px; /* ademruimte op mobiel */
+
     background: var(--color-bg);
     border-radius: 5px;
     box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
-    padding: 25px;
+  
     border: 1px solid var(--color-border);
 }
 
@@ -191,15 +190,16 @@ a.top-section-link {
 
 .meta-information-single p{
     font-family: Poppins !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
     font-weight: 700 !important;
-    color: var(--color-bg);
-    border: 1px solid var(--color-primary);
-    background-color: var(--color-primary);
-    border-radius: 5px;
-    padding: 5px 10px;
+    color: #333;
+    border: 1px solid #DEDEDE;
+    background-color: white; 
+    border-radius: 999px;
+    padding: 8px;
     margin-right: 10px;
     cursor: pointer;
+    box-shadow: 0px 10px 40px -5px rgba(0, 0, 0, 0.15);
 }
 
 /* Desktop standaard: mobiel meta verborgen */
@@ -403,74 +403,4 @@ a.google_map_link{
 /* Verberg standaard WP page title */
 h1.entry-title{ display: none; }
 
-/* ===== MOBILE (Fondsen fixes) ===== */
-@media (max-width: 768px){
-
-    /* 100vw overflow fix */
-    .custom-top-section{
-        width: 100% !important;
-        margin-left: 0 !important;
-    }
-
-    .top-section-text{
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 16px !important;
-        box-sizing: border-box;
-    }
-
-    .broodkruimels,
-    .broodkruimels a,
-    .broodkruimels span,
-    .broodkruimels .breadcrumb_last{
-        font-size: 13px;
-        line-height: 1.35;
-        word-break: break-word;
-    }
-
-    .top-section-link{
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-        text-align: center;
-        margin-top: 16px;
-        padding: 12px 16px;
-        font-size: 16px;
-    }
-
-    /* alle vaste 900px breedtes resetten */
-    .single_job_listing,
-    .recent-jobs-list{
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box;
-    }
-
-    .single_job_listing{
-        padding: 16px !important;
-        margin: 16px auto !important;
-    }
-
-    .recent-jobs-list{
-        margin: 16px auto !important;
-        padding: 0 16px !important;
-    }
-
-    /* meta switch */
-    .meta-information-single{ display: none; }
-    .meta-information-mobile{ display: block; }
-
-    /* negatieve marge logo weg */
-    .job-logo{ margin-left: 0 !important; }
-
-    /* recent jobs card stacking */
-    .job-listing-simple{
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
-        width: 100%;
-    }
-
-    .job-date{ display: none; }
-}
 </style>
