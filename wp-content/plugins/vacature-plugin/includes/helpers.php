@@ -34,10 +34,42 @@ function vp_clean_slugs($arr) {
   return array_values(array_filter(array_unique($arr)));
 }
 
+/**
+ * Default settings (centrale defaults voor de plugin)
+ * -> Hier voeg je dus jouw 'filters_heading' toe.
+ */
+function vp_default_settings() {
+  return [
+    'filters_heading'   => 'Filters',
+    'reset_button_text' => 'Wis alles',
+
+    // voeg hier later gerust meer defaults toe:
+    // 'listings_heading' => 'Doorzoek alle vacatures',
+    // 'listings_cta_text'=> 'Bekijk vacature',
+  ];
+}
+
+/**
+ * Settings helper
+ * Volgorde:
+ * 1) opgeslagen optie in wp_options (vp_settings)
+ * 2) default uit vp_default_settings()
+ * 3) fallback $default (parameter)
+ */
 function vp_setting($key, $default = '') {
   $opt = get_option('vp_settings', []);
+  $defaults = vp_default_settings();
+
+  // 1) opgeslagen waarde
   if (is_array($opt) && array_key_exists($key, $opt) && $opt[$key] !== '') {
     return $opt[$key];
   }
+
+  // 2) plugin default
+  if (array_key_exists($key, $defaults) && $defaults[$key] !== '') {
+    return $defaults[$key];
+  }
+
+  // 3) fallback uit aanroep
   return $default;
 }

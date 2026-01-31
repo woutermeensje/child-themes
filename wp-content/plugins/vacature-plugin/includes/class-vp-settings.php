@@ -47,6 +47,19 @@ class VP_Settings {
       ]
     );
 
+    // ✅ NIEUW: heading boven de filters
+    add_settings_field(
+      'filters_heading',
+      __('Heading boven filters', 'vacature-plugin'),
+      [__CLASS__, 'field_text'],
+      'vp-settings',
+      'vp_texts',
+      [
+        'key' => 'filters_heading',
+        'placeholder' => 'Filters',
+      ]
+    );
+
     add_settings_field(
       'reset_button_text',
       __('Tekst reset knop', 'vacature-plugin'),
@@ -62,8 +75,20 @@ class VP_Settings {
 
   public static function sanitize($input) {
     $out = [];
-    $out['listings_heading']  = isset($input['listings_heading']) ? sanitize_text_field($input['listings_heading']) : '';
-    $out['reset_button_text'] = isset($input['reset_button_text']) ? sanitize_text_field($input['reset_button_text']) : '';
+
+    $out['listings_heading']  = isset($input['listings_heading'])
+      ? sanitize_text_field($input['listings_heading'])
+      : '';
+
+    // ✅ NIEUW
+    $out['filters_heading']  = isset($input['filters_heading'])
+      ? sanitize_text_field($input['filters_heading'])
+      : '';
+
+    $out['reset_button_text'] = isset($input['reset_button_text'])
+      ? sanitize_text_field($input['reset_button_text'])
+      : '';
+
     return $out;
   }
 
