@@ -311,6 +311,9 @@ select.vpjs-select{
   box-sizing: border-box;
 }
 
+
+
+
 span.vp-placeholder{
   color: #333 !important;
   font-weight: 300;
@@ -397,34 +400,82 @@ span.vp-placeholder{
    - Rij 1: zoekvelden naast elkaar
    - Rij 2+: dropdowns 2 per rij
 */
+/* =========================================
+   Responsive fixes (belangrijk)
+   ========================================= */
+
+/* Tablet: 2 kolommen */
 @media (max-width: 1024px){
+
   .vpjobs-filters-grid{
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
   }
 
-  .vpjobs-filter-search{ grid-row: auto; }
-  .vpjobs-filter-search-keywords{ grid-column: span 1; }
-  .vpjobs-filter-search-location{ grid-column: span 1; }
-
+  /* Reset de vaste rows van desktop, anders “valt” het uit elkaar */
+  .vpjobs-filter-search,
   .vpjobs-filters-grid > .vpjobs-filter:not(.vpjobs-filter-search){
-    grid-row: auto;
-    grid-column: span 1;
+    grid-row: auto !important;
+    grid-column: auto !important;
+  }
+
+  /* Zoekvelden bovenaan */
+  .vpjobs-filter-search-keywords{ grid-column: span 1 !important; }
+  .vpjobs-filter-search-location{ grid-column: span 1 !important; }
+
+  /* Dropdowns 2 per rij */
+  .vpjobs-filters-grid > .vpjobs-filter:not(.vpjobs-filter-search){
+    grid-column: span 1 !important;
+  }
+
+  /* Iets compacter */
+  .vpjobs-input,
+  .vp-select-btn{
+    min-height: 46px;
+    padding: 11px 13px;
   }
 }
 
-/* Mobile: 1 kolom */
+/* Mobiel: 1 kolom */
 @media (max-width: 640px){
+
+  .vpjobs-page{
+    padding: 12px;
+  }
+
+  .vpjobs-filters-box{
+    padding: 14px;
+  }
+
+  .vpjobs-filters-head{
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .vpjobs-reset-inline{
+    width: 100%;
+    text-align: center;
+  }
+
   .vpjobs-filters-grid{
     grid-template-columns: 1fr;
+    gap: 12px;
   }
 
+  /* Alles full width */
+  .vpjobs-filter-search,
   .vpjobs-filter-search-keywords,
-  .vpjobs-filter-search-location{
-    grid-column: span 1;
+  .vpjobs-filter-search-location,
+  .vpjobs-filters-grid > .vpjobs-filter:not(.vpjobs-filter-search){
+    grid-row: auto !important;
+    grid-column: 1 / -1 !important;
   }
 
-  .vpjobs-filters-grid > .vpjobs-filter:not(.vpjobs-filter-search){
-    grid-column: span 1;
+  .vpjobs-input,
+  .vp-select-btn{
+    width: 100%;
+    min-height: 46px;
   }
 }
 </style>

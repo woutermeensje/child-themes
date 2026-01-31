@@ -362,4 +362,33 @@ h3.vpjobs-row-title {
     font-size:12px;
   }
 }
+
+
+
+/* =========================================
+   Mobile: stapelen + full width knop
+   ========================================= */
+@media (max-width: 640px){
+
+  .vpjobs-listings-header{
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    margin-bottom: 16px;
+    
+  }
+
+  .vpjobs-results-title{
+    font-size: 22px;
+    line-height: 1.2;
+  }
+
+  .vpjobs-alerts-link{
+    width: 100%;
+    min-width: 0;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+}
 </style>
