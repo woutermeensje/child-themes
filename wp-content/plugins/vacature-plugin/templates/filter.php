@@ -8,21 +8,44 @@
       <div class="vpjobs-filters-box">
 
         <div class="vpjobs-filters-head">
-          <h3 class="vpjobs-filters-title">
-            <?php echo esc_html( vp_setting('filters_heading', 'Filters') ); ?>
-          </h3>
+
+          <div class="vpjobs-filters-head-left">
+            <h3 class="vpjobs-filters-title">
+              <?php echo esc_html( vp_setting('filters_heading', 'Filters') ); ?>
+            </h3>
+
+            <?php
+              $note_text  = vp_setting('filters_newsletter_text', 'Of schrijf je in voor de');
+              $link_text  = vp_setting('filters_newsletter_link_text', 'vacature nieuwsbrief');
+              $link_url   = vp_setting('filters_newsletter_url', '');
+              $site_name  = vp_setting('filters_newsletter_site', 'Recruiternext.nl');
+
+              if ($link_text && $link_url):
+            ?>
+              <p class="vpjobs-filters-note">
+                <?php echo esc_html($note_text); ?>
+                <a href="<?php echo esc_url($link_url); ?>">
+                  <?php echo esc_html($link_text); ?>
+                </a>
+                <?php if ($site_name): ?>
+                  <?php echo esc_html(' van ' . $site_name); ?>
+                <?php endif; ?>
+              </p>
+            <?php endif; ?>
+          </div>
 
           <div class="vpjobs-filter-actions">
             <button type="button" class="vpjobs-reset-inline" data-vpjobs-reset>
               <?php echo esc_html(vp_setting('reset_button_text', 'Wis alles')); ?>
             </button>
           </div>
+
         </div>
 
         <!-- Grid: zoekvelden + dropdowns -->
         <div class="vpjobs-filters-grid">
 
-          <div class="vpjobs-filter vpjobs-filter-search">
+          <div class="vpjobs-filter vpjobs-filter-search vpjobs-filter-search-keywords">
             <input
               type="text"
               name="search_keywords"
@@ -32,7 +55,7 @@
             >
           </div>
 
-          <div class="vpjobs-filter vpjobs-filter-search">
+          <div class="vpjobs-filter vpjobs-filter-search vpjobs-filter-search-location">
             <input
               type="text"
               name="search_location"
@@ -119,12 +142,9 @@
   </form>
 </div>
 
-
-
 <style>
-
-  /* =========================
-   VP Jobs – Filter layout + custom select fix
+/* =========================
+   VP Jobs – Filter layout
    Desktop:
    - Rij 1: 2 zoekvelden (50% + 50%)
    - Rij 2: 5 dropdowns naast elkaar
@@ -135,7 +155,6 @@
   margin: 0 auto;
   padding: 20px;
   box-sizing: border-box;
-  
 }
 
 .vpjobs-filters-wide{ width: 100%; }
@@ -143,20 +162,29 @@
 .vpjobs-filters-box{
   border: 1px solid #DEDEDE;
   border-radius: 5px;
-  background: #fff;
+  background: #FBFAF8;
   padding: 20px;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   margin: 0 0 20px 0;
   box-sizing: border-box;
-  background:#FBFAF8;
 }
 
+/* =========================
+   Header (titel + nieuwsbrief + reset)
+   ========================= */
 .vpjobs-filters-head{
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px;
   margin: 0 0 16px 0;
+}
+
+.vpjobs-filters-head-left{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
 }
 
 .vpjobs-filters-title{
@@ -164,78 +192,69 @@
   font-size: 16px;
   color: #333;
   font-family: Poppins, sans-serif;
+  font-weight: 600;
 }
+
+.vpjobs-filters-note{
+  margin: 0;
+  font-family: Poppins, sans-serif;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.35;
+}
+
+.vpjobs-filters-note a{
+  color: #0B4DB8;
+  font-weight: 400;
+  text-decoration: none;
+}
+
+.vpjobs-filters-note a:hover{ text-decoration: none; }
 
 .vpjobs-filter-actions{ display:flex; }
 
 .vpjobs-reset-inline{
   border: 1px solid #DEDEDE;
   background: #fff;
-  padding: 12px 16px;
+  padding: 8px 12px;
   border-radius: 5px;
   cursor: pointer;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   font-family: Poppins, sans-serif;
   font-size: 14px;
-  font-weight: 300;
+  font-weight: 600;
   color: #333;
+  white-space: nowrap;
+}
+
+.vpjobs-reset-inline:hover{
+  background: #F2F2F2;
 }
 
 /* =========================
-   GRID – definitieve layout
+   GRID – desktop
    ========================= */
-
 .vpjobs-filters-grid{
   display: grid;
   grid-template-columns: repeat(10, minmax(0, 1fr));
   gap: 16px;
   align-items: start;
-  grid-auto-flow: row;
 }
 
-.vpjobs-filter{
-  margin: 0;
-  min-width: 0;
-  position: relative;
-}
-
-/* =========================
-   RIJ 1 – zoekvelden (50% + 50%)
-   ========================= */
-
-.vpjobs-filters-grid > .vpjobs-filter:nth-child(1){
-  grid-column: 1 / span 5;
-}
-
-.vpjobs-filters-grid > .vpjobs-filter:nth-child(2){
-  grid-column: 6 / span 5;
-}
-
-/* =========================
-   RIJ 2 – dropdowns (5 naast elkaar)
-   ========================= */
-
-.vpjobs-filters-grid > .vpjobs-filter:nth-child(n+3){
-  grid-column: span 2;
-}
-
-/* Zoekvelden: altijd rij 1 */
-.vpjobs-filter-search{
-  grid-row: 1;
-}
+/* Zoekvelden: 50/50 */
 .vpjobs-filter-search-keywords{ grid-column: 1 / span 5; }
 .vpjobs-filter-search-location{ grid-column: 6 / span 5; }
 
-/* Dropdowns: altijd rij 2, 5 naast elkaar */
+/* Dropdowns: 5 naast elkaar */
 .vpjobs-filters-grid > .vpjobs-filter:not(.vpjobs-filter-search){
-  grid-row: 2;
   grid-column: span 2;
 }
 
-/* =========================
-   Input styling (zelfde look)
-   ========================= */
+.vpjobs-filter{ margin: 0; min-width: 0; position: relative; }
 
+/* =========================
+   Inputs
+   ========================= */
 .vpjobs-input{
   width: 100%;
   padding: 12px 14px;
@@ -264,12 +283,8 @@
 }
 
 /* =========================
-   CRUCIAAL: verberg de originele select
-   (anders zie je die “lijst” zoals in je screenshot)
+   Verberg originele select (bron)
    ========================= */
-
-/* Als jouw JS de select NIET altijd de class vp-hidden-select geeft,
-   verberg dan ook direct de bronselects (.vpjs-select). */
 select.vpjs-select{
   position: absolute !important;
   left: -9999px !important;
@@ -279,7 +294,6 @@ select.vpjs-select{
   pointer-events: none !important;
 }
 
-/* Als jouw JS wél vp-hidden-select toevoegt: ook goed */
 .vp-hidden-select{
   position: absolute !important;
   left: -9999px !important;
@@ -290,9 +304,8 @@ select.vpjs-select{
 }
 
 /* =========================
-   Custom select (vanilla) – behoud classes
+   Custom select (vanilla)
    ========================= */
-
 .vp-select-wrap{ position: relative; width: 100%; min-width: 0; }
 .vp-select{ position: relative; width: 100%; min-width: 0; }
 
@@ -310,9 +323,6 @@ select.vpjs-select{
   min-height: 48px;
   box-sizing: border-box;
 }
-
-
-
 
 span.vp-placeholder{
   color: #333 !important;
@@ -363,7 +373,6 @@ span.vp-placeholder{
 /* =========================
    Chips
    ========================= */
-
 .vpjobs-active-filters{
   display: none;
   flex-wrap: wrap;
@@ -371,64 +380,26 @@ span.vp-placeholder{
   padding-top: 16px;
 }
 
-.vpjobs-active-filter{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: 1px solid #DEDEDE;
-  border-radius: 5px;
-  padding: 8px 12px;
-  background: #fff;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
-  font-family: Poppins, sans-serif;
-  font-size: 14px;
-}
-
-.vpjobs-chip-x{
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 18px;
-  line-height: 1;
-}
-
 /* =========================
    Responsive
    ========================= */
 
-/* Tablet: 2 kolommen
-   - Rij 1: zoekvelden naast elkaar
-   - Rij 2+: dropdowns 2 per rij
-*/
-/* =========================================
-   Responsive fixes (belangrijk)
-   ========================================= */
-
 /* Tablet: 2 kolommen */
 @media (max-width: 1024px){
-
   .vpjobs-filters-grid{
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
   }
 
-  /* Reset de vaste rows van desktop, anders “valt” het uit elkaar */
-  .vpjobs-filter-search,
-  .vpjobs-filters-grid > .vpjobs-filter:not(.vpjobs-filter-search){
-    grid-row: auto !important;
-    grid-column: auto !important;
+  .vpjobs-filter-search-keywords,
+  .vpjobs-filter-search-location{
+    grid-column: span 1;
   }
 
-  /* Zoekvelden bovenaan */
-  .vpjobs-filter-search-keywords{ grid-column: span 1 !important; }
-  .vpjobs-filter-search-location{ grid-column: span 1 !important; }
-
-  /* Dropdowns 2 per rij */
   .vpjobs-filters-grid > .vpjobs-filter:not(.vpjobs-filter-search){
-    grid-column: span 1 !important;
+    grid-column: span 1;
   }
 
-  /* Iets compacter */
   .vpjobs-input,
   .vp-select-btn{
     min-height: 46px;
@@ -438,20 +409,16 @@ span.vp-placeholder{
 
 /* Mobiel: 1 kolom */
 @media (max-width: 640px){
-
-  .vpjobs-page{
-    padding: 12px;
-  }
-
-  .vpjobs-filters-box{
-    padding: 14px;
-  }
+  .vpjobs-page{ padding: 12px; }
+  .vpjobs-filters-box{ padding: 14px; }
 
   .vpjobs-filters-head{
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
     gap: 10px;
   }
+
+  .vpjobs-filter-actions{ justify-content: flex-end; }
 
   .vpjobs-reset-inline{
     width: 100%;
@@ -463,13 +430,10 @@ span.vp-placeholder{
     gap: 12px;
   }
 
-  /* Alles full width */
-  .vpjobs-filter-search,
   .vpjobs-filter-search-keywords,
   .vpjobs-filter-search-location,
   .vpjobs-filters-grid > .vpjobs-filter:not(.vpjobs-filter-search){
-    grid-row: auto !important;
-    grid-column: 1 / -1 !important;
+    grid-column: 1 / -1;
   }
 
   .vpjobs-input,

@@ -71,6 +71,56 @@ class VP_Settings {
         'placeholder' => 'Wis alles',
       ]
     );
+
+
+        add_settings_field(
+      'filters_newsletter_text',
+      __('Tekst onder filters', 'vacature-plugin'),
+      [__CLASS__, 'field_text'],
+      'vp-settings',
+      'vp_texts',
+      [
+        'key' => 'filters_newsletter_text',
+        'placeholder' => 'Of schrijf je in voor de',
+      ]
+    );
+
+    add_settings_field(
+      'filters_newsletter_link_text',
+      __('Linktekst nieuwsbrief', 'vacature-plugin'),
+      [__CLASS__, 'field_text'],
+      'vp-settings',
+      'vp_texts',
+      [
+        'key' => 'filters_newsletter_link_text',
+        'placeholder' => 'vacature nieuwsbrief',
+      ]
+    );
+
+    add_settings_field(
+      'filters_newsletter_url',
+      __('URL nieuwsbrief', 'vacature-plugin'),
+      [__CLASS__, 'field_text'],
+      'vp-settings',
+      'vp_texts',
+      [
+        'key' => 'filters_newsletter_url',
+        'placeholder' => 'https://recruiternext.nl/nieuwsbrief/',
+      ]
+    );
+
+add_settings_field(
+  'filters_newsletter_site',
+  __('Naam website', 'vacature-plugin'),
+  [__CLASS__, 'field_text'],
+  'vp-settings',
+  'vp_texts',
+  [
+    'key' => 'filters_newsletter_site',
+    'placeholder' => 'Recruiternext.nl',
+  ]
+);
+
   }
 
   public static function sanitize($input) {
@@ -88,6 +138,18 @@ class VP_Settings {
     $out['reset_button_text'] = isset($input['reset_button_text'])
       ? sanitize_text_field($input['reset_button_text'])
       : '';
+
+      $out['filters_newsletter_text']      = isset($input['filters_newsletter_text'])
+  ? sanitize_text_field($input['filters_newsletter_text']) : '';
+
+$out['filters_newsletter_link_text'] = isset($input['filters_newsletter_link_text'])
+  ? sanitize_text_field($input['filters_newsletter_link_text']) : '';
+
+$out['filters_newsletter_url']       = isset($input['filters_newsletter_url'])
+  ? esc_url_raw($input['filters_newsletter_url']) : '';
+
+$out['filters_newsletter_site']      = isset($input['filters_newsletter_site'])
+  ? sanitize_text_field($input['filters_newsletter_site']) : '';
 
     return $out;
   }
@@ -115,3 +177,5 @@ class VP_Settings {
     <?php
   }
 }
+
+

@@ -40,14 +40,19 @@ function vp_clean_slugs($arr) {
  */
 function vp_default_settings() {
   return [
-    'filters_heading'   => 'Filters',
-    'reset_button_text' => 'Wis alles',
+    'filters_heading'               => 'Filters',
+    'reset_button_text'             => 'Wis alles',
 
-    // voeg hier later gerust meer defaults toe:
-    // 'listings_heading' => 'Doorzoek alle vacatures',
-    // 'listings_cta_text'=> 'Bekijk vacature',
+    // 👇 nieuw
+    'filters_newsletter_text'       => 'Of schrijf je in voor de',
+    'filters_newsletter_link_text'  => 'vacature nieuwsbrief',
+    'filters_newsletter_url'        => '',
+    'filters_newsletter_site'       => 'Recruiternext.nl',
   ];
 }
+
+
+
 
 /**
  * Settings helper
@@ -73,3 +78,5 @@ function vp_setting($key, $default = '') {
   // 3) fallback uit aanroep
   return $default;
 }
+
+
