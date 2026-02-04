@@ -59,17 +59,36 @@
           </select>
         </div>
 
+        <!-- MULTI: Thema's (JS multi-select in Fondsen directory stijl) -->
         <div class="ga-filter-item ga-filter-thema">
-          <select name="ga_thema[]" id="ga_thema">
-            <option value="">Thema: Alle thema's</option>
-            <?php if (!is_wp_error($themas) && !empty($themas)) : ?>
-              <?php foreach ($themas as $term): ?>
-                <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected_thema, true)); ?>>
-                  <?php echo esc_html($term->name); ?>
-                </option>
-              <?php endforeach; ?>
-            <?php endif; ?>
-          </select>
+          <div class="si-multi" data-name="ga_thema[]">
+            <button type="button" class="si-multi-btn" aria-expanded="false">
+              <span class="si-multi-placeholder">Thema: Alle thema's</span>
+              <span class="si-multi-tags" aria-hidden="true"></span>
+              <span class="si-multi-caret">▾</span>
+            </button>
+
+            <div class="si-multi-panel" role="listbox">
+              <div class="si-multi-options">
+                <?php if (!is_wp_error($themas) && !empty($themas)) : ?>
+                  <?php foreach ($themas as $term): ?>
+                    <label class="si-multi-option">
+                      <input
+                        type="checkbox"
+                        value="<?php echo esc_attr($term->slug); ?>"
+                        <?php checked(in_array($term->slug, $selected_thema, true)); ?>
+                      >
+                      <span><?php echo esc_html($term->name); ?></span>
+                    </label>
+                  <?php endforeach; ?>
+                <?php else : ?>
+                  <div class="si-multi-empty">Nog geen thema's.</div>
+                <?php endif; ?>
+              </div>
+            </div>
+
+            <div class="si-multi-hidden"></div>
+          </div>
         </div>
       </div>
 
@@ -84,18 +103,77 @@
 
 <script>
 (function(){
-  function submitForm(){
-    var form = document.getElementById('gaFilterForm');
+  function closeAll(except){
+    document.querySelectorAll('#gaFilterForm .si-multi.is-open').forEach(function(el){
+      if(except && el === except) return;
+      el.classList.remove('is-open');
+      var btn = el.querySelector('.si-multi-btn');
+      if(btn) btn.setAttribute('aria-expanded','false');
+    });
+  }
+
+  function updateHiddenInputs(multi){
+    var name = multi.getAttribute('data-name');
+    var hiddenWrap = multi.querySelector('.si-multi-hidden');
+    if(!hiddenWrap) return;
+    hiddenWrap.innerHTML = '';
+
+    var checked = Array.from(multi.querySelectorAll('input[type="checkbox"]:checked'));
+    checked.forEach(function(cb){
+      var input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = cb.value;
+      hiddenWrap.appendChild(input);
+    });
+
+    var placeholderEl = multi.querySelector('.si-multi-placeholder');
+    if(!placeholderEl) return;
+
+    if(!placeholderEl.getAttribute('data-default')){
+      placeholderEl.setAttribute('data-default', placeholderEl.textContent.trim());
+    }
+
+    if(checked.length === 0){
+      placeholderEl.textContent = placeholderEl.getAttribute('data-default');
+      return;
+    }
+    placeholderEl.textContent = (checked.length === 1) ? '1 geselecteerd' : (checked.length + ' geselecteerd');
+  }
+
+  function submitFormFrom(el){
+    var form = el.closest('form');
     if(form) form.submit();
   }
 
-  // change => submit
-  ['ga_type','ga_sort','ga_toon','ga_thema'].forEach(function(id){
+  // Init multi-selects
+  document.querySelectorAll('#gaFilterForm .si-multi').forEach(function(multi){
+    var btn = multi.querySelector('.si-multi-btn');
+    if(!btn) return;
+
+    btn.addEventListener('click', function(e){
+      e.preventDefault();
+      var isOpen = multi.classList.contains('is-open');
+      closeAll(multi);
+      multi.classList.toggle('is-open', !isOpen);
+      btn.setAttribute('aria-expanded', (!isOpen) ? 'true' : 'false');
+    });
+
+    multi.querySelectorAll('input[type="checkbox"]').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        updateHiddenInputs(multi);
+        submitFormFrom(multi);
+      });
+    });
+
+    updateHiddenInputs(multi);
+  });
+
+  // change => submit (selects)
+  ['ga_type','ga_sort','ga_toon'].forEach(function(id){
     var el = document.getElementById(id);
     if(el){
-      el.addEventListener('change', function(){
-        submitForm();
-      });
+      el.addEventListener('change', function(){ submitFormFrom(el); });
     }
   });
 
@@ -105,8 +183,19 @@
     var t;
     searchInput.addEventListener('input', function(){
       clearTimeout(t);
-      t = setTimeout(function(){ submitForm(); }, 450);
+      t = setTimeout(function(){ submitFormFrom(searchInput); }, 450);
     });
   }
+
+  // Outside click closes
+  document.addEventListener('click', function(e){
+    var inside = e.target.closest('#gaFilterForm .si-multi');
+    if(!inside) closeAll(null);
+  });
+
+  // Escape closes
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') closeAll(null);
+  });
 })();
 </script>

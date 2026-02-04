@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Fondsen.org – Geefacties
  * Description: Publiceer en toon donatieverzoeken (geefacties) met filters + load more. Formulier loopt via Elementor Forms.
- * Version: 1.0.0
+ * Version: 1.0.1
  */
 
 if (!defined('ABSPATH')) exit;
@@ -114,6 +114,11 @@ class Fondsen_Geefacties_Plugin {
      * Shortcode
      * ====================================================== */
     public function render_shortcode($atts) {
+
+        // Safety: zorg dat assets altijd geregistreerd zijn (soms rendert Elementor shortcodes vroeg)
+        if (!wp_style_is(self::ASSET_HANDLE, 'registered') || !wp_script_is(self::ASSET_HANDLE, 'registered')) {
+            $this->register_assets();
+        }
 
         // Alleen laden wanneer shortcode gebruikt wordt
         wp_enqueue_style(self::ASSET_HANDLE);
@@ -246,7 +251,10 @@ class Fondsen_Geefacties_Plugin {
 
         $args = [
             'post_type'      => self::CPT,
-            'post_status'    => 'publish',
+            // Op front-end alleen gepubliceerd. Voor ingelogde editors ook concept/pending tonen (handig voor testen).
+            'post_status'    => (is_user_logged_in() && current_user_can('edit_posts'))
+                ? ['publish','pending','draft','future','private']
+                : 'publish',
             'posts_per_page' => max(1, (int) ($params['per_page'] ?? 18)),
             'paged'          => max(1, (int) ($params['paged'] ?? 1)),
             'ignore_sticky_posts' => true,

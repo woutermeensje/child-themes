@@ -18,6 +18,11 @@
     <?php else: ?>
       <div class="ga-empty">
         Geen geefacties gevonden.
+        <?php if (is_user_logged_in() && current_user_can('edit_posts')): ?>
+          <div style="margin-top:8px;font-size:14px;opacity:.8;">
+            Tip: controleer of je geefactie is aangemaakt als post type <code>geefactie</code> en of de juiste filters (thema/type) niet alles wegfilteren.
+          </div>
+        <?php endif; ?>
       </div>
     <?php endif; ?>
 
