@@ -13,7 +13,7 @@
 
     <form id="gaFilterForm" class="si-opdrachten-filter ga-filter" method="get">
 
-      <!-- Rij 1: Zoek + type -->
+      <!-- Rij 1: Zoek + Soort geefactie (JS multi) -->
       <div class="ga-filter-row ga-filter-row--top">
         <div class="ga-filter-item ga-filter-search">
           <input
@@ -21,45 +21,47 @@
             name="ga_search"
             type="text"
             placeholder="Zoek..."
-            value="<?php echo esc_attr($search_query); ?>"
+            value="<?php echo esc_attr($search_query ?? ''); ?>"
             autocomplete="off"
           >
           <span class="ga-filter-search-icon" aria-hidden="true">🔍</span>
         </div>
 
+        <!-- MULTI: Soort geefactie -->
         <div class="ga-filter-item ga-filter-type">
-          <select name="ga_type[]" id="ga_type">
-            <option value="">Geefacties</option>
-            <?php if (!is_wp_error($types) && !empty($types)) : ?>
-              <?php foreach ($types as $term): ?>
-                <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected_types, true)); ?>>
-                  <?php echo esc_html($term->name); ?>
-                </option>
-              <?php endforeach; ?>
-            <?php endif; ?>
-          </select>
+          <div class="si-multi" data-name="ga_type[]">
+            <button type="button" class="si-multi-btn" aria-expanded="false">
+              <span class="si-multi-placeholder">Geefacties: Alle soorten</span>
+              <span class="si-multi-tags" aria-hidden="true"></span>
+              <span class="si-multi-caret">▾</span>
+            </button>
+
+            <div class="si-multi-panel" role="listbox">
+              <div class="si-multi-options">
+                <?php if (!is_wp_error($types) && !empty($types)) : ?>
+                  <?php foreach ($types as $term): ?>
+                    <label class="si-multi-option">
+                      <input
+                        type="checkbox"
+                        value="<?php echo esc_attr($term->slug); ?>"
+                        <?php checked(in_array($term->slug, ($selected_types ?? []), true)); ?>
+                      >
+                      <span><?php echo esc_html($term->name); ?></span>
+                    </label>
+                  <?php endforeach; ?>
+                <?php else : ?>
+                  <div class="si-multi-empty">Nog geen soorten.</div>
+                <?php endif; ?>
+              </div>
+            </div>
+
+            <div class="si-multi-hidden"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Rij 2: Sorteren + Toon + Thema -->
+      <!-- Rij 2: Thema (JS multi) -->
       <div class="ga-filter-row ga-filter-row--bottom">
-        <div class="ga-filter-item ga-filter-sort">
-          <select name="ga_sort" id="ga_sort">
-            <option value="trending" <?php selected($selected_sort === 'trending'); ?>>Sorteren: Trending</option>
-            <option value="nieuw" <?php selected($selected_sort === 'nieuw'); ?>>Sorteren: Nieuw</option>
-            <option value="veelgelezen" <?php selected($selected_sort === 'veelgelezen'); ?>>Sorteren: Veel gelezen</option>
-          </select>
-        </div>
-
-        <div class="ga-filter-item ga-filter-toon">
-          <select name="ga_toon" id="ga_toon">
-            <option value="all" <?php selected($selected_toon === 'all'); ?>>Toon: Alle geefacties</option>
-            <option value="active" <?php selected($selected_toon === 'active'); ?>>Toon: Actief</option>
-            <option value="completed" <?php selected($selected_toon === 'completed'); ?>>Toon: Succesvol</option>
-          </select>
-        </div>
-
-        <!-- MULTI: Thema's (JS multi-select in Fondsen directory stijl) -->
         <div class="ga-filter-item ga-filter-thema">
           <div class="si-multi" data-name="ga_thema[]">
             <button type="button" class="si-multi-btn" aria-expanded="false">
@@ -76,7 +78,7 @@
                       <input
                         type="checkbox"
                         value="<?php echo esc_attr($term->slug); ?>"
-                        <?php checked(in_array($term->slug, $selected_thema, true)); ?>
+                        <?php checked(in_array($term->slug, ($selected_thema ?? []), true)); ?>
                       >
                       <span><?php echo esc_html($term->name); ?></span>
                     </label>
@@ -167,14 +169,6 @@
     });
 
     updateHiddenInputs(multi);
-  });
-
-  // change => submit (selects)
-  ['ga_type','ga_sort','ga_toon'].forEach(function(id){
-    var el = document.getElementById(id);
-    if(el){
-      el.addEventListener('change', function(){ submitFormFrom(el); });
-    }
   });
 
   // debounce search

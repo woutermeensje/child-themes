@@ -2,14 +2,14 @@
 /**
  * Plugin Name: Fondsen.org – Geefacties
  * Description: Publiceer en toon donatieverzoeken (geefacties) met filters + load more. Formulier loopt via Elementor Forms.
- * Version: 1.0.1
+ * Version: 1.0.2
  */
 
 if (!defined('ABSPATH')) exit;
 
 class Fondsen_Geefacties_Plugin {
 
-    // CPT + taxonomieën (Elementor Forms kan posts aanmaken in dit CPT)
+    // CPT + taxonomieën
     const CPT          = 'geefactie';
     const TAX_THEMA    = 'geefactie_thema';
     const TAX_TYPE     = 'geefactie_type';
@@ -17,7 +17,7 @@ class Fondsen_Geefacties_Plugin {
     const ASSET_HANDLE = 'fondsen-geefacties';
     const NONCE_ACTION = 'fond_geef_nonce';
 
-    // Meta keys (optioneel – je Elementor Form mapping kan deze vullen)
+    // Meta keys (optioneel – Elementor Form mapping kan deze vullen)
     const META_GOAL    = '_ga_goal_amount';    // doelbedrag (bijv. 7000)
     const META_RAISED  = '_ga_raised_amount';  // opgehaald (bijv. 5225)
     const META_VIEWS   = '_ga_views';          // veel gelezen (int)
@@ -40,7 +40,6 @@ class Fondsen_Geefacties_Plugin {
      * ====================================================== */
     public function register_cpt_and_taxonomies() {
 
-        // CPT: Geefactie
         $labels = [
             'name'               => 'Geefacties',
             'singular_name'      => 'Geefactie',
@@ -56,16 +55,15 @@ class Fondsen_Geefacties_Plugin {
         ];
 
         register_post_type(self::CPT, [
-            'labels'             => $labels,
-            'public'             => true,
-            'has_archive'        => true,
-            'rewrite'            => ['slug' => 'geefacties'],
-            'menu_icon'          => 'dashicons-heart',
-            'supports'           => ['title', 'editor', 'excerpt', 'thumbnail', 'author', 'custom-fields'],
-            'show_in_rest'       => true,
+            'labels'       => $labels,
+            'public'       => true,
+            'has_archive'  => true,
+            'rewrite'      => ['slug' => 'geefacties'],
+            'menu_icon'    => 'dashicons-heart',
+            'supports'     => ['title', 'editor', 'excerpt', 'thumbnail', 'author', 'custom-fields'],
+            'show_in_rest' => true,
         ]);
 
-        // Tax: Thema
         register_taxonomy(self::TAX_THEMA, [self::CPT], [
             'label'        => 'Thema',
             'public'       => true,
@@ -74,7 +72,6 @@ class Fondsen_Geefacties_Plugin {
             'rewrite'      => ['slug' => 'geefactie-thema'],
         ]);
 
-        // Tax: Soort geefactie
         register_taxonomy(self::TAX_TYPE, [self::CPT], [
             'label'        => 'Soort geefactie',
             'public'       => true,
@@ -93,14 +90,14 @@ class Fondsen_Geefacties_Plugin {
             self::ASSET_HANDLE,
             plugin_dir_url(__FILE__) . 'assets/geefacties.css',
             [],
-            '1.0.0'
+            '1.0.2'
         );
 
         wp_register_script(
             self::ASSET_HANDLE,
             plugin_dir_url(__FILE__) . 'assets/geefacties.js',
             ['jquery'],
-            '1.0.0',
+            '1.0.2',
             true
         );
 
@@ -115,34 +112,59 @@ class Fondsen_Geefacties_Plugin {
      * ====================================================== */
     public function render_shortcode($atts) {
 
-        // Safety: zorg dat assets altijd geregistreerd zijn (soms rendert Elementor shortcodes vroeg)
+        // Safety: zorg dat assets altijd geregistreerd zijn (Elementor kan vroeg renderen)
         if (!wp_style_is(self::ASSET_HANDLE, 'registered') || !wp_script_is(self::ASSET_HANDLE, 'registered')) {
             $this->register_assets();
         }
 
-        // Alleen laden wanneer shortcode gebruikt wordt
         wp_enqueue_style(self::ASSET_HANDLE);
         wp_enqueue_script(self::ASSET_HANDLE);
 
         $atts = shortcode_atts([
             'per_page' => 18,
             'thema'    => '', // prefilter via shortcode: thema="zorg,jeugd"
-            'type'     => '', // type="sponsorloop,collecte"
+            'type'     => '', // prefilter via shortcode: type="sponsorloop,collecte" (single werkt ook)
         ], $atts, 'fondsen_geefacties');
 
-        // GET heeft voorrang
-        $search = isset($_GET['ga_search']) ? sanitize_text_field(wp_unslash($_GET['ga_search'])) : '';
+        // --- GET heeft voorrang ---
+        $search = isset($_GET['ga_search'])
+            ? sanitize_text_field(wp_unslash($_GET['ga_search']))
+            : '';
 
-        $thema_selected = isset($_GET['ga_thema'])
-            ? (array) wp_unslash($_GET['ga_thema'])
-            : array_filter(array_map('trim', explode(',', (string) $atts['thema'])));
+        // Thema multi: ga_thema[] of shortcode thema="a,b"
+        $thema_selected = [];
+        if (isset($_GET['ga_thema'])) {
+            $thema_selected = (array) wp_unslash($_GET['ga_thema']);
+        } elseif (!empty($atts['thema'])) {
+            $thema_selected = array_map('trim', explode(',', (string) $atts['thema']));
+        }
+        $thema_selected = $this->sanitize_slugs_array($thema_selected);
 
-        $type_selected = isset($_GET['ga_type'])
-            ? (array) wp_unslash($_GET['ga_type'])
-            : array_filter(array_map('trim', explode(',', (string) $atts['type'])));
+        // Type single: ga_type (string) of shortcode type="a"
+        // (Als iemand tóch ga_type[] gebruikt, vangen we dat ook af)
+        $type_selected = [];
+        if (isset($_GET['ga_type'])) {
+            $raw = wp_unslash($_GET['ga_type']);
+            if (is_array($raw)) {
+                $type_selected = $raw;
+            } else {
+                $type_selected = [$raw];
+            }
+        } elseif (!empty($atts['type'])) {
+            // shortcode type kan comma separated zijn, maar in UI is het single
+            $type_selected = array_map('trim', explode(',', (string) $atts['type']));
+        }
+        $type_selected = $this->sanitize_slugs_array($type_selected);
 
         $toon = isset($_GET['ga_toon']) ? sanitize_text_field(wp_unslash($_GET['ga_toon'])) : 'all';
+        if (!in_array($toon, ['all','active','completed'], true)) {
+            $toon = 'all';
+        }
+
         $sort = isset($_GET['ga_sort']) ? sanitize_text_field(wp_unslash($_GET['ga_sort'])) : 'trending';
+        if (!in_array($sort, ['trending','nieuw','veelgelezen'], true)) {
+            $sort = 'trending';
+        }
 
         $query = new WP_Query(
             $this->build_query_args([
@@ -158,8 +180,8 @@ class Fondsen_Geefacties_Plugin {
 
         $data = [
             'search'          => $search,
-            'thema_selected'  => $this->sanitize_slugs_array($thema_selected),
-            'type_selected'   => $this->sanitize_slugs_array($type_selected),
+            'thema_selected'  => $thema_selected,
+            'type_selected'   => $type_selected,
             'toon'            => $toon,
             'sort'            => $sort,
             'posts'           => $query->posts,
@@ -207,10 +229,30 @@ class Fondsen_Geefacties_Plugin {
         $per_page = isset($_POST['per_page']) ? (int) $_POST['per_page'] : 18;
 
         $ga_search = isset($_POST['ga_search']) ? sanitize_text_field(wp_unslash($_POST['ga_search'])) : '';
-        $ga_thema  = isset($_POST['ga_thema']) ? (array) wp_unslash($_POST['ga_thema']) : [];
-        $ga_type   = isset($_POST['ga_type']) ? (array) wp_unslash($_POST['ga_type']) : [];
-        $ga_toon   = isset($_POST['ga_toon']) ? sanitize_text_field(wp_unslash($_POST['ga_toon'])) : 'all';
-        $ga_sort   = isset($_POST['ga_sort']) ? sanitize_text_field(wp_unslash($_POST['ga_sort'])) : 'trending';
+
+        // Thema multi
+        $ga_thema = [];
+        if (isset($_POST['ga_thema'])) {
+            $ga_thema = $this->sanitize_slugs_array((array) wp_unslash($_POST['ga_thema']));
+        }
+
+        // Type single (maar vangen array ook af)
+        $ga_type = [];
+        if (isset($_POST['ga_type'])) {
+            $raw = wp_unslash($_POST['ga_type']);
+            $ga_type = is_array($raw) ? $raw : [$raw];
+            $ga_type = $this->sanitize_slugs_array($ga_type);
+        }
+
+        $ga_toon = isset($_POST['ga_toon']) ? sanitize_text_field(wp_unslash($_POST['ga_toon'])) : 'all';
+        if (!in_array($ga_toon, ['all','active','completed'], true)) {
+            $ga_toon = 'all';
+        }
+
+        $ga_sort = isset($_POST['ga_sort']) ? sanitize_text_field(wp_unslash($_POST['ga_sort'])) : 'trending';
+        if (!in_array($ga_sort, ['trending','nieuw','veelgelezen'], true)) {
+            $ga_sort = 'trending';
+        }
 
         $query = new WP_Query(
             $this->build_query_args([
@@ -250,13 +292,13 @@ class Fondsen_Geefacties_Plugin {
     private function build_query_args($params = []) {
 
         $args = [
-            'post_type'      => self::CPT,
-            // Op front-end alleen gepubliceerd. Voor ingelogde editors ook concept/pending tonen (handig voor testen).
-            'post_status'    => (is_user_logged_in() && current_user_can('edit_posts'))
+            'post_type'           => self::CPT,
+            // Op front-end alleen published. Voor ingelogde editors ook drafts/pending tonen (handig testen)
+            'post_status'         => (is_user_logged_in() && current_user_can('edit_posts'))
                 ? ['publish','pending','draft','future','private']
                 : 'publish',
-            'posts_per_page' => max(1, (int) ($params['per_page'] ?? 18)),
-            'paged'          => max(1, (int) ($params['paged'] ?? 1)),
+            'posts_per_page'      => max(1, (int) ($params['per_page'] ?? 18)),
+            'paged'               => max(1, (int) ($params['paged'] ?? 1)),
             'ignore_sticky_posts' => true,
         ];
 
@@ -264,11 +306,11 @@ class Fondsen_Geefacties_Plugin {
             $args['s'] = sanitize_text_field($params['s']);
         }
 
-        // Tax filters
-        $tax_query = [];
+        // Tax filters (alleen als er echt slugs zijn)
+        $tax_query = ['relation' => 'AND'];
 
         $thema = $this->sanitize_slugs_array($params['thema'] ?? []);
-        if ($thema) {
+        if (!empty($thema)) {
             $tax_query[] = [
                 'taxonomy' => self::TAX_THEMA,
                 'field'    => 'slug',
@@ -277,7 +319,7 @@ class Fondsen_Geefacties_Plugin {
         }
 
         $type = $this->sanitize_slugs_array($params['type'] ?? []);
-        if ($type) {
+        if (!empty($type)) {
             $tax_query[] = [
                 'taxonomy' => self::TAX_TYPE,
                 'field'    => 'slug',
@@ -285,13 +327,13 @@ class Fondsen_Geefacties_Plugin {
             ];
         }
 
-        if ($tax_query) {
+        if (count($tax_query) > 1) {
             $args['tax_query'] = $tax_query;
         }
 
-        // Toon (status)
+        // Toon (status) — 'all' mag NOOIT filteren
         $toon = isset($params['toon']) ? sanitize_text_field($params['toon']) : 'all';
-        if ($toon && $toon !== 'all') {
+        if (in_array($toon, ['active','completed'], true)) {
             $args['meta_query'] = [
                 [
                     'key'     => self::META_STATUS,
@@ -317,12 +359,12 @@ class Fondsen_Geefacties_Plugin {
 
             case 'trending':
             default:
-                // Als META_TREND niet gevuld is, valt WP terug op 0; daarom 2e orderby op date.
                 $args['meta_key'] = self::META_TREND;
                 $args['orderby']  = [
                     'meta_value_num' => 'DESC',
                     'date'           => 'DESC',
                 ];
+                $args['order'] = 'DESC';
                 break;
         }
 
@@ -331,7 +373,8 @@ class Fondsen_Geefacties_Plugin {
 
     private function sanitize_slugs_array($values) {
         if (!is_array($values)) return [];
-        return array_values(array_filter(array_map('sanitize_title', $values)));
+        $values = array_map('sanitize_title', $values);
+        return array_values(array_filter($values, function($v){ return $v !== ''; }));
     }
 
     private function plugin_path($relative) {
@@ -344,14 +387,15 @@ class Fondsen_Geefacties_Plugin {
     public static function get_amount_int($post_id, $meta_key) {
         $raw = get_post_meta($post_id, $meta_key, true);
         if ($raw === '' || $raw === null) return 0;
-        // Sta ook bedragen met komma/punt toe
-        $raw = str_replace(['.', ' '], ['', ''], (string) $raw);
+
+        $raw = (string) $raw;
+        $raw = str_replace([' ', '.'], ['', ''], $raw);
         $raw = str_replace(',', '.', $raw);
+
         return (int) round((float) $raw);
     }
 
     public static function euro($amount_int) {
-        // NL formatting, zonder centen
         return '€ ' . number_format((int) $amount_int, 0, ',', '.');
     }
 }
