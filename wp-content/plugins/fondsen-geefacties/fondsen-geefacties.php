@@ -30,6 +30,7 @@ const META_EMAIL     = '_fga_email';
     // Forceer de Uitgelichte-afbeelding metabox voor geefacties (ook als editor/clean-up plugins dit verbergen)
     add_action('add_meta_boxes', [$this, 'force_featured_image_metabox'], 20, 2);
 
+
     // Single template override voor geefactie
     add_filter('single_template', [$this, 'load_single_template']);
 
@@ -59,22 +60,7 @@ add_action('save_post_' . self::CPT, [$this, 'save_contact_metabox'], 10, 2);
     add_post_type_support(self::CPT, 'thumbnail');
   }
 
-  /**
-   * Forceer de featured image metabox op het geefactie post type.
-   * Wordt aangeroepen via add_meta_boxes hook.
-   */
-  public function force_featured_image_metabox($post_type, $post) {
-  if ($post_type !== self::CPT) return;
-
-  add_meta_box(
-    'postimagediv',
-    __('Uitgelichte afbeelding'),
-    'post_thumbnail_meta_box',
-    self::CPT,
-    'side',
-    'high'
-  );
-}
+ 
 
 public function add_contact_metabox() {
   add_meta_box(
