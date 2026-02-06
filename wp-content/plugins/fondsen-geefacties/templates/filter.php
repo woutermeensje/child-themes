@@ -273,13 +273,13 @@ $search_value   = $filters['q'] ?? '';
   background: #fff !important;
   color: #1f2937;
   font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
   border-color: #d9d9d9;
 }
 
 /* Placeholder text in button */
 #fgaFilterForm .fga-multi-placeholder{
-  font-weight: 700 !important;
+  font-weight: 400 !important;
 }
 
 /* Caret */
@@ -295,7 +295,7 @@ $search_value   = $filters['q'] ?? '';
 /* Dropdown options */
 #fgaFilterForm .fga-multi-option span{
   font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
-  font-weight: 700 !important;
+  font-weight: 400 !important;
 }
 
 /* ===== Fondsen.org–achtige dropdown styling ===== */
@@ -313,7 +313,7 @@ $search_value   = $filters['q'] ?? '';
   border-radius: 5px;
   cursor: pointer;
   font-family: Poppins, system-ui, sans-serif;
-  font-weight: 600;
+  font-weight: 400;
   font-size: 15px;
   color: #1f2937;
   transition: background 0.15s ease, color 0.15s ease;
@@ -346,7 +346,7 @@ $search_value   = $filters['q'] ?? '';
 /* Button (gesloten state) meer "select look" */
 #fgaFilterForm .fga-multi-btn {
   font-family: Poppins, system-ui, sans-serif;
-  font-weight: 700;
+  font-weight: 400;
   font-size: 15px;
   background: #fff;
   border: 1px solid #d1d5db;

@@ -1,150 +1,277 @@
 <?php if (!defined('ABSPATH')) exit; ?>
 <?php get_header(); ?>
 
-<style>
-/* Basic single layout (pas gerust aan) */
-.fga-single-wrap{max-width:1100px;margin:24px auto 60px;padding:0 16px;}
-.fga-single-card{background:#fff;border:1px solid #e6e6e6;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.06);overflow:hidden;}
-.fga-single-hero{height:360px;background:#f2f2f2;background-size:cover;background-position:center;}
-.fga-single-body{padding:22px;}
-.fga-single-title{margin:0 0 10px;font-size:34px;line-height:1.1;color:#1f2937;}
-.fga-single-meta{display:flex;gap:10px;flex-wrap:wrap;font-size:14px;opacity:.75;margin-bottom:16px;}
-.fga-single-tax{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px;}
-.fga-pill{display:inline-block;padding:6px 10px;border:1px solid #e6e6e6;border-radius:999px;font-size:13px;opacity:.9;background:#fff;}
-.fga-single-content{font-size:16px;line-height:1.65;color:#1f2937;}
-.fga-back{display:inline-block;margin:14px 0 0;color:#0884CC;text-decoration:none;}
-.fga-back:hover{text-decoration:underline;}
+<?php
+$post_id = get_the_ID();
 
-/* Contact block */
-.fga-contact{
-  margin-top: 22px;
-  padding: 16px;
-  border: 1px solid #e6e6e6;
-  border-radius: 12px;
-  background: #fff;
+$first = get_post_meta($post_id, FGA_Plugin::META_FIRSTNAME, true);
+$last  = get_post_meta($post_id, FGA_Plugin::META_LASTNAME, true);
+$email = get_post_meta($post_id, FGA_Plugin::META_EMAIL, true);
+$name  = trim($first . ' ' . $last);
+
+$kapitaal  = get_post_meta($post_id, FGA_Plugin::META_BENODIGD_KAPITAAL, true);
+$stichting = get_post_meta($post_id, FGA_Plugin::META_STICHTING_NAAM, true);
+
+$img = get_the_post_thumbnail_url($post_id, 'large');
+if (!$img) {
+  $img = 'data:image/svg+xml;utf8,' . rawurlencode(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600">
+      <rect width="100%" height="100%" fill="#f2f2f2"/>
+      <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle"
+        fill="#999" font-family="Arial" font-size="28">
+        Geen afbeelding
+      </text>
+    </svg>'
+  );
 }
-.fga-contact-title{margin:0 0 8px;font-size:16px;font-weight:700;color:#1f2937;}
-.fga-contact-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;font-size:14px;opacity:.9;}
-.fga-contact-name{font-weight:700;opacity:1;}
-.fga-contact-mail a{color:#0884CC;text-decoration:none;}
-.fga-contact-mail a:hover{text-decoration:underline;}
-.fga-contact-btn{
-  display:inline-block;
-  margin-top: 10px;
-  padding: 10px 14px;
-  border-radius: 10px;
-  border: 1px solid #d9d9d9;
-  text-decoration: none;
-  background: #fff;
-  color: #1f2937;
-  font-weight: 700;
+?>
+
+<style>
+:root{
+  --fga-text:#333333;
+  --fga-muted:#6b7280;
+  --fga-border:#e6e6e6;
+  --fga-blue:#0884CC;
+  --fga-orange:#FF8C2C;
+  --fga-bg:#ffffff;
+  --fga-soft:#fafafa;
 }
-.fga-contact-btn:hover{background:#f6f6f6;}
+
+/* Layout */
+.fga-single-wrap{
+  max-width:1100px;
+  margin:24px auto 60px;
+  padding:0 16px;
+}
+
+.fga-single-card{
+  background:var(--fga-bg);
+  border:1px solid var(--fga-border);
+  border-radius:5px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.06);
+}
+
+.fga-single-hero{
+  height:380px;
+  background:#f2f2f2;
+  background-size:cover;
+  background-position:center;
+  position:relative;
+}
+
+.fga-single-hero:after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to bottom, rgba(0,0,0,.10), rgba(0,0,0,0));
+}
+
+/* Body */
+.fga-single-body{
+  padding:26px;
+}
+
+.fga-single-title{
+  margin:0 0 10px;
+  font-size:36px;
+  line-height:1.1;
+  color:var(--fga-text);
+  letter-spacing:-0.02em;
+}
+
+/* Meta row */
+.fga-single-meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:0 0 18px;
+  color:var(--fga-muted);
+  font-size:14px;
+}
+
+.fga-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:6px 10px;
+  border:1px solid var(--fga-border);
+  background:#fff;
+  border-radius:999px;
+  color:var(--fga-text);
+  font-size:13px;
+}
+
+.fga-chip strong{
+  font-weight:700;
+}
+
+.fga-chip--accent{
+  border-color:rgba(8,132,204,.25);
+  background:rgba(8,132,204,.06);
+}
+
+/* Content */
+.fga-single-content{
+  font-size:16px;
+  line-height:1.75;
+  color:var(--fga-text);
+}
+
+.fga-single-content p{ margin:0 0 14px; }
+.fga-single-content h2,
+.fga-single-content h3{
+  margin:22px 0 10px;
+  color:var(--fga-text);
+}
+
+
+.fga-contact-title{
+  margin:0 0 10px;
+  font-size:16px;
+  font-weight:800;
+  color:var(--fga-text);
+}
+
+.fga-contact-row{
+  margin:0 0 8px;
+  font-size:14px;
+  color:var(--fga-text);
+}
+
+.fga-contact-row a{
+  color:var(--fga-blue);
+  text-decoration:none;
+  font-weight:700;
+}
+.fga-contact-row a:hover{ text-decoration:underline; }
+
+.fga-contact-actions{
+  margin-top:12px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.fga-btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:5px;
+  border:1px solid var(--fga-border);
+  background:#fff;
+  color:var(--fga-text);
+  text-decoration:none;
+  font-weight:800;
+  font-size:14px;
+}
+
+.fga-btn:hover{
+  background:#f6f6f6;
+}
+
+.fga-btn--primary{
+  background:var(--fga-blue);
+  border-color:var(--fga-blue);
+  color:#fff;
+}
+.fga-btn--primary:hover{
+  filter:brightness(.95);
+}
 
 @media (max-width: 700px){
-  .fga-single-hero{height:220px;}
-  .fga-single-title{font-size:28px;}
+  .fga-single-hero{ height:230px; }
+  .fga-single-body{ padding:18px; }
+  .fga-single-title{ font-size:28px; }
 }
 </style>
 
 <div class="fga-single-wrap">
-  <?php if (have_posts()): while (have_posts()): the_post(); ?>
+  <article class="fga-single-card">
 
-    <?php
-      $post_id = get_the_ID();
-      $img = get_the_post_thumbnail_url($post_id, 'full');
+    <div class="fga-single-hero" style="background-image:url('<?php echo esc_url($img); ?>')"></div>
 
-      // Custom contact fields
-      $first = class_exists('FGA_Plugin') ? get_post_meta($post_id, FGA_Plugin::META_FIRSTNAME, true) : '';
-      $last  = class_exists('FGA_Plugin') ? get_post_meta($post_id, FGA_Plugin::META_LASTNAME, true) : '';
-      $email = class_exists('FGA_Plugin') ? get_post_meta($post_id, FGA_Plugin::META_EMAIL, true) : '';
+    <div class="fga-single-body">
+      <h1 class="fga-single-title"><?php the_title(); ?></h1>
 
-      $name  = trim($first . ' ' . $last);
-      $has_contact = ($name !== '' || $email !== '');
-    ?>
+      <div class="fga-single-meta">
+        <span class="fga-chip"><?php echo esc_html(get_the_date()); ?></span>
 
-    <article class="fga-single-card">
-      <?php if ($img): ?>
-        <div class="fga-single-hero" style="background-image:url('<?php echo esc_url($img); ?>')"></div>
-      <?php endif; ?>
+        <?php if ((int)$kapitaal > 0): ?>
+          <span class="fga-chip fga-chip--accent">
+            <strong>Benodigd</strong>
+            €<?php echo esc_html(number_format_i18n((int) $kapitaal)); ?>
+          </span>
+        <?php endif; ?>
 
-      <div class="fga-single-body">
-        <h2 class="fga-single-title"><?php the_title(); ?></h2>
-
-        <div class="fga-single-meta">
-          <?php if ($name): ?>
-            <span><?php echo esc_html($name); ?></span>
-            <span>•</span>
-          <?php endif; ?>
-          <span><?php echo esc_html(get_the_date()); ?></span>
-        </div>
-
-        <div class="fga-single-tax">
-          <?php
-            $types = get_the_terms($post_id, FGA_Plugin::TAX_TYPE);
-            if (!is_wp_error($types) && !empty($types)) {
-              foreach ($types as $t) echo '<span class="fga-pill">' . esc_html($t->name) . '</span>';
-            }
-
-            $themas = get_the_terms($post_id, FGA_Plugin::TAX_THEMA);
-            if (!is_wp_error($themas) && !empty($themas)) {
-              foreach ($themas as $t) echo '<span class="fga-pill">' . esc_html($t->name) . '</span>';
-            }
-          ?>
-        </div>
-
-        <div class="fga-single-content">
-          <?php the_content(); ?>
-        </div>
-
-       
-
-        <a class="fga-back" href="<?php echo esc_url(get_post_type_archive_link(FGA_Plugin::CPT)); ?>">
-          ← Terug naar alle geefacties
-        </a>
+        <?php if (!empty($stichting)): ?>
+          <span class="fga-chip">
+            <strong>Stichting</strong>
+            <?php echo esc_html($stichting); ?>
+          </span>
+        <?php endif; ?>
       </div>
-    </article>
 
-  <?php endwhile; endif; ?>
+      <div class="fga-single-content">
+        <?php the_content(); ?>
+      </div>
+    </div>
+  </article>
 </div>
 
 <div class="contact-section">
 
+<?php if ($name || $email): ?>
+        <div class="fga-contact-box">
+          <h3 class="fga-contact-title">Contactgegevens plaatser</h3>
 
- <?php if ($has_contact): ?>
-          <div class="fga-contact">
-            <div class="fga-contact-title">Contactgegevens</div>
+          <?php if ($name): ?>
+            <p class="fga-contact-row"><strong>Naam:</strong> <?php echo esc_html($name); ?></p>
+          <?php endif; ?>
 
-            <div class="fga-contact-row">
-              <?php if ($name): ?>
-                <span class="fga-contact-name"><?php echo esc_html($name); ?></span>
-              <?php endif; ?>
-
-              <?php if ($email): ?>
-                <span class="fga-contact-mail">
-                  <a href="<?php echo esc_url('mailto:' . sanitize_email($email)); ?>">
-                    <?php echo esc_html($email); ?>
-                  </a>
-                </span>
-              <?php endif; ?>
-            </div>
-
-            <?php if ($email): ?>
-              <a class="fga-contact-btn" href="<?php echo esc_url('mailto:' . sanitize_email($email)); ?>">
-                E-mail sturen
+          <?php if ($email): ?>
+            <p class="fga-contact-row">
+              <strong>E-mail:</strong>
+              <a href="mailto:<?php echo esc_attr($email); ?>">
+                <?php echo esc_html($email); ?>
               </a>
-            <?php endif; ?>
-          </div>
-        <?php endif; ?>
+            </p>
+          <?php endif; ?>
 
+          <?php if ($email): ?>
+            <div class="fga-contact-actions">
+              <a class="fga-btn fga-btn--primary" href="mailto:<?php echo esc_attr($email); ?>">
+                Neem contact op
+              </a>
+              <a class="fga-btn" href="<?php echo esc_url(get_post_type_archive_link(FGA_Plugin::CPT)); ?>">
+                Terug naar overzicht
+              </a>
+            </div>
+          <?php endif; ?>
         </div>
+      <?php endif; ?>
+      </div>
+      
 
 <?php get_footer(); ?>
 
+
 <style>
-    .contact-section {
-        max-width:1100px;
-        margin:24px auto 60px;
-        padding:0 16px;
-    }
+  .contact-section {
+    max-width:1100px;
+    margin:24px auto 60px;
+    padding:0 16px;
+    border: 1px solid var(--fga-border);
+    border-radius: 5px;
+    background: var(--fga-soft);
+    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, .15);
+  }
+
+/* Contact box */
+.fga-contact-box{
+  
+}
+
 </style>
