@@ -1,7 +1,7 @@
 <?php if (!defined('ABSPATH')) exit; ?>
 
 <?php
-$img = get_the_post_thumbnail_url(get_the_ID(), 'large');
+$img = get_the_post_thumbnail_url(get_the_ID(), 'medium'); // ✅ medium = betere kwaliteit dan thumbnail
 if (!$img) {
   $img = 'data:image/svg+xml;utf8,' . rawurlencode(
     '<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="600">
@@ -46,16 +46,17 @@ $stichting = get_post_meta(get_the_ID(), FGA_Plugin::META_STICHTING_NAAM, true);
           <span class="fga-chip"><?php echo esc_html($name); ?></span>
         <?php endif; ?>
 
-        <?php if (!empty($kapitaal) && (int)$kapitaal > 0): ?>
-          <span class="fga-chip fga-chip--accent">
-            €<?php echo esc_html(number_format_i18n((int) $kapitaal)); ?>
-          </span>
-        <?php endif; ?>
-
         <?php if (!empty($stichting)): ?>
-          <span class="fga-chip"><?php echo esc_html($stichting); ?></span>
+          <span class="fga-chip">🏛️ <?php echo esc_html($stichting); ?></span>
         <?php endif; ?>
       </div>
+
+      <?php if (!empty($kapitaal) && (int)$kapitaal > 0): ?>
+        <div class="fga-card-amount">
+          <span class="fga-card-amount-label">Op te halen bedrag</span>
+          <span class="fga-card-amount-value">€<?php echo esc_html(number_format_i18n((int) $kapitaal)); ?></span>
+        </div>
+      <?php endif; ?>
 
       <div class="fga-card-cta">
         <span class="fga-card-cta-text">Bekijk geefactie</span>
@@ -66,16 +67,16 @@ $stichting = get_post_meta(get_the_ID(), FGA_Plugin::META_STICHTING_NAAM, true);
 </article>
 
 <style>
-:root{
+/* Scoped variables (admin-safe) */
+.fga-card{
   --fga-text:#333333;
   --fga-muted:#6b7280;
   --fga-border:#e6e6e6;
   --fga-blue:#0884CC;
-  --fga-orange:#FF8C2C;
   --fga-bg:#ffffff;
 }
 
-/* ===== Card (templates/card.php) ===== */
+/* Card */
 .fga-card{
   background:var(--fga-bg);
   border:1px solid var(--fga-border);
@@ -128,11 +129,10 @@ $stichting = get_post_meta(get_the_ID(), FGA_Plugin::META_STICHTING_NAAM, true);
   border:1px solid rgba(255,255,255,.6);
   color:var(--fga-text);
   font-size:13px;
-  font-weight:800;
+  font-weight:700 !important;
   box-shadow:0 6px 18px rgba(0,0,0,.10);
 }
 
-/* Body */
 .fga-card-body{
   padding:16px 16px 14px;
 }
@@ -168,18 +168,36 @@ $stichting = get_post_meta(get_the_ID(), FGA_Plugin::META_STICHTING_NAAM, true);
   border:1px solid var(--fga-border);
   background:#fff;
   border-radius:999px;
-  color:var(--fga-text);
+  color: #333; 
   font-size:13px;
+  font-weight: 700; 
 }
 
-.fga-chip--accent{
-  border-color:rgba(8,132,204,.25);
-  background:rgba(8,132,204,.06);
+/* Amount row */
+.fga-card-amount{
+  margin-top:14px;
+  padding-top:12px;
+  border-top:1px solid var(--fga-border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  font-size:14px;
+}
+
+.fga-card-amount-label{
+  color:var(--fga-muted);
+  font-weight:600;
+}
+
+.fga-card-amount-value{
+  color:var(--fga-text);
+  font-weight:800;
+  font-size:15px;
 }
 
 /* CTA */
 .fga-card-cta{
-  margin-top:14px;
+  margin-top:12px;
   display:flex;
   align-items:center;
   justify-content:space-between;

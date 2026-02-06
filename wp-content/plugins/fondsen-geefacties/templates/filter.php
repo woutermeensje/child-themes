@@ -13,7 +13,8 @@ $search_value   = $filters['q'] ?? '';
   <div class="fga-filter-card">
 
     <div class="fga-head">
-      <h1 class="fga-title">Geefacties die jouw hulp kunnen gebruiken</h1>
+      <h1 class="fga-title">Donatie platform - Fondsen.org</h1>
+      <p>Bekijk alle geefacties of <a href="/geefactie-plaatsen/">plaats een eigen geefactie op Fondsen.org!</a></p>
     </div>
 
     <form id="fgaFilterForm" class="fga-filter" method="get" action="">
@@ -32,10 +33,10 @@ $search_value   = $filters['q'] ?? '';
 
         <!-- Soort geefactie (multi) -->
         <div class="fga-item">
-          <div class="fga-multi" data-name="fga_type[]">
+          <div class="fga-multi" data-name="fga_type[]" data-label="Geefacties">
             <button type="button" class="fga-multi-btn" aria-expanded="false">
               <span class="fga-multi-placeholder">Geefacties: Alle soorten</span>
-              <span class="fga-multi-caret">▾</span>
+              <span class="fga-multi-caret" aria-hidden="true"></span>
             </button>
 
             <div class="fga-multi-panel">
@@ -48,7 +49,7 @@ $search_value   = $filters['q'] ?? '';
                         value="<?php echo esc_attr($term->slug); ?>"
                         <?php checked(in_array($term->slug, $selected_type, true)); ?>
                       >
-                      <span><?php echo esc_html($term->name); ?></span>
+                      <span class="fga-option-text"><?php echo esc_html($term->name); ?></span>
                     </label>
                   <?php endforeach; ?>
                 <?php else : ?>
@@ -65,10 +66,10 @@ $search_value   = $filters['q'] ?? '';
       <div class="fga-row fga-row--bottom">
         <!-- Thema (multi) -->
         <div class="fga-item">
-          <div class="fga-multi" data-name="fga_thema[]">
+          <div class="fga-multi" data-name="fga_thema[]" data-label="Thema">
             <button type="button" class="fga-multi-btn" aria-expanded="false">
               <span class="fga-multi-placeholder">Thema: Alle thema's</span>
-              <span class="fga-multi-caret">▾</span>
+              <span class="fga-multi-caret" aria-hidden="true"></span>
             </button>
 
             <div class="fga-multi-panel">
@@ -81,7 +82,7 @@ $search_value   = $filters['q'] ?? '';
                         value="<?php echo esc_attr($term->slug); ?>"
                         <?php checked(in_array($term->slug, $selected_thema, true)); ?>
                       >
-                      <span><?php echo esc_html($term->name); ?></span>
+                      <span class="fga-option-text"><?php echo esc_html($term->name); ?></span>
                     </label>
                   <?php endforeach; ?>
                 <?php else : ?>
@@ -99,7 +100,8 @@ $search_value   = $filters['q'] ?? '';
         </div>
       </div>
 
-      <!-- hidden inputs worden via JS ingevuld -->
+      <!-- Active chips onderaan -->
+      <div class="active-filters" id="fgaActiveFilters"></div>
     </form>
 
   </div>
@@ -109,6 +111,8 @@ $search_value   = $filters['q'] ?? '';
 (function(){
   var form = document.getElementById('fgaFilterForm');
   if(!form) return;
+
+  var activeWrap = document.getElementById('fgaActiveFilters');
 
   function closeAll(except){
     form.querySelectorAll('.fga-multi.is-open').forEach(function(m){
@@ -147,7 +151,51 @@ $search_value   = $filters['q'] ?? '';
 
   function submit(){ form.submit(); }
 
-  // init
+  function renderActiveFilters(){
+    if(!activeWrap) return;
+    activeWrap.innerHTML = '';
+
+    var chips = [];
+    form.querySelectorAll('.fga-multi').forEach(function(multi){
+      multi.querySelectorAll('input[type="checkbox"]:checked').forEach(function(cb){
+        var row = cb.closest('.fga-multi-option');
+        var textEl = row ? row.querySelector('.fga-option-text') : null;
+        var text = textEl ? textEl.textContent.trim() : cb.value;
+
+        chips.push({ multi: multi, cb: cb, text: text, value: cb.value });
+      });
+    });
+
+    if(chips.length === 0){
+      activeWrap.style.display = 'none';
+      return;
+    }
+
+    activeWrap.style.display = 'flex';
+
+    chips.forEach(function(c){
+      var chip = document.createElement('span');
+      chip.className = 'active-filter';
+      chip.innerHTML = '<span class="active-filter-text">'+ c.text +'</span>';
+
+      var x = document.createElement('button');
+      x.type = 'button';
+      x.className = 'active-filter-x';
+      x.setAttribute('aria-label', 'Verwijderen');
+      x.textContent = '×';
+
+      x.addEventListener('click', function(){
+        c.cb.checked = false;
+        updateHidden(c.multi);
+        renderActiveFilters();
+        submit();
+      });
+
+      chip.appendChild(x);
+      activeWrap.appendChild(chip);
+    });
+  }
+
   form.querySelectorAll('.fga-multi').forEach(function(multi){
     var btn = multi.querySelector('.fga-multi-btn');
     if(!btn) return;
@@ -163,6 +211,7 @@ $search_value   = $filters['q'] ?? '';
     multi.querySelectorAll('input[type="checkbox"]').forEach(function(cb){
       cb.addEventListener('change', function(){
         updateHidden(multi);
+        renderActiveFilters();
         submit();
       });
     });
@@ -170,7 +219,6 @@ $search_value   = $filters['q'] ?? '';
     updateHidden(multi);
   });
 
-  // debounce search
   var q = document.getElementById('fga_q');
   if(q){
     var t;
@@ -188,176 +236,208 @@ $search_value   = $filters['q'] ?? '';
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape') closeAll(null);
   });
+
+  renderActiveFilters();
 })();
 </script>
 
-
 <style>
-
-    /* ===== Filter (templates/filter.php) ===== */
-
-/* Wrapper */
+/* ===== Filter base ===== */
 .fga-wrap { max-width: 1180px; margin: 24px auto; padding: 0 16px; }
-.fga-filter-card { background: #fff; border: 1px solid #e6e6e6; border-radius: 5px; box-shadow: 0 10px 30px rgba(0,0,0,.06); padding: 18px; }
+.fga-filter-card {
+  background: #fff;
+  border: 1px solid #E0E0E0;
+  border-radius: 6px;
+  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
+  padding: 18px;
+}
 
-.fga-title { margin: 0 0 14px; font-size: 34px; line-height: 1.1; color: #1f2937; }
+.fga-title { margin: 0 0 14px; font-size: 34px; line-height: 1.1; color: #333; font-family: Inter, system-ui, sans-serif; }
 
-/* Filter layout */
-.fga-filter { width: 100%; }
+.fga-head p{
+  font-family: Poppins, system-ui, sans-serif;
+  font-size: 15px;
+  color: #333;
+  margin: 10px 0 0;
+}
+.fga-head a{ color:#0884CC; text-decoration:none; }
+.fga-head a:hover{ text-decoration:underline; }
+
+/* Layout */
+.fga-filter { width: 100%; margin-top: 10px; }
 .fga-row { display: grid; grid-template-columns: 1fr 320px; gap: 14px; margin-top: 12px; }
 .fga-row--bottom { grid-template-columns: 320px 1fr; align-items: start; }
 .fga-item { position: relative; }
 
-.fga-item--search input {
-  width: 100%;
-  height: 46px;
-  border: 1px solid #d9d9d9;
-  border-radius: 5px;
-  padding: 0 44px 0 14px;
-  font-size: 16px;
-  outline: none;
+/* Search (fondsen style) */
+.fga-item--search{ position:relative; }
+.fga-item--search input{
+  width:100%;
+  padding:12px 14px 12px 38px;
+  font-size:16px;
+  border:1px solid #dedede;
+  border-radius:0;
+  background:#fff;
+  color:#222;
+  box-shadow:0 2px 6px rgba(0,0,0,0.08);
+  transition:border-color .2s ease, box-shadow .2s ease;
+  font-family:Poppins, system-ui, sans-serif;
+  font-weight:400;
 }
-.fga-search-icon { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); opacity: .45; }
+.fga-item--search input:focus{
+  outline:none;
+  border-color:#0a6b8d;
+  box-shadow:0 2px 8px rgba(10,107,141,0.25);
+}
+.fga-item--search input::placeholder{
+  color:#333;
+  font-size:16px;
+  font-style:italic;
+}
+.fga-search-icon{
+  position:absolute;
+  left:10px;
+  top:50%;
+  transform:translateY(-50%);
+  font-size:16px;
+  color:#0a6b8d;
+  pointer-events:none;
+}
 
-/* Multi */
+/* Multi button (sj-style) */
 .fga-multi-btn{
-  width: 100%;
-  height: 46px;
-  border: 1px solid #d9d9d9;
-  border-radius: 5px;
-  background: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 12px 0 14px;
-  font-size: 16px;
-  cursor: pointer;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  border-radius:6px;
+  border:1px solid #E0E0E0 !important;
+  background:#fff !important;
+  padding:12px 12px;
+  min-height:44px;
+  cursor:pointer;
+  user-select:none;
+  font-family:Poppins, system-ui, sans-serif;
+  font-weight:700;
+  font-size:16px;
+  color:#111;
 }
-.fga-multi-caret { opacity: .7; }
 
+.fga-multi-placeholder{
+  font-family:Poppins, system-ui, sans-serif;
+  font-weight:400;
+  color:#333;
+  font-size:15px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.fga-multi-caret{
+  width:10px;
+  height:10px;
+  border-right:2px solid #111;
+  border-bottom:2px solid #111;
+  transform:rotate(45deg);
+  transition:transform .2s ease;
+  margin-left:10px;
+}
+.fga-multi.is-open .fga-multi-caret{ transform:rotate(-135deg); }
+
+/* Panel */
 .fga-multi-panel{
-  display: none;
-  position: absolute;
-  z-index: 50;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid #e6e6e6;
-  border-radius: 5px;
-  box-shadow: 0 18px 50px rgba(0,0,0,.12);
-  max-height: 280px;
-  overflow: auto;
-  padding: 10px;
+  display:none;
+  position:absolute;
+  left:0;
+  right:0;
+  margin-top:10px;
+  background:#fff;
+  border:1px solid #E0E0E0;
+  border-radius:8px;
+  box-shadow:0 10px 40px -5px rgba(0,0,0,0.15);
+  padding:8px;
+  max-height:280px;
+  overflow:auto;
+  z-index:9999;
 }
 .fga-multi.is-open .fga-multi-panel{ display:block; }
-.fga-multi-option{ display:flex; gap:10px; align-items:center; padding: 8px 8px; border-radius: 5px; cursor: pointer; }
-.fga-multi-option:hover{ background:#f6f6f6; }
-.fga-multi-option input{ transform: scale(1.05); }
-.fga-multi-empty{ padding: 10px; opacity: .7; }
+.fga-multi-options{ display:flex; flex-direction:column; gap:2px; }
+.fga-multi-empty{ padding:10px; opacity:.7; font-family:Poppins, system-ui, sans-serif; }
 
-.fga-reset { display:inline-block; margin-top: 6px; color: #0884CC; text-decoration: none; }
-.fga-reset:hover { text-decoration: underline; }
+/* ✅ Options: clean list like your 2nd screenshot */
+.fga-multi-option{
+  display:block;
+  padding:10px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+.fga-multi-option:hover{ background:#f2f2f2; }
 
-/* Responsive (filter) */
+/* hide checkbox but keep it functional */
+.fga-multi-option input[type="checkbox"]{
+  position:absolute;
+  left:-9999px;
+  opacity:0;
+}
+
+/* option text */
+.fga-option-text{
+  display:block;
+  font-family:Poppins, system-ui, sans-serif;
+  font-weight:700;
+  color:#333;
+  font-size:16px;
+  line-height:1.25;
+}
+
+/* ✅ selected highlight like your example (soft gray block) */
+.fga-multi-option input[type="checkbox"]:checked + .fga-option-text{
+  background:#DEDEDE;
+  border-radius:10px;
+  padding:14px 16px;
+}
+
+/* Reset */
+.fga-reset{ display:inline-block; margin-top: 6px; color:#0884CC; text-decoration:none; font-family:Poppins, system-ui, sans-serif; }
+.fga-reset:hover{ text-decoration:underline; }
+
+/* Active filters chips */
+.active-filters{
+  display:none;
+  flex-wrap:wrap;
+  gap:10px;
+  margin:14px 0 0;
+}
+.active-filter{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:#ffffff;
+  border:1px solid #d7e6ff;
+  border-radius:999px;
+  padding:8px 12px;
+  font-size:16px;
+  color:#111;
+  font-weight:700;
+}
+.active-filter:hover{ border-color:#0884CC; }
+.active-filter-text{ color:#333; }
+.active-filter-x{
+  border:none;
+  background:transparent;
+  cursor:pointer;
+  color:#0884CC;
+  font-weight:900;
+  font-size:20px;
+  line-height:1;
+  padding:0;
+  margin-left:6px;
+}
+
+/* Responsive */
 @media (max-width: 980px){
   .fga-row{ grid-template-columns: 1fr; }
   .fga-row--bottom{ grid-template-columns: 1fr; }
   .fga-title{ font-size: 28px; }
 }
-
-/* ===== Update: dropdown buttons (white + Poppins 700) ===== */
-
-/* Button (closed state) */
-#fgaFilterForm .fga-multi-btn{
-  background: #fff !important;
-  color: #1f2937;
-  font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
-  font-weight: 400 !important;
-  border-color: #d9d9d9;
-}
-
-/* Placeholder text in button */
-#fgaFilterForm .fga-multi-placeholder{
-  font-weight: 400 !important;
-}
-
-/* Caret */
-#fgaFilterForm .fga-multi-caret{
-  opacity: .7;
-}
-
-/* Dropdown panel */
-#fgaFilterForm .fga-multi-panel{
-  background: #fff !important;
-}
-
-/* Dropdown options */
-#fgaFilterForm .fga-multi-option span{
-  font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
-  font-weight: 400 !important;
-}
-
-/* ===== Fondsen.org–achtige dropdown styling ===== */
-
-/* Verberg checkbox zelf */
-#fgaFilterForm .fga-multi-option input[type="checkbox"] {
-  display: none;
-}
-
-/* Optie rij */
-#fgaFilterForm .fga-multi-option {
-  display: flex;
-  align-items: center;
-  padding: 12px 14px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-family: Poppins, system-ui, sans-serif;
-  font-weight: 400;
-  font-size: 15px;
-  color: #1f2937;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-
-/* Hover zoals Fondsen.org */
-#fgaFilterForm .fga-multi-option:hover {
-  background: #f3f4f6;
-}
-
-/* Actieve (geselecteerde) optie */
-#fgaFilterForm .fga-multi-option input[type="checkbox"]:checked + span {
-  background: #f3f4f6;
-  border-radius: 5px;
-  padding: 6px 8px;
-}
-
-/* Zorg dat span de volledige breedte gebruikt */
-#fgaFilterForm .fga-multi-option span {
-  width: 100%;
-  display: block;
-}
-
-/* Dropdown container rustiger */
-#fgaFilterForm .fga-multi-panel {
-  padding: 8px;
-  border-radius: 5px;
-}
-
-/* Button (gesloten state) meer "select look" */
-#fgaFilterForm .fga-multi-btn {
-  font-family: Poppins, system-ui, sans-serif;
-  font-weight: 400;
-  font-size: 15px;
-  background: #fff;
-  border: 1px solid #d1d5db;
-}
-
-/* Caret iets subtieler */
-#fgaFilterForm .fga-multi-caret {
-  font-size: 12px;
-  opacity: 0.6;
-}
-
-
-
 </style>
