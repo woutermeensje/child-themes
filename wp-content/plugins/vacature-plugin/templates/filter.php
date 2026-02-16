@@ -95,15 +95,7 @@
             </select>
           </div>
 
-          <div class="vpjobs-filter">
-            <select name="bedrijfsnaam[]" class="vpjs-select" data-placeholder="Bedrijfsnaam" multiple>
-              <?php foreach (get_terms([ 'taxonomy' => 'bedrijfsnaam', 'hide_empty' => false ]) as $t): ?>
-                <option value="<?php echo esc_attr($t->slug); ?>" <?php selected(in_array($t->slug, $selected['bedrijfsnaam'] ?? [], true)); ?>>
-                  <?php echo esc_html($t->name); ?>
-                </option>
-              <?php endforeach; ?>
-            </select>
-          </div>
+      
 
           <div class="vpjobs-filter">
             <select name="regio[]" class="vpjs-select" data-placeholder="Regio" multiple>
@@ -227,9 +219,11 @@
   white-space: nowrap;
 }
 
-.vpjobs-reset-inline:hover{
-  background: #F2F2F2;
+.vpjobs-reset-inline:hover {
+    background-color: white; 
+    color: #333; 
 }
+
 
 /* =========================
    GRID – desktop
@@ -442,4 +436,42 @@ span.vp-placeholder{
     min-height: 46px;
   }
 }
+
+
+span.vp-placeholder {
+    font-weight: 700 !important;
+}
+
+
+.vp-option {
+    font-weight: 700 !important;
+    font-size: 14px; 
+}
+
+</style>
+
+<style>
+  .vpjobs-active-filter {
+    background: white !important; 
+    border: 1px solid #DEDEDE !important; 
+    color: #333 !important; 
+    font-family: Inter !important; 
+    font-weight: 700 !important; 
+    padding: 8px !important; 
+    border-radius: 999px !important; 
+    font-size: 14px !important; 
+    
+  }
+
+  .vpjobs-chip-x {
+    font-size: 14px !important; 
+    font-weight: 700 !important; 
+    color: #845EC2 !important; 
+    padding: 2px !important;
+    border: none; 
+  }
+
+  .vpjobs-chip-x:hover {
+    background: none !important; 
+  }
 </style>

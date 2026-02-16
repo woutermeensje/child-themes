@@ -205,23 +205,14 @@ if ($has_any) : ?>
 }
 
 .vac-tax-chip{
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  white-space: nowrap;
-
-  padding: 7px 12px;
-  border-radius: 5px;
-
-  background: #EAF1FF;
-  border: 2px solid #BFD3FF;
-  color: #0B4DB8;
-
-  font-family: Inter, sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 1;
-  text-decoration: none;
+  background: white !important; 
+    border: 1px solid #DEDEDE !important; 
+    color: #333 !important; 
+    font-family: Inter !important; 
+    font-weight: 700 !important; 
+    padding: 8px !important; 
+    border-radius: 999px !important; 
+    font-size: 14px !important; 
 }
 
 .vac-tax-chip:hover{
