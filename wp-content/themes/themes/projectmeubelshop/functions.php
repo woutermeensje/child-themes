@@ -20,6 +20,16 @@ function projectmeubelshop_child_setup()
    add_theme_support('woocommerce');
 }
 
+add_filter('woocommerce_product_tabs', 'projectmeubelshop_remove_reviews_tab', 98);
+function projectmeubelshop_remove_reviews_tab($tabs)
+{
+   if (isset($tabs['reviews'])) {
+      unset($tabs['reviews']);
+   }
+
+   return $tabs;
+}
+
 function pms_quote_ready()
 {
    return class_exists('WooCommerce') && function_exists('WC') && is_object(WC());
@@ -137,7 +147,7 @@ function pms_quote_render_actions_inside_cart()
    ?>
    <div class="pms-product-actions pms-inline-quote-actions">
       <?php wp_nonce_field('pms_add_to_quote', 'pms_quote_nonce'); ?>
-      <input type="hidden" name="add-to-cart" value="<?php echo esc_attr($product->get_id()); ?>">
+      <input type="hidden" name="pms_product_id" value="<?php echo esc_attr($product->get_id()); ?>">
       <button type="submit" name="pms_add_to_quote" value="1" class="button pms-quote-add-button"><?php esc_html_e('Voeg toe aan offerte', 'projectmeubelshop-child'); ?></button>
       <a class="button pms-quote-view-button" href="<?php echo esc_url(pms_quote_get_page_url()); ?>"><?php esc_html_e('Offerte bekijken', 'projectmeubelshop-child'); ?></a>
    </div>
@@ -168,8 +178,8 @@ function pms_quote_fallback_injector()
          var pid = $form.find('input[name="add-to-cart"]').first().val() ||
                    $form.find('button.single_add_to_cart_button[name="add-to-cart"]').first().val() ||
                    $form.find('input[name="product_id"]').first().val() || '';
-         if (pid && !$form.find('input[name="add-to-cart"]').length) {
-            $form.append('<input type="hidden" name="add-to-cart" value="'+pid+'">');
+         if (pid && !$form.find('input[name="pms_product_id"]').length) {
+            $form.append('<input type="hidden" name="pms_product_id" value="'+pid+'">');
          }
 
          var $target = $form.find('button.single_add_to_cart_button').first();
@@ -194,12 +204,20 @@ function pms_quote_handle_add()
       return;
    }
 
+   // Prevent mixed WooCommerce add-to-cart notices when this request is quote-only.
+   if (function_exists('wc_clear_notices')) {
+      wc_clear_notices();
+   }
+
    $nonce = isset($_POST['pms_quote_nonce']) ? sanitize_text_field(wp_unslash($_POST['pms_quote_nonce'])) : '';
    if (!$nonce || !wp_verify_nonce($nonce, 'pms_add_to_quote')) {
       return;
    }
 
-   $product_id   = isset($_POST['add-to-cart']) ? absint($_POST['add-to-cart']) : 0;
+   $product_id   = isset($_POST['pms_product_id']) ? absint($_POST['pms_product_id']) : 0;
+   if (!$product_id && isset($_POST['add-to-cart'])) {
+      $product_id = absint($_POST['add-to-cart']);
+   }
    $variation_id = isset($_POST['variation_id']) ? absint($_POST['variation_id']) : 0;
    $quantity     = isset($_POST['quantity']) ? wc_stock_amount(wp_unslash($_POST['quantity'])) : 1;
    $variation    = pms_quote_collect_variation_data();
