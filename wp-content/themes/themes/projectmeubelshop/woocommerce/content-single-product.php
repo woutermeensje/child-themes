@@ -119,6 +119,128 @@ $image_ids = array_filter( array_merge(
 	background: #fff;
 }
 
+/* Paginatitel boven de blokken */
+.pms-page-title {
+	max-width: 1200px;
+	margin: 0 auto 24px;
+}
+
+/* Beschrijvingen blok */
+.pms-col-description {
+	max-width: 1200px;
+	margin: 40px auto 0;
+	border: 1px solid #DEDEDE;
+	padding: 24px;
+	border-radius: 5px;
+	box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+}
+
+/* Gerelateerde producten */
+.pms-related {
+	border: none !important;
+	box-shadow: none !important;
+	padding: 0 !important;
+	margin-top: 40px;
+}
+
+.pms-related-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+	gap: 20px;
+	margin-top: 20px;
+}
+
+.pms-related-item {
+	display: flex !important;
+	flex-direction: column !important;
+	gap: 0 !important;
+	text-decoration: none !important;
+	color: #222 !important;
+	border: 1px solid #DEDEDE;
+	border-radius: 5px;
+	overflow: hidden;
+	transition: box-shadow 0.2s;
+}
+
+.pms-related-item:hover {
+	box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.pms-related-item .pms-related-thumb {
+	width: 100%;
+	height: 180px;
+	overflow: hidden;
+	flex-shrink: 0;
+}
+
+.pms-related-item .pms-related-thumb img {
+	width: 100% !important;
+	height: 100% !important;
+	object-fit: cover !important;
+	display: block !important;
+}
+
+.pms-related-name {
+	font-weight: 600;
+	font-size: 15px;
+	color: #222;
+	padding: 10px 12px 4px;
+	display: block;
+}
+
+.pms-related-cats {
+	font-size: 13px;
+	color: #888;
+	padding: 0 12px 12px;
+	display: block;
+}
+
+.pms-related-cats a {
+	color: #888 !important;
+	text-decoration: none !important;
+}
+
+/* Categorieën */
+.pms-product-cats {
+	font-size: 14px;
+	color: #888;
+	margin: 4px 0 16px;
+}
+
+.pms-product-cats a {
+	color: #888;
+	text-decoration: none;
+}
+
+/* Contactgegevens */
+.pms-contact-info {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin: 0 0 20px;
+}
+
+.pms-contact-item {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-size: 15px;
+	color: #444;
+	text-decoration: none;
+}
+
+.pms-contact-item:hover {
+	color: #C5B17D;
+}
+
+/* Intro tekst */
+.pms-intro-text {
+	font-size: 15px;
+	line-height: 1.7;
+	color: #555;
+	margin-bottom: 24px;
+}
+
 /* Lightbox overlay */
 .pms-lightbox {
 	display: none;
@@ -267,8 +389,35 @@ $image_ids = array_filter( array_merge(
 			// 1. Titel
 			the_title( '<h1 class="product_title entry-title">', '</h1>' );
 
-			// 2. Offerte-knop
-			if ( $in_quote ) : ?>
+			// 2. Categorieën
+			$cats = wc_get_product_category_list( $product_id, ', ' );
+			if ( $cats ) {
+				echo '<p class="pms-product-cats">' . $cats . '</p>';
+			}
+			?>
+
+			<!-- 3. Contactgegevens -->
+			<div class="pms-contact-info">
+				<a href="mailto:support@projectmeubelshop.nl" class="pms-contact-item">
+					<i data-lucide="mail" width="16" height="16"></i>
+					support@projectmeubelshop.nl
+				</a>
+				<a href="tel:0852392030" class="pms-contact-item">
+					<i data-lucide="phone" width="16" height="16"></i>
+					085 239 20 30
+				</a>
+			</div>
+
+			<!-- 4. Korte beschrijving -->
+			<?php
+			$short = $product->get_short_description();
+			if ( ! empty( $short ) ) {
+				echo '<div class="pms-intro-text">' . wpautop( $short ) . '</div>';
+			}
+			?>
+
+			<!-- 4. Offerte-knop -->
+			<?php if ( $in_quote ) : ?>
 				<a class="button pms-quote-view-button" href="<?php echo esc_url( $quote_url ); ?>">
 					<?php esc_html_e( 'Offerte bekijken', 'projectmeubelshop-child' ); ?>
 				</a>
@@ -281,23 +430,40 @@ $image_ids = array_filter( array_merge(
 						<?php esc_html_e( 'Voeg toe aan offerte', 'projectmeubelshop-child' ); ?>
 					</button>
 				</form>
-			<?php endif;
-
-			// 3. Korte beschrijving
-			$short = $product->get_short_description();
-			if ( ! empty( $short ) ) {
-				echo wpautop( $short );
-			}
-
-			// 4. Uitgebreide beschrijving
-			$desc = $product->get_description();
-			if ( ! empty( $desc ) ) {
-				echo apply_filters( 'the_content', $desc );
-			}
-			?>
+			<?php endif; ?>
 		</div>
 
 	</div>
+
+	<!-- ONDER: Beschrijvingen -->
+	<?php
+	$desc = $product->get_description();
+	if ( ! empty( $desc ) ) : ?>
+		<div class="pms-col-description">
+			<h2>Product beschrijving</h2>
+			<?php echo apply_filters( 'the_content', $desc ); ?>
+		</div>
+	<?php endif; ?>
+
+	<!-- ONDER: Gerelateerde producten -->
+	<?php
+	$related_ids = wc_get_related_products( $product->get_id(), 6 );
+	if ( ! empty( $related_ids ) ) : ?>
+		<div class="pms-col-description pms-related">
+			<h2>Gerelateerde producten</h2>
+			<div class="pms-related-grid">
+				<?php foreach ( $related_ids as $related_id ) :
+					$related = wc_get_product( $related_id );
+					if ( ! $related ) continue;
+				?>
+					<a href="<?php echo esc_url( get_permalink( $related_id ) ); ?>" class="pms-related-item">
+						<div class="pms-related-thumb"><?php echo wp_get_attachment_image( $related->get_image_id(), 'medium' ); ?></div>
+						<span class="pms-related-name"><?php echo esc_html( $related->get_name() ); ?></span>
+					</a>
+				<?php endforeach; ?>
+			</div>
+		</div>
+	<?php endif; ?>
 
 </div>
 
@@ -362,6 +528,8 @@ $image_ids = array_filter( array_merge(
 		document.body.style.overflow = '';
 	}
 })();
+
+if (typeof lucide !== 'undefined') lucide.createIcons();
 </script>
 
 <?php do_action( 'woocommerce_after_single_product' ); ?>
