@@ -1,11 +1,5 @@
 <?php
-/**
- * Projectmeubelshop single product content override
- */
-
 defined( 'ABSPATH' ) || exit;
-
-global $product;
 
 do_action( 'woocommerce_before_single_product' );
 
@@ -13,208 +7,361 @@ if ( post_password_required() ) {
 	echo get_the_password_form();
 	return;
 }
+
+global $product;
+
+// Alle afbeeldingen verzamelen (hoofdafbeelding + galerij)
+$image_ids = array_filter( array_merge(
+	[ $product->get_image_id() ],
+	$product->get_gallery_image_ids()
+) );
 ?>
 
 <style>
-/* =========================
-   MAIN GRID LAYOUT
-   ========================= */
-.single-product .pms-single-main{
-	display:grid;
-	grid-template-columns:minmax(0,1.8fr) minmax(360px,640px);
-	gap:60px;
-	align-items:start;
-	margin:40px 0;
+.pms-product-wrapper {
+	max-width: 1200px;
+	margin: 40px auto;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 40px;
 }
 
-/* Zorg dat kolommen echt mogen uitrekken */
-.single-product .pms-single-media,
-.single-product .pms-single-summary{
-	min-width:0;
+.pms-col-left {
+	border: 1px solid #DEDEDE;
+	border-radius: 5px;
+	box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+	overflow: hidden;
 }
 
-/* Mobile */
-@media (max-width:980px){
-	.single-product .pms-single-main{
-		grid-template-columns:1fr;
-		gap:20px;
-	}
+.pms-col-right {
+	border: 1px solid #DEDEDE;
+	padding: 24px;
+	border-radius: 5px;
+	box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 }
 
-/* =========================
-   FIX: THEME CENTERING / MAX WIDTH RECHTS
-   (dit is wat je screenshot laat zien)
-   ========================= */
-.single-product .pms-single-summary{
-	text-align:left !important;
-	justify-items:start;
-	align-content:start;
-	max-width:none !important;
-	margin:0 !important;
-	display:grid;
-	gap:24px;
+/* Preview blok */
+.pms-gallery-preview {
+	position: relative;
+	overflow: hidden;
+	border-radius: 5px;
 }
 
-.single-product .pms-single-summary .product_title{
-	text-align:left !important;
-	margin:0 !important;
-	font-size:clamp(34px,4vw,54px);
-	line-height:1.1;
+.pms-gallery-preview img {
+	width: 100%;
+	height: 500px;
+	object-fit: cover;
+	display: none;
 }
 
-/* =========================
-   GALLERY: stabiele layout via eigen wrapper grid
-   ========================= */
-.single-product .pms-gallery-grid{
-	display:grid;
-	grid-template-columns:120px minmax(0,1fr);
-	gap:22px;
-	align-items:start;
-	width:100%;
+.pms-gallery-preview img.is-active {
+	display: block;
 }
 
-/* Woo figure mag niets “duwen” */
-.single-product .pms-gallery-grid .woocommerce-product-gallery{
-	width:100% !important;
-	max-width:none !important;
-	float:none !important;
-	margin:0 !important;
+.pms-gallery-preview-hint {
+	position: absolute;
+	bottom: 16px;
+	right: 16px;
+	background: rgba(0,0,0,0.55);
+	color: #fff;
+	font-size: 13px;
+	padding: 6px 12px;
+	border-radius: 4px;
+	pointer-events: none;
 }
 
-/* Flexslider wrappers resetten (floats slopen layout) */
-.single-product .pms-gallery-grid .flex-viewport,
-.single-product .pms-gallery-grid .woocommerce-product-gallery__wrapper,
-.single-product .pms-gallery-grid .woocommerce-product-gallery__image{
-	float:none !important;
-	max-width:none !important;
+/* Preview pijlen */
+.pms-preview-arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: rgba(0,0,0,0.45);
+	border: none;
+	color: #fff;
+	font-size: 22px;
+	width: 44px;
+	height: 44px;
+	border-radius: 50%;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 5;
+	transition: background 0.2s;
 }
 
-/* Thumbnails links */
-.single-product .pms-gallery-grid .flex-control-thumbs{
-	grid-column:1;
-	list-style:none !important;
-	margin:0 !important;
-	padding:0 !important;
-	width:120px !important;
-	display:flex !important;
-	flex-direction:column !important;
-	gap:14px;
+.pms-preview-arrow:hover {
+	background: rgba(0,0,0,0.7);
 }
 
-.single-product .pms-gallery-grid .flex-control-thumbs li{
-	list-style:none !important;
-	margin:0 !important;
-	padding:0 !important;
-	width:100% !important;
+.pms-preview-arrow--prev { left: 12px; }
+.pms-preview-arrow--next { right: 12px; }
+
+/* Teller */
+.pms-preview-counter {
+	position: absolute;
+	bottom: 12px;
+	left: 50%;
+	transform: translateX(-50%);
+	display: flex;
+	gap: 6px;
 }
 
-.single-product .pms-gallery-grid .flex-control-thumbs img{
-	width:100% !important;
-	height:auto !important;
-	display:block !important;
-	border:1px solid rgba(0,0,0,.12);
-	background:#fff;
-	opacity:.75;
+.pms-preview-counter span {
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: rgba(255,255,255,0.5);
+	display: block;
 }
 
-.single-product .pms-gallery-grid .flex-control-thumbs img.flex-active{
-	opacity:1;
-	border-color:rgba(0,0,0,.25);
+.pms-preview-counter span.is-active {
+	background: #fff;
 }
 
-/* Main image rechts: zet viewport/wrapper in kolom 2 */
-.single-product .pms-gallery-grid .flex-viewport,
-.single-product .pms-gallery-grid .woocommerce-product-gallery__wrapper{
-	grid-column:2;
-	width:100% !important;
-	margin:0 !important;
+/* Lightbox overlay */
+.pms-lightbox {
+	display: none;
+	position: fixed;
+	inset: 0;
+	background: rgba(0,0,0,0.9);
+	z-index: 99999;
+	align-items: center;
+	justify-content: center;
 }
 
-/* Main image frame */
-.single-product .pms-gallery-grid .woocommerce-product-gallery__image{
-	margin:0 !important;
-	background:#f5f5f5;
-	border:1px solid rgba(0,0,0,.12);
-	padding:18px;
+.pms-lightbox.is-open {
+	display: flex;
 }
 
-/* Main image schaal */
-.single-product .pms-gallery-grid .woocommerce-product-gallery__image img,
-.single-product .pms-gallery-grid .woocommerce-product-gallery img{
-	width:100% !important;
-	height:auto !important;
-	max-width:100% !important;
-	display:block !important;
-	object-fit:contain;
+.pms-lightbox-inner {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	align-items: center;
 }
 
-/* Mobiel thumbs smaller */
-@media (max-width:980px){
-	.single-product .pms-gallery-grid{
-		grid-template-columns:90px minmax(0,1fr);
-		gap:14px;
-	}
-	.single-product .pms-gallery-grid .flex-control-thumbs{
-		width:90px !important;
-	}
+/* Horizontaal scroll strip */
+.pms-lightbox-strip {
+	display: flex;
+	align-items: center;
+	gap: 24px;
+	overflow-x: auto;
+	scroll-snap-type: x mandatory;
+	scrollbar-width: none;
+	padding: 40px 80px;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
 }
 
-/* =========================
-   TEXT BLOCKS
-   ========================= */
-.single-product .pms-short-description,
-.single-product .pms-description{
-	font-size:18px;
-	line-height:1.8;
-	text-align:left !important;
+.pms-lightbox-strip::-webkit-scrollbar {
+	display: none;
 }
 
-/* CTA button */
-.single-product .single_add_to_cart_button{
-	padding:18px 28px !important;
-	border-radius:999px !important;
-	font-size:18px !important;
+.pms-lightbox-strip img {
+	flex: 0 0 auto;
+	max-height: calc(100vh - 120px);
+	max-width: 85vw;
+	object-fit: contain;
+	scroll-snap-align: center;
+	border-radius: 4px;
+}
+
+/* Pijlen */
+.pms-lightbox-arrow {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+	background: rgba(255,255,255,0.15);
+	border: none;
+	color: #fff;
+	font-size: 28px;
+	width: 52px;
+	height: 52px;
+	border-radius: 50%;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 10;
+	transition: background 0.2s;
+}
+
+.pms-lightbox-arrow:hover {
+	background: rgba(255,255,255,0.3);
+}
+
+.pms-lightbox-arrow--prev { left: 16px; }
+.pms-lightbox-arrow--next { right: 16px; }
+
+/* Sluiten */
+.pms-lightbox-close {
+	position: absolute;
+	top: 16px;
+	right: 20px;
+	background: none;
+	border: none;
+	color: #fff;
+	font-size: 36px;
+	cursor: pointer;
+	line-height: 1;
+	z-index: 10;
 }
 </style>
 
+<div id="product-<?php the_ID(); ?>" <?php wc_product_class( '', $product ); ?>>
 
-	<div class="pms-single-main">
+	<div class="pms-product-wrapper">
 
-		<!-- LEFT: GALLERY -->
-		<div class="pms-single-media">
-			<div class="pms-gallery-grid">
-				<?php do_action( 'woocommerce_before_single_product_summary' ); ?>
-			</div>
+		<!-- LINKS: Afbeeldingen -->
+		<div class="pms-col-left">
+			<?php if ( ! empty( $image_ids ) ) : ?>
+
+				<?php $first_id = reset( $image_ids ); ?>
+
+				<!-- Preview -->
+				<div class="pms-gallery-preview" id="pms-open-gallery">
+					<?php $i = 0; foreach ( $image_ids as $id ) : ?>
+						<?php echo wp_get_attachment_image( $id, 'large', false, [ 'class' => $i === 0 ? 'is-active' : '' ] ); ?>
+					<?php $i++; endforeach; ?>
+
+					<?php if ( count( $image_ids ) > 1 ) : ?>
+						<button class="pms-preview-arrow pms-preview-arrow--prev" id="pms-preview-prev" aria-label="Vorige">&#8592;</button>
+						<button class="pms-preview-arrow pms-preview-arrow--next" id="pms-preview-next" aria-label="Volgende">&#8594;</button>
+						<div class="pms-preview-counter" id="pms-preview-counter">
+							<?php for ( $j = 0; $j < count( $image_ids ); $j++ ) : ?>
+								<span class="<?php echo $j === 0 ? 'is-active' : ''; ?>"></span>
+							<?php endfor; ?>
+						</div>
+					<?php endif; ?>
+				</div>
+
+				<!-- Lightbox -->
+				<div class="pms-lightbox" id="pms-lightbox" role="dialog" aria-modal="true">
+					<div class="pms-lightbox-inner">
+						<button class="pms-lightbox-close" id="pms-lightbox-close" aria-label="Sluiten">&times;</button>
+						<button class="pms-lightbox-arrow pms-lightbox-arrow--prev" id="pms-arrow-prev" aria-label="Vorige">&#8592;</button>
+
+						<div class="pms-lightbox-strip" id="pms-lightbox-strip">
+							<?php foreach ( $image_ids as $id ) : ?>
+								<?php echo wp_get_attachment_image( $id, 'full' ); ?>
+							<?php endforeach; ?>
+						</div>
+
+						<button class="pms-lightbox-arrow pms-lightbox-arrow--next" id="pms-arrow-next" aria-label="Volgende">&#8594;</button>
+					</div>
+				</div>
+
+			<?php endif; ?>
 		</div>
 
-		<!-- RIGHT: CONTENT -->
-		<div class="summary entry-summary pms-single-summary">
+		<!-- RECHTS: Productinfo -->
+		<div class="pms-col-right">
 			<?php
-			woocommerce_template_single_title();
-			woocommerce_template_single_price();
+			$product_id = $product->get_id();
+			$quote_url  = function_exists( 'pms_quote_get_page_url' ) ? pms_quote_get_page_url() : home_url( '/offerte-samenstellen/' );
+			$in_quote   = function_exists( 'pms_quote_has_product' ) ? pms_quote_has_product( $product_id ) : false;
 
-			// Korte beschrijving (boven)
+			// 1. Titel
+			the_title( '<h1 class="product_title entry-title">', '</h1>' );
+
+			// 2. Offerte-knop
+			if ( $in_quote ) : ?>
+				<a class="button pms-quote-view-button" href="<?php echo esc_url( $quote_url ); ?>">
+					<?php esc_html_e( 'Offerte bekijken', 'projectmeubelshop-child' ); ?>
+				</a>
+			<?php else : ?>
+				<form method="post" class="pms-quote-form">
+					<?php wp_nonce_field( 'pms_add_to_quote', 'pms_quote_nonce' ); ?>
+					<input type="hidden" name="pms_product_id" value="<?php echo esc_attr( $product_id ); ?>">
+					<input type="hidden" name="quantity" value="1">
+					<button type="submit" name="pms_add_to_quote" value="1" class="button pms-quote-add-button" style="border-radius: 999px; color: #fff; background-color: #C5B17D; border: none; font-weight: 700;">
+						<?php esc_html_e( 'Voeg toe aan offerte', 'projectmeubelshop-child' ); ?>
+					</button>
+				</form>
+			<?php endif;
+
+			// 3. Korte beschrijving
 			$short = $product->get_short_description();
 			if ( ! empty( $short ) ) {
-				echo '<div class="pms-short-description">' . wpautop( $short ) . '</div>';
+				echo wpautop( $short );
 			}
 
-			woocommerce_template_single_add_to_cart();
-
-			// Lange beschrijving (beneden)
+			// 4. Uitgebreide beschrijving
 			$desc = $product->get_description();
 			if ( ! empty( $desc ) ) {
-				echo '<div class="pms-description">' . apply_filters( 'the_content', $desc ) . '</div>';
+				echo apply_filters( 'the_content', $desc );
 			}
 			?>
 		</div>
 
 	</div>
 
-	<?php
-	// Reviews/tabs/related bewust verwijderd:
-	// do_action( 'woocommerce_after_single_product_summary' );
-	?>
-
 </div>
 
+<script>
+(function () {
+	// --- Preview slider ---
+	const previewImgs = document.querySelectorAll('#pms-open-gallery img');
+	const dots        = document.querySelectorAll('#pms-preview-counter span');
+	const prevBtn     = document.getElementById('pms-preview-prev');
+	const nextBtn     = document.getElementById('pms-preview-next');
+	let current = 0;
+
+	function showSlide(index) {
+		current = (index + previewImgs.length) % previewImgs.length;
+		previewImgs.forEach((img, i) => img.classList.toggle('is-active', i === current));
+		dots.forEach((dot, i) => dot.classList.toggle('is-active', i === current));
+	}
+
+	if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showSlide(current - 1); });
+	if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showSlide(current + 1); });
+
+	// --- Lightbox (opent bij klik op afbeelding) ---
+	const lightbox = document.getElementById('pms-lightbox');
+	const closeBtn = document.getElementById('pms-lightbox-close');
+	const strip    = document.getElementById('pms-lightbox-strip');
+	const lbPrev   = document.getElementById('pms-arrow-prev');
+	const lbNext   = document.getElementById('pms-arrow-next');
+
+	if (!lightbox) return;
+
+	const lbImgs = strip.querySelectorAll('img');
+	let lbCurrent = 0;
+
+	function lbScrollTo(index) {
+		lbCurrent = Math.max(0, Math.min(lbImgs.length - 1, index));
+		lbImgs[lbCurrent].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+	}
+
+	previewImgs.forEach((img) => {
+		img.style.cursor = 'zoom-in';
+		img.addEventListener('click', () => {
+			lbScrollTo(current);
+			lightbox.classList.add('is-open');
+			document.body.style.overflow = 'hidden';
+		});
+	});
+
+	closeBtn.addEventListener('click', closeLb);
+	lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLb(); });
+	if (lbPrev) lbPrev.addEventListener('click', () => lbScrollTo(lbCurrent - 1));
+	if (lbNext) lbNext.addEventListener('click', () => lbScrollTo(lbCurrent + 1));
+
+	document.addEventListener('keydown', (e) => {
+		if (!lightbox.classList.contains('is-open')) return;
+		if (e.key === 'Escape')      closeLb();
+		if (e.key === 'ArrowLeft')   lbScrollTo(lbCurrent - 1);
+		if (e.key === 'ArrowRight')  lbScrollTo(lbCurrent + 1);
+	});
+
+	function closeLb() {
+		lightbox.classList.remove('is-open');
+		document.body.style.overflow = '';
+	}
+})();
+</script>
+
+<?php do_action( 'woocommerce_after_single_product' ); ?>

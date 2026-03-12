@@ -465,3 +465,24 @@ body:not(.single-product) .woocommerce ul.products li.product a.added_to_cart {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================
+   BREADCRUMBS
+   ========================= */
+.woocommerce-breadcrumb {
+  margin-top: 32px !important;
+  margin-bottom: 8px !important;
+  font-size: 16px;
+  color: #666;
+}
+
+.woocommerce-breadcrumb a,
+.woocommerce-breadcrumb span,
+.woocommerce-breadcrumb {
+  color: #666 !important;
+  text-decoration: none;
+}
+
+.woocommerce-breadcrumb a:hover {
+  color: #333 !important;
+}
