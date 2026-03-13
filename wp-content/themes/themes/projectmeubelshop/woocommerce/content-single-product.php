@@ -120,9 +120,12 @@ $image_ids = array_filter( array_merge(
 }
 
 /* Paginatitel boven de blokken */
-.pms-page-title {
+h1.pms-page-title {
 	max-width: 1200px;
-	margin: 0 auto 24px;
+	margin: 8px auto 24px;
+	font-size: 28px;
+	font-weight: 700;
+	color: #111;
 }
 
 /* Beschrijvingen blok */
@@ -200,16 +203,35 @@ $image_ids = array_filter( array_merge(
 	text-decoration: none !important;
 }
 
-/* Categorieën */
+/* Categorieën chips */
 .pms-product-cats {
-	font-size: 14px;
-	color: #888;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
 	margin: 4px 0 16px;
+	padding: 0;
+	list-style: none;
 }
 
 .pms-product-cats a {
-	color: #888;
+	display: inline-flex;
+	align-items: center;
+	padding: 5px 14px;
+	background: #fff;
+	border: 1px solid #C5B17D;
+	border-radius: 999px;
+	font-family: Inter, sans-serif;
+	font-size: 13px;
+	font-weight: 700;
+	color: #333;
 	text-decoration: none;
+	box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+	transition: border-color 0.15s;
+}
+
+.pms-product-cats a:hover {
+	border-color: #C5B17D;
+	color: #C5B17D;
 }
 
 /* Contactgegevens */
@@ -225,8 +247,15 @@ $image_ids = array_filter( array_merge(
 	align-items: center;
 	gap: 8px;
 	font-size: 15px;
-	color: #444;
+	color: #333 !important;
 	text-decoration: none;
+}
+
+.pms-contact-item svg,
+.pms-contact-item [data-lucide] {
+	color: #C5B17D;
+	stroke: #C5B17D;
+	flex-shrink: 0;
 }
 
 .pms-contact-item:hover {
@@ -386,13 +415,17 @@ $image_ids = array_filter( array_merge(
 			$quote_url  = function_exists( 'pms_quote_get_page_url' ) ? pms_quote_get_page_url() : home_url( '/offerte-samenstellen/' );
 			$in_quote   = function_exists( 'pms_quote_has_product' ) ? pms_quote_has_product( $product_id ) : false;
 
-			// 1. Titel
+			// Titel
 			the_title( '<h1 class="product_title entry-title">', '</h1>' );
 
-			// 2. Categorieën
-			$cats = wc_get_product_category_list( $product_id, ', ' );
-			if ( $cats ) {
-				echo '<p class="pms-product-cats">' . $cats . '</p>';
+			// Categorieën als chips
+			$cat_terms = get_the_terms( $product_id, 'product_cat' );
+			if ( ! empty( $cat_terms ) && ! is_wp_error( $cat_terms ) ) {
+				echo '<div class="pms-product-cats">';
+				foreach ( $cat_terms as $term ) {
+					echo '<a href="' . esc_url( get_term_link( $term ) ) . '">' . esc_html( $term->name ) . '</a>';
+				}
+				echo '</div>';
 			}
 			?>
 

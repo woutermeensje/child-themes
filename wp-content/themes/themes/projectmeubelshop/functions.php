@@ -31,6 +31,21 @@ function projectmeubelshop_child_setup() {
 	add_theme_support( 'woocommerce' );
 }
 
+// Breadcrumbs bovenaan pagina's met [products] shortcode
+add_filter( 'the_content', 'pms_prepend_breadcrumbs_on_products_page' );
+function pms_prepend_breadcrumbs_on_products_page( $content ) {
+	if ( ! is_page() || ! function_exists( 'woocommerce_breadcrumb' ) ) {
+		return $content;
+	}
+	if ( ! has_shortcode( $content, 'products' ) && ! has_shortcode( $content, 'product_category' ) ) {
+		return $content;
+	}
+	ob_start();
+	woocommerce_breadcrumb();
+	$breadcrumbs = ob_get_clean();
+	return $breadcrumbs . $content;
+}
+
 add_filter( 'woocommerce_product_tabs', 'projectmeubelshop_remove_reviews_tab', 98 );
 function projectmeubelshop_remove_reviews_tab( $tabs ) {
 	if ( isset( $tabs['reviews'] ) ) {

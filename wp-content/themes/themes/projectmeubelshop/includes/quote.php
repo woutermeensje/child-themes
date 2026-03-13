@@ -130,7 +130,11 @@ function pms_quote_handle_update_or_remove() {
 		}
 		pms_quote_set_items( $items );
 	}
-	wp_safe_redirect( wp_get_referer() ? wp_get_referer() : home_url( '/' ) );
+	if ( empty( $items ) ) {
+		wp_safe_redirect( home_url( '/producten/' ) );
+	} else {
+		wp_safe_redirect( wp_get_referer() ? wp_get_referer() : home_url( '/' ) );
+	}
 	exit;
 }
 
@@ -144,15 +148,17 @@ function pms_quote_handle_submit() {
 		wp_safe_redirect( add_query_arg( 'pms_quote_error', 'empty', wp_get_referer() ? wp_get_referer() : home_url( '/' ) ) );
 		exit;
 	}
-	$name    = isset( $_POST['pms_name'] )    ? sanitize_text_field( wp_unslash( $_POST['pms_name'] ) )       : '';
-	$email   = isset( $_POST['pms_email'] )   ? sanitize_email( wp_unslash( $_POST['pms_email'] ) )           : '';
-	$phone   = isset( $_POST['pms_phone'] )   ? sanitize_text_field( wp_unslash( $_POST['pms_phone'] ) )      : '';
-	$message = isset( $_POST['pms_message'] ) ? sanitize_textarea_field( wp_unslash( $_POST['pms_message'] ) ) : '';
-	if ( ! $name || ! $email || ! is_email( $email ) ) {
+	$firstname = isset( $_POST['pms_firstname'] ) ? sanitize_text_field( wp_unslash( $_POST['pms_firstname'] ) ) : '';
+	$lastname  = isset( $_POST['pms_lastname'] )  ? sanitize_text_field( wp_unslash( $_POST['pms_lastname'] ) )  : '';
+	$name      = trim( $firstname . ' ' . $lastname );
+	$email     = isset( $_POST['pms_email'] )     ? sanitize_email( wp_unslash( $_POST['pms_email'] ) )           : '';
+	$phone     = isset( $_POST['pms_phone'] )     ? sanitize_text_field( wp_unslash( $_POST['pms_phone'] ) )      : '';
+	$message   = isset( $_POST['pms_message'] )   ? sanitize_textarea_field( wp_unslash( $_POST['pms_message'] ) ) : '';
+	if ( ! $firstname || ! $email || ! is_email( $email ) ) {
 		wp_safe_redirect( add_query_arg( 'pms_quote_error', 'contact', wp_get_referer() ? wp_get_referer() : home_url( '/' ) ) );
 		exit;
 	}
-	$lines = array( 'Nieuwe offerteaanvraag', '', 'Naam: ' . $name, 'E-mail: ' . $email, 'Telefoon: ' . $phone, '', 'Producten:' );
+	$lines = array( 'Nieuwe offerteaanvraag', '', 'Voornaam: ' . $firstname, 'Achternaam: ' . $lastname, 'E-mail: ' . $email, 'Telefoon: ' . ( $phone ?: '-' ), '', 'Producten:' );
 	foreach ( $items as $item ) {
 		$product = wc_get_product( ! empty( $item['variation_id'] ) ? $item['variation_id'] : $item['product_id'] );
 		if ( ! $product ) continue;
@@ -185,139 +191,272 @@ function pms_quote_render_page() {
 	ob_start();
 	?>
 	<style>
+	/* ── Shell ─────────────────────────────────────────────── */
 	.pms-quote-shell {
-		max-width: 1200px;
-		margin: 40px auto;
+		max-width: 1200px !important;
+		margin: 40px auto !important;
 		border: none !important;
 		box-shadow: none !important;
 		background: none !important;
+		padding: 0 !important;
+		border-radius: 0 !important;
 	}
 
-	.pms-quote-layout {
-		display: grid;
-		grid-template-columns: 1.4fr 1fr;
-		gap: 40px;
-		align-items: start;
-	}
-
-	@media (max-width: 980px) {
-		.pms-quote-layout { grid-template-columns: 1fr; }
-	}
-
-	.pms-quote-card {
-		border: 1px solid #DEDEDE;
-		border-radius: 5px;
-		box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
-		padding: 28px;
-	}
-
+	/* ── Paginatitel ────────────────────────────────────────── */
 	.pms-quote-title {
-		margin: 0 0 32px;
+		font-family: Inter, sans-serif !important;
+		font-size: 28px !important;
+		font-weight: 800 !important;
+		color: #111 !important;
+		margin: 0 0 28px !important;
+		letter-spacing: -0.3px !important;
 	}
 
+	/* ── Kaart ──────────────────────────────────────────────── */
+	.pms-quote-card {
+		max-width: 600px !important;
+		background: #fff !important;
+		border: 1px solid #DEDEDE !important;
+		border-radius: 10px !important;
+		box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15) !important;
+		padding: 32px !important;
+		box-sizing: border-box !important;
+	}
+
+	/* ── Sectie-kopjes ─────────────────────────────────────── */
 	.pms-quote-card h3 {
-		margin: 0 0 20px;
-		font-size: 20px;
+		font-family: Inter, sans-serif !important;
+		font-size: 16px !important;
+		font-weight: 700 !important;
+		color: #333 !important;
+		margin: 0 0 16px !important;
+		text-transform: none !important;
+		letter-spacing: 0 !important;
 	}
 
-	/* Tabel */
+	/* ── Scheidingslijn tussen secties ─────────────────────── */
+	.pms-quote-divider {
+		border: none !important;
+		border-top: 1px solid #EBEBEB !important;
+		margin: 28px 0 !important;
+	}
+
+	/* ── Tabel ──────────────────────────────────────────────── */
 	.pms-quote-table {
-		width: 100%;
-		border-collapse: collapse;
-		margin-bottom: 20px;
+		width: 100% !important;
+		border-collapse: collapse !important;
+		margin-bottom: 0 !important;
 	}
 
 	.pms-quote-table th {
-		text-align: left;
-		font-size: 13px;
-		color: #888;
-		font-weight: 600;
-		padding-bottom: 8px;
-		border-bottom: 1px solid #DEDEDE;
+		text-align: left !important;
+		font-family: Inter, sans-serif !important;
+		font-size: 12px !important;
+		font-weight: 700 !important;
+		color: #888 !important;
+		text-transform: none !important;
+		padding: 0 0 10px !important;
+		border-bottom: 1px solid #DEDEDE !important;
+	}
+
+	.pms-quote-table th:not(:first-child),
+	.pms-quote-table td:not(:first-child) {
+		padding-left: 12px !important;
 	}
 
 	.pms-quote-table td {
-		padding: 12px 0;
-		border-bottom: 1px solid #f0f0f0;
-		font-size: 15px;
-		vertical-align: middle;
+		padding: 13px 0 !important;
+		border-bottom: 1px solid #F0F0F0 !important;
+		font-family: Inter, sans-serif !important;
+		font-size: 14px !important;
+		color: #333 !important;
+		vertical-align: middle !important;
 	}
 
-	/* Inputs */
+	.pms-quote-table td:first-child {
+		font-weight: 600 !important;
+	}
+
+	/* ── Labels ─────────────────────────────────────────────── */
 	.pms-quote-card label {
-		display: block;
-		font-size: 13px;
-		font-weight: 600;
-		color: #555;
-		margin-bottom: 4px;
+		display: block !important;
+		font-family: Poppins, sans-serif !important;
+		font-size: 15px !important;
+		font-weight: 300 !important;
+		color: #333 !important;
+		margin-bottom: 6px !important;
 	}
 
 	.pms-quote-card p {
-		margin: 0 0 16px;
+		margin: 0 0 16px !important;
 	}
 
-	.pms-input,
+	/* ── Inputs & textarea ──────────────────────────────────── */
+	.pms-input {
+		-webkit-appearance: none !important;
+		appearance: none !important;
+		display: block !important;
+		width: 100% !important;
+		border: 1px solid #DEDEDE !important;
+		border-radius: 0 !important;
+		padding: 9px 14px !important;
+		font-family: Inter, sans-serif !important;
+		font-size: 14px !important;
+		color: #333 !important;
+		background: #fff !important;
+		box-shadow: none !important;
+		outline: none !important;
+		box-sizing: border-box !important;
+		transition: border-color 0.15s !important;
+	}
+
+	.pms-input:focus {
+		border-color: #C5B17D !important;
+		box-shadow: 0 0 0 3px rgba(197,177,125,0.15) !important;
+	}
+
+	.pms-input::placeholder {
+		color: #bbb !important;
+	}
+
+	textarea.pms-input {
+		resize: vertical !important;
+		min-height: 110px !important;
+	}
+
+	/* ── Aantal input ───────────────────────────────────────── */
 	.pms-qty-input {
-		width: 100%;
-		border: 1px solid #DEDEDE;
-		border-radius: 5px;
-		padding: 10px 12px;
-		font-size: 15px;
-		box-sizing: border-box;
+		-webkit-appearance: none !important;
+		appearance: none !important;
+		width: 68px !important;
+		border: 1px solid #DEDEDE !important;
+		border-radius: 0 !important;
+		padding: 8px 10px !important;
+		font-family: Inter, sans-serif !important;
+		font-size: 14px !important;
+		color: #333 !important;
+		background: #fff !important;
+		box-shadow: none !important;
+		outline: none !important;
+		text-align: center !important;
+		box-sizing: border-box !important;
+		transition: border-color 0.15s !important;
 	}
 
-	.pms-qty-input {
-		width: 70px;
+	.pms-qty-input:focus {
+		border-color: #C5B17D !important;
+		box-shadow: 0 0 0 3px rgba(197,177,125,0.15) !important;
 	}
 
-	/* Knoppen */
+	/* ── Knoppen ─────────────────────────────────────────────── */
 	.pms-btn {
-		display: inline-block;
-		padding: 12px 22px;
-		border-radius: 999px;
-		font-size: 15px;
-		font-weight: 700;
-		cursor: pointer;
-		border: none;
-		text-decoration: none;
+		display: inline-flex !important;
+		align-items: center !important;
+		justify-content: center !important;
+		border-radius: 999px !important;
+		font-family: Inter, sans-serif !important;
+		font-weight: 700 !important;
+		cursor: pointer !important;
+		text-decoration: none !important;
+		transition: background-color 0.15s, border-color 0.15s, color 0.15s !important;
+		box-sizing: border-box !important;
 	}
 
-	.pms-btn-primary {
-		background-color: #C5B17D;
-		color: #fff;
-		width: 100%;
-		text-align: center;
-		border: none;
+	/* Primaire knop – offerte verzenden */
+	.pms-btn-primary,
+	.pms-btn-primary:hover,
+	.pms-btn-primary:focus,
+	.pms-btn-primary:active,
+	.pms-btn-primary:visited {
+		background: #C5B17D !important;
+		background-color: #C5B17D !important;
+		background-image: none !important;
+		color: #fff !important;
+		border: none !important;
+		padding: 13px 24px !important;
+		font-size: 15px !important;
+		width: 100% !important;
+		text-align: center !important;
+		box-shadow: none !important;
 	}
 
-	.pms-btn-secondary {
-		background-color: #C5B17D;
-		color: #fff;
-		border: none;
+	.pms-btn-primary:hover {
+		background: #b3a06e !important;
+		background-color: #b3a06e !important;
 	}
 
-	.pms-btn-ghost {
-		background: none;
-		border: 1px solid #DEDEDE;
-		color: #666;
-		padding: 6px 14px;
-		font-size: 13px;
-		font-weight: 400;
-		border-radius: 999px;
+	/* Secundaire knop – bekijk producten */
+	.pms-btn-secondary,
+	.pms-btn-secondary:hover,
+	.pms-btn-secondary:focus,
+	.pms-btn-secondary:active,
+	.pms-btn-secondary:visited {
+		background: #C5B17D !important;
+		background-color: #C5B17D !important;
+		background-image: none !important;
+		color: #fff !important;
+		border: none !important;
+		padding: 13px 24px !important;
+		font-size: 15px !important;
+		box-shadow: none !important;
 	}
 
-	.pms-btn-ghost:hover { background: #f5f5f5; }
+	.pms-btn-secondary:hover {
+		background: #b3a06e !important;
+		background-color: #b3a06e !important;
+	}
 
-	/* Notices */
+	/* Ghost knop – verwijderen / update */
+	.pms-btn-ghost,
+	.pms-btn-ghost:hover,
+	.pms-btn-ghost:focus,
+	.pms-btn-ghost:active,
+	.pms-btn-ghost:visited {
+		background: #fff !important;
+		background-color: #fff !important;
+		background-image: none !important;
+		border: 1px solid #DEDEDE !important;
+		color: #333 !important;
+		padding: 5px 14px !important;
+		font-size: 12px !important;
+		box-shadow: none !important;
+	}
+
+	.pms-btn-ghost:hover {
+		border-color: #C5B17D !important;
+		color: #C5B17D !important;
+	}
+
+	/* ── Notices ─────────────────────────────────────────────── */
 	.pms-quote-notice {
-		padding: 14px 18px;
-		border-radius: 5px;
-		margin-bottom: 24px;
-		font-size: 15px;
+		max-width: 600px !important;
+		padding: 14px 18px !important;
+		border-radius: 8px !important;
+		margin-bottom: 24px !important;
+		font-family: Inter, sans-serif !important;
+		font-size: 14px !important;
+		font-weight: 600 !important;
 	}
 
-	.pms-quote-notice-success { background: #ebfff1; color: #1a6635; }
-	.pms-quote-notice-error   { background: #fff2ee; color: #a33; }
+	.pms-quote-notice-success {
+		background: #ebfff1 !important;
+		border: 1px solid #bce9c9 !important;
+		color: #1a6635 !important;
+	}
+
+	.pms-quote-notice-error {
+		background: #fff2ee !important;
+		border: 1px solid #f1c5bc !important;
+		color: #a33 !important;
+	}
+
+	/* ── Lege staat ─────────────────────────────────────────── */
+	.pms-quote-card > p:first-child {
+		font-family: Inter, sans-serif !important;
+		font-size: 14px !important;
+		color: #555 !important;
+		margin-bottom: 20px !important;
+	}
 	</style>
 
 	<section class="pms-quote-shell">
@@ -333,47 +472,50 @@ function pms_quote_render_page() {
 		<?php if ( empty( $items ) ) : ?>
 			<div class="pms-quote-card">
 				<p><?php esc_html_e( 'Er staan nog geen producten in je offerteaanvraag.', 'projectmeubelshop-child' ); ?></p>
-				<a class="pms-btn pms-btn-secondary" href="<?php echo esc_url( $shop_url ? $shop_url : home_url( '/' ) ); ?>"><?php esc_html_e( 'Bekijk producten', 'projectmeubelshop-child' ); ?></a>
+				<a class="pms-btn pms-btn-secondary" href="<?php echo esc_url( home_url( '/producten/' ) ); ?>"><?php esc_html_e( 'Bekijk producten', 'projectmeubelshop-child' ); ?></a>
 			</div>
 		<?php else : ?>
-			<div class="pms-quote-layout">
-				<form method="post" class="pms-quote-card">
-					<?php wp_nonce_field( 'pms_quote_page_action', 'pms_quote_page_nonce' ); ?>
-					<h3><?php esc_html_e( 'Producten', 'projectmeubelshop-child' ); ?></h3>
-					<table class="pms-quote-table">
-						<thead>
-							<tr>
-								<th><?php esc_html_e( 'Product', 'projectmeubelshop-child' ); ?></th>
-								<th><?php esc_html_e( 'Aantal', 'projectmeubelshop-child' ); ?></th>
-								<th><?php esc_html_e( 'Actie', 'projectmeubelshop-child' ); ?></th>
-							</tr>
-						</thead>
-						<tbody>
-							<?php foreach ( $items as $key => $item ) :
-								$product = wc_get_product( ! empty( $item['variation_id'] ) ? $item['variation_id'] : $item['product_id'] );
-								if ( ! $product ) continue;
-							?>
-								<tr>
-									<td><?php echo esc_html( $product->get_name() ); ?></td>
-									<td><input class="pms-qty-input" type="number" min="1" name="pms_quote_qty[<?php echo esc_attr( $key ); ?>]" value="<?php echo esc_attr( $item['quantity'] ); ?>"></td>
-									<td><button class="pms-btn pms-btn-ghost" type="submit" name="pms_quote_remove" value="<?php echo esc_attr( $key ); ?>"><?php esc_html_e( 'Verwijderen', 'projectmeubelshop-child' ); ?></button></td>
-								</tr>
-							<?php endforeach; ?>
-						</tbody>
-					</table>
-					<p><button class="pms-btn pms-btn-secondary" type="submit" name="pms_quote_update" value="1"><?php esc_html_e( 'Update aantallen', 'projectmeubelshop-child' ); ?></button></p>
-				</form>
+			<form method="post" class="pms-quote-card">
+				<?php wp_nonce_field( 'pms_quote_page_action', 'pms_quote_page_nonce' ); ?>
 
-				<form method="post" class="pms-quote-card">
-					<?php wp_nonce_field( 'pms_quote_page_action', 'pms_quote_page_nonce' ); ?>
-					<h3><?php esc_html_e( 'Je gegevens', 'projectmeubelshop-child' ); ?></h3>
-					<p><label for="pms_name"><?php esc_html_e( 'Naam', 'projectmeubelshop-child' ); ?></label><input class="pms-input" id="pms_name" type="text" name="pms_name" required></p>
-					<p><label for="pms_email"><?php esc_html_e( 'E-mail', 'projectmeubelshop-child' ); ?></label><input class="pms-input" id="pms_email" type="email" name="pms_email" required></p>
-					<p><label for="pms_phone"><?php esc_html_e( 'Telefoon', 'projectmeubelshop-child' ); ?></label><input class="pms-input" id="pms_phone" type="text" name="pms_phone"></p>
-					<p><label for="pms_message"><?php esc_html_e( 'Opmerking', 'projectmeubelshop-child' ); ?></label><textarea class="pms-input" id="pms_message" name="pms_message" rows="5"></textarea></p>
-					<p><button class="pms-btn pms-btn-primary" type="submit" name="pms_quote_submit" value="1"><?php esc_html_e( 'Offerte aanvragen', 'projectmeubelshop-child' ); ?></button></p>
-				</form>
-			</div>
+				<h3><?php esc_html_e( 'Producten', 'projectmeubelshop-child' ); ?></h3>
+				<table class="pms-quote-table">
+					<thead>
+						<tr>
+							<th><?php esc_html_e( 'Product', 'projectmeubelshop-child' ); ?></th>
+							<th><?php esc_html_e( 'Aantal', 'projectmeubelshop-child' ); ?></th>
+							<th><?php esc_html_e( 'Actie', 'projectmeubelshop-child' ); ?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ( $items as $key => $item ) :
+							$product = wc_get_product( ! empty( $item['variation_id'] ) ? $item['variation_id'] : $item['product_id'] );
+							if ( ! $product ) continue;
+						?>
+							<tr>
+								<td><?php echo esc_html( $product->get_name() ); ?></td>
+								<td><input class="pms-qty-input" type="number" min="1" name="pms_quote_qty[<?php echo esc_attr( $key ); ?>]" value="<?php echo esc_attr( $item['quantity'] ); ?>"></td>
+								<td><button class="pms-btn pms-btn-ghost" type="submit" name="pms_quote_remove" value="<?php echo esc_attr( $key ); ?>" formnovalidate><?php esc_html_e( 'Verwijderen', 'projectmeubelshop-child' ); ?></button></td>
+							</tr>
+						<?php endforeach; ?>
+					</tbody>
+				</table>
+				<p style="margin-top:16px;margin-bottom:0;"><button class="pms-btn pms-btn-ghost" type="submit" name="pms_quote_update" value="1" formnovalidate><?php esc_html_e( 'Update aantallen', 'projectmeubelshop-child' ); ?></button></p>
+
+				<hr class="pms-quote-divider">
+
+				<h3><?php esc_html_e( 'Je gegevens', 'projectmeubelshop-child' ); ?></h3>
+				<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+					<p style="margin:0;"><label for="pms_firstname"><?php esc_html_e( 'Voornaam', 'projectmeubelshop-child' ); ?></label><input class="pms-input" id="pms_firstname" type="text" name="pms_firstname" required></p>
+					<p style="margin:0;"><label for="pms_lastname"><?php esc_html_e( 'Achternaam', 'projectmeubelshop-child' ); ?></label><input class="pms-input" id="pms_lastname" type="text" name="pms_lastname"></p>
+				</div>
+				<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+					<p style="margin:0;"><label for="pms_email"><?php esc_html_e( 'Emailadres', 'projectmeubelshop-child' ); ?></label><input class="pms-input" id="pms_email" type="email" name="pms_email" required></p>
+					<p style="margin:0;"><label for="pms_phone"><?php esc_html_e( 'Telefoonnummer', 'projectmeubelshop-child' ); ?></label><input class="pms-input" id="pms_phone" type="tel" name="pms_phone"></p>
+				</div>
+				<p><label for="pms_message"><?php esc_html_e( 'Eventuele toelichting', 'projectmeubelshop-child' ); ?></label><textarea class="pms-input" id="pms_message" name="pms_message" rows="5"></textarea></p>
+				<p><button class="pms-btn pms-btn-primary" type="submit" name="pms_quote_submit" value="1"><?php esc_html_e( 'Offerte aanvragen', 'projectmeubelshop-child' ); ?></button></p>
+			</form>
 		<?php endif; ?>
 	</section>
 	<?php
