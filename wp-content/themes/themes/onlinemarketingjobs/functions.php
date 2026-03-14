@@ -24,10 +24,10 @@ add_theme_support('job-manager-templates');
 
 
 // =========================================================
-// RN_Nav_Walker – dropdown-indicator voor navigatie
+// OMJ_Nav_Walker – dropdown-indicator voor navigatie
 // =========================================================
-if ( ! class_exists('RN_Nav_Walker') ) :
-class RN_Nav_Walker extends Walker_Nav_Menu {
+if ( ! class_exists('OMJ_Nav_Walker') ) :
+class OMJ_Nav_Walker extends Walker_Nav_Menu {
     public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
         $classes   = empty( $item->classes ) ? [] : (array) $item->classes;
         $has_child = in_array( 'menu-item-has-children', $classes, true );
@@ -72,9 +72,9 @@ add_action('after_setup_theme', function() {
 });
 
 // =========================================================
-// Shortcode: [rn_header]
+// Shortcode: [omj_header]
 // =========================================================
-add_shortcode('rn_header', function() {
+add_shortcode('omj_header', function() {
     ob_start();
     include get_stylesheet_directory() . '/template-parts/header.php';
     return ob_get_clean();
@@ -192,8 +192,8 @@ add_filter('job_manager_output_jobs_defaults', function($defaults) {
 // 7) Shortcode-atts -> tax_query
 // =========================================================
 add_filter('job_manager_get_listings_shortcode_args', function($atts){
-    global $rn_job_shortcode_atts;
-    $rn_job_shortcode_atts = $atts;
+    global $omj_job_shortcode_atts;
+    $omj_job_shortcode_atts = $atts;
 
     $custom_filters = [
         'job_company'       => 'job_company',
@@ -229,7 +229,7 @@ add_filter('job_manager_get_listings_shortcode_args', function($atts){
 //    Elementor 500 fix: slaat elementor_ajax over
 // =========================================================
 add_filter('get_job_listings_query_args', function ($query_args, $args) {
-    global $rn_job_shortcode_atts;
+    global $omj_job_shortcode_atts;
 
     if ( wp_doing_ajax() && isset($_REQUEST['action']) && $_REQUEST['action'] === 'elementor_ajax' ) {
         return $query_args;
@@ -276,11 +276,11 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
         }
     }
 
-    if ( ! empty($rn_job_shortcode_atts) && empty($_POST['form_data']) ) {
+    if ( ! empty($omj_job_shortcode_atts) && empty($_POST['form_data']) ) {
         foreach ($custom_taxonomies as $filter_key => $taxonomy) {
             $key = str_replace('filter_', '', $filter_key);
-            if ( ! empty($rn_job_shortcode_atts[$key]) ) {
-                $terms = array_map('sanitize_title', explode(',', sanitize_text_field($rn_job_shortcode_atts[$key])));
+            if ( ! empty($omj_job_shortcode_atts[$key]) ) {
+                $terms = array_map('sanitize_title', explode(',', sanitize_text_field($omj_job_shortcode_atts[$key])));
                 $query_args['tax_query'][] = [
                     'taxonomy' => $taxonomy,
                     'field'    => 'slug',

@@ -42,8 +42,8 @@ unset($value);
 
     <div class="filter-header">
         <div class="filter-header__left">
-            <h2>Bekijk alle Recruitment Vacatures</h2>
-            <p>Ontvang de laatste recruitment vacatures in de e-mail!</p>
+            <h2>Bekijk alle Online Marketing Vacatures</h2>
+            <p>Ontvang de laatste online marketing vacatures in de e-mail!</p>
         </div>
         <div class="filter-header__right">
             <a href="<?php echo esc_url( home_url( '/job-alerts/' ) ); ?>" class="filter-alert-btn">

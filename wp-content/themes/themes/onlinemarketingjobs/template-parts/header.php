@@ -1,6 +1,6 @@
 <?php
 /**
- * Recruiternext – Custom header template
+ * Onlinemarketingjobs – Custom header template
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 ?>
@@ -222,7 +222,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             <div class="rn-topbar__right">
                 <a href="<?php echo esc_url( home_url( '/tarieven/' ) ); ?>">Tarieven</a>
                 <span class="rn-topbar__divider">|</span>
-                <a href="mailto:support@recruiternext.nl">Support@recruiternext.nl</a>
+                <a href="mailto:support@onlinemarketingjobs.nl">Support@onlinemarketingjobs.nl</a>
             </div>
         </div>
     </div>
@@ -233,7 +233,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <!-- Logo -->
         <div class="rn-header__brand">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-                <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/site-logo/recruiternext-site-logo.png' ); ?>"
+                <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/site-logo/onlinemarketingjobs-site-logo.png' ); ?>"
                      alt="<?php bloginfo( 'name' ); ?>"
                      class="rn-header__logo">
             </a>
@@ -247,7 +247,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                 'container'      => false,
                 'menu_class'     => 'rn-nav__list',
                 'fallback_cb'    => false,
-                'walker'         => new RN_Nav_Walker(),
+                'walker'         => new OMJ_Nav_Walker(),
             ]);
             ?>
         </nav>
