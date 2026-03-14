@@ -24,7 +24,9 @@ Text Domain: Recruiternext
 
 :root {
   /* 🔁 Verwisselbaar kleurenpalet voor branding */
-  --color-primary: #3563A2;
+  --color-primary: #0458AB;
+  --color-primary-dk: #034085;
+  --color-primary-mid: #3B82F6;
   --color-secondary: #CADDF6;
   --color-tertiary: #CADDF6;
   --color-accent: #CADDF6;
