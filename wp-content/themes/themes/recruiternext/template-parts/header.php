@@ -254,11 +254,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
         <!-- CTA knoppen -->
         <div class="rn-header__cta">
-            <a href="<?php echo esc_url( home_url( '/inloggen/' ) ); ?>" class="rn-btn rn-btn--outline">
-                Inloggen
-            </a>
-            <a href="<?php echo esc_url( home_url( '/aanmelden/' ) ); ?>" class="rn-btn rn-btn--accent">
-                Aanmelden
+            <a href="<?php echo esc_url( home_url( '/vacature-plaatsen/' ) ); ?>" class="rn-btn rn-btn--accent">
+                Vacature Plaatsen
             </a>
         </div>
 
@@ -290,11 +287,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="<?php echo esc_url( home_url( '/inloggen/' ) ); ?>" class="rn-btn rn-btn--outline rn-mobile-nav__cta">
-                Inloggen
-            </a>
-            <a href="<?php echo esc_url( home_url( '/aanmelden/' ) ); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
-                Aanmelden
+            <a href="<?php echo esc_url( home_url( '/vacature-plaatsen/' ) ); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
+                Vacature Plaatsen
             </a>
         </div>
     </div>

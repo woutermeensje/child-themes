@@ -48,6 +48,86 @@ add_action('wp_enqueue_scripts', function () {
         [],
         filemtime(get_stylesheet_directory() . '/css/gravity-forms.css')
     );
+
+    // Header CSS
+    if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
+        wp_enqueue_style(
+            'sj-header',
+            get_stylesheet_directory_uri() . '/css/header.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/header.css')
+        );
+    }
+});
+
+/**
+ * Nav Walker voor uitklapbare navigatie
+ */
+if (!class_exists('SJ_Nav_Walker')) :
+class SJ_Nav_Walker extends Walker_Nav_Menu {
+    public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
+        $classes    = empty($item->classes) ? [] : (array) $item->classes;
+        $has_child  = in_array('menu-item-has-children', $classes, true);
+        $is_active  = in_array('current-menu-item', $classes, true) || in_array('current-menu-ancestor', $classes, true);
+        $li_class   = 'rn-nav__item';
+
+        if ($has_child) $li_class .= ' rn-nav__item--has-children';
+        if ($is_active) $li_class .= ' is-active';
+
+        $output .= '<li class="' . esc_attr($li_class) . '">';
+
+        $url        = !empty($item->url) ? $item->url : '#';
+        $title      = apply_filters('the_title', $item->title, $item->ID);
+        $attr_title = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
+        $target     = !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
+        $rel        = !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
+
+        $output .= '<a class="rn-nav__link' . ($is_active ? ' is-active' : '') . '" href="' . esc_url($url) . '"' . $attr_title . $target . $rel . '>';
+        $output .= esc_html($title);
+        if ($has_child) {
+            $output .= '<span class="rn-nav__chev" aria-hidden="true"></span>';
+        }
+        $output .= '</a>';
+    }
+
+    public function start_lvl(&$output, $depth = 0, $args = null) {
+        $output .= '<ul class="rn-nav__dropdown">';
+    }
+
+    public function end_lvl(&$output, $depth = 0, $args = null) {
+        $output .= '</ul>';
+    }
+
+    public function end_el(&$output, $item, $depth = 0, $args = null) {
+        $output .= '</li>';
+    }
+}
+endif;
+
+/**
+ * Theme setup: logo support, menu registratie
+ */
+add_action('after_setup_theme', function () {
+    add_theme_support('custom-logo', [
+        'height'      => 120,
+        'width'       => 320,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ]);
+
+    register_nav_menus([
+        'primary_nav' => 'Primaire navigatie',
+        'footer_nav'  => 'Footer navigatie',
+    ]);
+});
+
+/**
+ * Shortcode [sj_header] voor gebruik in Elementor
+ */
+add_shortcode('sj_header', function () {
+    ob_start();
+    include get_stylesheet_directory() . '/template-parts/header.php';
+    return ob_get_clean();
 });
 
 
@@ -222,14 +302,6 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
     return $query_args;
 }, 10, 2);
 
-/**
- * ✅ Debug WP_Query inhoud
- */
-add_action('pre_get_posts', function($query) {
-    if (!is_admin() && $query->is_main_query() && isset($query->query_vars['post_type']) && $query->query_vars['post_type'] === 'job_listing') {
-        error_log('👉 WP_Query tax_query: ' . print_r($query->query_vars['tax_query'], true));
-    }
-});
 
 // Add custom default attributes to the jobs shortcode
 add_filter('job_manager_output_jobs_defaults', function($defaults) {

@@ -1,9 +1,9 @@
 :root {
-  --rn-primary:    var(--color-primary,    #0458AB);
-  --rn-primary-dk: var(--color-primary-dk, #034085);
-  --rn-primary-mid:var(--color-primary-mid,#3B82F6);
-  --rn-accent:     var(--color-secondary,  #CADDF6);
-  --rn-accent-dk:  #b8cde8;
+  --rn-primary:    var(--color-primary,    #7C5CFA);
+  --rn-primary-dk: var(--color-primary-dk, #845ec2);
+  --rn-primary-mid:var(--color-primary-mid,#b39cd0);
+  --rn-accent:     var(--color-secondary,  #b39cd0);
+  --rn-accent-dk:  var(--color-tertiary,   #845ec2);
   --rn-text:       var(--color-text,       #333333);
   --rn-bg:         var(--color-bg,         #ffffff);
   --rn-border:     var(--color-border,     #e8ecf0);
@@ -153,7 +153,7 @@
   width: 100%;
   box-shadow: none !important;
 }
-.rn-nav__dropdown .rn-nav__link:hover { background: rgba(4,88,171,0.06); }
+.rn-nav__dropdown .rn-nav__link:hover { background: rgba(124,92,250,0.08); }
 
 /* ---- CTA knoppen ---- */
 .rn-header__cta {
@@ -192,7 +192,7 @@
   background: var(--rn-primary-mid);
   color: #fff !important;
   border: 2px solid var(--rn-primary-mid);
-  box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+  box-shadow: 0 2px 8px rgba(124,92,250,0.22);
 }
 .rn-btn--accent:hover {
   background: var(--rn-primary);

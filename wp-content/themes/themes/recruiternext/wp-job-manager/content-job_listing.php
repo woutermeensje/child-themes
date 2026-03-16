@@ -179,10 +179,11 @@ ul.job_listings li.job_listing {
     background: #ffffff;
     border-radius: 6px;
     box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
-    padding: 24px;
+    padding: 0;
     border: 1px solid #E0E0E0;
     margin-top: 4px;
     margin-bottom: 4px;
+    overflow: hidden;
 }
 
 a.title-link {
@@ -209,6 +210,7 @@ a.title-link {
     position: relative;
     flex: 0 0 40%;
     max-width: 40%;
+    display: flex;
 }
 
 .job-card__content {
@@ -217,6 +219,7 @@ a.title-link {
     display: flex;
     align-items: center;
     min-width: 0;
+    padding: 24px 0;
 }
 
 /* Logo */
@@ -313,8 +316,9 @@ a.title-link {
 
 .background-wrapper {
     width: 100%;
+    flex: 1 1 auto;
     position: relative;
-    max-height: 318px;
+    min-height: 318px;
     overflow: hidden;
 }
 
@@ -329,7 +333,8 @@ a.title-link {
 
 .block-bg-overlay,
 .background-inner {
-    height: 318px;
+    height: 100%;
+    min-height: 318px;
 }
 
 /* Meta */
@@ -346,7 +351,12 @@ a.title-link {
     margin-bottom: 6px;
     flex-direction: row !important;
 }
-.job-card-meta__icon { display: flex; align-items: center; flex-shrink: 0; }
+.job-card-meta__icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--color-primary);
+}
 .job-card-meta__text,
 .job-card-meta__title { margin: 0; }
 .job-card-meta__title { font-weight: 600; }
@@ -439,6 +449,7 @@ a.title-link {
     display: flex;
     align-items: center;
     flex: 0 0 auto;
+    color: var(--color-primary);
 }
 
 .job-mobile__text {

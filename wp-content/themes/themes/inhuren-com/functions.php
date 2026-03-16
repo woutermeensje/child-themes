@@ -16,7 +16,73 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
-    wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css');
+    if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
+        wp_enqueue_style('inhuren-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
+    }
+    if (file_exists(get_stylesheet_directory() . '/css/gravity-forms.css')) {
+        wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css');
+    }
+});
+
+if (!class_exists('RN_Nav_Walker')) :
+class RN_Nav_Walker extends Walker_Nav_Menu {
+    public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
+        $classes = empty($item->classes) ? [] : (array) $item->classes;
+        $has_child = in_array('menu-item-has-children', $classes, true);
+        $is_active = in_array('current-menu-item', $classes, true) || in_array('current-menu-ancestor', $classes, true);
+        $li_class = 'rn-nav__item';
+
+        if ($has_child) {
+            $li_class .= ' rn-nav__item--has-children';
+        }
+
+        if ($is_active) {
+            $li_class .= ' is-active';
+        }
+
+        $output .= '<li class="' . esc_attr($li_class) . '">';
+
+        $url = !empty($item->url) ? $item->url : '#';
+        $title = apply_filters('the_title', $item->title, $item->ID);
+        $attr_title = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
+        $target = !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
+        $rel = !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
+
+        $output .= '<a class="rn-nav__link' . ($is_active ? ' is-active' : '') . '" href="' . esc_url($url) . '"' . $attr_title . $target . $rel . '>';
+        $output .= esc_html($title);
+
+        if ($has_child) {
+            $output .= '<span class="rn-nav__chev" aria-hidden="true"></span>';
+        }
+
+        $output .= '</a>';
+    }
+
+    public function start_lvl(&$output, $depth = 0, $args = null) {
+        $output .= '<ul class="rn-nav__dropdown">';
+    }
+
+    public function end_lvl(&$output, $depth = 0, $args = null) {
+        $output .= '</ul>';
+    }
+
+    public function end_el(&$output, $item, $depth = 0, $args = null) {
+        $output .= '</li>';
+    }
+}
+endif;
+
+add_action('after_setup_theme', function () {
+    register_nav_menus([
+        'primary_nav' => 'Primaire navigatie',
+        'footer_nav'  => 'Footer navigatie',
+    ]);
+});
+
+add_shortcode('rn_header', function () {
+    ob_start();
+    include get_stylesheet_directory() . '/template-parts/header.php';
+    return ob_get_clean();
 });
 
 /**

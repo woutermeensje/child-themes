@@ -55,8 +55,85 @@ function fondsen_enqueue_styles() {
         [],
         null
     );
+
+    if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
+        wp_enqueue_style(
+            'fondsen-header',
+            get_stylesheet_directory_uri() . '/css/header.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/header.css')
+        );
+    }
 }
 add_action( 'wp_enqueue_scripts', 'fondsen_enqueue_styles' );
+
+if (!class_exists('Fondsen_Nav_Walker')) :
+class Fondsen_Nav_Walker extends Walker_Nav_Menu {
+    public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
+        $classes = empty($item->classes) ? [] : (array) $item->classes;
+        $has_child = in_array('menu-item-has-children', $classes, true);
+        $is_active = in_array('current-menu-item', $classes, true) || in_array('current-menu-ancestor', $classes, true);
+        $li_class = 'rn-nav__item';
+
+        if ($has_child) {
+            $li_class .= ' rn-nav__item--has-children';
+        }
+
+        if ($is_active) {
+            $li_class .= ' is-active';
+        }
+
+        $output .= '<li class="' . esc_attr($li_class) . '">';
+
+        $url = !empty($item->url) ? $item->url : '#';
+        $title = apply_filters('the_title', $item->title, $item->ID);
+        $attr_title = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
+        $target = !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
+        $rel = !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
+
+        $output .= '<a class="rn-nav__link' . ($is_active ? ' is-active' : '') . '" href="' . esc_url($url) . '"' . $attr_title . $target . $rel . '>';
+        $output .= esc_html($title);
+
+        if ($has_child) {
+            $output .= '<span class="rn-nav__chev" aria-hidden="true"></span>';
+        }
+
+        $output .= '</a>';
+    }
+
+    public function start_lvl(&$output, $depth = 0, $args = null) {
+        $output .= '<ul class="rn-nav__dropdown">';
+    }
+
+    public function end_lvl(&$output, $depth = 0, $args = null) {
+        $output .= '</ul>';
+    }
+
+    public function end_el(&$output, $item, $depth = 0, $args = null) {
+        $output .= '</li>';
+    }
+}
+endif;
+
+add_action('after_setup_theme', function () {
+    add_theme_support('custom-logo', [
+        'height'      => 120,
+        'width'       => 320,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ]);
+
+    register_nav_menus([
+        'primary_nav' => 'Primaire navigatie',
+        'footer_nav'  => 'Footer navigatie',
+    ]);
+});
+
+add_shortcode('fondsen_header', function () {
+    ob_start();
+    include get_stylesheet_directory() . '/template-parts/header.php';
+    return ob_get_clean();
+});
 
 
 if ( ! function_exists('srmb_get_req_value') ) {
@@ -101,9 +178,20 @@ add_filter('job_manager_locate_template', function ($template, $template_name) {
         // 'functions.php',  // <- dit is géén WPJM template; beter NIET overriden
     ];
 
-    $custom_path = get_stylesheet_directory() . '/wp-job-manager/' . $template_name;
+    $candidate_paths = [
+        get_stylesheet_directory() . '/wp-job-manager/' . $template_name,
+        get_stylesheet_directory() . '/job_manager/' . $template_name,
+    ];
 
-    return ( in_array($template_name, $custom_templates, true) && file_exists($custom_path) )
+    $custom_path = '';
+    foreach ($candidate_paths as $candidate_path) {
+        if (file_exists($candidate_path)) {
+            $custom_path = $candidate_path;
+            break;
+        }
+    }
+
+    return ( in_array($template_name, $custom_templates, true) && $custom_path )
         ? $custom_path
         : $template;
 
@@ -673,4 +761,3 @@ add_action('job_manager_update_job_data', function($job_id, $values){
     update_post_meta($job_id, '_contact_email',      sanitize_email($em));
 
 }, 10, 2);
-

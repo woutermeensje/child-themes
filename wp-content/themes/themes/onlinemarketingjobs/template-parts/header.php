@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 }
 
 /* ---- Utility bar ---- */
-#rn-header .rn-topbar { background: #0458AB !important; width: 100% !important; }
+#rn-header .rn-topbar { background: var(--color-primary) !important; width: 100% !important; }
 #rn-header .rn-topbar__inner {
   max-width: 1200px; margin: 0 auto; padding: 0 24px;
   height: 36px; display: flex; align-items: center; justify-content: space-between;
@@ -66,8 +66,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   box-shadow: none !important;
   border: none !important;
 }
-#rn-header .rn-nav__link:hover { color: #0458AB !important; background: transparent !important; }
-#rn-header .rn-nav__link.is-active { color: #0458AB !important; font-weight: 600 !important; }
+#rn-header .rn-nav__link:hover { color: var(--color-primary) !important; background: transparent !important; }
+#rn-header .rn-nav__link.is-active { color: var(--color-primary) !important; font-weight: 600 !important; }
 
 /* Chevron */
 #rn-header .rn-nav__chev {
@@ -81,7 +81,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 #rn-header .rn-nav__dropdown {
   display: none; position: absolute; top: 100%; left: 0;
   min-width: 210px; background: #fff;
-  border: 1px solid #e8ecf0; border-top: 3px solid #0458AB;
+  border: 1px solid #e8ecf0; border-top: 3px solid var(--color-primary);
   border-radius: 0 0 8px 8px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.12);
   padding: 6px; list-style: none; margin: 0; z-index: 9001;
@@ -93,7 +93,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   padding: 9px 14px !important; font-size: 14px !important; font-weight: 400 !important;
   width: 100%; box-shadow: none !important;
 }
-#rn-header .rn-nav__dropdown .rn-nav__link:hover { background: rgba(4,88,171,0.06) !important; }
+#rn-header .rn-nav__dropdown .rn-nav__link:hover { background: rgba(124,92,250,0.08) !important; }
 
 /* ---- CTA knoppen ---- */
 #rn-header .rn-header__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
@@ -107,17 +107,17 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   transition: background .15s ease, color .15s ease, transform .15s ease;
 }
 #rn-header .rn-btn--outline {
-  background: transparent !important; color: #0458AB !important;
-  border: 2px solid #0458AB !important;
+  background: transparent !important; color: var(--color-primary) !important;
+  border: 2px solid var(--color-primary) !important;
 }
-#rn-header .rn-btn--outline:hover { background: #0458AB !important; color: #fff !important; }
+#rn-header .rn-btn--outline:hover { background: var(--color-primary) !important; color: #fff !important; }
 #rn-header .rn-btn--accent {
-  background: #3B82F6 !important; color: #fff !important;
-  border: 2px solid #3B82F6 !important;
-  box-shadow: 0 2px 8px rgba(59,130,246,0.3) !important;
+  background: var(--color-secondary) !important; color: #fff !important;
+  border: 2px solid var(--color-secondary) !important;
+  box-shadow: 0 2px 8px rgba(124,92,250,0.22) !important;
 }
 #rn-header .rn-btn--accent:hover {
-  background: #0458AB !important; border-color: #0458AB !important;
+  background: var(--color-tertiary) !important; border-color: var(--color-tertiary) !important;
   transform: translateY(-1px);
 }
 
@@ -176,7 +176,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   text-decoration: none !important; box-shadow: none !important;
   background: transparent !important;
 }
-.rn-mobile-nav__list a:hover { color: #0458AB !important; }
+.rn-mobile-nav__list a:hover { color: var(--color-primary) !important; }
 .rn-mobile-nav__list .rn-nav__chev { display: none !important; }
 
 /* Submenu mobile */
@@ -233,7 +233,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <!-- Logo -->
         <div class="rn-header__brand">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-                <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/site-logo/onlinemarketingjobs-site-logo.png' ); ?>"
+                <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/site-logo/online-marketing-jobs-logo.png' ); ?>"
                      alt="<?php bloginfo( 'name' ); ?>"
                      class="rn-header__logo">
             </a>
@@ -254,11 +254,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
         <!-- CTA knoppen -->
         <div class="rn-header__cta">
-            <a href="<?php echo esc_url( home_url( '/inloggen/' ) ); ?>" class="rn-btn rn-btn--outline">
-                Inloggen
-            </a>
-            <a href="<?php echo esc_url( home_url( '/aanmelden/' ) ); ?>" class="rn-btn rn-btn--accent">
-                Aanmelden
+            <a href="<?php echo esc_url( home_url( '/vacature-plaatsen/' ) ); ?>" class="rn-btn rn-btn--accent">
+                Vacature Plaatsen
             </a>
         </div>
 
@@ -290,11 +287,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="<?php echo esc_url( home_url( '/inloggen/' ) ); ?>" class="rn-btn rn-btn--outline rn-mobile-nav__cta">
-                Inloggen
-            </a>
-            <a href="<?php echo esc_url( home_url( '/aanmelden/' ) ); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
-                Aanmelden
+            <a href="<?php echo esc_url( home_url( '/vacature-plaatsen/' ) ); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
+                Vacature Plaatsen
             </a>
         </div>
     </div>

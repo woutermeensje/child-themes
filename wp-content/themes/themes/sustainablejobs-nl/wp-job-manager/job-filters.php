@@ -7,7 +7,6 @@ do_action( 'job_manager_job_filters_before', $atts );
 
 /**
  * ✅ Selected values come from: $_GET > $_POST > shortcode atts
- * Supports both key and filter_key (WPJM uses filter_*).
  */
 $selected = [
   'job_company'   => [],
@@ -23,31 +22,19 @@ $shortcode_atts = shortcode_atts([
   'certificering'    => '',
 ], $atts);
 
-// helper: get value from request (supports both key and filter_key)
 if ( ! function_exists( 'sj_get_req_value' ) ) {
   function sj_get_req_value( $key ) {
     $filter_key = 'filter_' . $key;
-
     if ( ! empty( $_GET[ $key ] ) )        return (array) $_GET[ $key ];
     if ( ! empty( $_GET[ $filter_key ] ) ) return (array) $_GET[ $filter_key ];
-
     if ( ! empty( $_POST[ $filter_key ] ) ) return (array) $_POST[ $filter_key ];
     if ( ! empty( $_POST[ $key ] ) )        return (array) $_POST[ $key ];
-
     return [];
   }
 }
 
-// map selected key -> request key (because WPJM uses filter_job_types)
-$req_map = [
-  'job_types' => 'job_types', // we read filter_job_types via helper below by passing "job_types"? nope.
-];
-
-// IMPORTANT: for job_types we must read filter_job_types, not filter_job_types[]? helper reads filter_{key}
-// so for job_types we pass "job_types" and it reads filter_job_types? Actually filter_key becomes filter_job_types if key is "job_types" -> yes.
 foreach ( $selected as $key => &$value ) {
   $shortcode_key = ( $key === 'job_types' ) ? 'job_listing_type' : $key;
-
   $req = sj_get_req_value( $key );
   if ( ! empty( $req ) ) {
     $value = $req;
@@ -57,7 +44,6 @@ foreach ( $selected as $key => &$value ) {
 }
 unset( $value );
 
-// (optional) read keyword/location from WPJM vars if available
 $keywords = isset( $keywords ) ? $keywords : ( $_GET['search_keywords'] ?? '' );
 $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
 ?>
@@ -65,7 +51,7 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
 <form class="job_filters">
   <?php do_action( 'job_manager_job_filters_start', $atts ); ?>
 
-  <div class="filter-header" style="padding: 0 20px 10px 20px;">
+  <div class="filter-header" style="padding: 0 24px 18px;">
     <h2>Bekijk alle Duurzame Vacatures in ons Netwerk!</h2>
     <p>Of schrijf je in voor de <a href="https://sustainablejobs.nl/nieuwsbrief/" target="_blank" class="unstyled-newsletter-link" rel="noopener">vacature nieuwsbrief</a>!</p>
   </div>
@@ -89,8 +75,6 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
   </div>
 
   <div class="filter-box">
-
-
 
     <!-- Dienstverband (MULTI) -->
     <div class="job_type">
@@ -152,16 +136,9 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
       </select>
     </div>
 
-          <div class="filter-actions">
-        <button type="button" id="reset-filters" class="reset-filters">
-          Reset filters
-        </button>
-      </div>
-
-
   </div>
 
-  <!-- Active filters (chips onder de filters) -->
+  <!-- Actieve filters (chips onder de filter-box) -->
   <div class="active-filters" id="active-filters" aria-live="polite"></div>
 
 </form>
@@ -186,9 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
     return () => { clearTimeout(t); t = setTimeout(fn, delay); };
   };
 
-  const kw = document.querySelector("#search_keywords");
+  const kw  = document.querySelector("#search_keywords");
   const loc = document.querySelector("#search_location");
-  if (kw) kw.addEventListener("input", debounce(wpjmFilter, 250));
+  if (kw)  kw.addEventListener("input",  debounce(wpjmFilter, 250));
   if (loc) loc.addEventListener("input", debounce(wpjmFilter, 250));
 
   form.addEventListener("submit", (e) => {
@@ -197,7 +174,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const closeAll = () => {
-    document.querySelectorAll(".sj-select.active").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(".sj-select.active").forEach((el) => {
+      el.classList.remove("active");
+      const searchInput = el.querySelector(".sj-search-input");
+      if (searchInput) {
+        searchInput.value = "";
+        el.querySelectorAll(".sj-option").forEach((option) => {
+          option.style.display = "";
+        });
+      }
+    });
   };
 
   const activeFiltersEl = document.getElementById("active-filters");
@@ -208,22 +194,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.querySelectorAll("select.js-custom-select").forEach((select) => {
       const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
-
       selectedOptions.forEach((opt) => {
         const chip = document.createElement("span");
         chip.className = "active-filter";
-        chip.innerHTML = `
-          <span class="active-filter-text"></span>
-          <button type="button" class="active-filter-x" aria-label="Verwijder filter">×</button>
-        `;
+        chip.innerHTML = `<span class="active-filter-text"></span><button type="button" class="active-filter-x" aria-label="Verwijder filter">×</button>`;
         chip.querySelector(".active-filter-text").textContent = opt.textContent;
-
         chip.querySelector(".active-filter-x").addEventListener("click", (e) => {
           e.preventDefault();
           opt.selected = false;
           select.dispatchEvent(new Event("change", { bubbles: true }));
         });
-
         activeFiltersEl.appendChild(chip);
       });
     });
@@ -232,32 +212,31 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const buildSelect = (select) => {
-    const isMultiple = select.multiple === true;
+    const isMultiple  = select.multiple === true;
+    const forceMode   = select.dataset.mode;
+    const isSingle    = forceMode === "single" ? true : !isMultiple;
     const placeholder = select.dataset.placeholder || "Selecteer";
 
     const wrap = document.createElement("div");
     wrap.className = "sj-select-wrap";
     select.parentNode.insertBefore(wrap, select);
     wrap.appendChild(select);
-
     select.classList.add("sj-hidden-select");
 
     const root = document.createElement("div");
     root.className = "sj-select";
-    root.dataset.type = isMultiple ? "multi" : "single";
+    root.dataset.type = isSingle ? "single" : "multi";
 
-    // Use a div as control (no nested button)
-    const btn = document.createElement("div");
+    const btn = document.createElement("button");
+    btn.type = "button";
     btn.className = "sj-select-btn";
-    btn.setAttribute("role", "button");
-    btn.setAttribute("tabindex", "0");
     btn.innerHTML = `
       <span class="sj-btn-content">
         <span class="sj-placeholder">${placeholder}</span>
         <span class="sj-tags" aria-hidden="true"></span>
       </span>
       <span class="sj-actions">
-        <span class="sj-clear" role="button" aria-label="Wis selectie" title="Wis selectie">×</span>
+        <button type="button" class="sj-clear" aria-label="Wis selectie" title="Wis selectie">×</button>
         <span class="sj-chev" aria-hidden="true"></span>
       </span>
     `;
@@ -274,70 +253,108 @@ document.addEventListener("DOMContentLoaded", () => {
     const list = document.createElement("div");
     list.className = "sj-options";
     list.setAttribute("role", "listbox");
-    list.setAttribute("aria-multiselectable", "true");
+    if (!isSingle) list.setAttribute("aria-multiselectable", "true");
 
-    const optionRows = [];
+    let searchInput = null;
+    if (!isSingle) {
+      const searchWrap = document.createElement("div");
+      searchWrap.className = "sj-search";
+      searchWrap.innerHTML = `<input type="text" class="sj-search-input" placeholder="Zoek in ${placeholder.toLowerCase()}">`;
+      searchInput = searchWrap.querySelector(".sj-search-input");
+      list.appendChild(searchWrap);
+    }
 
-    [...select.options].forEach((opt) => {
-      if (!opt.value) return; // no empty option
-
+    const makeOptionRow = (opt) => {
       const row = document.createElement("div");
       row.className = "sj-option";
       row.dataset.value = opt.value;
       row.setAttribute("role", "option");
       row.setAttribute("aria-selected", opt.selected ? "true" : "false");
-
       row.innerHTML = `<span class="sj-option-text"></span>`;
       row.querySelector(".sj-option-text").textContent = opt.textContent;
 
-      const sync = () => {
+      const syncSelected = () => {
         row.classList.toggle("is-selected", opt.selected);
         row.setAttribute("aria-selected", opt.selected ? "true" : "false");
       };
-
-      sync();
+      syncSelected();
 
       row.addEventListener("click", (e) => {
         e.preventDefault();
         if (opt.disabled) return;
-        opt.selected = !opt.selected;
-
+        if (isSingle) {
+          [...select.options].forEach(o => o.selected = false);
+          opt.selected = true;
+          closeAll();
+          root.classList.remove("active");
+        } else {
+          opt.selected = !opt.selected;
+        }
         renderState();
         select.dispatchEvent(new Event("change", { bubbles: true }));
       });
 
-      optionRows.push({ opt, row, sync });
+      return { row, syncSelected };
+    };
+
+    const optionRows = [];
+    [...select.options].forEach((opt) => {
+      if (isSingle && opt.value === "") return;
+      const { row, syncSelected } = makeOptionRow(opt);
+      optionRows.push({ opt, row, syncSelected });
       list.appendChild(row);
     });
 
+    const filterOptionRows = () => {
+      if (!searchInput) return;
+      const term = searchInput.value.trim().toLowerCase();
+      optionRows.forEach(({ row, opt }) => {
+        row.style.display = opt.textContent.toLowerCase().includes(term) ? "" : "none";
+      });
+    };
+
+    if (searchInput) {
+      searchInput.addEventListener("input", filterOptionRows);
+      searchInput.addEventListener("click", (e) => e.stopPropagation());
+      searchInput.addEventListener("keydown", (e) => e.stopPropagation());
+    }
+
+    const tagsEl        = btn.querySelector(".sj-tags");
     const placeholderEl = btn.querySelector(".sj-placeholder");
 
     const renderState = () => {
-      optionRows.forEach(({ sync }) => sync());
+      optionRows.forEach(({ syncSelected }) => syncSelected());
       const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
+      tagsEl.innerHTML = "";
 
       if (selectedOptions.length === 0) {
-        placeholderEl.textContent = placeholder;
+        placeholderEl.style.display = "inline";
+        tagsEl.style.display = "none";
         clearBtn.style.display = "none";
-      } else {
-        placeholderEl.textContent = placeholder; // no chips in button
-        clearBtn.style.display = "inline-flex";
+        return;
       }
+
+      clearBtn.style.display = "inline-flex";
+      placeholderEl.textContent = placeholder;
+      placeholderEl.style.display = "inline";
+      tagsEl.style.display = "none";
     };
 
     renderState();
 
-    const toggleOpen = (e) => {
+    btn.addEventListener("click", (e) => {
       if (e.target.closest(".sj-clear")) return;
       e.preventDefault();
       const wasOpen = root.classList.contains("active");
       closeAll();
-      if (!wasOpen) root.classList.add("active");
-    };
-
-    btn.addEventListener("click", toggleOpen);
-    btn.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") toggleOpen(e);
+      if (!wasOpen) {
+        root.classList.add("active");
+        if (searchInput) {
+          searchInput.value = "";
+          filterOptionRows();
+          window.setTimeout(() => searchInput.focus(), 10);
+        }
+      }
     });
 
     select.addEventListener("change", () => {
@@ -352,7 +369,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   document.querySelectorAll("select.js-custom-select").forEach(buildSelect);
-
   renderActiveFilters();
 
   document.addEventListener("click", (e) => {
@@ -363,110 +379,81 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeAll();
   });
 });
-
-
-const resetBtn = document.getElementById("reset-filters");
-
-if (resetBtn) {
-  resetBtn.addEventListener("click", () => {
-
-    // 1. Leeg zoekvelden
-    document.querySelectorAll(
-      'input[name="search_keywords"], input[name="search_location"]'
-    ).forEach(input => input.value = "");
-
-    // 2. Leeg alle selects
-    document.querySelectorAll("select.js-custom-select").forEach(select => {
-      [...select.options].forEach(opt => opt.selected = false);
-      select.dispatchEvent(new Event("change", { bubbles: true }));
-    });
-
-    // 3. Sluit open dropdowns
-    document.querySelectorAll(".sj-select.active").forEach(el => {
-      el.classList.remove("active");
-    });
-
-    // 4. Forceer WPJM refresh
-    wpjmFilter();
-  });
-}
-
 </script>
 
 
 <style>
 /* =========================
-   LAYOUT (Sustainablejobs)
+   LAYOUT
    ========================= */
 .job_filters {
-  width: 90%;
-  padding: 20px 0;
-  margin: 20px auto;
-  background-color: white;
-  border: 1px solid #DEDEDE;
-  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
-  border-radius: 5px; 
-  
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 0;
+  margin-bottom: 0;
+  min-height: 300px;
+  padding: 56px 0;
+  background: var(--color-bg-filter);
+  border-bottom: 1px solid #d8e6dd;
+  box-sizing: border-box;
+  margin-bottom: 40px !important;
 }
 
-.filter-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 20px;
+.filter-header,
+.search-basic,
+.filter-box,
+.active-filters {
+  max-width: 1200px;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.filter-box > div {
-  flex: 1 1 calc(100% / 4 - 16px) !important;
-  min-width: 160px !important;
-}
-
-@media (max-width: 768px) {
-  .filter-box {
-    flex-direction: column;
-  }
-  .filter-box > div {
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-}
-
-/* Header */
-.filter-header p {
-  font-family: Poppins, sans-serif;
-  font-size: 15px;
-  color: #333333;
-  margin: 10px 0;
+/* =========================
+   HEADER
+   ========================= */
+.filter-header {
+  padding: 0 24px 18px !important;
 }
 
 .filter-header h2 {
-  font-family: 'Inter', sans-serif;
-  font-size: 25px;
-  color: #333333;
-  margin-bottom: 15px;
-  display: inline;
-  background: linear-gradient(transparent 60%, #E0D0E1 60%);
-  font-weight: bold;
-  border-radius: 2px;
+  margin: 0;
+  font-family: 'Balgin-Bold', 'Inter', sans-serif;
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.filter-header p {
+  margin: 10px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  color: var(--color-text);
 }
 
 body .filter-header a.unstyled-newsletter-link {
-  color: #0a6b8d;
-  text-decoration: none;
+  color: var(--color-primary);
   font-weight: 400;
-  font-family: "Poppins", sans-serif;
-}
-body .filter-header a.unstyled-newsletter-link:hover {
-  color: var(--color-roze) !important;
-  text-decoration: none;
+  text-decoration: underline;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* Search inputs */
+body .filter-header a.unstyled-newsletter-link:hover {
+  color: var(--color-secondary) !important;
+  text-decoration: underline;
+}
+
+/* =========================
+   SEARCH INPUTS
+   ========================= */
 .search-basic {
   display: flex;
-  justify-content: left;
-  gap: 20px;
-  padding: 0 20px;
+  gap: 16px;
+  padding: 0 24px;
 }
 
 .search_location,
@@ -480,59 +467,71 @@ body .filter-header a.unstyled-newsletter-link:hover {
 
 .search-basic input[type="text"] {
   width: 100%;
-  padding: 12px 14px 12px 38px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 0;
-  background-color: white;
-  color: #222;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  padding: 13px 14px 13px 40px;
+  font-size: 15px;
+  border: 1px solid #c8ddd4;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: var(--color-text);
+  box-shadow: none;
+  transition: border-color .2s ease, box-shadow .2s ease;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
 }
 
 .search-basic input[type="text"]:focus {
   outline: none;
-  border-color: #0a6b8d;
-  box-shadow: 0 2px 8px rgba(10, 107, 141, 0.25);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(10, 107, 141, 0.15);
+}
+
+.search_keywords input::placeholder,
+.search_location input::placeholder {
+  color: #7c7c7c;
+  font-size: 15px !important;
+  font-style: italic;
+}
+
+.search_keywords::before,
+.search_location::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
 }
 
 .search_keywords::before {
-  content: '🔍';
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  color: #0a6b8d;
-  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a6b8d' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
 }
 
 .search_location::before {
-  content: '📍';
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 16px;
-  color: #0a6b8d;
-  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a6b8d' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
 }
 
-@media (max-width: 768px) {
-  .search-basic {
-    flex-direction: column;
-  }
-  .search_location,
-  .search_keywords {
-    max-width: 100%;
-    flex-basis: 100%;
-  }
+/* =========================
+   FILTER BOX
+   ========================= */
+.filter-box {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 16px 24px 0;
+}
+
+.filter-box > div {
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
 }
 
 /* =========================
    CUSTOM SELECT (vanilla)
    ========================= */
-
 select.sj-hidden-select {
   position: absolute !important;
   left: -9999px !important;
@@ -541,29 +540,47 @@ select.sj-hidden-select {
   opacity: 0 !important;
 }
 
-.sj-select-wrap { position: relative; width: 100%; }
-.sj-select { position: relative; width: 100%; }
+.sj-select-wrap,
+.sj-select {
+  position: relative;
+  width: auto;
+  display: inline-block;
+}
 
 .sj-select-btn {
-  width: 100%;
-  display: flex;
+  width: auto;
+  display: inline-flex;
   align-items: center;
   justify-content: space-between;
+  white-space: nowrap;
   border-radius: 999px;
-  border: 1px solid #dedede !important;
-  background-color: white !important;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  padding: 12px 12px;
+  border: 1px solid #c8ddd4 !important;
+  background-color: #ffffff !important;
+  padding: 12px;
   min-height: 44px;
   cursor: pointer;
   user-select: none;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  color: #111;
+  font-size: 15px;
+  color: #111111 !important;
 }
 
-.sj-btn-content{
+.sj-select-btn:focus {
+  outline: none;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(10, 107, 141, 0.18);
+}
+
+.sj-select-btn,
+.sj-select-btn:hover,
+.sj-select.active .sj-select-btn,
+.sj-select-btn:focus {
+  background: #ffffff !important;
+  color: #111111 !important;
+}
+
+.sj-btn-content {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -571,39 +588,35 @@ select.sj-hidden-select {
   min-width: 0;
 }
 
-.sj-placeholder{
+.sj-placeholder {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
-  color: #333333;
+  color: var(--color-text);
   font-size: 15px;
 }
 
-.sj-tags{ display: none; }
+.sj-tags {
+  display: none;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
-.sj-actions{
+.sj-actions {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 0 !important;
   margin-left: 10px;
 }
 
-.sj-clear{
-  display: none; /* in jouw design verbergen we dit in de knop */
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  border: 1px solid #E0E0E0;
-  background: #fff;
-  line-height: 1;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
+.sj-clear {
+  display: none !important;
 }
 
-.sj-chev{
+.sj-chev {
   width: 10px;
   height: 10px;
   border-right: 2px solid #111;
@@ -611,26 +624,69 @@ select.sj-hidden-select {
   transform: rotate(45deg);
   transition: transform .2s ease;
 }
-.sj-select.active .sj-chev{ transform: rotate(-135deg); }
 
-.sj-options{
+.sj-select.active .sj-chev {
+  transform: rotate(-135deg);
+}
+
+/* =========================
+   DROPDOWN PANEL
+   ========================= */
+.sj-options {
   display: none;
   position: absolute;
   left: 0;
-  right: 0;
+  right: auto;
+  width: max-content;
+  min-width: 100%;
   margin-top: 10px;
   background: #fff;
-  border: 1px solid #E0E0E0;
+  border: 1px solid #c8ddd4;
   border-radius: 8px;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.12);
   padding: 8px;
   max-height: 280px;
   overflow: auto;
   z-index: 9999;
 }
-.sj-select.active .sj-options{ display: block; }
 
-.sj-option{
+.sj-select.active .sj-options {
+  display: block;
+}
+
+/* Zoekbalk binnen dropdown */
+.sj-search {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #ffffff;
+  padding: 4px 4px 10px;
+}
+
+.sj-search-input {
+  width: 100%;
+  min-width: 220px;
+  border: 1px solid #c8ddd4;
+  border-radius: 8px;
+  padding: 11px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: var(--color-text);
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.sj-search-input::placeholder {
+  color: #7c7c7c;
+}
+
+.sj-search-input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(10, 107, 141, 0.16);
+}
+
+.sj-option {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -638,93 +694,172 @@ select.sj-hidden-select {
   border-radius: 8px;
   cursor: pointer;
 }
-.sj-option:hover{ background: #f2f2f2; }
 
-.sj-option.is-selected{ background: #f7fbff; }
+.sj-option:hover {
+  background: #EEF3F0;
+}
 
-.sj-option-text{
+.sj-option.is-selected .sj-option-text {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.sj-option-text {
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
 }
 
-.sj-select-btn:focus{
-  outline: none;
-  border-color: #0a6b8d;
-  box-shadow: 0 0 0 2px rgba(10, 107, 141, 0.2);
+/* =========================
+   FILTER BUTTON ICONEN
+   ========================= */
+.job_type .sj-select-btn,
+.job_sector .sj-select-btn,
+.job_certificering .sj-select-btn,
+.job_company .sj-select-btn {
+  padding-left: 38px !important;
+  position: relative;
 }
 
-/* Active filters (chips onder de filter-box) */
+.job_type .sj-select-btn::before,
+.job_sector .sj-select-btn::before,
+.job_certificering .sj-select-btn::before,
+.job_company .sj-select-btn::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* Dienstverband → aktetas */
+.job_type .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a6b8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
+}
+
+/* Sector → categorie-raster */
+.job_sector .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a6b8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
+}
+
+/* Certificering → badge/award */
+.job_certificering .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a6b8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='6'/%3E%3Cpath d='M15.477 12.89L17 22l-5-3-5 3 1.523-9.11'/%3E%3C/svg%3E");
+}
+
+/* Organisatie → gebouw */
+.job_company .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a6b8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
+}
+
+/* =========================
+   ACTIEVE FILTERS (chips)
+   ========================= */
 .active-filters {
   display: none;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 14px 20px 0;
+  margin: 14px 24px 0 !important;
 }
 
-.active-filter {
+span.active-filter {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 999px;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   padding: 8px 12px;
-  font-size: 16px;
-  color: #111;
-  font-weight: 700 !important;
-  cursor: pointer;
-
-}
-
-.active-filter-text { color: #333333; }
-
-.active-filter-x {
-  border: none;
-  background: none;
-  cursor: move;
-  color: #0A6B8D;
-  font-size: 20px;
-  font-weight: 900;
-  margin-left: 6px;
-  line-height: 1;
-  padding: 0;
-}
-
-.active-filter-x:hover { 
-  border-color: #0a6b8d; 
-  background-color: #0A6B8D;
-  font-weight: 700;
-  padding: 0 4px;
-}
-
-
-  .filter-actions{
-
-  display: flex;
-  
-}
-
-.reset-filters{
-  border: none; 
-  background-color: none; 
-  color: #0A6B8D;
-  border-radius: 6px;
-  padding: 8px 14px;
   font-size: 14px;
-  font-family: Poppins, sans-serif;
-  font-weight: 400;
+  color: #111;
+  font-weight: 700;
   cursor: pointer;
-  transition: all .2s ease;
 }
 
-.reset-filters:hover{
-  background-color: #E0D0E1; 
-  color: #0A6B8D;  
-  border-radius: 999px;
-  border: 1px solid #0A6B8D;
+.active-filter:hover {
+  border-color: var(--color-primary);
 }
 
+.active-filter-text {
+  color: var(--color-text);
+}
 
+button.active-filter-x {
+  color: var(--color-primary);
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 1;
+  margin-left: 6px;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+button.active-filter-x:hover {
+  color: var(--color-secondary);
+  background: none;
+}
+
+/* =========================
+   RESPONSIVE
+   ========================= */
+@media (max-width: 960px) {
+  form.job_filters {
+    width: 100% !important;
+    position: relative !important;
+    left: 0 !important;
+    right: auto !important;
+    margin: 0 !important;
+    padding: 24px 0 !important;
+  }
+
+  .filter-header {
+    padding: 0 16px 12px !important;
+  }
+
+  .search-basic {
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 16px !important;
+  }
+
+  .search_location,
+  .search_keywords {
+    max-width: 100%;
+    flex-basis: 100%;
+    width: 100%;
+  }
+
+  .filter-box {
+    flex-direction: column;
+    padding: 12px 16px 0 !important;
+    gap: 10px;
+  }
+
+  .filter-box > div,
+  .sj-select-wrap,
+  .sj-select,
+  .sj-select-btn {
+    width: 100% !important;
+  }
+
+  .sj-options {
+    width: 100% !important;
+    min-width: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  .active-filters {
+    margin: 12px 16px 0 !important;
+  }
+}
 </style>

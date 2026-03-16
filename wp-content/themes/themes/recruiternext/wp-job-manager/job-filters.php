@@ -167,7 +167,16 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const closeAll = () => {
-    document.querySelectorAll(".sj-select.active").forEach(el => el.classList.remove("active"));
+    document.querySelectorAll(".sj-select.active").forEach((el) => {
+      el.classList.remove("active");
+      const searchInput = el.querySelector(".sj-search-input");
+      if (searchInput) {
+        searchInput.value = "";
+        el.querySelectorAll(".sj-option").forEach((option) => {
+          option.style.display = "";
+        });
+      }
+    });
   };
 
   // Actieve filters tonen
@@ -241,6 +250,15 @@ document.addEventListener("DOMContentLoaded", () => {
     list.setAttribute("role", "listbox");
     if (!isSingle) list.setAttribute("aria-multiselectable", "true");
 
+    let searchInput = null;
+    if (!isSingle) {
+      const searchWrap = document.createElement("div");
+      searchWrap.className = "sj-search";
+      searchWrap.innerHTML = `<input type="text" class="sj-search-input" placeholder="Zoek in ${placeholder.toLowerCase()}">`;
+      searchInput = searchWrap.querySelector(".sj-search-input");
+      list.appendChild(searchWrap);
+    }
+
     const makeOptionRow = (opt) => {
       const row = document.createElement("div");
       row.className = "sj-option";
@@ -282,6 +300,22 @@ document.addEventListener("DOMContentLoaded", () => {
       list.appendChild(row);
     });
 
+    const filterOptionRows = () => {
+      if (!searchInput) return;
+      const term = searchInput.value.trim().toLowerCase();
+
+      optionRows.forEach(({ row, opt }) => {
+        const matches = opt.textContent.toLowerCase().includes(term);
+        row.style.display = matches ? "" : "none";
+      });
+    };
+
+    if (searchInput) {
+      searchInput.addEventListener("input", filterOptionRows);
+      searchInput.addEventListener("click", (e) => e.stopPropagation());
+      searchInput.addEventListener("keydown", (e) => e.stopPropagation());
+    }
+
     const tagsEl       = btn.querySelector(".sj-tags");
     const placeholderEl = btn.querySelector(".sj-placeholder");
 
@@ -321,7 +355,14 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
       const wasOpen = root.classList.contains("active");
       closeAll();
-      if (!wasOpen) root.classList.add("active");
+      if (!wasOpen) {
+        root.classList.add("active");
+        if (searchInput) {
+          searchInput.value = "";
+          filterOptionRows();
+          window.setTimeout(() => searchInput.focus(), 10);
+        }
+      }
     });
 
     select.addEventListener("change", () => {
@@ -667,6 +708,37 @@ select.sj-hidden-select {
   z-index: 9999;
 }
 .sj-select.active .sj-options { display: block; }
+
+.sj-search {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #ffffff;
+  padding: 4px 4px 10px;
+}
+
+.sj-search-input {
+  width: 100%;
+  min-width: 220px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 11px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  color: var(--color-text);
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.sj-search-input::placeholder {
+  color: #7c7c7c;
+}
+
+.sj-search-input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 2px rgba(4, 88, 171, 0.16);
+}
 
 .sj-option {
   display: flex;

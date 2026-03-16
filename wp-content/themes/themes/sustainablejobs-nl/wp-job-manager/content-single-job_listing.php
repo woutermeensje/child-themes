@@ -28,12 +28,13 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
   }
 
   .opdrachten-update {
-    padding: 24px; 
-     margin: 24px auto; 
-    border: 1px solid #DEDEDE; 
-    border-radius: 5px; 
+    padding: 24px;
+    margin: 24px auto;
+    border: 1px solid #DEDEDE;
+    border-radius: 5px;
     box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
-    display: flex; 
+    background-color: #ffffff;
+    display: flex;
     justify-content: space-between; /* 🔥 dit is de key */
     align-items: center;            /* verticaal netjes uitlijnen */
     width: 100%;

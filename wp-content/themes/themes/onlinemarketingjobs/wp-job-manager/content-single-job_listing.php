@@ -146,8 +146,8 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
   --sj-muted: #6B7280;
   --sj-border: #E5E7EB;
   --sj-card: #FFFFFF;
-  --sj-blue: #3563A2;
-  --sj-blue-dark: #254d82;
+  --sj-blue: var(--color-primary);
+  --sj-blue-dark: var(--color-tertiary);
   --sj-radius: 12px;
   --sj-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
 }

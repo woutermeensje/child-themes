@@ -182,8 +182,9 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
   --sj-muted: #6B7280;
   --sj-border: #E5E7EB;
   --sj-card: #FFFFFF;
-  --sj-blue: #0884CC;
-  --sj-orange: #FF8C2C;
+  --sj-blue: var(--color-secondary);
+  --sj-orange: var(--color-primary);
+  --sj-orange-dark: var(--color-primary-dk);
   --sj-radius: 12px;
   --sj-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
 }
@@ -215,13 +216,11 @@ html, body{
 
 
 .sj-card{
-  padding: 24px; 
+  padding: 24px;
+  background: #ffffff;
   border: 1px solid #DEDEDE;
-    box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
-    border-radius: 5px; 
-
-
-
+  box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
+  border-radius: 5px;
 }
 
 .custom-top-section{

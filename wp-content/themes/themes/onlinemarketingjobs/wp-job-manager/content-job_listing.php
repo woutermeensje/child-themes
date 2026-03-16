@@ -63,7 +63,7 @@ $background_image = $cover_image ? $cover_image : ( function_exists('get_seconda
                     <ul class="job-card-meta">
                         <li class="job-card-meta__item job-card-meta__item--org">
                             <span class="job-card-meta__icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             </span>
                             <div class="job-card-meta__textgroup">
                                 <p class="job-card-meta__title"><?php the_company_name(); ?></p>
@@ -73,7 +73,7 @@ $background_image = $cover_image ? $cover_image : ( function_exists('get_seconda
 
                         <li class="job-card-meta__item job-card-meta__item--location">
                             <span class="job-card-meta__icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
                             </span>
                             <p class="job-card-meta__text"><?php the_job_location( false ); ?></p>
                         </li>
@@ -81,7 +81,7 @@ $background_image = $cover_image ? $cover_image : ( function_exists('get_seconda
                         <?php if ( function_exists('display_tax_terms') && display_tax_terms( 'job_listing_type', $post->ID ) ) : ?>
                             <li class="job-card-meta__item job-card-meta__item--type">
                                 <span class="job-card-meta__icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
                                 </span>
                                 <p class="job-card-meta__text">
                                     <?php echo display_tax_terms( 'job_listing_type', $post->ID ); ?>
@@ -91,7 +91,7 @@ $background_image = $cover_image ? $cover_image : ( function_exists('get_seconda
 
                         <li class="job-card-meta__item job-card-meta__item--date">
                             <span class="job-card-meta__icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                             </span>
                             <p class="job-card-meta__text"><?php the_job_publish_date(); ?></p>
                         </li>
@@ -129,7 +129,7 @@ $background_image = $cover_image ? $cover_image : ( function_exists('get_seconda
                 <ul class="job-mobile__meta">
                     <li class="job-mobile__meta-item">
                         <span class="job-mobile__icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
                         </span>
                         <span class="job-mobile__text"><?php the_job_location( false ); ?></span>
                     </li>
@@ -137,7 +137,7 @@ $background_image = $cover_image ? $cover_image : ( function_exists('get_seconda
                     <?php if ( function_exists('display_tax_terms') && display_tax_terms( 'job_listing_type', $post->ID ) ) : ?>
                         <li class="job-mobile__meta-item">
                             <span class="job-mobile__icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
                             </span>
                             <span class="job-mobile__text"><?php echo esc_html( display_tax_terms( 'job_listing_type', $post->ID ) ); ?></span>
                         </li>
@@ -145,7 +145,7 @@ $background_image = $cover_image ? $cover_image : ( function_exists('get_seconda
 
                     <li class="job-mobile__meta-item">
                         <span class="job-mobile__icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
                         </span>
                         <span class="job-mobile__text"><?php the_job_publish_date(); ?></span>
                     </li>
@@ -179,10 +179,11 @@ ul.job_listings li.job_listing {
     background: #ffffff;
     border-radius: 6px;
     box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
-    padding: 24px;
+    padding: 0;
     border: 1px solid #E0E0E0;
     margin-top: 4px;
     margin-bottom: 4px;
+    overflow: hidden;
 }
 
 a.title-link {
@@ -209,6 +210,7 @@ a.title-link {
     position: relative;
     flex: 0 0 40%;
     max-width: 40%;
+    display: flex;
 }
 
 .job-card__content {
@@ -217,6 +219,7 @@ a.title-link {
     display: flex;
     align-items: center;
     min-width: 0;
+    padding: 24px 0;
 }
 
 /* Logo */
@@ -279,9 +282,9 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
 
 .jobs_buttons a {
     display: inline-block !important;
-    background: #3563A2 !important;
+    background: var(--color-primary) !important;
     color: white !important;
-    border: 1px solid #3563A2 !important;
+    border: 1px solid var(--color-primary) !important;
     padding: 0 30px !important;
     height: 48px !important;
     line-height: 48px !important;
@@ -296,8 +299,8 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
 }
 
 .jobs_buttons a:hover {
-    background: #254d82 !important;
-    border-color: #254d82 !important;
+    background: var(--color-tertiary) !important;
+    border-color: var(--color-tertiary) !important;
 }
 
 /* Titel-link */
@@ -313,8 +316,9 @@ a.title-link {
 
 .background-wrapper {
     width: 100%;
+    flex: 1 1 auto;
     position: relative;
-    max-height: 318px;
+    min-height: 318px;
     overflow: hidden;
 }
 
@@ -323,13 +327,14 @@ a.title-link {
     width: 100%;
     height: 100%;
     top: 0px;
-    background-color: #3563A2;
+    background-color: var(--color-primary);
     opacity: 0.3 !important;
 }
 
 .block-bg-overlay,
 .background-inner {
-    height: 318px;
+    height: 100%;
+    min-height: 318px;
 }
 
 /* Meta */
@@ -346,7 +351,12 @@ a.title-link {
     margin-bottom: 6px;
     flex-direction: row !important;
 }
-.job-card-meta__icon { display: flex; align-items: center; flex-shrink: 0; }
+.job-card-meta__icon {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+    color: var(--color-primary);
+}
 .job-card-meta__text,
 .job-card-meta__title { margin: 0; }
 .job-card-meta__title { font-weight: 600; }
@@ -439,6 +449,7 @@ a.title-link {
     display: flex;
     align-items: center;
     flex: 0 0 auto;
+    color: var(--color-primary);
 }
 
 .job-mobile__text {
