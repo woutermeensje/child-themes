@@ -421,8 +421,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 .filter-header h2 {
   margin: 0;
-  font-family: 'Balgin-Bold', 'Inter', sans-serif;
-  font-size: 28px;
+  font-family: 'Inter', sans-serif;
+  font-size: 24px;
   line-height: 1.1;
   font-weight: 700;
   color: var(--color-primary);

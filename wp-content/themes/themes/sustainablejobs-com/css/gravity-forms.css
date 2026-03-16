@@ -80,7 +80,7 @@ label.gfield_label.gform-field-label {
   border: 1px solid var(--color-tertiary);
 }
 
-/* ✅ Mobiele styling */
+/* Mobile styling */
 @media (max-width: 768px) {
   .gform_wrapper input[type="submit"],
   .gform_wrapper input[type="text"],

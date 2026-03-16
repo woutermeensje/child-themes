@@ -3,202 +3,209 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 global $post;
 
-if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
+$post_id = isset( $post->ID ) ? (int) $post->ID : 0;
+?>
+
+<!-- TOP SECTION -->
+<div class="update-header">
+  <div class="opdrachten-update">
+    <p>
+      Stay up to date with the latest jobs!
+    </p>
+    <a href="/job-alerts/" class="update-link">
+      Job Alert
+    </a>
+  </div>
+</div>
+
+<style>
+
+  .update-header {
+    max-width: 100%;  
+    width: 900px; 
+   margin: auto; 
+   
+  }
+
+  .opdrachten-update {
+    padding: 24px;
+    margin: 24px auto;
+    border: 1px solid #DEDEDE;
+    border-radius: 5px;
+    box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
+    background-color: #ffffff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+  }
+
+  .opdrachten-update p {
+    color: #333; 
+    margin: 0;
+    font-weight: 700; 
+    font-size: 18px; 
+
+  }
+
+  .update-link {
+    color: #0A6B8D !important;
+    background: #E0D0E1; 
+    font-family: Poppins; 
+    font-weight: 700; 
+    padding: 8px; 
+    border: 1px solid #0A6B8D !important;
+    border-radius: 5px; 
+    text-decoration: none !important; 
+    }
+
+    .update-link:hover {
+      background: #0A6B8D !important;
+      color: #B9D1B3  !important;
+    }
+
+ @media (max-width: 768px) {
+
+  .update-header {
+    width: 100%;
+    margin: 16px auto;
+    padding: 0 12px;
+  }
+
+  .opdrachten-update {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    padding: 20px;
+    text-align: left;
+  }
+
+  .opdrachten-update p {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .update-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px;
+    font-size: 16px;
+  }
+}
+   
+</style>
 
 
 
-<body>
-    
-<div>
-    <div class="single_job_listing">
-        <?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
-            <div class="job-manager-info"><?php _e( 'This listing has expired.', 'wp-job-manager' ); ?></div>
-        <?php else : ?>
-            <div class="content-part-job-description">
-                <div class="top-div">
-                    <div class="meta-information-single">
-                        <p><?php the_job_publish_date(); ?></p>
-                        <p><?php the_job_type(); ?></p>
-                        <p><?php the_company_name(); ?></p>
-                        
-                    </div>
-                    <div class="job-title">
-                        <h1><?php wpjm_the_job_title(); ?> | <?php the_company_name(); ?></h1>
-                    </div>
-                    <div class="job_description">
-                        <?php wpjm_the_job_description(); ?>
-                    </div>
-                    <?php $company_website = get_post_meta( $post->ID, '_company_website', true ); ?>
-                    <?php if ( ! empty( $company_website ) ) : ?>
-                        <div class="job-apply-button">
-                            <a href="<?php echo esc_url( $company_website ); ?>" class="apply-button" target="_blank">Go to the application page</a>
-                        </div>
-                    <?php else : ?>
-                        <p>No application link available.</p>
-                    <?php endif; ?>
-                    <?php do_action( 'single_job_listing_end' ); ?>
+    <?php if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) : ?>
+
+        <div class="single_job_listing">
+            <?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
+
+                <div class="job-manager-info">
+                    <?php _e( 'This listing has expired.', 'wp-job-manager' ); ?>
                 </div>
-            </div>
-        <?php endif; ?>
-    </div>
-<?php else : ?>
-    <?php get_job_manager_template_part( 'access-denied', 'single-job_listing' ); ?>
-<?php endif; ?>
-</div>
 
-<div class="recent-jobs-container">
-    <ul class="recent-jobs-list">
-        <?php
-        $recent_jobs = new WP_Query([
-            'post_type'      => 'job_listing',
-            'posts_per_page' => 5,
-            'orderby'        => 'date',
-            'order'          => 'DESC',
-        ]);
+            <?php else : ?>
 
-        if ($recent_jobs->have_posts()) :
-            while ($recent_jobs->have_posts()) : $recent_jobs->the_post(); ?>
-                <li class="job-listing-simple" <?php job_listing_class(); ?>>
-                    <div class="job-logo">
-                        <?php the_company_logo(); ?>
+                <div class="content-part-job-description">
+                    <div class="top-div">
+
+                        <!-- Desktop meta (pills) -->
+                        <div class="meta-information-single">
+                            <p>🗓️ <?php the_job_publish_date(); ?></p>
+                            <p>🏷️ <?php wpjm_the_job_types(); ?></p>
+                            <p>🏢 <?php the_company_name(); ?></p>
+                        </div>
+
+
+                        <div class="job-title">
+                            <h1><?php wpjm_the_job_title(); ?> | <?php the_company_name(); ?></h1>
+                        </div>
+
+                        <div class="job_description">
+                            <?php wpjm_the_job_description(); ?>
+                        </div>
+
+                        <?php $company_website = get_post_meta( $post_id, '_company_website', true ); ?>
+                        <?php if ( ! empty( $company_website ) ) : ?>
+                            <div class="job-apply-button">
+                                <a href="<?php echo esc_url( $company_website ); ?>" class="apply-button" target="_blank" rel="noopener">
+                                    Apply for this job!
+                                </a>
+                            </div>
+                        <?php else : ?>
+                            <p>No employer link available</p>
+                        <?php endif; ?>
+
+                        <?php do_action( 'single_job_listing_end' ); ?>
+
                     </div>
-                    <div class="job-details">
-                        <div class="job-title-line">
-                            <h2 class="job-title">
-                                <a href="<?php the_job_permalink(); ?>"><?php wpjm_the_job_title(); ?></a>
-                            </h2>
-                            <span class="job-date"><?php echo get_the_date('d-m-Y'); ?></span>
-                        </div>
-                        <div class="job-meta">
-                            <?php
-                            $terms = wp_get_post_terms(get_the_ID(), 'job_company');
-                            if (!empty($terms) && !is_wp_error($terms)) {
-                                foreach ($terms as $term) {
-                                    echo '<span class="company-name">' . esc_html($term->name) . '</span>';
-                                }
-                            }
-                            ?>
-                            <span class="job-location"><?php the_job_location(); ?></span>
-                            <span class="job-type">
-                                <?php if (get_option('job_manager_enable_types')) : ?>
-                                    <?php $types = wpjm_get_the_job_types(); ?>
-                                    <?php if (!empty($types)) : foreach ($types as $type) : ?>
-                                        <?php echo esc_html($type->name); ?>
-                                    <?php endforeach; endif; ?>
-                                <?php endif; ?>
-                            </span>
-                        </div>
-                        <div class="job-description">
-                            <?php echo wp_trim_words(get_the_excerpt(), 12, '...'); ?>
-                        </div>
-                    </div>
-                </li>
-            <?php endwhile;
-            wp_reset_postdata();
-        else : ?>
-            <li class="no-jobs-found">No recent jobs where found..!</li>
-        <?php endif; ?>
-    </ul>
-</div>
-</body>
+                </div>
+
+            <?php endif; ?>
+        </div>
+
+    <?php else : ?>
+
+        <?php get_job_manager_template_part( 'access-denied', 'single-job_listing' ); ?>
+
+    <?php endif; ?>
+
+
 
 
 <style>
-.custom-top-section {
-    background-color: var(--color-primary);
-    color: var(--color-bg);
-    padding: 20px;
-    text-align: center;
-    font-family: "Balgin Bold", sans-serif;
-    font-size: 18px;
-    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
-    position: relative;
-    display: flex;
-}
-
-.custom-top-section p {
-    color: var(--color-bg);
-    font-family: "Balgin Bold", sans-serif;
-    font-size: 18px;
-    margin: auto;
-}
-
-.custom-top-section-form {
-    display: flex;
-    margin: auto;
-}
-
-.search-input {
-    padding: 10px;
-    border: 1px solid var(--color-tertiary);
-    border-radius: 5px;
-    font-size: 15px;
-    margin-right: 10px;
-    font-family: Poppins;
-    font-weight: 500;
-}
-
-.search-input::placeholder {
-    color: #888;
-    font-size: 14px;
-    font-style: italic;
-    font-family: Poppins;
-    opacity: 0.7;
-}
-
-.button-top-section {
-    background-color: var(--color-tertiary);
-    color: var(--color-primary);
-    border: none;
-    padding: 10px 20px;
-    font-family: "Balgin Bold", sans-serif;
-    font-size: 15px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.button-top-section:hover {
-    background-color: var(--color-bg);
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
-}
-
-.single_job_listing {
-    max-width: 100%;
-    margin: 40px auto;
+/* ===== SINGLE JOB CARD ===== */
+.single_job_listing{
+    max-width: 100%;  
+    width: 900px; 
+    margin: 24px auto; 
+    padding: 24px;
     background: var(--color-bg);
     border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    padding: 25px;
+    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
+    border: 1px solid var(--color-border);
 }
 
-.meta-information-single {
+.meta-information-single{
     display: flex;
 }
 
-.meta-information-single p {
-    font-family: Balgin Bold;
-    font-size: 15px;
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
-    background-color: var(--color-accent);
-    border-radius: 5px;
-    padding: 5px 10px;
+.meta-information-single p{
+    font-family: Poppins !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #333;
+    border: 1px solid #DEDEDE;
+    background-color: white; 
+    border-radius: 999px;
+    padding: 8px;
     margin-right: 10px;
     cursor: pointer;
+    box-shadow: 0px 10px 40px -5px rgba(0, 0, 0, 0.15);
 }
 
-.job-title h1 {
+/* Desktop standaard: mobiel meta verborgen */
+.meta-information-mobile{
+    display: none;
+    font-size: 16px;
+    font-family: Poppins;
+    font-weight: 400;
+}
+
+.job-title h1{
     padding-bottom: 10px;
-    border-bottom: 2px solid var(--color-primary);
-    font-family: Balgin Bold;
+    border-bottom: 1px solid #DEDEDE;;
+    font-family: Inter, sans-serif; 
+    font-weight: 700; 
     font-size: 20px;
     padding-top: 20px;
 }
 
-.job_description {
+.job_description{
     font-family: Poppins;
     font-size: 14px;
     font-weight: 400;
@@ -207,7 +214,7 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
     margin-top: 20px;
 }
 
-.job-manager-info {
+.job-manager-info{
     background-color: #ffdddd;
     color: #cc0000;
     border: 1px solid #cc0000;
@@ -218,45 +225,37 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
     font-weight: 600;
 }
 
-.job-apply-button a {
-    padding: 15px;
-    background: var(--color-tertiary);
-    color: var(--color-primary);
+/* Apply button (solid primary) */
+.job-apply-button a{
+    padding: 12px;
+    color: var(--color-bg);
+    background-color: var(--color-primary);
     border-radius: 5px;
-    font-family: Balgin Bold;
+    font-family: Balgin-Bold;
     text-decoration: none;
-    border: 2px solid var(--color-primary);
     display: inline-block;
     margin-top: 20px;
+    border: 1px solid var(--color-primary);
 }
 
-.job-apply-button a:hover {
+.job-apply-button a:hover{
     background: var(--color-bg);
     color: var(--color-primary);
     border: 1px solid var(--color-primary);
 }
 
-@media only screen and (max-width: 768px) {
+/* ===== RECENT JOBS LIST ===== */
+.recent-jobs-list{
     
-    }
-
-
-</style>
-
-
-<style>
-.recent-jobs-list {
-    padding: 0;
-    margin: 0;
+   
 }
 
-.job-listing-simple {
+.job-listing-simple{
     display: flex;
     align-items: center;
     gap: 20px;
     padding: 16px;
-    margin: 0 auto 28px auto;
-    width: 90%;
+    margin: 20px auto;
     border: 1px solid var(--color-bg);
     background-color: var(--color-bg);
     border-radius: 5px;
@@ -264,11 +263,11 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
     transition: all 0.2s ease-in-out;
 }
 
-.job-listing-simple:hover {
+.job-listing-simple:hover{
     border: 1px solid var(--color-primary);
 }
 
-.job-logo {
+.job-logo{
     display: flex;
     align-items: center;
     justify-content: center;
@@ -278,7 +277,7 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
     background-color: var(--color-bg);
 }
 
-.job-logo img {
+.job-logo img{
     width: 100px;
     height: 100px;
     object-fit: contain;
@@ -290,21 +289,21 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
     background-color: var(--color-bg);
 }
 
-.job-details {
+.job-details{
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.job-title {
+.job-title{
     font-size: 20px;
     line-height: 1.2;
     color: var(--color-text);
     margin-bottom: 5px;
 }
 
-.job-title a {
+.job-title a{
     color: var(--color-text);
     text-decoration: none;
     transition: color 0.2s ease-in-out;
@@ -312,17 +311,17 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
     font-weight: 700;
 }
 
-.job-title a:hover {
+.job-title a:hover{
     color: var(--color-primary);
     text-decoration: none;
 }
 
-.job-meta {
+.job-meta{
     margin-bottom: 5px;
     margin-top: 5px;
 }
 
-.company-name {
+.company-name{
     font-family: Poppins, sans-serif;
     font-weight: 700;
     font-size: 12px;
@@ -333,10 +332,10 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
     padding: 5px 10px;
     cursor: pointer;
     margin-right: 5px;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
-a.google_map_link {
+a.google_map_link{
     font-family: Poppins, sans-serif;
     font-weight: 700;
     font-size: 12px;
@@ -347,24 +346,24 @@ a.google_map_link {
     padding: 5px 10px;
     cursor: pointer;
     margin-right: 5px;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
-.job-manager .job-type, .job-types .job-type, .job_listing .job-type {
-     font-family: Poppins, sans-serif;
+.job-manager .job-type, .job-types .job-type, .job_listing .job-type{
+    font-family: Poppins, sans-serif;
     font-weight: 700;
     font-size: 12px;
-    color: white; 
+    color: var(--color-bg);
     border: 1px solid var(--color-primary);
     background-color: var(--color-primary);
     border-radius: 5px;
     padding: 5px 10px;
     cursor: pointer;
     margin-right: 5px;
-    text-decoration: none; 
+    text-decoration: none;
 }
 
-.job-description {
+.job-description{
     font-size: 14px;
     line-height: 1.7;
     color: var(--color-text);
@@ -373,7 +372,7 @@ a.google_map_link {
     font-weight: 200;
 }
 
-.job-title-line {
+.job-title-line{
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -381,35 +380,44 @@ a.google_map_link {
     margin-right: 10px;
 }
 
-.job-date {
+.job-date{
     font-family: Poppins, sans-serif;
     font-size: 12px;
     color: var(--color-primary);
     font-weight: 200;
 }
 
-@media only screen and (max-width: 768px) {
-    .job-listing-simple {
-        flex-direction: column;
-        align-items: flex-start;
-        padding: 20px;
-        width: 100%
-    }
+/* Hide default WP page title */
+h1.entry-title{ display: none; }
 
-    .job-logo {
-        margin-left: 0;
-    }
+@media (max-width: 768px) {
 
-    .job-title {
-        font-size: 1.25rem;
-    }
+  .meta-information-single{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
 
-    .job-meta {
-        font-size: 0.95rem;
-    }
+  .meta-information-single p{
+    width: auto;
+    height: auto;
 
-    .job-date {
-        display: none;
-    }
+    padding: 10px 14px;
+    border-radius: 999px;
+
+    font-size: 14px;
+    line-height: 1.2;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+
+    white-space: nowrap;
+    flex: 0 0 auto;
+  }
 }
+
+
+
+
 </style>

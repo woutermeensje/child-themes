@@ -1,26 +1,129 @@
 <?php
-// Exit if accessed directly
 if (!defined('ABSPATH')) exit;
 
 /**
- * ✅ ENQUEUE STYLES (with Elementor check)
+ * ENQUEUE STYLES
  */
 add_action('wp_enqueue_scripts', function () {
     $dependencies = ['parent-style'];
+
     if (did_action('elementor/loaded') && wp_style_is('elementor-frontend', 'registered')) {
         $dependencies[] = 'elementor-frontend';
     }
 
-    wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css');
-    wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, wp_get_theme()->get('Version'));
+    wp_enqueue_style(
+        'parent-style',
+        get_template_directory_uri() . '/style.css',
+        [],
+        filemtime(get_template_directory() . '/style.css')
+    );
+
+    wp_enqueue_style(
+        'child-style',
+        get_stylesheet_directory_uri() . '/style.css',
+        $dependencies,
+        filemtime(get_stylesheet_directory() . '/style.css')
+    );
+
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
-    wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
-    wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css');
+
+    wp_enqueue_style(
+        'custom-fonts',
+        get_stylesheet_directory_uri() . '/fonts/fonts.css',
+        [],
+        filemtime(get_stylesheet_directory() . '/fonts/fonts.css')
+    );
+
+    wp_enqueue_style(
+        'child-gf-styles',
+        get_stylesheet_directory_uri() . '/css/gravity-forms.css',
+        [],
+        filemtime(get_stylesheet_directory() . '/css/gravity-forms.css')
+    );
+
+    if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
+        wp_enqueue_style(
+            'sc-header',
+            get_stylesheet_directory_uri() . '/css/header.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/header.css')
+        );
+    }
 });
 
 /**
- * ✅ WP JOB MANAGER: TEMPLATE OVERRIDES
+ * Nav Walker for dropdown navigation
+ */
+if (!class_exists('SC_Nav_Walker')) :
+class SC_Nav_Walker extends Walker_Nav_Menu {
+    public function start_el(&$output, $item, $depth = 0, $args = null, $id = 0) {
+        $classes    = empty($item->classes) ? [] : (array) $item->classes;
+        $has_child  = in_array('menu-item-has-children', $classes, true);
+        $is_active  = in_array('current-menu-item', $classes, true) || in_array('current-menu-ancestor', $classes, true);
+        $li_class   = 'rn-nav__item';
+
+        if ($has_child) $li_class .= ' rn-nav__item--has-children';
+        if ($is_active) $li_class .= ' is-active';
+
+        $output .= '<li class="' . esc_attr($li_class) . '">';
+
+        $url        = !empty($item->url) ? $item->url : '#';
+        $title      = apply_filters('the_title', $item->title, $item->ID);
+        $attr_title = !empty($item->attr_title) ? ' title="' . esc_attr($item->attr_title) . '"' : '';
+        $target     = !empty($item->target) ? ' target="' . esc_attr($item->target) . '"' : '';
+        $rel        = !empty($item->xfn) ? ' rel="' . esc_attr($item->xfn) . '"' : '';
+
+        $output .= '<a class="rn-nav__link' . ($is_active ? ' is-active' : '') . '" href="' . esc_url($url) . '"' . $attr_title . $target . $rel . '>';
+        $output .= esc_html($title);
+        if ($has_child) {
+            $output .= '<span class="rn-nav__chev" aria-hidden="true"></span>';
+        }
+        $output .= '</a>';
+    }
+
+    public function start_lvl(&$output, $depth = 0, $args = null) {
+        $output .= '<ul class="rn-nav__dropdown">';
+    }
+
+    public function end_lvl(&$output, $depth = 0, $args = null) {
+        $output .= '</ul>';
+    }
+
+    public function end_el(&$output, $item, $depth = 0, $args = null) {
+        $output .= '</li>';
+    }
+}
+endif;
+
+/**
+ * Theme setup: logo support, menu registration
+ */
+add_action('after_setup_theme', function () {
+    add_theme_support('custom-logo', [
+        'height'      => 120,
+        'width'       => 320,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ]);
+
+    register_nav_menus([
+        'primary_nav' => 'Primary Navigation',
+        'footer_nav'  => 'Footer Navigation',
+    ]);
+});
+
+/**
+ * Shortcode [sc_header] for use in Elementor
+ */
+add_shortcode('sc_header', function () {
+    ob_start();
+    include get_stylesheet_directory() . '/template-parts/header.php';
+    return ob_get_clean();
+});
+
+/**
+ * WP JOB MANAGER: TEMPLATE OVERRIDES
  */
 add_filter('job_manager_locate_template', function ($template, $template_name) {
     $custom_templates = [
@@ -38,99 +141,152 @@ add_filter('job_manager_locate_template', function ($template, $template_name) {
 }, 10, 2);
 
 /**
- * ✅ REGISTER CUSTOM TAXONOMIES
+ * REGISTER CUSTOM TAXONOMIES
  */
 add_action('init', function () {
-    // Organisaties
     register_taxonomy('job_company', 'job_listing', [
-        'labels' => ['name' => 'Organisaties'],
-        'hierarchical' => true,
-        'show_ui' => true,
+        'label'             => 'Organizations',
+        'hierarchical'      => true,
+        'show_ui'           => true,
         'show_admin_column' => true,
-        'show_in_rest' => true,
-        'rewrite' => ['slug' => 'organisatie'],
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'organization'],
     ]);
 
-    // Regions
-    register_taxonomy('job_regio', 'job_listing', [
-        'labels' => ['name' => 'Regions'],
-        'hierarchical' => true,
-        'show_ui' => true,
-        'show_admin_column' => true,
-        'show_in_rest' => true,
-        'rewrite' => ['slug' => 'regio'],
-    ]);
-
-    // Job names
-    register_taxonomy('job_name', 'job_listing', [
-        'labels' => ['name' => 'Job Names'],
-        'hierarchical' => true,
-        'show_ui' => true,
-        'show_admin_column' => true,
-        'show_in_rest' => true,
-        'rewrite' => ['slug' => 'functie'],
-        'meta_box_cb' => 'post_categories_meta_box',
-    ]);
-
-    // Salary range
-    register_taxonomy('salary_range', 'job_listing', [
-        'labels' => ['name' => 'Salary Ranges'],
-        'hierarchical' => true,
-        'show_ui' => true,
-        'show_admin_column' => true,
-        'show_in_rest' => true,
-        'rewrite' => ['slug' => 'salaris'],
-    ]);
-
-    // Vakgebied
-    register_taxonomy('vakgebied', ['job_listing'], [
-        'label' => 'Vakgebied',
-        'hierarchical' => true,
-        'show_ui' => true,
-        'show_in_rest' => true,
-        'show_admin_column' => true,
-        'rewrite' => ['slug' => 'vakgebied'],
-    ]);
-
-    // ✅ Job Tags (nieuw – NIET-hiërarchisch!)
     register_taxonomy('job_tag', 'job_listing', [
-        'labels' => [
-            'name' => __('Job Tags', 'textdomain'),
-            'singular_name' => __('Job Tag', 'textdomain'),
-            'all_items' => __('All Tags', 'textdomain'),
-            'add_new_item' => __('Add New Tag', 'textdomain'),
-            'edit_item' => __('Edit Tag', 'textdomain'),
-        ],
-        'hierarchical' => false,
-        'show_ui' => true,
+        'label'             => 'Tags',
+        'hierarchical'      => true,
+        'show_ui'           => true,
         'show_admin_column' => true,
-        'show_in_rest' => true,
-        'rewrite' => ['slug' => 'job-tag'],
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'tag'],
+    ]);
+
+    register_taxonomy('job_sector', 'job_listing', [
+        'label'             => 'Sectors',
+        'hierarchical'      => true,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'sector'],
+    ]);
+
+    register_taxonomy('job_country', 'job_listing', [
+        'label'             => 'Country / Region',
+        'hierarchical'      => true,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'country'],
     ]);
 });
 
 /**
- * ✅ CUSTOM FILTERS: Alleen job_tag
+ * Link WP Job Manager taxonomies to pages
  */
-add_filter('job_manager_get_listings_custom_filter', function ($query_args, $args) {
-    if (!empty($args['filter_job_tag'])) {
-        $query_args['tax_query'][] = [
-            'taxonomy' => 'job_tag',
-            'field'    => 'slug',
-            'terms'    => explode(',', sanitize_text_field($args['filter_job_tag'])),
-            'operator' => 'IN',
-        ];
+add_action('init', function () {
+    register_taxonomy_for_object_type('job_company', 'page');
+    register_taxonomy_for_object_type('job_tag', 'page');
+    register_taxonomy_for_object_type('job_sector', 'page');
+    register_taxonomy_for_object_type('job_country', 'page');
+});
+
+/**
+ * Shortcode filters: [jobs job_company="acme" job_sector="energy"]
+ */
+add_filter('job_manager_get_listings_shortcode_args', function($atts) {
+    global $sc_job_shortcode_atts;
+    $sc_job_shortcode_atts = $atts;
+
+    $custom_filters = [
+        'job_company'      => 'job_company',
+        'job_tag'          => 'job_tag',
+        'job_sector'       => 'job_sector',
+        'job_country'      => 'job_country',
+        'job_listing_type' => 'job_listing_type',
+    ];
+
+    $tax_query = [];
+
+    foreach ($custom_filters as $attr => $taxonomy) {
+        if (!empty($atts[$attr])) {
+            $tax_query[] = [
+                'taxonomy' => $taxonomy,
+                'field'    => 'slug',
+                'terms'    => array_map('sanitize_title', explode(',', $atts[$attr])),
+                'operator' => 'IN',
+            ];
+        }
     }
+
+    if (!empty($tax_query)) {
+        $atts['tax_query'] = $tax_query;
+    }
+
+    return $atts;
+}, 10, 1);
+
+/**
+ * Combine AJAX filter data + shortcode tax_query
+ */
+add_filter('get_job_listings_query_args', function ($query_args, $args) {
+    global $sc_job_shortcode_atts;
+
+    if (isset($_POST['form_data'])) {
+        parse_str($_POST['form_data'], $parsed);
+        foreach ($parsed as $key => $value) {
+            $_POST[$key] = $value;
+        }
+    }
+
+    $custom_taxonomies = [
+        'filter_job_tag'              => 'job_tag',
+        'filter_job_sector'           => 'job_sector',
+        'filter_job_company'          => 'job_company',
+        'filter_job_types'            => 'job_listing_type',
+        'filter_job_country'          => 'job_country',
+        'filter_job_listing_category' => 'job_listing_category',
+    ];
+
+    foreach ($custom_taxonomies as $filter_key => $taxonomy) {
+        if (!empty($_POST[$filter_key])) {
+            $terms = (array) $_POST[$filter_key];
+            $terms = array_map('sanitize_title', $terms);
+            $query_args['tax_query'][] = [
+                'taxonomy' => $taxonomy,
+                'field'    => 'slug',
+                'terms'    => $terms,
+                'operator' => 'IN',
+            ];
+        }
+    }
+
+    if (!empty($sc_job_shortcode_atts) && empty($_POST['form_data'])) {
+        foreach ($custom_taxonomies as $filter_key => $taxonomy) {
+            $key = str_replace('filter_', '', $filter_key);
+            if (!empty($sc_job_shortcode_atts[$key])) {
+                $terms = explode(',', sanitize_text_field($sc_job_shortcode_atts[$key]));
+                $query_args['tax_query'][] = [
+                    'taxonomy' => $taxonomy,
+                    'field'    => 'slug',
+                    'terms'    => $terms,
+                    'operator' => 'IN',
+                ];
+            }
+        }
+    }
+
     return $query_args;
 }, 10, 2);
 
 /**
- * ✅ DEBUGGING
+ * Add custom default attributes to the jobs shortcode
  */
-add_filter('job_manager_get_listings_start', function ($query_args, $args) {
-    if (isset($_REQUEST['filter_job_tag'])) {
-        error_log('✅ filter_job_tag ontvangen: ' . $_REQUEST['filter_job_tag']);
-    }
-    return $query_args;
-}, 10, 2);
-
+add_filter('job_manager_output_jobs_defaults', function($defaults) {
+    $defaults['job_company']      = '';
+    $defaults['job_tag']          = '';
+    $defaults['job_sector']       = '';
+    $defaults['job_country']      = '';
+    $defaults['job_listing_type'] = '';
+    return $defaults;
+});
