@@ -10,7 +10,7 @@ $primary_label   = get_post_meta($page_id, 'landing_primary_button_text', true) 
 $primary_url     = get_post_meta($page_id, 'landing_primary_button_url', true)    ?: 'https://platform.fondsen.org/';
 $secondary_label = get_post_meta($page_id, 'landing_secondary_button_text', true) ?: 'Account aanmaken';
 $secondary_url   = get_post_meta($page_id, 'landing_secondary_button_url', true)  ?: 'https://platform.fondsen.org/';
-$contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 20240';
+$contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'informatie@fondsen.org';
 ?>
 

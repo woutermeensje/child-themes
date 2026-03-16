@@ -340,9 +340,3 @@
   .rn-header__inner { padding: 0 16px; gap: 12px; }
   .rn-topbar__inner { padding: 0 16px; }
 }
-
-/* WordPress admin bar */
-.admin-bar .rn-header { top: 32px; }
-@media screen and (max-width: 782px) {
-  .admin-bar .rn-header { top: 46px; }
-}

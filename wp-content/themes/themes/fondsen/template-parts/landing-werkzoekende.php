@@ -12,7 +12,7 @@ $secondary_label = get_post_meta($page_id, 'landing_secondary_button_text', true
 $secondary_url   = get_post_meta($page_id, 'landing_secondary_button_url', true)  ?: home_url('/');
 $text_link_label = get_post_meta($page_id, 'landing_text_link_text', true);
 $text_link_url   = get_post_meta($page_id, 'landing_text_link_url', true);
-$contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 20240';
+$contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'informatie@fondsen.org';
 ?>
 

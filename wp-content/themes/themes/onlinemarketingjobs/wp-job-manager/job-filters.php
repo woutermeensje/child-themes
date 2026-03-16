@@ -403,10 +403,11 @@ form.job_filters {
   margin-bottom: 0 !important;
   min-height: 300px;
   padding: 60px 0;
-  background-color: var(--color-primary);
-  box-shadow: 0 4px 24px rgba(124, 92, 250, 0.25);
+  background-color: #F0ECFE;
+  box-shadow: none;
   border-radius: 0;
   border: none;
+  border-bottom: 1px solid #d8d0f8;
   box-sizing: border-box;
 }
 
@@ -508,24 +509,24 @@ div.job_listings ul.job_listings {
 .filter-header p {
   font-family: Poppins;
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.85);
+  color: #333333;
   margin: 8px 0 0;
 }
 
 .filter-newsletter-link {
-  color: #ffffff;
-  font-weight: 600;
+  color: #333333;
+  font-weight: 400;
   text-decoration: underline;
 }
 
 .filter-newsletter-link:hover {
-  color: var(--color-secondary);
+  color: var(--color-primary);
 }
 
 .filter-header h2 {
   font-family: 'Inter', sans-serif;
-  font-size: 26px;
-  color: #ffffff;
+  font-size: 24px;
+  color: #333333;
   margin: 0;
   display: block;
   font-weight: 700;
