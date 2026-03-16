@@ -1,15 +1,14 @@
 :root {
-  --rn-primary: var(--color-primary, #0458AB);
+  --rn-primary:    var(--color-primary,    #0456AB);
   --rn-primary-dk: var(--color-primary-dk, #034085);
-  --rn-primary-mid: var(--color-secondary, #80D424);
-  --rn-accent: var(--color-tertiary, #FF8200);
-  --rn-accent-soft: var(--color-accent, rgba(4, 86, 171, 0.4));
-  --rn-text: var(--color-text, #333333);
-  --rn-bg: var(--color-bg, #ffffff);
-  --rn-border: var(--color-border, #e8ecf0);
-  --rn-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
-  --rn-header-h: 72px;
-  --rn-topbar-h: 38px;
+  --rn-accent:     var(--color-secondary,  #80D424);
+  --rn-accent-dk:  #69b01d;
+  --rn-text:       var(--color-text,       #333333);
+  --rn-bg:         var(--color-bg,         #ffffff);
+  --rn-border:     var(--color-border,     #e8ecf0);
+  --rn-shadow:     0 2px 16px rgba(0, 0, 0, 0.08);
+  --rn-header-h:   72px;
+  --rn-topbar-h:   38px;
 }
 
 .rn-header,
@@ -30,7 +29,7 @@
 
 .rn-topbar {
   width: 100%;
-  background: linear-gradient(90deg, var(--rn-primary) 0%, var(--rn-primary-dk) 100%);
+  background: var(--rn-primary);
 }
 
 .rn-topbar__inner,
@@ -238,15 +237,15 @@
 
 .rn-btn--accent {
   color: #fff !important;
-  border: 2px solid var(--rn-primary-mid);
-  background: linear-gradient(135deg, var(--rn-primary-mid) 0%, var(--rn-accent) 100%);
-  box-shadow: 0 8px 20px rgba(128, 212, 36, 0.32);
+  border: 2px solid var(--rn-accent);
+  background: var(--rn-accent);
+  box-shadow: 0 2px 8px rgba(128, 212, 36, 0.32);
 }
 
 .rn-btn--accent:hover {
   transform: translateY(-1px);
-  border-color: var(--rn-primary);
-  background: linear-gradient(135deg, var(--rn-primary-mid) 0%, var(--rn-primary) 100%);
+  background: var(--rn-accent-dk);
+  border-color: var(--rn-accent-dk);
 }
 
 .rn-header__hamburger {
@@ -414,8 +413,8 @@
     display: block;
   }
 
-  .rn-topbar__right {
-    display: none;
+  .rn-topbar {
+    display: none !important;
   }
 }
 
@@ -430,4 +429,10 @@
   .rn-header__inner {
     padding: 0 16px;
   }
+}
+
+/* WordPress admin bar */
+.admin-bar .rn-header { top: 32px; }
+@media screen and (max-width: 782px) {
+  .admin-bar .rn-header { top: 46px; }
 }
