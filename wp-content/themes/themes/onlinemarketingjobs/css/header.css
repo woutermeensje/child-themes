@@ -329,7 +329,7 @@
   .rn-header__nav, .rn-header__cta { display: none; }
   .rn-header__hamburger { display: flex; }
   .rn-mobile-nav { display: block; }
-  .rn-topbar__right { display: none; }
+  .rn-topbar { display: none !important; }
 }
 
 @media (min-width: 961px) {
@@ -339,4 +339,10 @@
 @media (max-width: 480px) {
   .rn-header__inner { padding: 0 16px; gap: 12px; }
   .rn-topbar__inner { padding: 0 16px; }
+}
+
+/* WordPress admin bar */
+.admin-bar .rn-header { top: 32px; }
+@media screen and (max-width: 782px) {
+  .admin-bar .rn-header { top: 46px; }
 }

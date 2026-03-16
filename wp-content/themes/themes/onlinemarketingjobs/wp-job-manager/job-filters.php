@@ -43,7 +43,7 @@ unset($value);
     <div class="filter-header">
         <div class="filter-header__left">
             <h2>Bekijk alle Online Marketing Vacatures</h2>
-            <p>Ontvang de laatste online marketing vacatures in de e-mail!</p>
+            <p>Ontvang de laatste <a href="/nieuwsbrief/" class="filter-newsletter-link">online marketing vacatures</a> in de e-mail!</p>
         </div>
     </div>
 

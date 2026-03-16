@@ -471,7 +471,7 @@
     display: block;
   }
 
-  .rn-topbar__right {
+  .rn-topbar {
     display: none !important;
   }
 }
@@ -491,4 +491,10 @@
   .rn-topbar__inner {
     padding: 0 16px !important;
   }
+}
+
+/* WordPress admin bar */
+.admin-bar .rn-header { top: 32px; }
+@media screen and (max-width: 782px) {
+  .admin-bar .rn-header { top: 46px; }
 }
