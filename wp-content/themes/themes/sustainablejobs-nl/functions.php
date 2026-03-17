@@ -58,6 +58,14 @@ add_action('wp_enqueue_scripts', function () {
             filemtime(get_stylesheet_directory() . '/css/header.css')
         );
     }
+
+    // Elementor Forms styling
+    wp_enqueue_style(
+        'sj-elementor-forms',
+        get_stylesheet_directory_uri() . '/css/elementor-forms.css',
+        ['child-style'],
+        filemtime(get_stylesheet_directory() . '/css/elementor-forms.css')
+    );
 });
 
 /**

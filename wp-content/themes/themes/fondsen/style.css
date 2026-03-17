@@ -258,16 +258,19 @@ html, body{
   font-family: 'Balgin-Bold', serif;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__hero {
+.fondsen-landing--werkgever .fondsen-landing__hero,
+.fondsen-landing--werkzoekende .fondsen-landing__hero {
   background: linear-gradient(180deg, #ffffff 0%, #f6fafc 100%);
 }
 
-.fondsen-landing--werkgever .fondsen-landing__hero-inner {
+.fondsen-landing--werkgever .fondsen-landing__hero-inner,
+.fondsen-landing--werkzoekende .fondsen-landing__hero-inner {
   grid-template-columns: minmax(0, 50%) minmax(0, 50%);
   min-height: clamp(500px, 74vh, 760px);
 }
 
-.fondsen-landing--werkgever .fondsen-landing__panel {
+.fondsen-landing--werkgever .fondsen-landing__panel,
+.fondsen-landing--werkzoekende .fondsen-landing__panel {
   justify-content: center;
   align-items: center;
   background: var(--color-secondary);
@@ -275,7 +278,8 @@ html, body{
   z-index: 2;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__panel::before {
+.fondsen-landing--werkgever .fondsen-landing__panel::before,
+.fondsen-landing--werkzoekende .fondsen-landing__panel::before {
   content: "";
   position: absolute;
   inset: 0;
@@ -285,73 +289,85 @@ html, body{
   pointer-events: none;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__panel-content {
+.fondsen-landing--werkgever .fondsen-landing__panel-content,
+.fondsen-landing--werkzoekende .fondsen-landing__panel-content {
   max-width: 620px;
   margin: 0 auto 0 0;
   padding: clamp(42px, 5vw, 64px) clamp(28px, 5vw, 72px) clamp(42px, 5vw, 64px) clamp(28px, 5vw, 72px);
 }
 
-.fondsen-landing--werkgever .fondsen-landing__eyebrow {
+.fondsen-landing--werkgever .fondsen-landing__eyebrow,
+.fondsen-landing--werkzoekende .fondsen-landing__eyebrow {
   margin-bottom: 14px;
   font-size: 13px;
   letter-spacing: 0.1em;
   color: rgba(255, 255, 255, 0.78);
 }
 
-.fondsen-landing--werkgever .fondsen-landing__title {
+.fondsen-landing--werkgever .fondsen-landing__title,
+.fondsen-landing--werkzoekende .fondsen-landing__title {
   max-width: 9ch;
   font-size: 24px;
   font-family: 'Balgin-Bold', serif;
   line-height: 0.95;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__intro {
+.fondsen-landing--werkgever .fondsen-landing__intro,
+.fondsen-landing--werkzoekende .fondsen-landing__intro {
   max-width: 520px;
   margin-top: 22px;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__intro p {
+.fondsen-landing--werkgever .fondsen-landing__intro p,
+.fondsen-landing--werkzoekende .fondsen-landing__intro p {
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 300;
   line-height: 1.6;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__actions {
+.fondsen-landing--werkgever .fondsen-landing__actions,
+.fondsen-landing--werkzoekende .fondsen-landing__actions {
   gap: 12px;
   margin-top: 30px;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__button {
+.fondsen-landing--werkgever .fondsen-landing__button,
+.fondsen-landing--werkzoekende .fondsen-landing__button {
   min-height: 58px;
   padding: 12px 12px;
   font-size: 15px;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__button--primary {
+.fondsen-landing--werkgever .fondsen-landing__button--primary,
+.fondsen-landing--werkzoekende .fondsen-landing__button--primary {
   background: var(--color-primary);
   border-color: var(--color-primary);
   box-shadow: 0 18px 36px rgba(255, 140, 44, 0.24);
 }
 
-.fondsen-landing--werkgever .fondsen-landing__button--secondary {
+.fondsen-landing--werkgever .fondsen-landing__button--secondary,
+.fondsen-landing--werkzoekende .fondsen-landing__button--secondary {
   background: rgba(255, 255, 255, 0.98);
   border-color: rgba(255, 255, 255, 0.98);
   color: var(--color-secondary) !important;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__text-link {
+.fondsen-landing--werkgever .fondsen-landing__text-link,
+.fondsen-landing--werkzoekende .fondsen-landing__text-link {
   margin-top: 22px;
   font-size: 18px;
   text-decoration-thickness: 1px;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__media {
+.fondsen-landing--werkgever .fondsen-landing__media,
+.fondsen-landing--werkzoekende .fondsen-landing__media {
   background: #dde9ef;
   overflow: hidden;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__media::before {
+.fondsen-landing--werkgever .fondsen-landing__media::before,
+.fondsen-landing--werkzoekende .fondsen-landing__media::before {
   content: "";
   position: absolute;
   top: 0;
@@ -365,7 +381,8 @@ html, body{
   pointer-events: none;
 }
 
-.fondsen-landing--werkgever .fondsen-landing__image {
+.fondsen-landing--werkgever .fondsen-landing__image,
+.fondsen-landing--werkzoekende .fondsen-landing__image {
   position: relative;
   z-index: 1;
 }
@@ -399,15 +416,18 @@ html, body{
     min-height: 360px;
   }
 
-  .fondsen-landing--werkgever .fondsen-landing__hero-inner {
+  .fondsen-landing--werkgever .fondsen-landing__hero-inner,
+  .fondsen-landing--werkzoekende .fondsen-landing__hero-inner {
     min-height: 0;
   }
 
-  .fondsen-landing--werkgever .fondsen-landing__panel {
+  .fondsen-landing--werkgever .fondsen-landing__panel,
+  .fondsen-landing--werkzoekende .fondsen-landing__panel {
     clip-path: none;
   }
 
-  .fondsen-landing--werkgever .fondsen-landing__panel-content {
+  .fondsen-landing--werkgever .fondsen-landing__panel-content,
+  .fondsen-landing--werkzoekende .fondsen-landing__panel-content {
     margin: 0;
     max-width: none;
   }
@@ -422,10 +442,14 @@ html, body{
    fnd-hero — werkgever & werkzoekende templates
    ============================================= */
 
+.fnd-template {
+  background: #ffffff;
+}
+
 .fnd-hero {
   position: relative;
   width: 100%;
-  height: 500px;
+  min-height: 500px;
   overflow: hidden;
   display: flex;
   background-color: var(--color-secondary);
@@ -435,87 +459,60 @@ html, body{
 .fnd-hero__left {
   width: 50%;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-secondary);
   z-index: 2;
 }
 
-.fnd-hero__left-main {
-  flex: 4; /* 80% van de linkerkant */
-  background-color: var(--color-secondary);
+.fnd-hero__inner {
+  width: 100%;
+  max-width: 560px;
   color: #ffffff;
-  padding: clamp(32px, 5vw, 56px) clamp(24px, 5vw, 56px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.fnd-hero__breadcrumbs {
-  margin-bottom: 12px;
-}
-
-.fnd-hero__breadcrumb-nav,
-.fnd-hero__breadcrumb-nav span,
-.fnd-hero__breadcrumb-nav a {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7) !important;
-  text-decoration: none !important;
-}
-
-.fnd-hero__breadcrumb-nav a:hover {
-  color: #ffffff !important;
-}
-
-.fnd-hero__eyebrow {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.72);
-  margin: 0 0 12px;
+  padding: 40px 32px;
+  box-sizing: border-box;
 }
 
 .fnd-hero .fnd-hero__title {
   font-family: 'Balgin-Bold', serif;
   font-size: 24px;
-  line-height: 1.05;
+  line-height: 1.1;
   color: #ffffff;
-  margin: 0 0 16px;
+  margin: 0 0 14px;
 }
 
 .fnd-hero__intro {
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 300;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 28px;
-  max-width: 90%;
+  margin: 0 0 22px;
+  max-width: 420px;
 }
 
 .fnd-hero__actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
-  margin-bottom: 18px;
 }
 
 .fnd-hero__btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 14px;
-  border-radius: 4px;
+  padding: 12px 12px;
+  border-radius: 5px;
   font-family: 'Balgin-Bold', serif;
   font-size: 15px;
   text-decoration: none !important;
-  transition: background .15s ease, border-color .15s ease;
+  line-height: 1;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
 }
 
 .fnd-hero__btn--primary {
   background-color: var(--color-primary);
-  border: 2px solid var(--color-primary);
+  border: 1px solid var(--color-primary);
   color: #ffffff !important;
 }
 
@@ -525,120 +522,62 @@ html, body{
 }
 
 .fnd-hero__btn--secondary {
-  background-color: var(--color-quaternary);
-  border: 2px solid var(--color-quaternary);
-  color: #ffffff !important;
-}
-
-.fnd-hero__btn--secondary:hover {
-  background-color: var(--color-quaternary-dk);
-  border-color: var(--color-quaternary-dk);
-}
-
-.fnd-hero__text-link {
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  color: rgba(255, 255, 255, 0.85) !important;
-  text-decoration: underline !important;
-  text-underline-offset: 3px;
-}
-
-.fnd-hero__text-link:hover {
-  color: #ffffff !important;
-}
-
-.fnd-hero__right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 55%;
-  height: 100%; /* loopt over blauw én wit deel */
-  background-size: cover;
-  background-position: center;
-  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0% 100%);
-  z-index: 3;
-}
-
-.fnd-hero__right--placeholder {
-  background: linear-gradient(135deg, rgba(8, 132, 204, 0.4), rgba(5, 93, 146, 0.6));
-}
-
-.fnd-hero__contact {
-  flex: 1; /* 20% van de linkerkant */
-  background: #ffffff;
-  border-top: 1px solid var(--color-border);
-  padding: 0 clamp(24px, 5vw, 56px);
-  display: flex;
-  align-items: center;
-  gap: 32px;
-}
-
-
-.fnd-hero__contact-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  color: var(--color-text) !important;
-  text-decoration: none !important;
-}
-
-.fnd-hero__contact-item svg {
-  color: var(--color-primary);
-  flex-shrink: 0;
-}
-
-.fnd-hero__contact-item:hover {
+  background-color: #ffffff;
+  border: 1px solid #ffffff;
   color: var(--color-secondary) !important;
 }
 
-@media (max-width: 767px) {
-  .fnd-hero__contact-inner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
+.fnd-hero__btn--secondary:hover {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
 }
 
-.fnd-hero__content-wrap {
-  background: var(--color-bg-light);
-  padding: clamp(42px, 6vw, 84px) 24px;
+.fnd-hero__right {
+  position: relative;
+  width: 50%;
+  min-height: 500px;
+  overflow: hidden;
 }
 
-.fnd-hero__content {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: clamp(28px, 4vw, 48px);
-  background: var(--color-bg);
-  border: 1px solid rgba(8, 132, 204, 0.1);
-  border-radius: 18px;
-  box-shadow: 0 18px 40px rgba(5, 93, 146, 0.08);
+.fnd-hero__right::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -70px;
+  width: 140px;
+  background: var(--color-secondary);
+  transform: skewX(-12deg);
+  transform-origin: left top;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.fnd-hero__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 500px;
+  object-fit: cover;
+}
+
+.fnd-hero__right--placeholder {
+  background: #d9e8f2;
 }
 
 @media (max-width: 767px) {
   .fnd-hero {
-    height: auto;
     flex-direction: column;
+    min-height: 0;
   }
 
   .fnd-hero__left {
     width: 100%;
   }
 
-  .fnd-hero__left-main {
-    padding: 36px 20px;
-  }
-
-  .fnd-hero__contact {
-    padding: 16px 20px;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-
-  .fnd-hero__left {
-    width: 100%;
-    padding: 36px 20px;
+  .fnd-hero__inner {
+    max-width: none;
+    padding: 32px 20px;
   }
 
   .fnd-hero__intro {
@@ -647,6 +586,7 @@ html, body{
 
   .fnd-hero__actions {
     flex-direction: column;
+    align-items: stretch;
   }
 
   .fnd-hero__btn {
@@ -655,15 +595,16 @@ html, body{
   }
 
   .fnd-hero__right {
-    position: relative;
     width: 100%;
-    height: 260px;
-    clip-path: none;
+    min-height: 260px;
   }
 
-  .fnd-hero__contact {
-    flex: none;
-    padding: 16px 20px;
+  .fnd-hero__right::before {
+    display: none;
+  }
+
+  .fnd-hero__image {
+    min-height: 260px;
   }
 }
 

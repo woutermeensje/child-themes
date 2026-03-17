@@ -1,92 +1,111 @@
-/* Gravity Forms custom styling for Sustainablejobs.nl */
+/* ============================================================
+   Gravity Forms – Custom Styling
+   Sustainablejobs.nl
+   ============================================================ */
 
-@font-face {
-  font-family: 'Balgin-Bold';
-  src: url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff2') format('woff2'),
-       url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
+/* ---- Labels ---- */
 
 label.gfield_label.gform-field-label {
-  font-family: Poppins;
-  font-size: 15px;
-  font-weight: 300;
-  color: var(--color-text);
-  line-height: 0.8;
-  margin-bottom: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text, #111827);
+  line-height: 1.4;
+  margin-bottom: 6px;
 }
 
-.gform_wrapper input[type="submit"] {
-  background-color: var(--color-primary) !important;
-  color: var(--color-bg) !important;
-  padding: 20px !important;
-  border: none !important;
-  border-radius: 5px !important;
-  cursor: pointer !important;
-  width: 100% !important;
-  font-family: "Balgin Bold", sans-serif !important;
-}
-
-.gform_wrapper input[type="submit"]:hover {
-  background-color: var(--color-tertiary) !important;
-  color: var(--color-primary) !important;
-  border: 2px solid var(--color-primary) !important;
-}
+/* ---- Tekstvelden ---- */
 
 .gform_wrapper input[type="text"],
 .gform_wrapper input[type="email"],
 .gform_wrapper input[type="url"],
 .gform_wrapper textarea {
-  padding: 15px !important;
-  border-color: var(--color-primary) !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  padding: 12px 14px !important;
+  border: 1px solid var(--color-border-light, #d1d5db) !important;
+  border-radius: 6px !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .gform_wrapper input[type="text"]:focus,
 .gform_wrapper input[type="email"]:focus,
 .gform_wrapper input[type="url"]:focus,
 .gform_wrapper textarea:focus {
-  border: 2px solid var(--color-primary) !important;
+  border: 1px solid var(--color-primary, #0A6B8D) !important;
+  box-shadow: 0 0 0 3px rgba(10, 107, 141, 0.10) !important;
   outline: none;
 }
 
+/* ---- Select ---- */
+
 .gform_wrapper select {
-  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  background-color: var(--color-bg);
-  border: 1px solid var(--color-border-light);
-  padding: 15px;
-  font-size: 1rem;
-  border-radius: 4px;
+  appearance: none;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  background-color: var(--color-bg, #fff);
+  border: 1px solid var(--color-border-light, #d1d5db);
+  padding: 12px 14px;
+  border-radius: 6px;
   width: 100%;
-  background-size: 1rem;
+  color: var(--color-text, #111827);
 }
+
+/* ---- Sectie titels ---- */
 
 .gform_wrapper h3.gsection_title {
-  font-size: 1.5rem;
-  color: var(--color-primary);
-  margin-bottom: 20px;
-  font-family: 'Balgin Bold';
-  padding-bottom: 5px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-primary, #0A6B8D);
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--color-primary, #0A6B8D);
 }
+
+/* ---- Submit knop ---- */
+
+.gform_wrapper input[type="submit"] {
+  font-family: 'Inter', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  background-color: var(--color-primary, #0A6B8D) !important;
+  color: #fff !important;
+  padding: 14px 24px !important;
+  border: none !important;
+  border-radius: 6px !important;
+  cursor: pointer !important;
+  width: 100% !important;
+  transition: background-color 0.2s ease, transform 0.15s ease !important;
+  letter-spacing: 0.01em !important;
+}
+
+.gform_wrapper input[type="submit"]:hover {
+  background-color: var(--color-secondary, #085875) !important;
+  transform: translateY(-1px);
+  border: none !important;
+}
+
+/* ---- Formulier wrapper ---- */
 
 .gform_wrapper .gform-body.gform_body {
-  padding: 30px;
-  background-color: var(--color-bg);
-  border-radius: 5px;
-  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
-  border: 1px solid var(--color-tertiary);
+  padding: 32px;
+  background-color: var(--color-bg, #fff);
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e5e7eb;
 }
 
-/* ✅ Mobiele styling */
+/* ---- Mobiel ---- */
+
 @media (max-width: 768px) {
   .gform_wrapper input[type="submit"],
   .gform_wrapper input[type="text"],
   .gform_wrapper select {
     width: 100% !important;
-    font-size: 1rem !important;
+    font-size: 14px !important;
   }
 
   .gform_wrapper .gform-body.gform_body {
@@ -94,10 +113,10 @@ label.gfield_label.gform-field-label {
   }
 
   .gform_wrapper h3.gsection_title {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
   }
 
   label.gfield_label.gform-field-label {
-    font-size: 14px;
+    font-size: 13px;
   }
 }
