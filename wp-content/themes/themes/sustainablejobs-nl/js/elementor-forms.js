@@ -10,7 +10,8 @@
 document.addEventListener('DOMContentLoaded', function () {
 
   // Zoek alle textarea's met klasse .rich-editor binnen een Elementor form
-  document.querySelectorAll('.elementor-field-type-textarea textarea.rich-editor').forEach(function (textarea) {
+  // Selector werkt op beide niveaus: widget-wrapper én veld-niveau
+  document.querySelectorAll('.rich-editor textarea, textarea.rich-editor').forEach(function (textarea) {
 
     // Maak een wrapper + container voor Quill
     var wrapper = document.createElement('div');

@@ -22,6 +22,7 @@ add_action('wp_enqueue_scripts', function () {
     if (file_exists(get_stylesheet_directory() . '/css/gravity-forms.css')) {
         wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css');
     }
+    wp_enqueue_style('inhuren-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
 });
 
 if (!class_exists('RN_Nav_Walker')) :

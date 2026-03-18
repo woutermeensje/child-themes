@@ -64,6 +64,13 @@ function fondsen_enqueue_styles() {
             filemtime(get_stylesheet_directory() . '/css/header.css')
         );
     }
+
+    wp_enqueue_style(
+        'fondsen-elementor-forms',
+        get_stylesheet_directory_uri() . '/css/elementor-forms.css',
+        ['child-style'],
+        filemtime(get_stylesheet_directory() . '/css/elementor-forms.css')
+    );
 }
 add_action( 'wp_enqueue_scripts', 'fondsen_enqueue_styles' );
 

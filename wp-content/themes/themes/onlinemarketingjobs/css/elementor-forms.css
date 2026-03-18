@@ -1,6 +1,6 @@
 /* ============================================================
    Elementor Forms – File Upload Styling
-   Sustainablejobs.nl  |  primary #0A6B8D
+   Onlinemarketingjobs  |  primary #7C5CFA
    ============================================================ */
 
 .elementor-field-type-upload {
@@ -28,8 +28,8 @@
   width: 100%;
   min-height: 130px;
   padding: 30px 20px;
-  background: #f0f7fb;
-  border: 2px dashed var(--color-primary, #0A6B8D);
+  background: #f5f2ff;
+  border: 2px dashed var(--color-primary, #7C5CFA);
   border-radius: 8px;
   cursor: pointer;
   text-align: center;
@@ -46,7 +46,7 @@
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
   font-size: 30px;
-  color: var(--color-primary, #0A6B8D);
+  color: var(--color-primary, #7C5CFA);
   line-height: 1;
 }
 
@@ -61,8 +61,8 @@
 
 /* Hover */
 .elementor-field-type-upload:hover .elementor-field-label {
-  border-color: var(--color-secondary, #085875);
-  background: #e4f0f5;
+  border-color: var(--color-primary-dk, #6b46e0);
+  background: #ede8ff;
 }
 
 /* Mobiel */

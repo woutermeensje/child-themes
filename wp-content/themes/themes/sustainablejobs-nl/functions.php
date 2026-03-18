@@ -66,6 +66,17 @@ add_action('wp_enqueue_scripts', function () {
         ['child-style'],
         filemtime(get_stylesheet_directory() . '/css/elementor-forms.css')
     );
+
+    // Quill.js rich text editor
+    wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
+    wp_enqueue_script('quill-js', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js', [], null, true);
+    wp_enqueue_script(
+        'sj-elementor-forms',
+        get_stylesheet_directory_uri() . '/js/elementor-forms.js',
+        ['quill-js'],
+        filemtime(get_stylesheet_directory() . '/js/elementor-forms.js'),
+        true
+    );
 });
 
 /**
