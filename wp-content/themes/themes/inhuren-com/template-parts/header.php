@@ -50,9 +50,11 @@ $logo_url = $logo_image ? $logo_image[0] : '';
             ?>
         </nav>
 
+        <div class="rn-header__divider"></div>
+
         <div class="rn-header__cta">
-            <a href="<?php echo esc_url(home_url('/inloggen/')); ?>" class="rn-btn rn-btn--outline">Inloggen</a>
-            <a href="<?php echo esc_url(home_url('/aanmelden/')); ?>" class="rn-btn rn-btn--accent">Aanmelden</a>
+            <a href="https://platform.inhuren.com/inloggen" class="rn-btn rn-btn--outline">Inloggen</a>
+            <a href="https://platform.inhuren.com/aanmelden" class="rn-btn rn-btn--accent">Aanmelden</a>
         </div>
 
         <button class="rn-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="rn-mobile-nav">
@@ -80,8 +82,8 @@ $logo_url = $logo_image ? $logo_image[0] : '';
 
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="<?php echo esc_url(home_url('/inloggen/')); ?>" class="rn-btn rn-btn--outline rn-mobile-nav__cta">Inloggen</a>
-            <a href="<?php echo esc_url(home_url('/aanmelden/')); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">Aanmelden</a>
+            <a href="https://platform.inhuren.com/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta">Inloggen</a>
+            <a href="https://platform.inhuren.com/aanmelden" class="rn-btn rn-btn--accent rn-mobile-nav__cta">Aanmelden</a>
         </div>
     </div>
 </div>

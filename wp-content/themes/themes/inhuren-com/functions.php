@@ -87,6 +87,36 @@ add_shortcode('rn_header', function () {
 });
 
 /**
+ * ✅ WPJM HELPER FUNCTIES
+ */
+if ( ! function_exists('srmb_get_req_value') ) {
+    function srmb_get_req_value($key) {
+        $filter_key = 'filter_' . $key;
+
+        if (!empty($_GET[$key]))         return (array) $_GET[$key];
+        if (!empty($_GET[$filter_key]))  return (array) $_GET[$filter_key];
+        if (!empty($_POST[$filter_key])) return (array) $_POST[$filter_key];
+        if (!empty($_POST[$key]))        return (array) $_POST[$key];
+
+        return [];
+    }
+}
+
+if ( ! function_exists('display_tax_terms') ) {
+    function display_tax_terms($tax, $post_id) {
+        $terms = wp_get_post_terms($post_id, $tax, ['fields' => 'names']);
+        return !empty($terms) && !is_wp_error($terms) ? implode(', ', $terms) : '';
+    }
+}
+
+if ( ! function_exists('get_secondary_imageurl') ) {
+    function get_secondary_imageurl($post_id) {
+        $image_id = get_post_meta($post_id, '_uncode_secondary_thumbnail_id', true);
+        return $image_id ? wp_get_attachment_image_url($image_id, 'large') : '';
+    }
+}
+
+/**
  * ✅ WP JOB MANAGER: TEMPLATE OVERRIDES
  */
 add_filter('job_manager_locate_template', function ($template, $template_name) {
