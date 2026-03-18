@@ -10,23 +10,6 @@ $logo_url = $logo_image ? $logo_image[0] : '';
 ?>
 
 <header id="rn-header" class="rn-header" role="banner">
-    <div class="rn-topbar">
-        <div class="rn-topbar__inner">
-            <div class="rn-topbar__left">
-                <a href="<?php echo esc_url(home_url('/vacature-plaatsen/')); ?>">Vacature plaatsen</a>
-                <span class="rn-topbar__divider">|</span>
-                <a href="<?php echo esc_url(home_url('/freelance-opdrachten/')); ?>">Freelance opdrachten</a>
-            </div>
-            <div class="rn-topbar__right">
-                <a href="<?php echo esc_url(home_url('/tarieven/')); ?>">Tarieven</a>
-                <?php if ($admin_email) : ?>
-                    <span class="rn-topbar__divider">|</span>
-                    <a href="mailto:<?php echo esc_attr(antispambot($admin_email)); ?>"><?php echo esc_html(antispambot($admin_email)); ?></a>
-                <?php endif; ?>
-            </div>
-        </div>
-    </div>
-
     <div class="rn-header__inner">
         <div class="rn-header__brand">
             <a href="<?php echo esc_url(home_url('/')); ?>">
