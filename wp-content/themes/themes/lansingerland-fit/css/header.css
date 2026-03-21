@@ -1,12 +1,12 @@
 :root {
-  --rn-primary:    var(--color-primary,    #2E7D32);
-  --rn-primary-dk: var(--color-primary-dk, #1B5E20);
-  --rn-primary-mid:var(--color-primary-mid,#66BB6A);
-  --rn-accent:     var(--color-secondary,  #388E3C);
-  --rn-accent-dk:  var(--color-tertiary,   #1B5E20);
+  --rn-primary:    var(--color-primary,    #80D424);
+  --rn-primary-dk: var(--color-primary-dk, #63a81b);
+  --rn-primary-mid:var(--color-primary-mid,#b3e86e);
+  --rn-accent:     var(--color-secondary,  #3A8F0F);
+  --rn-accent-dk:  var(--color-tertiary,   #2d6e0b);
   --rn-text:       var(--color-text,       #333333);
-  --rn-bg:         var(--color-bg,         #ffffff);
-  --rn-border:     var(--color-border,     #e8ecf0);
+  --rn-bg:         var(--color-bg,         #FBFAF8);
+  --rn-border:     var(--color-border,     #dedede);
   --rn-shadow:     0 2px 16px rgba(0,0,0,0.08);
   --rn-header-h:   68px;
   --rn-topbar-h:   36px;
@@ -189,14 +189,14 @@
 }
 
 .rn-btn--accent {
-  background: var(--rn-primary-mid);
+  background: var(--rn-primary);
   color: #fff !important;
-  border: 2px solid var(--rn-primary-mid);
-  box-shadow: 0 2px 8px rgba(46,125,50,0.22);
+  border: 2px solid var(--rn-primary);
+  box-shadow: 0 2px 8px rgba(128,212,36,0.28);
 }
 .rn-btn--accent:hover {
-  background: var(--rn-primary);
-  border-color: var(--rn-primary);
+  background: var(--rn-primary-dk);
+  border-color: var(--rn-primary-dk);
   transform: translateY(-1px);
 }
 

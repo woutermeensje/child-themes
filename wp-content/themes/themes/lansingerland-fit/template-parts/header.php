@@ -211,22 +211,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 <header id="rn-header" class="rn-header" role="banner">
 
-    <!-- Utility bar -->
-    <div class="rn-topbar">
-        <div class="rn-topbar__inner">
-            <div class="rn-topbar__left">
-                <a href="<?php echo esc_url( home_url( '/lessen/' ) ); ?>">Lessen &amp; Trainingen</a>
-                <span class="rn-topbar__divider">|</span>
-                <a href="<?php echo esc_url( home_url( '/lidmaatschap/' ) ); ?>">Lidmaatschap</a>
-            </div>
-            <div class="rn-topbar__right">
-                <a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Contact</a>
-                <span class="rn-topbar__divider">|</span>
-                <a href="mailto:info@lansingerlandfit.nl">info@lansingerlandfit.nl</a>
-            </div>
-        </div>
-    </div>
-
     <!-- Main nav -->
     <div class="rn-header__inner">
 

@@ -23,28 +23,31 @@ Text Domain: lansingerland-fit
 }
 
 :root {
-  /* 🔁 Verwisselbaar kleurenpalet voor branding */
-  --color-primary: #2E7D32;
-  --color-primary-dk: #1B5E20;
-  --color-primary-mid: #66BB6A;
-  --color-secondary: #388E3C;
-  --color-tertiary: #1B5E20;
-  --color-accent: #A5D6A7;
+  /* 🔁 Brandingkleuren */
+  --color-primary:     #80D424;   /* lime groen – hoofdkleur */
+  --color-primary-dk:  #63a81b;   /* donkerder lime – hover/actief */
+  --color-primary-mid: #b3e86e;   /* lichte tint lime – subtiele accenten */
+  --color-secondary:   #3A8F0F;   /* diep groen – secundaire kleur */
+  --color-tertiary:    #2d6e0b;   /* nog dieper groen – derde toon */
+  --color-accent:      #e8f8c8;   /* licht lime tint – warme accenten */
 
-  /* 🧱 Vaste kleuren voor tekst en contrast */
-  --color-text: #333333;
-  --color-text-muted: #777777;
+  /* 🧱 Tekst & contrast */
+  --color-text:        #333333;
+  --color-text-muted:  #777777;
 
-  /* 🧱 Vaste kleuren voor achtergronden en borders */
-  --color-bg: #ffffff;
-  --color-bg-light: #f8f8f8;
-  --color-border: #e0e0e0;
-  --color-border-light: #cccccc;
+  /* 🧱 Achtergronden & borders */
+  --color-bg:          #FBFAF8;
+  --color-bg-light:    #f3f9e8;   /* lichte lime tint – lichte secties */
+  --color-border:      #dedede;
+  --color-border-light:#eeeeee;
 
-  /* ✅ Speciale semantische kleuren */
-  --color-success: #28a745;
-  --color-success-hover: #155724;
-  --color-bg-filter: #E8F5E9;
+  /* 🔲 Border radius */
+  --border-radius: 5px;
+
+  /* ✅ Semantische kleuren */
+  --color-success:       #80D424;
+  --color-success-hover: #63a81b;
+  --color-bg-filter:     #f3f9e8;
 }
 
 html, body {
