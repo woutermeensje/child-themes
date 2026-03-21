@@ -3,6 +3,14 @@
 if (!defined('ABSPATH')) exit;
 
 /**
+ * ✅ CUSTOM HEADER: vervang Hello Elementor's standaard header
+ */
+add_filter('hello_elementor_page_header_enabled', '__return_false');
+add_action('hello_elementor_before_header', function () {
+    include get_stylesheet_directory() . '/template-parts/header.php';
+});
+
+/**
  * ✅ ENQUEUE STYLES (with Elementor check)
  */
 add_action('wp_enqueue_scripts', function () {

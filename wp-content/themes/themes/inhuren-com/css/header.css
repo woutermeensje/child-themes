@@ -264,6 +264,7 @@
 }
 
 .rn-btn--accent:hover {
+  color: #fff !important;
   background: var(--rn-accent-dk);
   border-color: var(--rn-accent-dk);
 }
