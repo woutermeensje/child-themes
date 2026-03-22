@@ -19,18 +19,20 @@ add_action('wp_enqueue_scripts', function () {
         $dependencies[] = 'elementor-frontend';
     }
 
-    wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css');
-    wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, wp_get_theme()->get('Version'));
+    wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css', [], filemtime(get_template_directory() . '/style.css'));
+    wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, filemtime(get_stylesheet_directory() . '/style.css'));
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
-    wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
+    wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css', [], filemtime(get_stylesheet_directory() . '/fonts/fonts.css'));
     if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
-        wp_enqueue_style('inhuren-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
+        wp_enqueue_style('inhuren-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/header.css'));
     }
     if (file_exists(get_stylesheet_directory() . '/css/gravity-forms.css')) {
-        wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css');
+        wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css', [], filemtime(get_stylesheet_directory() . '/css/gravity-forms.css'));
     }
-    wp_enqueue_style('inhuren-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
+    if (file_exists(get_stylesheet_directory() . '/css/elementor-forms.css')) {
+        wp_enqueue_style('inhuren-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
+    }
 });
 
 if (!class_exists('RN_Nav_Walker')) :
@@ -93,6 +95,347 @@ add_shortcode('rn_header', function () {
     include get_stylesheet_directory() . '/template-parts/header.php';
     return ob_get_clean();
 });
+
+
+// =========================================================
+// Informatie aanvragen formulier
+// =========================================================
+
+add_action('wp_enqueue_scripts', function () {
+    wp_enqueue_script('quill-js', 'https://cdn.quilljs.com/1.3.7/quill.min.js', [], null, true);
+    wp_enqueue_style('quill-css', 'https://cdn.quilljs.com/1.3.7/quill.snow.css', [], null);
+});
+
+add_shortcode('inhuren_info_form', function () {
+    ob_start();
+    $nonce = wp_create_nonce('inhuren_info_form');
+    ?>
+    <div class="iif-wrap">
+
+        <h2 class="iif-title">Informatie aanvragen</h2>
+
+        <div class="iif-success" style="display:none;">
+            <p>Bedankt voor uw aanvraag! We nemen zo snel mogelijk contact met u op.</p>
+        </div>
+
+        <form class="iif-form" id="inhuren-info-form">
+            <input type="hidden" name="action" value="inhuren_info_form_submit">
+            <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>">
+
+            <div class="iif-row">
+                <div class="iif-field">
+                    <label for="iif_voornaam">Voornaam <span>*</span></label>
+                    <input type="text" id="iif_voornaam" name="voornaam" required placeholder="Bijv. Jan">
+                </div>
+                <div class="iif-field">
+                    <label for="iif_achternaam">Achternaam</label>
+                    <input type="text" id="iif_achternaam" name="achternaam" placeholder="Bijv. de Vries">
+                </div>
+            </div>
+
+            <div class="iif-row">
+                <div class="iif-field">
+                    <label for="iif_telefoon">Telefoonnummer</label>
+                    <input type="tel" id="iif_telefoon" name="telefoon" placeholder="Bijv. 06 12345678">
+                </div>
+                <div class="iif-field">
+                    <label for="iif_email">E-mailadres <span>*</span></label>
+                    <input type="email" id="iif_email" name="email" required placeholder="Bijv. jan@bedrijf.nl">
+                </div>
+            </div>
+
+            <div class="iif-field">
+                <label>Bericht <span>*</span></label>
+                <div id="iif-quill-editor"></div>
+                <input type="hidden" id="iif_bericht" name="bericht">
+            </div>
+
+            <div class="iif-error" style="display:none;"></div>
+
+            <button type="submit" class="iif-submit">
+                <span class="iif-submit__label">Informatie aanvragen</span>
+                <span class="iif-submit__loading" style="display:none;">Verzenden...</span>
+            </button>
+        </form>
+
+    </div>
+
+    <style>
+    .iif-wrap {
+        max-width: 720px;
+        margin: 0 auto;
+        font-family: 'Roboto', sans-serif;
+        border: 1px solid #dedede;
+        border-radius: 5px;
+        padding: 32px;
+        background: #ffffff;
+    }
+
+    .iif-title {
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 22px !important;
+        font-weight: 600 !important;
+        color: #111827 !important;
+        margin: 0 0 24px !important;
+        line-height: 1.3 !important;
+    }
+
+    .iif-success {
+        background: #f0fdf4;
+        border: 1px solid #bbf7d0;
+        border-radius: 5px;
+        padding: 20px 24px;
+        color: #166534;
+        font-size: 15px;
+    }
+
+    .iif-form { display: flex; flex-direction: column; gap: 20px; }
+
+    .iif-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .iif-field { display: flex; flex-direction: column; gap: 6px; }
+
+    .iif-field label {
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        font-weight: 300;
+        color: #374151;
+    }
+
+    .iif-field label span { color: var(--color-primary, #0458AB); }
+
+    .iif-field input {
+        height: 44px;
+        padding: 0 14px;
+        border: 1px solid #dedede;
+        border-radius: 5px;
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        color: #111827;
+        background: #fff;
+        transition: border-color .15s ease;
+        outline: none;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .iif-field input:focus { border-color: var(--color-primary, #0458AB); }
+
+    #iif-quill-editor {
+        border: 1px solid #dedede;
+        border-top: none;
+        border-radius: 0 0 5px 5px;
+        min-height: 180px;
+        font-family: 'Poppins', sans-serif;
+        font-size: 14px;
+        background: #ffffff;
+    }
+
+    .ql-toolbar.ql-snow {
+        border: 1px solid #dedede !important;
+        border-bottom: 1px solid #eeeeee !important;
+        border-radius: 5px 5px 0 0 !important;
+        background: #fafafa !important;
+    }
+
+    .ql-container.ql-snow {
+        border: none !important;
+        font-size: 14px !important;
+        font-family: 'Poppins', sans-serif !important;
+    }
+
+    .ql-editor {
+        min-height: 160px !important;
+        padding: 14px 16px !important;
+        line-height: 1.7 !important;
+        color: #374151 !important;
+    }
+
+    .ql-editor.ql-blank::before {
+        color: #9ca3af !important;
+        font-style: normal !important;
+        font-family: 'Poppins', sans-serif !important;
+    }
+
+    .iif-error {
+        padding: 12px 16px;
+        background: #fef2f2;
+        border: 1px solid #fecaca;
+        border-radius: 5px;
+        color: #b91c1c;
+        font-size: 14px;
+    }
+
+    .iif-submit {
+        align-self: flex-start;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 28px;
+        background: var(--color-primary, #0458AB);
+        color: #fff !important;
+        border: none;
+        border-radius: 5px;
+        font-family: 'Roboto', sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: background .15s ease;
+    }
+
+    .iif-submit:hover { background: var(--color-primary-dk, #034085); }
+
+    @media (max-width: 600px) {
+        .iif-row { grid-template-columns: 1fr; }
+        .iif-submit { width: 100%; }
+    }
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var quill = new Quill('#iif-quill-editor', {
+            theme: 'snow',
+            placeholder: 'Omschrijf uw vraag of aanvraag...',
+            modules: {
+                toolbar: [
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                    ['clean']
+                ]
+            }
+        });
+
+        var form  = document.getElementById('inhuren-info-form');
+        var wrap  = form.closest('.iif-wrap');
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            document.getElementById('iif_bericht').value = quill.root.innerHTML;
+
+            var errorEl  = form.querySelector('.iif-error');
+            var label    = form.querySelector('.iif-submit__label');
+            var loading  = form.querySelector('.iif-submit__loading');
+
+            errorEl.style.display  = 'none';
+            label.style.display    = 'none';
+            loading.style.display  = '';
+
+            var data = new FormData(form);
+
+            fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', {
+                method: 'POST',
+                body: data
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (res) {
+                if (res.success) {
+                    form.style.display = 'none';
+                    wrap.querySelector('.iif-success').style.display = '';
+                } else {
+                    errorEl.textContent = res.data || 'Er is iets misgegaan. Probeer het opnieuw.';
+                    errorEl.style.display = '';
+                    label.style.display   = '';
+                    loading.style.display = 'none';
+                }
+            })
+            .catch(function () {
+                errorEl.textContent = 'Er is een verbindingsfout opgetreden.';
+                errorEl.style.display = '';
+                label.style.display   = '';
+                loading.style.display = 'none';
+            });
+        });
+    });
+    </script>
+    <?php
+    return ob_get_clean();
+});
+
+// Custom post type: Informatie aanvragen
+add_action('init', function () {
+    register_post_type('inhuren_aanvraag', [
+        'label'               => 'Informatie aanvragen',
+        'labels'              => [
+            'name'               => 'Informatie aanvragen',
+            'singular_name'      => 'Informatie aanvraag',
+            'menu_name'          => 'Aanvragen',
+            'all_items'          => 'Alle aanvragen',
+            'view_item'          => 'Bekijk aanvraag',
+            'search_items'       => 'Zoek aanvragen',
+            'not_found'          => 'Geen aanvragen gevonden',
+        ],
+        'public'              => false,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'menu_icon'           => 'dashicons-email-alt',
+        'supports'            => ['title', 'editor'],
+        'capability_type'     => 'post',
+        'capabilities'        => ['create_posts' => 'do_not_allow'],
+        'map_meta_cap'        => true,
+    ]);
+});
+
+// AJAX handler
+add_action('wp_ajax_inhuren_info_form_submit', 'inhuren_info_form_handler');
+add_action('wp_ajax_nopriv_inhuren_info_form_submit', 'inhuren_info_form_handler');
+
+function inhuren_info_form_handler() {
+    if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'inhuren_info_form') ) {
+        wp_send_json_error('Ongeldige beveiligingstoken.');
+    }
+
+    $voornaam   = sanitize_text_field($_POST['voornaam']   ?? '');
+    $achternaam = sanitize_text_field($_POST['achternaam'] ?? '');
+    $telefoon   = sanitize_text_field($_POST['telefoon']   ?? '');
+    $email      = sanitize_email($_POST['email']           ?? '');
+    $bericht    = wp_kses_post($_POST['bericht']           ?? '');
+
+    if ( ! $voornaam || ! is_email($email) || ! $bericht ) {
+        wp_send_json_error('Vul alle verplichte velden in.');
+    }
+
+    // Opslaan in database
+    $post_id = wp_insert_post([
+        'post_type'    => 'inhuren_aanvraag',
+        'post_title'   => $voornaam . ' ' . $achternaam . ' — ' . date('d-m-Y H:i'),
+        'post_content' => $bericht,
+        'post_status'  => 'publish',
+    ]);
+
+    if ( $post_id ) {
+        update_post_meta($post_id, '_aanvraag_voornaam',   $voornaam);
+        update_post_meta($post_id, '_aanvraag_achternaam', $achternaam);
+        update_post_meta($post_id, '_aanvraag_telefoon',   $telefoon);
+        update_post_meta($post_id, '_aanvraag_email',      $email);
+    }
+
+    // E-mail versturen
+    $to      = get_option('admin_email');
+    $subject = 'Nieuwe informatie aanvraag van ' . $voornaam . ' ' . $achternaam;
+    $body    = "
+        <p><strong>Naam:</strong> {$voornaam} {$achternaam}</p>
+        <p><strong>Telefoon:</strong> {$telefoon}</p>
+        <p><strong>E-mail:</strong> {$email}</p>
+        <hr>
+        <p><strong>Bericht:</strong></p>
+        {$bericht}
+    ";
+
+    $headers = [
+        'Content-Type: text/html; charset=UTF-8',
+        'Reply-To: ' . $voornaam . ' ' . $achternaam . ' <' . $email . '>',
+    ];
+
+    wp_mail($to, $subject, $body, $headers);
+
+    wp_send_json_success();
+}
+
 
 /**
  * ✅ WPJM HELPER FUNCTIES

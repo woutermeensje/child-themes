@@ -10,6 +10,23 @@ $logo_url = $logo_image ? $logo_image[0] : '';
 ?>
 
 <header id="rn-header" class="rn-header" role="banner">
+
+    <!-- Blauwe topbalk -->
+    <div class="rn-topbar">
+        <div class="rn-topbar__inner">
+            <div class="rn-topbar__left">
+                <a href="tel:0852392040">085 239 2040</a>
+                <span class="rn-topbar__divider">|</span>
+                <a href="mailto:team@inhuren.com">team@inhuren.com</a>
+            </div>
+            <div class="rn-topbar__right">
+                <a href="<?php echo esc_url(home_url('/tarieven/')); ?>">Tarieven</a>
+                <span class="rn-topbar__divider">|</span>
+                <a href="https://platform.inhuren.com/inloggen">Inloggen</a>
+            </div>
+        </div>
+    </div>
+
     <div class="rn-header__inner">
         <div class="rn-header__brand">
             <a href="<?php echo esc_url(home_url('/')); ?>">
@@ -36,7 +53,7 @@ $logo_url = $logo_image ? $logo_image[0] : '';
         <div class="rn-header__divider"></div>
 
         <div class="rn-header__cta">
-            <a href="https://platform.inhuren.com/inloggen" class="rn-btn rn-btn--outline">Inloggen</a>
+            <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--outline">Informatie aanvragen</a>
             <a href="https://platform.inhuren.com/aanmelden" class="rn-btn rn-btn--accent">Aanmelden</a>
         </div>
 
@@ -66,6 +83,7 @@ $logo_url = $logo_image ? $logo_image[0] : '';
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
             <a href="https://platform.inhuren.com/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta">Inloggen</a>
+            <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--outline rn-mobile-nav__cta">Informatie aanvragen</a>
             <a href="https://platform.inhuren.com/aanmelden" class="rn-btn rn-btn--accent rn-mobile-nav__cta">Aanmelden</a>
         </div>
     </div>
