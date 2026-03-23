@@ -1,7 +1,10 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-
+require_once get_stylesheet_directory() . '/inc/shortcode-vacature-formulier.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
+require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
+require_once get_stylesheet_directory() . '/inc/job-listing-meta.php';
 
 /**
  * ✅ ENQUEUE STYLES (with Elementor check + cache busting)
@@ -66,6 +69,16 @@ add_action('wp_enqueue_scripts', function () {
         ['child-style'],
         filemtime(get_stylesheet_directory() . '/css/elementor-forms.css')
     );
+
+    // Formulieren styling (vacature plaatsen, etc.)
+    if (file_exists(get_stylesheet_directory() . '/css/forms.css')) {
+        wp_enqueue_style(
+            'sj-forms',
+            get_stylesheet_directory_uri() . '/css/forms.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/forms.css')
+        );
+    }
 
     // Quill.js rich text editor
     wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
