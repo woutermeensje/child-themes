@@ -245,8 +245,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
         <!-- CTA knoppen -->
         <div class="rn-header__cta">
-            <a href="<?php echo esc_url( home_url( '/inschrijven/' ) ); ?>" class="rn-btn rn-btn--accent">
-                Inschrijven
+            <a href="https://lansingerlandfit.nl/contact/" class="rn-btn rn-btn--accent">
+                Contact opnemen
             </a>
         </div>
 
@@ -278,8 +278,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="<?php echo esc_url( home_url( '/inschrijven/' ) ); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
-                Inschrijven
+            <a href="https://lansingerlandfit.nl/contact/" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
+                Contact opnemen
             </a>
         </div>
     </div>

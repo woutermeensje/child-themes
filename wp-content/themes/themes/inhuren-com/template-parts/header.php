@@ -4,9 +4,7 @@ if (!defined('ABSPATH')) {
 }
 
 $admin_email = sanitize_email(get_option('admin_email'));
-$logo_id = get_theme_mod('custom_logo');
-$logo_image = $logo_id ? wp_get_attachment_image_src($logo_id, 'full') : false;
-$logo_url = $logo_image ? $logo_image[0] : '';
+$logo_url = get_stylesheet_directory_uri() . '/site-logo/inhuren-logo.png';
 ?>
 
 <header id="rn-header" class="rn-header" role="banner">
@@ -30,11 +28,7 @@ $logo_url = $logo_image ? $logo_image[0] : '';
     <div class="rn-header__inner">
         <div class="rn-header__brand">
             <a href="<?php echo esc_url(home_url('/')); ?>">
-                <?php if ($logo_url) : ?>
-                    <img src="<?php echo esc_url($logo_url); ?>" alt="<?php bloginfo('name'); ?>" class="rn-header__logo">
-                <?php else : ?>
-                    <span class="rn-header__site-name"><?php bloginfo('name'); ?></span>
-                <?php endif; ?>
+                <img src="<?php echo esc_url($logo_url); ?>" alt="<?php bloginfo('name'); ?>" class="rn-header__logo">
             </a>
         </div>
 

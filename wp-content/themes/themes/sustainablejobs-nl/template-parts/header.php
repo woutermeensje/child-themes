@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
 
     <div class="rn-header__inner">
         <div class="rn-header__brand">
-            <a href="<?php echo esc_url(home_url('/')); ?>">
+            <a href="https://sustainablejobs.nl">
                 <img src="<?php echo esc_url(get_stylesheet_directory_uri() . '/site-logo/site-logo.png'); ?>" alt="<?php bloginfo('name'); ?>" class="rn-header__logo">
             </a>
         </div>

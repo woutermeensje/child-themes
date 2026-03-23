@@ -247,26 +247,26 @@
 }
 
 .rn-btn--outline {
-  color: var(--rn-primary) !important;
-  border-color: var(--rn-primary);
+  color: #0458ab !important;
+  border-color: #0458ab;
   background: transparent;
 }
 
 .rn-btn--outline:hover {
   color: #fff !important;
-  background: var(--rn-primary);
+  background: #0458ab;
 }
 
 .rn-btn--accent {
   color: #fff !important;
-  border-color: var(--rn-accent);
-  background: var(--rn-accent);
+  border-color: #ff8200;
+  background: #ff8200;
 }
 
 .rn-btn--accent:hover {
   color: #fff !important;
-  background: var(--rn-accent-dk);
-  border-color: var(--rn-accent-dk);
+  background: #e07300;
+  border-color: #e07300;
 }
 
 /* ── Hamburger ── */
@@ -280,6 +280,10 @@
   border-radius: var(--rn-radius);
   background: transparent;
   cursor: pointer;
+}
+
+.rn-header__hamburger:hover {
+  background: transparent;
 }
 
 .rn-hamburger__bar {

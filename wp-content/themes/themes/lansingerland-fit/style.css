@@ -57,14 +57,14 @@ html, body {
 }
 
 p {
-    font-family: Poppins;
+    font-family: 'Balgin Bold';
     font-size: 15px;
     font-weight: 400;
     color: var(--color-text);
 }
 
 li {
-    font-family: Poppins;
+    font-family: 'Balgin Bold';
     font-size: 15px;
     font-weight: 400;
     color: var(--color-text);

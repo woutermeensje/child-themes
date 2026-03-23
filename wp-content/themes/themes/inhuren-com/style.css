@@ -34,7 +34,7 @@ Text Domain: Inhuren.com
   --color-text-muted: #777777;
 
   /* 🧱 Vaste kleuren voor achtergronden en borders */
-  --color-bg: #ffffff;
+  --color-bg: #FBFAF8;
   --color-bg-light: #f8f8f8;
   --color-border: #e0e0e0;
   --color-border-light: #cccccc;
@@ -46,7 +46,7 @@ Text Domain: Inhuren.com
 
 body {
     color: var(--color-text);
-    background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+    background-color: #FBFAF8;
 }
 
 html, body {
@@ -110,12 +110,24 @@ a:hover {
 button,
 input[type="submit"] {
     border-radius: 8px;
+    background-color: #0458AB;
+    color: #ffffff;
+    border: 1.5px solid #0458AB;
+    padding: 8px 20px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .elementor-button:hover,
 button:hover,
 input[type="submit"]:hover {
     transform: translateY(-1px);
+    background-color: #034085;
+    border-color: #034085;
 }
 
 /* Styling specifieke links */
@@ -256,14 +268,14 @@ input[type="submit"]:hover {
 }
 
 .fnd-hero__btn--primary {
-  background-color: var(--color-secondary);
-  border: 2px solid var(--color-secondary);
+  background-color: #80D424;
+  border: 2px solid #80D424;
   color: #ffffff !important;
 }
 
 .fnd-hero__btn--primary:hover {
-  background-color: var(--color-primary-mid);
-  border-color: var(--color-primary-mid);
+  background-color: #6db81e;
+  border-color: #6db81e;
   transform: translateY(-1px);
 }
 
