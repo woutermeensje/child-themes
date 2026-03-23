@@ -203,15 +203,15 @@
 
 /* Trigger — zelfde pill-stijl als .sj-select-btn in job-filters */
 .sj-vp__ms-trigger {
-    display: inline-flex;
+    display: flex;
     align-items: center;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 6px;
     width: 100%;
-    white-space: nowrap;
     border-radius: 999px;
     border: 1px solid #c8ddd4 !important;
     background-color: #ffffff !important;
-    padding: 12px 12px 12px 38px;
+    padding: 8px 12px 8px 38px;
     min-height: 44px;
     cursor: pointer;
     -webkit-user-select: none;
@@ -258,40 +258,49 @@
 }
 
 /* Tags naast placeholder (geselecteerde items) */
-.sj-vp__ms-tags { display: contents; }
-.sj-vp__ms-tag {
-    display: inline-flex;
-    align-items: center;
+.sj-vp__ms-tags {
+    display: flex;
+    flex-wrap: wrap;
     gap: 6px;
-    padding: 4px 10px;
-    background: #fff;
-    border: 1px solid rgba(0,0,0,.12);
+    align-items: center;
+}
+.sj-vp__ms-tag {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px;
+    padding: 4px 8px 4px 10px;
+    background: var(--color-bg-filter, #EEF3F0) !important;
+    border: 1px solid #c8ddd4 !important;
     border-radius: 999px;
-    box-shadow: 0 2px 8px rgba(0,0,0,.07);
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--color-text, #333333);
+    box-shadow: none !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--color-primary, #0A6B8D) !important;
     white-space: nowrap;
+    line-height: 1.4;
 }
 .sj-vp__ms-tag-remove {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: transparent;
-    border: none;
-    padding: 0;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 14px !important;
+    height: 14px !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
     cursor: pointer;
-    color: var(--color-primary, #0A6B8D);
-    font-size: 16px;
-    font-weight: 700;
+    color: var(--color-primary, #0A6B8D) !important;
     line-height: 1;
+    flex-shrink: 0;
     transition: color .15s ease;
 }
-.sj-vp__ms-tag-remove:hover { color: var(--color-secondary, #92E9AB); }
+.sj-vp__ms-tag-remove:hover { color: var(--color-secondary, #92E9AB) !important; }
+.sj-vp__ms-tag-remove svg { display: block; pointer-events: none; }
 
 /* Chevron — identiek aan .sj-chev in job-filters */
 .sj-vp__ms-arrow {
@@ -302,7 +311,8 @@
     transform: rotate(45deg) translateY(-2px);
     transition: transform .2s ease;
     flex-shrink: 0;
-    margin-left: 10px;
+    margin-left: auto;
+    padding-left: 10px;
     position: static;
 }
 .sj-vp__ms-arrow svg { display: none; }
@@ -486,6 +496,7 @@
     border-radius: 4px;
     cursor: pointer;
     width: 100%;
+    margin-top: 16px;
     transition: background-color .15s ease, border-color .15s ease;
 }
 .sj-vp .sj-vp__submit:hover {
@@ -567,6 +578,34 @@
 .sj-vp-snel__contact {
     flex-shrink: 0;
 }
+
+.sj-vp-snel__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    margin-left: 16px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #9ca3af;
+    padding: 0;
+    font-weight: 700;
+    transition: color .15s ease;
+}
+
+.sj-vp-snel__close svg {
+    stroke-width: 2.5;
+}
+
+.sj-vp-snel__close:hover {
+    color: var(--color-primary, #0A6B8D);
+    background: none !important;
+}
+
+.sj-vp-snel.is-hidden { display: none; }
 .sj-vp-snel__btn {
     display: inline-flex;
     align-items: center;

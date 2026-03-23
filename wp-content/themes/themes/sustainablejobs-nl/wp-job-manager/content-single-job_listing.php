@@ -258,7 +258,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 <?php endif; ?>
 
 <!-- Sticky bottom balk -->
-<div class="sj-vp-snel">
+<div class="sj-vp-snel" id="sj-profiel-balk">
     <div class="sj-vp-snel__text">
         <h2 class="sj-vp-snel__title">Profiel aanmaken</h2>
         <p class="sj-vp-snel__desc">Wist je dat je met een profiel op ons platform ook benaderd kan worden door werkgevers?</p>
@@ -266,6 +266,9 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     <div class="sj-vp-snel__contact">
         <a href="https://platform.sustainablejobs.nl/aanmelden-werkzoekende" class="sj-vp-snel__btn">Profiel aanmaken</a>
     </div>
+    <button class="sj-vp-snel__close" aria-label="Sluiten" onclick="document.getElementById('sj-profiel-balk').classList.add('is-hidden')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+    </button>
 </div>
 
 

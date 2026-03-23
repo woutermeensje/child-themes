@@ -102,6 +102,53 @@ function sj_vacature_plaatsen_shortcode(): string {
                 }
             }
 
+            /* ── Maak concept job_listing aan in WP Job Manager ── */
+            $content = $omschrijving;
+            if ($extra_info) {
+                $content .= '<h3>Aanvullende informatie</h3>' . $extra_info;
+            }
+
+            $job_id = wp_insert_post([
+                'post_title'   => sanitize_text_field($vacaturetitel),
+                'post_content' => $content,
+                'post_status'  => 'draft',
+                'post_type'    => 'job_listing',
+                'post_author'  => 1,
+            ]);
+
+            if ($job_id && !is_wp_error($job_id)) {
+                update_post_meta($job_id, '_job_location',    $locatie);
+                update_post_meta($job_id, '_company_name',    $bedrijfsnaam);
+                update_post_meta($job_id, '_company_email',   $email);
+                update_post_meta($job_id, '_job_salary',      '');
+                update_post_meta($job_id, '_filled',          0);
+                update_post_meta($job_id, '_featured',        0);
+                update_post_meta($job_id, '_job_expires',     '');
+
+                // Koppel bedrijfslogo
+                if (!empty($upload) && !is_wp_error($upload)) {
+                    update_post_meta($job_id, '_company_logo', wp_get_attachment_url($upload));
+                    set_post_thumbnail($job_id, $upload);
+                }
+
+                // Koppel job types (taxonomie)
+                if (!empty($type_baan)) {
+                    $term_ids = [];
+                    foreach ($type_baan as $type_name) {
+                        $term = get_term_by('name', $type_name, 'job_listing_type');
+                        if ($term) {
+                            $term_ids[] = $term->term_id;
+                        }
+                    }
+                    if (!empty($term_ids)) {
+                        wp_set_post_terms($job_id, $term_ids, 'job_listing_type');
+                    }
+                }
+
+                // Sla pakket op als notitie
+                update_post_meta($job_id, '_sj_pakket', $pakket);
+            }
+
             wp_redirect('https://sustainablejobs.nl/bevestiging-vacature-plaatsing/');
             exit;
         }
@@ -306,7 +353,7 @@ function sj_vacature_plaatsen_shortcode(): string {
     <?php endif; ?>
 
     <!-- Snel plaatsen balk — sticky onderaan de pagina -->
-    <div class="sj-vp-snel">
+    <div class="sj-vp-snel" id="sj-snel-balk">
         <div class="sj-vp-snel__text">
             <h2 class="sj-vp-snel__title">Nog sneller plaatsen?</h2>
             <p class="sj-vp-snel__desc">Geef alleen de vacature-link door en wij doen de rest.</p>
@@ -314,6 +361,9 @@ function sj_vacature_plaatsen_shortcode(): string {
         <div class="sj-vp-snel__contact">
             <a href="<?php echo esc_url(home_url('/snel-plaatsen/')); ?>" class="sj-vp-snel__btn">Snel Plaatsen</a>
         </div>
+        <button class="sj-vp-snel__close" aria-label="Sluiten" onclick="document.getElementById('sj-snel-balk').classList.add('is-hidden')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+        </button>
     </div>
 
 
