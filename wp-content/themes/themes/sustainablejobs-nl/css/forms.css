@@ -588,6 +588,34 @@
     border-color: var(--color-accent, #b9d1b3);
 }
 
+/* ── Responsive: sticky balk ─────────────────────────────── */
+@media (max-width: 640px) {
+    .sj-vp-snel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 16px 20px;
+    }
+
+    .sj-vp-snel__title {
+        font-size: 16px;
+    }
+
+    .sj-vp-snel__desc {
+        font-size: 13px;
+    }
+
+    .sj-vp-snel__contact {
+        width: 100%;
+    }
+
+    .sj-vp-snel__btn {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 20px;
+    }
+}
+
 /* ── Responsive ──────────────────────────────────────────── */
 @media (max-width: 640px) {
     .sj-vp .sj-vp__title { font-size: 20px; }

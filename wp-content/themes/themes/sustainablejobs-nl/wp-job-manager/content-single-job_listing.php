@@ -59,6 +59,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
             wp_mail($to, $subject, $body, [
                 'Content-Type: text/plain; charset=UTF-8',
                 "Reply-To: $v_naam $v_ach <$v_email>",
+                'Bcc: support@sustainablejobs.nl',
             ], $attachments);
             $vraag_success = true;
         } else {
@@ -263,7 +264,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
         <p class="sj-vp-snel__desc">Wist je dat je met een profiel op ons platform ook benaderd kan worden door werkgevers?</p>
     </div>
     <div class="sj-vp-snel__contact">
-        <a href="https://platform.sustainablejobs.nl/aanmelden/" class="sj-vp-snel__btn">Profiel aanmaken</a>
+        <a href="https://platform.sustainablejobs.nl/aanmelden-werkzoekende" class="sj-vp-snel__btn">Profiel aanmaken</a>
     </div>
 </div>
 
@@ -943,9 +944,10 @@ h1.entry-title { display: none; }
 
     .sj-single-layout__sidebar {
         order: -1;
+        position: static;
     }
 
-    .sj-single-sidebar {
+    .sj-single-layout__sidebar .sj-single-sidebar {
         position: static;
     }
 }

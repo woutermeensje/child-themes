@@ -30,12 +30,12 @@ function sj_snel_plaatsen_shortcode(): string {
             $body .= "E-mail: $email\n";
             $body .= "Vacature URL: $url\n";
 
-            wp_mail(
+            $headers = ['Content-Type: text/plain; charset=UTF-8'];
+            $to = array_unique(array_filter([
                 'support@sustainablejobs.nl',
-                'Snel plaatsen aanvraag',
-                $body,
-                ['Content-Type: text/plain; charset=UTF-8']
-            );
+                get_option('admin_email'),
+            ]));
+            wp_mail($to, 'Snel plaatsen aanvraag', $body, $headers);
 
             /* Sla op als CPT */
             $post_id = wp_insert_post([
