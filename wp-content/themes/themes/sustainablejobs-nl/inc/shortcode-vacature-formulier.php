@@ -102,7 +102,8 @@ function sj_vacature_plaatsen_shortcode(): string {
                 }
             }
 
-            $success = true;
+            wp_redirect('https://sustainablejobs.nl/bevestiging-vacature-plaatsing/');
+            exit;
         }
     }
 
