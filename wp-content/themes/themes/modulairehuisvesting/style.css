@@ -23,11 +23,28 @@ Text Domain: modulairehuisvesting
 
 
 :root {
-  --color-primary:   #0884CC; /* blauw */
+  --color-primary:   #0456AB; /* blauw */
   --color-secondary: #FF8C2C; /* oranje */
-  --color-tertiary:  #0884CC; /* ook blauw */
+  --color-tertiary:  #0456AB; /* ook blauw */
 }
 
 .body {
-  width: 100vw; 
+  width: 100vw;
+}
+
+/* ── MH Units: onderdruk underline door globale link-styling ── */
+.mh-unit-row,
+.mh-unit-row *,
+.mh-unit-row:hover,
+.mh-unit-row:focus,
+.mh-unit-row:visited {
+    text-decoration: none !important;
+}
+
+.mh-unit-row-title,
+.mh-unit-row-excerpt,
+.mh-unit-row-price-note,
+.mh-unit-tax-badge,
+.mh-unit-aanbod-badge {
+    text-decoration: none !important;
 }
