@@ -1,0 +1,482 @@
+<?php
+if (!defined('ABSPATH')) exit;
+
+/**
+ * Shortcode: [ivb_vacature_plaatsen]
+ * Vacature-plaatsingsformulier met Quill rich text editor.
+ */
+add_shortcode('ivb_vacature_plaatsen', 'ivb_vacature_plaatsen_shortcode');
+
+function ivb_vacature_plaatsen_shortcode(): string {
+
+    /* ── Verwerking ─────────────────────────────────────────── */
+    $errors = [];
+
+    if (
+        $_SERVER['REQUEST_METHOD'] === 'POST' &&
+        isset($_POST['ivb_vp_nonce']) &&
+        wp_verify_nonce($_POST['ivb_vp_nonce'], 'ivb_vacature_plaatsen')
+    ) {
+        $voornaam      = sanitize_text_field($_POST['voornaam']      ?? '');
+        $achternaam    = sanitize_text_field($_POST['achternaam']     ?? '');
+        $bedrijfsnaam  = sanitize_text_field($_POST['bedrijfsnaam']   ?? '');
+        $email         = sanitize_email($_POST['email']               ?? '');
+        $pakket        = sanitize_text_field($_POST['pakket']         ?? '');
+        $vacaturetitel = sanitize_text_field($_POST['vacaturetitel']  ?? '');
+        $locatie       = sanitize_text_field($_POST['locatie']        ?? '');
+        $type_baan     = array_map('sanitize_text_field', (array)($_POST['type_baan'] ?? []));
+        $omschrijving  = wp_kses_post($_POST['omschrijving']          ?? '');
+        $extra_info    = wp_kses_post($_POST['extra_info']            ?? '');
+
+        if (!$voornaam)        $errors[] = 'Vul je voornaam in.';
+        if (!$achternaam)      $errors[] = 'Vul je achternaam in.';
+        if (!$bedrijfsnaam)    $errors[] = 'Vul je bedrijfsnaam in.';
+        if (!is_email($email)) $errors[] = 'Vul een geldig e-mailadres in.';
+        if (!$vacaturetitel)   $errors[] = 'Vul een vacaturetitel in.';
+        if (!$omschrijving)    $errors[] = 'Vul een vacatureomschrijving in.';
+
+        if (empty($errors)) {
+            $upload      = null;
+            $attachments = [];
+
+            if (!empty($_FILES['bedrijfslogo']['tmp_name'])) {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+                require_once ABSPATH . 'wp-admin/includes/media.php';
+                require_once ABSPATH . 'wp-admin/includes/image.php';
+
+                $upload = media_handle_upload('bedrijfslogo', 0);
+                if (!is_wp_error($upload)) {
+                    $path = get_attached_file($upload);
+                    if (file_exists($path)) {
+                        $attachments[] = $path;
+                    }
+                }
+            }
+
+            $type_baan_str = implode(', ', $type_baan);
+            $body  = "Nieuwe vacature via het formulier:\n\n";
+            $body .= "Pakket: $pakket\n";
+            $body .= "Naam: $voornaam $achternaam\n";
+            $body .= "Bedrijf: $bedrijfsnaam\n";
+            $body .= "E-mail: $email\n";
+            $body .= "Vacaturetitel: $vacaturetitel\n";
+            $body .= "Locatie: $locatie\n";
+            $body .= "Type baan: $type_baan_str\n\n";
+            $body .= "--- Vacature omschrijving ---\n" . strip_tags($omschrijving) . "\n\n";
+            $body .= "--- Aanvullende informatie ---\n" . strip_tags($extra_info) . "\n";
+
+            wp_mail(
+                get_option('admin_email'),
+                "Nieuwe vacature: $vacaturetitel",
+                $body,
+                ['Content-Type: text/plain; charset=UTF-8'],
+                $attachments
+            );
+
+            /* ── Sla inzending op als CPT ──────────────────── */
+            $post_id = wp_insert_post([
+                'post_title'  => sanitize_text_field($vacaturetitel),
+                'post_status' => 'pending',
+                'post_type'   => 'ivb_vacature',
+                'post_author' => 0,
+            ]);
+
+            if ($post_id && !is_wp_error($post_id)) {
+                update_post_meta($post_id, '_ivb_pakket',       $pakket);
+                update_post_meta($post_id, '_ivb_voornaam',     $voornaam);
+                update_post_meta($post_id, '_ivb_achternaam',   $achternaam);
+                update_post_meta($post_id, '_ivb_bedrijfsnaam', $bedrijfsnaam);
+                update_post_meta($post_id, '_ivb_email',        $email);
+                update_post_meta($post_id, '_ivb_locatie',      $locatie);
+                update_post_meta($post_id, '_ivb_type_baan',    $type_baan);
+                update_post_meta($post_id, '_ivb_omschrijving', $omschrijving);
+                update_post_meta($post_id, '_ivb_extra_info',   $extra_info);
+
+                if (!empty($upload) && !is_wp_error($upload)) {
+                    update_post_meta($post_id, '_ivb_logo_id', $upload);
+                }
+            }
+
+            /* ── Maak concept job_listing aan ────────────── */
+            $content = $omschrijving;
+            if ($extra_info) {
+                $content .= '<h3>Aanvullende informatie</h3>' . $extra_info;
+            }
+
+            $job_id = wp_insert_post([
+                'post_title'   => sanitize_text_field($vacaturetitel),
+                'post_content' => $content,
+                'post_status'  => 'draft',
+                'post_type'    => 'job_listing',
+                'post_author'  => 1,
+            ]);
+
+            if ($job_id && !is_wp_error($job_id)) {
+                update_post_meta($job_id, '_job_location',  $locatie);
+                update_post_meta($job_id, '_company_name',  $bedrijfsnaam);
+                update_post_meta($job_id, '_company_email', $email);
+                update_post_meta($job_id, '_filled',        0);
+                update_post_meta($job_id, '_featured',      0);
+                update_post_meta($job_id, '_job_expires',   '');
+                update_post_meta($job_id, '_ivb_pakket',    $pakket);
+
+                if (!empty($upload) && !is_wp_error($upload)) {
+                    update_post_meta($job_id, '_company_logo', wp_get_attachment_url($upload));
+                    set_post_thumbnail($job_id, $upload);
+                }
+
+                if (!empty($type_baan)) {
+                    $term_ids = [];
+                    foreach ($type_baan as $type_name) {
+                        $term = get_term_by('name', $type_name, 'job_listing_type');
+                        if ($term) {
+                            $term_ids[] = $term->term_id;
+                        }
+                    }
+                    if (!empty($term_ids)) {
+                        wp_set_post_terms($job_id, $term_ids, 'job_listing_type');
+                    }
+                }
+            }
+
+            wp_redirect(home_url('/bevestiging-vacature-plaatsing/'));
+            exit;
+        }
+    }
+
+    /* ── HTML opbouwen ──────────────────────────────────────── */
+    ob_start();
+
+    if (!empty($errors)): ?>
+    <div class="sj-vp-notice sj-vp-notice--error">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M236.8,188.09,149.35,36.22a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/></svg>
+        <div>
+            <strong>Er zijn een paar fouten:</strong>
+            <ul>
+                <?php foreach ($errors as $e): ?>
+                    <li><?php echo esc_html($e); ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <div class="sj-vp">
+        <div class="sj-vp__block">
+
+            <header class="sj-vp__header">
+                <h2 class="sj-vp__title">Vacature plaatsen</h2>
+                <p class="sj-vp__subtitle">Vul de gegevens in en we publiceren je vacature zo snel mogelijk. Je ontvangt een factuur per e-mail na publicatie.</p>
+            </header>
+
+            <form method="post" class="sj-vp__form" enctype="multipart/form-data" novalidate>
+                <?php wp_nonce_field('ivb_vacature_plaatsen', 'ivb_vp_nonce'); ?>
+
+                <!-- Pakket -->
+                <div class="sj-vp__section">
+                    <p class="sj-vp__section-title">Kies je pakket</p>
+                    <div class="sj-vp__grid sj-vp__grid--2">
+                        <?php
+                        $pakketten = [
+                            'Standaard Vacature: €275 excl. btw' => ['label' => 'Standaard',          'prijs' => '€275,00 excl. btw'],
+                            'Premium Vacature: €375 excl. btw'   => ['label' => 'Premium',             'prijs' => '€375,00 excl. btw'],
+                            'Stage & Afstudeeropdracht: Gratis'   => ['label' => 'Stage & Afstuderen', 'prijs' => 'Gratis'],
+                            'Wij zijn partner van Ingenieurvacaturebank: Gratis' => ['label' => 'Partner', 'prijs' => 'Gratis voor partners'],
+                            'Wij hebben een strippenkaart'        => ['label' => 'Strippenkaart',      'prijs' => 'Via strippenkaart'],
+                        ];
+                        $selected_pakket = $_POST['pakket'] ?? 'Standaard Vacature: €275 excl. btw';
+                        foreach ($pakketten as $value => $info): ?>
+                        <label class="sj-vp__pakket<?php echo ($selected_pakket === $value) ? ' is-selected' : ''; ?>">
+                            <input type="radio" name="pakket" value="<?php echo esc_attr($value); ?>"
+                                   <?php checked($selected_pakket, $value); ?> class="sj-vp__pakket-radio">
+                            <span class="sj-vp__pakket-inner">
+                                <span class="sj-vp__pakket-name"><?php echo esc_html($info['label']); ?></span>
+                                <span class="sj-vp__pakket-prijs"><?php echo esc_html($info['prijs']); ?></span>
+                            </span>
+                            <span class="sj-vp__pakket-check" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+                            </span>
+                        </label>
+                        <?php endforeach; ?>
+                    </div>
+                    <p class="sj-vp__pakket-note">Benieuwd naar de mogelijkheden van een strippenkaart of partnerschap? Neem <a href="<?php echo esc_url(home_url('/contact/')); ?>">contact</a> met ons op.</p>
+                </div>
+
+                <!-- Contactgegevens -->
+                <div class="sj-vp__section">
+                    <p class="sj-vp__section-title">Contactgegevens</p>
+                    <div class="sj-vp__grid sj-vp__grid--2">
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="ivb_voornaam">Voornaam <span class="sj-vp__req">*</span></label>
+                            <input type="text" name="voornaam" id="ivb_voornaam" class="sj-vp__input"
+                                   value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" placeholder="Jan" required>
+                        </div>
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="ivb_achternaam">Achternaam <span class="sj-vp__req">*</span></label>
+                            <input type="text" name="achternaam" id="ivb_achternaam" class="sj-vp__input"
+                                   value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" placeholder="de Vries" required>
+                        </div>
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="ivb_bedrijfsnaam">Bedrijfsnaam <span class="sj-vp__req">*</span></label>
+                            <input type="text" name="bedrijfsnaam" id="ivb_bedrijfsnaam" class="sj-vp__input"
+                                   value="<?php echo esc_attr($_POST['bedrijfsnaam'] ?? ''); ?>" placeholder="Jouw organisatie" required>
+                        </div>
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="ivb_email">E-mailadres <span class="sj-vp__req">*</span></label>
+                            <input type="email" name="email" id="ivb_email" class="sj-vp__input"
+                                   value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" placeholder="jan@bedrijf.nl" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vacature informatie -->
+                <div class="sj-vp__section">
+                    <p class="sj-vp__section-title">Vacature informatie</p>
+                    <div class="sj-vp__grid sj-vp__grid--1">
+
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="ivb_vacaturetitel">Vacaturetitel <span class="sj-vp__req">*</span></label>
+                            <input type="text" name="vacaturetitel" id="ivb_vacaturetitel" class="sj-vp__input"
+                                   value="<?php echo esc_attr($_POST['vacaturetitel'] ?? ''); ?>"
+                                   placeholder="Bijv. Werktuigbouwkundig Ingenieur" required>
+                        </div>
+
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="ivb_locatie">Locatie</label>
+                            <input type="text" name="locatie" id="ivb_locatie" class="sj-vp__input"
+                                   value="<?php echo esc_attr($_POST['locatie'] ?? ''); ?>"
+                                   placeholder="Amsterdam, Hybrid, Remote...">
+                        </div>
+
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" id="ivb_type_baan_label">Type dienstverband</label>
+                            <?php
+                            $types = ['Fulltime', 'Parttime', 'Tijdelijk', 'Stage', 'Afstudeeropdracht'];
+                            $selected_types = (array)($_POST['type_baan'] ?? []);
+                            ?>
+                            <div class="sj-vp__ms-hidden" aria-hidden="true">
+                                <?php foreach ($types as $t): ?>
+                                <input type="checkbox" name="type_baan[]" value="<?php echo esc_attr($t); ?>"
+                                       class="sj-vp__ms-cb"
+                                       <?php checked(in_array($t, $selected_types)); ?>>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="sj-vp__ms" id="ivb_type_baan_ms" aria-labelledby="ivb_type_baan_label" role="group">
+                                <div class="sj-vp__ms-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+                                    <span class="sj-vp__ms-placeholder">Selecteer type(s)...</span>
+                                    <span class="sj-vp__ms-tags"></span>
+                                    <svg class="sj-vp__ms-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
+                                </div>
+                                <ul class="sj-vp__ms-dropdown" role="listbox" aria-multiselectable="true">
+                                    <?php foreach ($types as $t): ?>
+                                    <li class="sj-vp__ms-option<?php echo in_array($t, $selected_types) ? ' is-selected' : ''; ?>"
+                                        role="option"
+                                        aria-selected="<?php echo in_array($t, $selected_types) ? 'true' : 'false'; ?>"
+                                        data-value="<?php echo esc_attr($t); ?>">
+                                        <span class="sj-vp__ms-opt-check" aria-hidden="true">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
+                                        </span>
+                                        <span class="sj-vp__ms-opt-text"><?php echo esc_html($t); ?></span>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Quill: omschrijving -->
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="ivb_omschrijving_hidden">Vacature omschrijving <span class="sj-vp__req">*</span></label>
+                            <div class="sj-vp__quill-wrap">
+                                <div id="ivb_quill_omschrijving" class="sj-vp__quill-editor" style="min-height:220px;"></div>
+                            </div>
+                            <textarea name="omschrijving" id="ivb_omschrijving_hidden" class="sj-vp__quill-hidden" aria-hidden="true"><?php echo esc_textarea($_POST['omschrijving'] ?? ''); ?></textarea>
+                            <span class="sj-vp__hint">Beschrijf de functie, vereisten en wat je organisatie biedt.</span>
+                        </div>
+
+                        <!-- Quill: aanvullende informatie -->
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="ivb_extra_info_hidden">Aanvullende informatie <span class="sj-vp__opt">(optioneel)</span></label>
+                            <div class="sj-vp__quill-wrap">
+                                <div id="ivb_quill_extra_info" class="sj-vp__quill-editor" style="min-height:140px;"></div>
+                            </div>
+                            <textarea name="extra_info" id="ivb_extra_info_hidden" class="sj-vp__quill-hidden" aria-hidden="true"><?php echo esc_textarea($_POST['extra_info'] ?? ''); ?></textarea>
+                            <span class="sj-vp__hint">Secundaire arbeidsvoorwaarden, bedrijfscultuur, of andere relevante informatie.</span>
+                        </div>
+
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="ivb_bedrijfslogo">Bedrijfslogo uploaden</label>
+                            <label class="sj-vp__upload" for="ivb_bedrijfslogo">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M240,136v64a16,16,0,0,1-16,16H32a16,16,0,0,1-16-16V136a16,16,0,0,1,16-16H80a8,8,0,0,1,0,16H32v64H224V136H176a8,8,0,0,1,0-16h48A16,16,0,0,1,240,136ZM85.66,77.66,120,43.31V128a8,8,0,0,0,16,0V43.31l34.34,34.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,77.66Z"/></svg>
+                                <span class="sj-vp__upload-label">Kies bestand</span>
+                                <span class="sj-vp__upload-name">Geen bestand gekozen</span>
+                                <input type="file" name="bedrijfslogo" id="ivb_bedrijfslogo" accept="image/*" class="sj-vp__upload-input">
+                            </label>
+                            <span class="sj-vp__hint">PNG of JPG, liefst vierkant. Max. 2 MB.</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <footer class="sj-vp__footer">
+                    <button type="submit" class="sj-vp__submit">Vacature versturen</button>
+                    <p class="sj-vp__footer-note">Je ontvangt een factuur per e-mail na publicatie. Vragen? Neem <a href="<?php echo esc_url(home_url('/contact/')); ?>">contact</a> met ons op.</p>
+                </footer>
+
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        function initQuill() {
+            if (typeof Quill === 'undefined') {
+                setTimeout(initQuill, 80);
+                return;
+            }
+
+            var toolbarOptions = [
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['link'],
+                ['clean']
+            ];
+
+            /* ── Omschrijving ── */
+            var omschrijvingHidden = document.getElementById('ivb_omschrijving_hidden');
+            var quillOmschrijving  = new Quill('#ivb_quill_omschrijving', {
+                theme: 'snow',
+                modules: { toolbar: toolbarOptions },
+                placeholder: 'Beschrijf de functie, taken, vereisten en wat je organisatie biedt...'
+            });
+
+            if (omschrijvingHidden && omschrijvingHidden.value) {
+                quillOmschrijving.clipboard.dangerouslyPasteHTML(omschrijvingHidden.value);
+            }
+
+            quillOmschrijving.on('text-change', function () {
+                if (omschrijvingHidden) {
+                    omschrijvingHidden.value = quillOmschrijving.root.innerHTML;
+                }
+            });
+
+            /* ── Extra info ── */
+            var extraInfoHidden = document.getElementById('ivb_extra_info_hidden');
+            var quillExtraInfo  = new Quill('#ivb_quill_extra_info', {
+                theme: 'snow',
+                modules: { toolbar: toolbarOptions },
+                placeholder: 'Secundaire arbeidsvoorwaarden, bedrijfscultuur, of andere relevante informatie...'
+            });
+
+            if (extraInfoHidden && extraInfoHidden.value) {
+                quillExtraInfo.clipboard.dangerouslyPasteHTML(extraInfoHidden.value);
+            }
+
+            quillExtraInfo.on('text-change', function () {
+                if (extraInfoHidden) {
+                    extraInfoHidden.value = quillExtraInfo.root.innerHTML;
+                }
+            });
+
+            /* Sync hidden textareas vlak voor submit */
+            var form = document.querySelector('.sj-vp__form');
+            if (form) {
+                form.addEventListener('submit', function () {
+                    if (omschrijvingHidden) omschrijvingHidden.value = quillOmschrijving.root.innerHTML;
+                    if (extraInfoHidden)   extraInfoHidden.value   = quillExtraInfo.root.innerHTML;
+                });
+            }
+        }
+
+        initQuill();
+
+        /* ── Pakket radio highlight ── */
+        document.querySelectorAll('.sj-vp__pakket-radio').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                document.querySelectorAll('.sj-vp__pakket').forEach(function (el) {
+                    el.classList.remove('is-selected');
+                });
+                if (radio.checked) {
+                    radio.closest('.sj-vp__pakket').classList.add('is-selected');
+                }
+            });
+        });
+
+        /* ── Bestandsnaam tonen bij upload ── */
+        var fileInput = document.getElementById('ivb_bedrijfslogo');
+        var fileName  = document.querySelector('.sj-vp__upload-name');
+        if (fileInput && fileName) {
+            fileInput.addEventListener('change', function () {
+                fileName.textContent = fileInput.files.length ? fileInput.files[0].name : 'Geen bestand gekozen';
+            });
+        }
+
+        /* ── Multiselect: type dienstverband ── */
+        var ms          = document.getElementById('ivb_type_baan_ms');
+        var trigger     = ms && ms.querySelector('.sj-vp__ms-trigger');
+        var tagsEl      = ms && ms.querySelector('.sj-vp__ms-tags');
+        var placeholder = ms && ms.querySelector('.sj-vp__ms-placeholder');
+        var options     = ms ? Array.from(ms.querySelectorAll('.sj-vp__ms-option')) : [];
+        var checkboxes  = ms ? Array.from(ms.closest('.sj-vp__field').querySelectorAll('.sj-vp__ms-cb')) : [];
+
+        function msSync() {
+            if (!tagsEl) return;
+            tagsEl.innerHTML = '';
+            var selected = options.filter(function(o){ return o.classList.contains('is-selected'); });
+            placeholder.style.display = selected.length ? 'none' : '';
+            selected.forEach(function (opt) {
+                var tag = document.createElement('span');
+                tag.className = 'sj-vp__ms-tag';
+                tag.textContent = opt.dataset.value;
+                var rm = document.createElement('button');
+                rm.type = 'button';
+                rm.className = 'sj-vp__ms-tag-remove';
+                rm.setAttribute('aria-label', 'Verwijder ' + opt.dataset.value);
+                rm.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 256 256" fill="currentColor"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>';
+                rm.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    opt.classList.remove('is-selected');
+                    opt.setAttribute('aria-selected', 'false');
+                    var cb = checkboxes.find(function(c){ return c.value === opt.dataset.value; });
+                    if (cb) cb.checked = false;
+                    msSync();
+                });
+                tag.appendChild(rm);
+                tagsEl.appendChild(tag);
+            });
+        }
+
+        function msOpen() { ms.classList.add('is-open'); trigger.setAttribute('aria-expanded', 'true'); }
+        function msClose() { ms.classList.remove('is-open'); trigger.setAttribute('aria-expanded', 'false'); }
+
+        if (trigger) {
+            trigger.addEventListener('click', function () {
+                ms.classList.contains('is-open') ? msClose() : msOpen();
+            });
+            trigger.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); ms.classList.contains('is-open') ? msClose() : msOpen(); }
+                if (e.key === 'Escape') msClose();
+            });
+        }
+
+        options.forEach(function (opt) {
+            opt.addEventListener('click', function () {
+                var isSelected = opt.classList.toggle('is-selected');
+                opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+                var cb = checkboxes.find(function(c){ return c.value === opt.dataset.value; });
+                if (cb) cb.checked = isSelected;
+                msSync();
+            });
+        });
+
+        document.addEventListener('click', function (e) {
+            if (ms && !ms.contains(e.target)) msClose();
+        });
+
+        msSync();
+    })();
+    </script>
+
+    <?php
+    return ob_get_clean();
+}

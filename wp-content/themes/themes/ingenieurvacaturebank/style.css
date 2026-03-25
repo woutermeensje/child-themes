@@ -1,0 +1,46 @@
+/*
+Theme Name: Ingenieurvacaturebank
+Theme URI: https://ingenieurvacaturebank.nl/
+Description: Child theme voor Ingenieurvacaturebank op basis van Hello Elementor.
+Author: Wouter Meens
+Author URI: https://sustainablerecruitmentmarketing.nl/
+Template: hello-elementor
+Version: 1.0.0
+Text Domain: ingenieurvacaturebank
+*/
+
+@font-face {
+    font-family: 'Balgin-Bold';
+    src: url('fonts/Balgin-Bold.woff2') format('woff2'),
+         url('fonts/Balgin-Bold.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
+:root {
+  /* Kleurenpalet — Ingenieurvacaturebank (sustainablejobs kleuren) */
+  --color-primary:       #0A6B8D;
+  --color-primary-dk:    #085978;
+  --color-primary-mid:   #3A9AB5;
+  --color-secondary:     #92E9AB;
+  --color-secondary-dk:  #6dc98a;
+  --color-tertiary:      #E0D0E1;
+  --color-accent:        #b9d1b3;
+
+  /* Tekst & achtergrond */
+  --color-text:          #333333;
+  --color-text-muted:    #6B7280;
+  --color-bg:            #ffffff;
+  --color-bg-light:      #f8f8f8;
+  --color-border:        #e0e0e0;
+  --color-border-light:  #cccccc;
+  --color-bg-filter:     #EEF3F0;
+  --color-lavender:      #E0D0E1;
+}
+
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
