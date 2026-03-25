@@ -43,7 +43,7 @@ unset($value);
     <div class="filter-header">
         <div class="filter-header__left">
             <h2>Bekijk alle Online Marketing Vacatures</h2>
-            <p>Ontvang de laatste <a href="/nieuwsbrief/" class="filter-newsletter-link">online marketing vacatures</a> in de e-mail!</p>
+            <p>Ontvang de laatste <a href="/online-marketing-job-alerts/" class="filter-newsletter-link">online marketing vacatures</a> in de e-mail!</p>
         </div>
     </div>
 
@@ -403,11 +403,11 @@ form.job_filters {
   margin-bottom: 0 !important;
   min-height: 300px;
   padding: 60px 0;
-  background-color: #F0ECFE;
+  background-color: var(--color-primary);
   box-shadow: none;
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid #d8d0f8;
+  border-bottom: 1px solid var(--color-primary-dk);
   box-sizing: border-box;
 }
 
@@ -509,24 +509,24 @@ div.job_listings ul.job_listings {
 .filter-header p {
   font-family: Poppins;
   font-size: 15px;
-  color: #333333;
+  color: #ffffff;
   margin: 8px 0 0;
 }
 
 .filter-newsletter-link {
-  color: #333333;
+  color: #ffffff;
   font-weight: 400;
   text-decoration: underline;
 }
 
 .filter-newsletter-link:hover {
-  color: var(--color-primary);
+  color: rgba(255, 255, 255, 0.75);
 }
 
 .filter-header h2 {
   font-family: 'Inter', sans-serif;
   font-size: 24px;
-  color: #333333;
+  color: #ffffff;
   margin: 0;
   display: block;
   font-weight: 700;
