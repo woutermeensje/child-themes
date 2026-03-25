@@ -1,15 +1,123 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-/**
- * Shortcode: [si_informatie_aanvragen]
- * Informatieaanvraagformulier met Quill rich text editor.
- */
+/* ============================================================
+   CUSTOM POST TYPE: si_aanvraag
+   Slaat elke inzending op als 'Aanvraag' in de WordPress backend.
+   ============================================================ */
+add_action('init', function () {
+    register_post_type('si_aanvraag', [
+        'label'               => 'Aanvragen',
+        'labels'              => [
+            'name'               => 'Aanvragen',
+            'singular_name'      => 'Aanvraag',
+            'menu_name'          => 'Aanvragen',
+            'all_items'          => 'Alle aanvragen',
+            'view_item'          => 'Bekijk aanvraag',
+            'search_items'       => 'Zoek aanvragen',
+            'not_found'          => 'Geen aanvragen gevonden.',
+            'not_found_in_trash' => 'Geen aanvragen in de prullenbak.',
+        ],
+        'public'              => false,
+        'show_ui'             => true,
+        'show_in_menu'        => true,
+        'menu_icon'           => 'dashicons-email-alt',
+        'menu_position'       => 25,
+        'supports'            => ['title'],
+        'capability_type'     => 'post',
+        'capabilities'        => [
+            'create_posts' => 'do_not_allow',   // Alleen via formulier aanmaken
+        ],
+        'map_meta_cap'        => true,
+        'exclude_from_search' => true,
+        'publicly_queryable'  => false,
+        'has_archive'         => false,
+    ]);
+});
+
+/* ── Admin kolommen ─────────────────────────────────────────── */
+add_filter('manage_si_aanvraag_posts_columns', function ($cols) {
+    return [
+        'cb'           => $cols['cb'],
+        'title'        => 'Naam',
+        'si_email'     => 'E-mail',
+        'si_telefoon'  => 'Telefoon',
+        'si_bericht'   => 'Bericht (kort)',
+        'date'         => 'Datum',
+    ];
+});
+
+add_action('manage_si_aanvraag_posts_custom_column', function ($col, $post_id) {
+    switch ($col) {
+        case 'si_email':
+            $v = get_post_meta($post_id, '_si_email', true);
+            echo $v ? '<a href="mailto:' . esc_attr($v) . '">' . esc_html($v) . '</a>' : '—';
+            break;
+        case 'si_telefoon':
+            echo esc_html(get_post_meta($post_id, '_si_telefoon', true) ?: '—');
+            break;
+        case 'si_bericht':
+            $b = strip_tags(get_post_meta($post_id, '_si_bericht', true));
+            echo esc_html(mb_strimwidth($b, 0, 80, '…'));
+            break;
+    }
+}, 10, 2);
+
+add_filter('manage_edit-si_aanvraag_sortable_columns', function ($cols) {
+    $cols['date'] = 'date';
+    return $cols;
+});
+
+/* ── Meta box: volledige inzending tonen in detailweergave ──── */
+add_action('add_meta_boxes', function () {
+    add_meta_box(
+        'si_aanvraag_details',
+        'Aanvraagdetails',
+        'si_aanvraag_meta_box_cb',
+        'si_aanvraag',
+        'normal',
+        'high'
+    );
+});
+
+function si_aanvraag_meta_box_cb(WP_Post $post): void {
+    $fields = [
+        '_si_voornaam'  => 'Voornaam',
+        '_si_achternaam'=> 'Achternaam',
+        '_si_email'     => 'E-mail',
+        '_si_telefoon'  => 'Telefoon',
+    ];
+    echo '<table style="width:100%;border-collapse:collapse;">';
+    foreach ($fields as $key => $label) {
+        $val = get_post_meta($post->ID, $key, true);
+        echo '<tr>';
+        echo '<th style="text-align:left;padding:6px 10px 6px 0;width:130px;font-weight:600;">' . esc_html($label) . '</th>';
+        echo '<td style="padding:6px 0;">';
+        if ($key === '_si_email' && $val) {
+            echo '<a href="mailto:' . esc_attr($val) . '">' . esc_html($val) . '</a>';
+        } else {
+            echo esc_html($val ?: '—');
+        }
+        echo '</td></tr>';
+    }
+    echo '</table>';
+    $bericht = get_post_meta($post->ID, '_si_bericht', true);
+    if ($bericht) {
+        echo '<hr style="margin:14px 0;">';
+        echo '<p style="font-weight:600;margin:0 0 8px;">Bericht</p>';
+        echo '<div style="background:#f9f9f9;padding:12px;border:1px solid #ddd;border-radius:4px;">';
+        echo wp_kses_post($bericht);
+        echo '</div>';
+    }
+}
+
+/* ============================================================
+   SHORTCODE: [si_informatie_aanvragen]
+   ============================================================ */
 add_shortcode('si_informatie_aanvragen', 'si_informatie_aanvragen_shortcode');
 
 function si_informatie_aanvragen_shortcode(): string {
 
-    /* ── Verwerking ─────────────────────────────────────────── */
     $success = false;
     $errors  = [];
 
@@ -18,11 +126,11 @@ function si_informatie_aanvragen_shortcode(): string {
         isset($_POST['si_ia_nonce']) &&
         wp_verify_nonce($_POST['si_ia_nonce'], 'si_informatie_aanvragen')
     ) {
-        $voornaam     = sanitize_text_field($_POST['voornaam']     ?? '');
-        $achternaam   = sanitize_text_field($_POST['achternaam']   ?? '');
-        $email        = sanitize_email($_POST['email']             ?? '');
-        $telefoon     = sanitize_text_field($_POST['telefoon']     ?? '');
-        $bericht      = wp_kses_post($_POST['bericht']             ?? '');
+        $voornaam   = sanitize_text_field($_POST['voornaam']   ?? '');
+        $achternaam = sanitize_text_field($_POST['achternaam'] ?? '');
+        $email      = sanitize_email($_POST['email']           ?? '');
+        $telefoon   = sanitize_text_field($_POST['telefoon']   ?? '');
+        $bericht    = wp_kses_post($_POST['bericht']           ?? '');
 
         if (!$voornaam)        $errors[] = 'Vul je voornaam in.';
         if (!$achternaam)      $errors[] = 'Vul je achternaam in.';
@@ -30,22 +138,38 @@ function si_informatie_aanvragen_shortcode(): string {
         if (!$bericht)         $errors[] = 'Vul een bericht in.';
 
         if (empty($errors)) {
+
+            // ── Opslaan in de database ──────────────────────────
+            $post_id = wp_insert_post([
+                'post_type'   => 'si_aanvraag',
+                'post_title'  => sanitize_text_field("$voornaam $achternaam"),
+                'post_status' => 'publish',
+                'post_author' => 0,
+            ]);
+
+            if ($post_id && !is_wp_error($post_id)) {
+                update_post_meta($post_id, '_si_voornaam',   $voornaam);
+                update_post_meta($post_id, '_si_achternaam', $achternaam);
+                update_post_meta($post_id, '_si_email',      $email);
+                update_post_meta($post_id, '_si_telefoon',   $telefoon);
+                update_post_meta($post_id, '_si_bericht',    $bericht);
+            }
+
+            // ── E-mailnotificatie ────────────────────────────────
             $body  = "Nieuwe informatieaanvraag via het formulier:\n\n";
             $body .= "Naam: $voornaam $achternaam\n";
             $body .= "E-mail: $email\n";
             $body .= "Telefoon: $telefoon\n\n";
             $body .= "--- Bericht ---\n" . strip_tags($bericht) . "\n";
 
-            $headers = [
-                'Content-Type: text/plain; charset=UTF-8',
-                'Reply-To: ' . $email,
-            ];
-
             wp_mail(
                 get_option('admin_email'),
                 "Informatieaanvraag van $voornaam $achternaam",
                 $body,
-                $headers
+                [
+                    'Content-Type: text/plain; charset=UTF-8',
+                    'Reply-To: ' . $email,
+                ]
             );
 
             wp_redirect(home_url('/bedankt-informatie-aanvraag/'));
@@ -53,22 +177,10 @@ function si_informatie_aanvragen_shortcode(): string {
         }
     }
 
-    /* ── HTML opbouwen ──────────────────────────────────────── */
+    /* ── HTML ───────────────────────────────────────────────── */
     ob_start();
 
-    if ($success): ?>
-
-    <div class="si-ia-notice si-ia-notice--success">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
-        <div>
-            <strong>Aanvraag succesvol verzonden!</strong>
-            <p>We nemen zo snel mogelijk contact met je op.</p>
-        </div>
-    </div>
-
-    <?php else: ?>
-
-    <?php if (!empty($errors)): ?>
+    if (!empty($errors)): ?>
     <div class="si-ia-notice si-ia-notice--error">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M236.8,188.09,149.35,36.22a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/></svg>
         <div>
@@ -140,10 +252,7 @@ function si_informatie_aanvragen_shortcode(): string {
     <script>
     (function () {
         function initQuill() {
-            if (typeof Quill === 'undefined') {
-                setTimeout(initQuill, 80);
-                return;
-            }
+            if (typeof Quill === 'undefined') { setTimeout(initQuill, 80); return; }
 
             var toolbarOptions = [
                 ['bold', 'italic', 'underline'],
@@ -164,9 +273,7 @@ function si_informatie_aanvragen_shortcode(): string {
             }
 
             quillBericht.on('text-change', function () {
-                if (berichtHidden) {
-                    berichtHidden.value = quillBericht.root.innerHTML;
-                }
+                if (berichtHidden) berichtHidden.value = quillBericht.root.innerHTML;
             });
 
             var form = document.querySelector('.si-ia__form');
@@ -176,12 +283,9 @@ function si_informatie_aanvragen_shortcode(): string {
                 });
             }
         }
-
         initQuill();
     })();
     </script>
-
-    <?php endif; ?>
 
     <?php
     return ob_get_clean();

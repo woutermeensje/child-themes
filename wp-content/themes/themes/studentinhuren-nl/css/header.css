@@ -1,18 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;600;700&display=swap');
-
-:root {
-  --rn-primary:    #0458ab;
-  --rn-primary-dk: #034a92;
-  --rn-accent:     #ff8200;
-  --rn-accent-dk:  #e07300;
-  --rn-text:       #374151;
-  --rn-bg:         #ffffff;
-  --rn-border:     #f3f4f6;
-  --rn-shadow:     0 1px 3px rgba(0, 0, 0, 0.08);
-  --rn-radius:     5px;
-  --rn-header-h:   68px;
-  --rn-topbar-h:   36px;
-}
+/* ================================================
+   Studentinhuren.nl — Header & Navigation
+   Hardcoded kleuren: primair #3A89FF, accent #FF8200, groen #80D424
+   ================================================ */
 
 .rn-header,
 .rn-header *,
@@ -26,15 +15,15 @@
   top: 0;
   z-index: 9000;
   width: 100%;
-  background: var(--rn-bg);
-  border-bottom: 1px solid var(--rn-border);
-  box-shadow: var(--rn-shadow);
+  background: #ffffff;
+  border-bottom: 1px solid #DEDEDE;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 /* ── Topbar ── */
 .rn-topbar {
   width: 100%;
-  background: var(--rn-primary);
+  background: #3A89FF;
 }
 
 .rn-topbar__inner,
@@ -45,7 +34,7 @@
 }
 
 .rn-topbar__inner {
-  min-height: var(--rn-topbar-h);
+  min-height: 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -67,7 +56,7 @@
 }
 
 .rn-topbar a {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 400;
   color: rgba(255, 255, 255, 0.90) !important;
@@ -86,7 +75,7 @@
 
 /* ── Main header bar ── */
 .rn-header__inner {
-  min-height: var(--rn-header-h);
+  min-height: 68px;
   display: flex;
   align-items: center;
   gap: 24px;
@@ -108,11 +97,25 @@
   height: 40px;
 }
 
+/* WordPress site logo via the_custom_logo() */
+.rn-header__brand .custom-logo-link {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none !important;
+}
+
+.rn-header__brand .custom-logo {
+  display: block;
+  width: auto;
+  height: 40px;
+  max-width: none;
+}
+
 .rn-header__site-name {
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 22px;
   font-weight: 700;
-  color: var(--rn-primary) !important;
+  color: #3A89FF !important;
   line-height: 1;
   text-decoration: none !important;
 }
@@ -145,13 +148,13 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: var(--rn-header-h);
+  min-height: 68px;
   padding: 8px 12px;
-  border-radius: var(--rn-radius);
-  font-family: 'Roboto', sans-serif;
-  font-size: 16px;
+  border-radius: 5px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
   font-weight: 300;
-  color: var(--rn-text) !important;
+  color: #333333 !important;
   text-decoration: none !important;
   white-space: nowrap;
   transition: color .15s ease, background .15s ease;
@@ -159,7 +162,7 @@
 
 .rn-nav__link:hover,
 .rn-nav__link.is-active {
-  color: var(--rn-primary) !important;
+  color: #3A89FF !important;
 }
 
 .rn-nav__link.is-active {
@@ -192,8 +195,8 @@
   padding: 6px;
   list-style: none;
   background: #fff;
-  border: 1px solid var(--rn-border);
-  border-radius: var(--rn-radius);
+  border: 1px solid #DEDEDE;
+  border-radius: 5px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.10);
 }
 
@@ -212,12 +215,12 @@
   padding: 10px 14px;
   font-size: 14px;
   font-weight: 400;
-  border-radius: var(--rn-radius);
+  border-radius: 5px;
 }
 
 .rn-nav__dropdown .rn-nav__link:hover {
-  background: rgba(4, 88, 171, 0.06);
-  color: var(--rn-primary) !important;
+  background: rgba(58, 137, 255, 0.06);
+  color: #3A89FF !important;
 }
 
 /* ── Divider ── */
@@ -234,11 +237,11 @@
   align-items: center;
   justify-content: center;
   padding: 8px 20px;
-  border-radius: var(--rn-radius);
+  border-radius: 5px;
   border: 1.5px solid transparent;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Balgin-Bold', 'Poppins', sans-serif;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.5;
   text-decoration: none !important;
   white-space: nowrap;
@@ -247,26 +250,26 @@
 }
 
 .rn-btn--outline {
-  color: #0458ab !important;
-  border-color: #0458ab;
+  color: #3A89FF !important;
+  border-color: #3A89FF;
   background: transparent;
 }
 
 .rn-btn--outline:hover {
   color: #fff !important;
-  background: #0458ab;
+  background: #3A89FF;
 }
 
 .rn-btn--accent {
   color: #fff !important;
-  border-color: #ff8200;
-  background: #ff8200;
+  border-color: #80D424;
+  background: #80D424;
 }
 
 .rn-btn--accent:hover {
   color: #fff !important;
-  background: #e07300;
-  border-color: #e07300;
+  background: #6db81e;
+  border-color: #6db81e;
 }
 
 /* ── Hamburger ── */
@@ -277,7 +280,7 @@
   margin-left: auto;
   padding: 8px;
   border: 1.5px solid #e5e7eb;
-  border-radius: var(--rn-radius);
+  border-radius: 5px;
   background: transparent;
   cursor: pointer;
 }
@@ -291,7 +294,7 @@
   width: 100%;
   height: 2px;
   margin: 5px 0;
-  background: var(--rn-text);
+  background: #333333;
   border-radius: 2px;
   transition: transform .25s ease, opacity .25s ease;
 }
@@ -354,7 +357,7 @@
   align-items: center;
   justify-content: center;
   border: 1.5px solid #e5e7eb;
-  border-radius: var(--rn-radius);
+  border-radius: 5px;
   background: transparent;
   cursor: pointer;
   color: #374151;
@@ -382,7 +385,7 @@
 .rn-mobile-nav__list a {
   display: block;
   padding: 14px 4px;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
   font-weight: 300;
   color: #111827 !important;
@@ -390,7 +393,7 @@
 }
 
 .rn-mobile-nav__list a:hover {
-  color: var(--rn-primary) !important;
+  color: #3A89FF !important;
 }
 
 .rn-mobile-nav__list .rn-nav__chev {

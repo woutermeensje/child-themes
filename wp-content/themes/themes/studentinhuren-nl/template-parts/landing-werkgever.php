@@ -10,9 +10,9 @@ $intro           = has_excerpt($page_id) ? get_the_excerpt($page_id)
 $primary_label   = 'Informatie aanvragen';
 $primary_url     = home_url('/informatie-aanvragen/');
 $secondary_label = 'Account aanmaken';
-$secondary_url   = 'https://platform.studentinhuren.nl/aanmelden';
+$secondary_url   = 'https://platform.student-inhuren.nl/aanmelden';
 $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '';
-$contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'info@studentinhuren.nl';
+$contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@student-inhuren.nl';
 ?>
 
 <main id="content" <?php post_class('fnd-page'); ?>>
@@ -34,13 +34,13 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'info@stude
 
                 <div class="fnd-hero__actions">
                     <?php if ($primary_label && $primary_url) : ?>
-                        <a class="fnd-hero__btn fnd-hero__btn--primary" href="<?php echo esc_url($primary_url); ?>">
+                        <a class="si-btn si-btn--primary" href="<?php echo esc_url($primary_url); ?>">
                             <?php echo esc_html($primary_label); ?>
                         </a>
                     <?php endif; ?>
 
                     <?php if ($secondary_label && $secondary_url) : ?>
-                        <a class="fnd-hero__btn fnd-hero__btn--secondary" href="<?php echo esc_url($secondary_url); ?>">
+                        <a class="si-btn si-btn--ghost" href="<?php echo esc_url($secondary_url); ?>">
                             <?php echo esc_html($secondary_label); ?>
                         </a>
                     <?php endif; ?>

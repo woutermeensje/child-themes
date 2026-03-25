@@ -1,0 +1,206 @@
+/* =============================================
+   Studentinhuren.nl — Footer
+   ============================================= */
+
+.si-footer {
+  background: #3A89FF;
+  color: #fff;
+  padding: 52px 22px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.si-footer__inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding-bottom: 44px;
+}
+
+.si-footer__layout {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  gap: 24px 34px;
+  align-items: start;
+}
+
+/* ── Zijbalk ── */
+.si-footer__side {
+  display: grid;
+  gap: 28px;
+}
+
+.si-footer__side-block {
+  min-width: 0;
+}
+
+/* ── Onderwerp kolommen ── */
+.si-footer__topics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px 30px;
+}
+
+.si-footer__topic-col {
+  min-width: 0;
+}
+
+/* ── Koppen ── */
+.si-footer__heading {
+  margin: 0 0 12px !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: normal !important;
+  color: #fff !important;
+  text-transform: none !important;
+}
+
+/* ── Lijsten ── */
+.si-footer ul {
+  list-style: none !important;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.si-footer ul li {
+  list-style: none !important;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.88);
+  font-weight: 400;
+}
+
+.si-footer ul li::before,
+.si-footer ul li::marker {
+  display: none !important;
+  content: none !important;
+}
+
+.si-footer a {
+  color: rgba(255, 255, 255, 0.88);
+  text-decoration: none;
+  transition: color .15s ease, opacity .15s ease;
+}
+
+.si-footer a:hover {
+  color: #ffffff !important;
+  opacity: 1;
+}
+
+/* ── Socials ── */
+.si-footer__socials {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.si-footer__socials a {
+  width: 38px;
+  height: 38px;
+  border-radius: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.50);
+  background: rgba(255, 255, 255, 0.10);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .15s ease, border-color .15s ease;
+}
+
+.si-footer__socials a:hover {
+  background: rgba(255, 255, 255, 0.22);
+  border-color: rgba(255, 255, 255, 0.75);
+}
+
+.si-footer__socials i {
+  font-size: 20px;
+  color: #fff;
+}
+
+/* ── Onderste balk ── */
+.si-footer__bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.18);
+  padding: 16px 22px;
+}
+
+.si-footer__bottom-inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.70);
+}
+
+.si-footer__legal-nav {
+  display: flex;
+  gap: 20px;
+}
+
+.si-footer__legal-nav a {
+  color: rgba(255, 255, 255, 0.70);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.si-footer__legal-nav a:hover {
+  color: #fff !important;
+}
+
+/* ── Toegankelijkheid ── */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1100px) {
+  .si-footer__layout {
+    grid-template-columns: 1fr;
+  }
+
+  .si-footer__topics {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .si-footer {
+    padding: 40px 16px 0;
+  }
+
+  .si-footer__topics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .si-footer__bottom {
+    padding: 16px;
+  }
+
+  .si-footer__bottom-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .si-footer__topics {
+    grid-template-columns: 1fr;
+  }
+}

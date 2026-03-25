@@ -3,17 +3,16 @@
 if (!defined('ABSPATH')) exit;
 
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-opdracht-plaatsen.php';
 
 /**
- * ✅ CUSTOM HEADER: vervang Hello Elementor's standaard header
+ * ✅ CUSTOM HEADER: geregeld via child theme header.php (overschrijft Hello Elementor).
+ * De navigatie wordt direct ingeladen in header.php zodat deze overal verschijnt.
+ * Geen wp_body_open hook nodig; Hello Elementor's eigen header wordt niet geladen.
  */
-add_filter('hello_elementor_page_header_enabled', '__return_false');
-add_action('hello_elementor_before_header', function () {
-    include get_stylesheet_directory() . '/template-parts/header.php';
-});
 
 /**
- * ✅ NAV WALKER
+ * ✅ NAV WALKER (behouden voor eventueel toekomstig gebruik)
  */
 if (!class_exists('RN_Nav_Walker')) :
 class RN_Nav_Walker extends Walker_Nav_Menu {
@@ -66,7 +65,6 @@ endif;
 add_action('after_setup_theme', function () {
     register_nav_menus([
         'primary_nav' => 'Primaire navigatie',
-        'footer_nav'  => 'Footer navigatie',
     ]);
 });
 
@@ -89,6 +87,11 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
 
+    // Globale knoppen
+    if (file_exists(get_stylesheet_directory() . '/css/buttons.css')) {
+        wp_enqueue_style('studentinhuren-buttons', get_stylesheet_directory_uri() . '/css/buttons.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/buttons.css'));
+    }
+
     // Header CSS
     if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
         wp_enqueue_style('studentinhuren-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/header.css'));
@@ -99,6 +102,14 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('studentinhuren-landing', get_stylesheet_directory_uri() . '/css/landing.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/landing.css'));
     }
 
+    // Homepage hero CSS
+    if (file_exists(get_stylesheet_directory() . '/css/hero-homepage.css')) {
+        wp_enqueue_style('studentinhuren-hero', get_stylesheet_directory_uri() . '/css/hero-homepage.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/hero-homepage.css'));
+    }
+
+    // Phosphor Icons (gebruikt in hero & navigation)
+    wp_enqueue_style('phosphor-icons', 'https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css', [], null);
+
     // ✅ Select2 (nodig omdat je het in de job-filters initieert)
     wp_enqueue_style('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [], null);
     wp_enqueue_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['jquery'], null, true);
@@ -106,6 +117,11 @@ add_action('wp_enqueue_scripts', function () {
     // Forms styling (informatie aanvragen, etc.)
     if (file_exists(get_stylesheet_directory() . '/css/forms.css')) {
         wp_enqueue_style('si-forms', get_stylesheet_directory_uri() . '/css/forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/forms.css'));
+    }
+
+    // Footer CSS
+    if (file_exists(get_stylesheet_directory() . '/css/footer.css')) {
+        wp_enqueue_style('studentinhuren-footer', get_stylesheet_directory_uri() . '/css/footer.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/footer.css'));
     }
 
     // Quill.js rich text editor

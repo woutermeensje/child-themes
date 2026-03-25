@@ -8,7 +8,7 @@ $hero_image_url = get_the_post_thumbnail_url($page_id, 'full');
 $intro          = has_excerpt($page_id) ? get_the_excerpt($page_id)
                 : 'StudentInhuren.nl brengt jou als student in contact met de beste opdrachtgevers. Maak een account aan en ontdek honderden opdrachten en bijbanen die bij jouw profiel passen.';
 $contact_phone  = get_post_meta($page_id, 'landing_phone', true) ?: '';
-$contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'info@studentinhuren.nl';
+$contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'support@student-inhuren.nl';
 ?>
 
 <main id="content" <?php post_class('fnd-page'); ?>>
@@ -29,10 +29,10 @@ $contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'info@studen
                 <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
 
                 <div class="fnd-hero__actions">
-                    <a class="fnd-hero__btn fnd-hero__btn--primary" href="<?php echo esc_url(home_url('/vacatures/')); ?>">
+                    <a class="si-btn si-btn--primary" href="<?php echo esc_url(home_url('/vacatures/')); ?>">
                         Ik zoek werk
                     </a>
-                    <a class="fnd-hero__btn fnd-hero__btn--secondary" href="https://platform.studentinhuren.nl/aanmelden">
+                    <a class="si-btn si-btn--ghost" href="https://platform.student-inhuren.nl/aanmelden">
                         Account aanmaken
                     </a>
                 </div>

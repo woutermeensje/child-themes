@@ -1,0 +1,116 @@
+/* =============================================
+   Globale knoppen — studentinhuren-nl
+   Gebruik: si-btn + modifier
+   ============================================= */
+
+.si-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 24px;
+  border-radius: 5px;
+  border: 2px solid transparent;
+  font-family: 'Balgin-Bold', serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  text-decoration: none !important;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+}
+
+/* ── Primair: blauw ── */
+.si-btn--primary {
+  background: var(--color-primary, #3A89FF);
+  border-color: var(--color-primary, #3A89FF);
+  color: #ffffff !important;
+}
+
+.si-btn--primary:hover {
+  background: var(--color-primary-dk, #1a6fe0);
+  border-color: var(--color-primary-dk, #1a6fe0);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+/* ── Secundair: oranje ── */
+.si-btn--secondary {
+  background: var(--color-secondary, #FF8200);
+  border-color: var(--color-secondary, #FF8200);
+  color: #ffffff !important;
+}
+
+.si-btn--secondary:hover {
+  background: var(--color-secondary-dk, #e07300);
+  border-color: var(--color-secondary-dk, #e07300);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+/* ── Accent: groen ── */
+.si-btn--accent {
+  background: var(--color-accent, #80D424);
+  border-color: var(--color-accent, #80D424);
+  color: #ffffff !important;
+}
+
+.si-btn--accent:hover {
+  background: var(--color-accent-dk, #6db81e);
+  border-color: var(--color-accent-dk, #6db81e);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+/* ── Ghost: transparant met primaire rand ── */
+.si-btn--ghost {
+  background: transparent;
+  border-color: var(--color-primary, #3A89FF);
+  color: var(--color-primary, #3A89FF) !important;
+}
+
+.si-btn--ghost:hover {
+  background: var(--color-primary, #3A89FF);
+  color: #ffffff !important;
+}
+
+/* ── Ghost wit: voor gebruik op donkere achtergrond ── */
+.si-btn--ghost-white {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--color-border, #DEDEDE);
+  color: var(--color-primary, #3A89FF) !important;
+}
+
+.si-btn--ghost-white:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--color-primary, #3A89FF) !important;
+}
+
+/* ── Outline: rand + gekleurde tekst, fill on hover ── */
+.si-btn--outline {
+  background: transparent;
+  border-color: var(--color-primary, #3A89FF);
+  color: var(--color-primary, #3A89FF) !important;
+}
+
+.si-btn--outline:hover {
+  background: var(--color-primary, #3A89FF);
+  color: #ffffff !important;
+}
+
+/* ── Maten ── */
+.si-btn--sm {
+  padding: 7px 16px;
+  font-size: 13px;
+}
+
+.si-btn--lg {
+  padding: 13px 32px;
+  font-size: 17px;
+}
+
+/* ── Full width ── */
+.si-btn--full {
+  width: 100%;
+}

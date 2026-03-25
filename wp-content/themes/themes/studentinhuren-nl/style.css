@@ -23,25 +23,29 @@ Text Domain: Studentinhuren
 }
 
 :root {
-  /* 🔁 Verwisselbaar kleurenpalet voor branding */
-  --color-primary: #3a89ff;
-  --color-secondary: #FF8200;
-  --color-tertiary: #E0D0E1;
-  --color-accent: #3a89ff;
+  /* ── Merkkleur primair: blauw ── */
+  --color-primary:      #3A89FF;
+  --color-primary-dk:   #1a6fe0;
 
-  /* 🧱 Vaste kleuren voor tekst en contrast */
-  --color-text: #333333;
-  --color-text-muted: #777777;
+  /* ── Merkkleur secundair: oranje ── */
+  --color-secondary:    #FF8200;
+  --color-secondary-dk: #e07300;
 
-  /* 🧱 Vaste kleuren voor achtergronden en borders */
-  --color-bg: #ffffff;
-  --color-bg-light: #f8f8f8;
-  --color-border: #e0e0e0;
-  --color-border-light: #cccccc;
+  /* ── Accent: groen (voor knoppen) ── */
+  --color-accent:       #80D424;
+  --color-accent-dk:    #6db81e;
 
-  /* ✅ Speciale semantische kleuren */
-  --color-success: #80D424;
-  --color-success-hover: #80D424;
+  /* ── Tekst ── */
+  --color-text:         #333333;
+  --color-text-muted:   #777777;
+
+  /* ── Achtergronden ── */
+  --color-bg:           #ffffff;
+  --color-bg-light:     #FBFAF8;
+
+  /* ── Borders ── */
+  --color-border:       #DEDEDE;
+  --color-border-light: #f3f4f6;
 }
 
 html, body {
