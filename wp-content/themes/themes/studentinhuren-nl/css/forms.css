@@ -1,0 +1,196 @@
+/* ============================================================
+   Informatie aanvragen formulier — [si_informatie_aanvragen]
+   Platform design | student-inhuren.nl
+============================================================ */
+
+.si-ia,
+.si-ia *,
+.si-ia *::before,
+.si-ia *::after { box-sizing: border-box; }
+.si-ia-notice,
+.si-ia-notice *,
+.si-ia-notice *::before,
+.si-ia-notice *::after { box-sizing: border-box; }
+
+.si-ia {
+    max-width: 720px;
+    margin: 0 auto;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* ── Header ──────────────────────────────────────────────── */
+.si-ia .si-ia__header {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #DEDEDE;
+}
+.si-ia .si-ia__title {
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-primary, #3a89ff);
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* ── Blok ────────────────────────────────────────────────── */
+.si-ia .si-ia__block {
+    background: #fff;
+    border: 1px solid #DEDEDE;
+    border-radius: 5px;
+    padding: 28px;
+}
+
+/* ── Grid ────────────────────────────────────────────────── */
+.si-ia .si-ia__grid { display: grid; gap: 14px; margin-bottom: 14px; }
+.si-ia .si-ia__grid--1 { grid-template-columns: 1fr; }
+.si-ia .si-ia__grid--2 { grid-template-columns: 1fr 1fr; }
+
+/* ── Velden ──────────────────────────────────────────────── */
+.si-ia .si-ia__field { display: flex; flex-direction: column; }
+.si-ia .si-ia__label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #333333;
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+.si-ia .si-ia__req { color: var(--color-primary, #3a89ff); margin-left: 2px; }
+
+/* ── Inputs ──────────────────────────────────────────────── */
+.si-ia .si-ia__input {
+    width: 100% !important;
+    padding: 8px 12px !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    color: var(--color-text, #333333) !important;
+    background: #fff !important;
+    border: 1px solid #DEDEDE !important;
+    border-radius: 5px !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: border-color .2s ease, box-shadow .2s ease;
+    appearance: none;
+    line-height: 1.5 !important;
+    height: auto !important;
+}
+.si-ia .si-ia__input:focus {
+    border-color: var(--color-primary, #3a89ff) !important;
+    box-shadow: 0 0 0 3px rgba(58,137,255,.15) !important;
+    outline: none !important;
+}
+.si-ia .si-ia__input::placeholder {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 300 !important;
+    color: var(--color-text-muted, #777777) !important;
+    font-style: normal !important;
+    opacity: 1;
+}
+
+/* ── Quill editor ────────────────────────────────────────── */
+.si-ia__quill-hidden { display: none !important; }
+.si-ia__quill-wrap {
+    border: 1px solid #DEDEDE;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+.si-ia__quill-wrap:focus-within {
+    border-color: var(--color-primary, #3a89ff);
+    box-shadow: 0 0 0 3px rgba(58,137,255,.15);
+}
+.si-ia__quill-wrap .ql-toolbar {
+    border: none !important;
+    border-bottom: 1px solid #DEDEDE !important;
+    background: #EEF3FF;
+    padding: 8px 12px !important;
+}
+.si-ia__quill-wrap .ql-container {
+    border: none !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 15px !important;
+}
+.si-ia__quill-wrap .ql-editor {
+    padding: 14px !important;
+    color: var(--color-text, #333333) !important;
+    line-height: 1.7 !important;
+}
+.si-ia__quill-wrap .ql-editor.ql-blank::before {
+    color: var(--color-text-muted, #777777) !important;
+    font-style: italic !important;
+    font-weight: 400 !important;
+}
+.si-ia__quill-wrap .ql-toolbar button:hover,
+.si-ia__quill-wrap .ql-toolbar button.ql-active { color: var(--color-primary, #3a89ff) !important; }
+.si-ia__quill-wrap .ql-toolbar button:hover .ql-stroke,
+.si-ia__quill-wrap .ql-toolbar button.ql-active .ql-stroke { stroke: var(--color-primary, #3a89ff) !important; }
+.si-ia__quill-wrap .ql-toolbar button:hover .ql-fill,
+.si-ia__quill-wrap .ql-toolbar button.ql-active .ql-fill { fill: var(--color-primary, #3a89ff) !important; }
+
+/* ── Footer & submit ─────────────────────────────────────── */
+.si-ia .si-ia__footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    padding-top: 16px;
+}
+.si-ia .si-ia__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-family: 'Balgin-Bold', serif;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: var(--color-secondary, #FF8200);
+    border: 2px solid var(--color-secondary, #FF8200);
+    color: #fff !important;
+    padding: 10px 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color .15s ease, border-color .15s ease;
+}
+.si-ia .si-ia__submit:hover {
+    background-color: #e07200;
+    border-color: #e07200;
+}
+
+/* ── Notices ─────────────────────────────────────────────── */
+.si-ia-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 18px 20px;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    margin-bottom: 24px;
+}
+.si-ia-notice--success {
+    background: #ecfdf5;
+    border: 1px solid #6ee7b7;
+    color: #065f46;
+}
+.si-ia-notice--error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+.si-ia-notice svg { flex-shrink: 0; margin-top: 2px; }
+.si-ia-notice strong { display: block; font-weight: 700; margin-bottom: 4px; }
+.si-ia-notice p { margin: 0; font-weight: 400; }
+.si-ia-notice ul { margin: 4px 0 0; padding-left: 18px; font-weight: 400; }
+.si-ia-notice li + li { margin-top: 3px; }
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 640px) {
+    .si-ia .si-ia__title { font-size: 20px; }
+    .si-ia .si-ia__block { padding: 16px; }
+    .si-ia .si-ia__grid--2 { grid-template-columns: 1fr; }
+    .si-ia .si-ia__submit { max-width: 100%; }
+}

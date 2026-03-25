@@ -2,6 +2,8 @@
 // Exit if accessed directly
 if (!defined('ABSPATH')) exit;
 
+require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen.php';
+
 /**
  * ✅ CUSTOM HEADER: vervang Hello Elementor's standaard header
  */
@@ -100,6 +102,15 @@ add_action('wp_enqueue_scripts', function () {
     // ✅ Select2 (nodig omdat je het in de job-filters initieert)
     wp_enqueue_style('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [], null);
     wp_enqueue_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['jquery'], null, true);
+
+    // Forms styling (informatie aanvragen, etc.)
+    if (file_exists(get_stylesheet_directory() . '/css/forms.css')) {
+        wp_enqueue_style('si-forms', get_stylesheet_directory_uri() . '/css/forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/forms.css'));
+    }
+
+    // Quill.js rich text editor
+    wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
+    wp_enqueue_script('quill-js', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js', [], null, true);
 });
 
 /**

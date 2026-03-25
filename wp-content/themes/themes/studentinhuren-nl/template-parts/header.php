@@ -3,7 +3,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$logo_url = get_stylesheet_directory_uri() . '/site-logo/studentinhuren-logo.png';
+$logo_url = get_stylesheet_directory_uri() . '/site-logo/student-inhuren-logo.png';
 ?>
 
 <header id="rn-header" class="rn-header" role="banner">
@@ -27,7 +27,7 @@ $logo_url = get_stylesheet_directory_uri() . '/site-logo/studentinhuren-logo.png
     <div class="rn-header__inner">
         <div class="rn-header__brand">
             <a href="<?php echo esc_url(home_url('/')); ?>">
-                <?php if (file_exists(get_stylesheet_directory() . '/site-logo/studentinhuren-logo.png')) : ?>
+                <?php if (file_exists(get_stylesheet_directory() . '/site-logo/student-inhuren-logo.png')) : ?>
                     <img src="<?php echo esc_url($logo_url); ?>" alt="<?php bloginfo('name'); ?>" class="rn-header__logo">
                 <?php else : ?>
                     <span class="rn-header__site-name"><?php bloginfo('name'); ?></span>
