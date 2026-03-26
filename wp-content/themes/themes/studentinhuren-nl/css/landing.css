@@ -189,6 +189,29 @@
   }
 }
 
+/* Direct-link onder de knoppen */
+.fnd-hero__direct-link {
+  display: inline-block;
+  margin-top: 14px;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+  color: rgba(255, 255, 255, 0.8) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  cursor: pointer;
+  transition: color .15s ease;
+}
+
+.fnd-hero__direct-link:hover {
+  color: #ffffff !important;
+  text-decoration: underline !important;
+  background: none !important;
+}
+
 /* =============================================
    Einde fnd-hero
    ============================================= */

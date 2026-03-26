@@ -195,3 +195,134 @@
     .si-ia .si-ia__grid--2 { grid-template-columns: 1fr; }
     .si-ia .si-ia__submit { width: auto; }
 }
+
+/* ============================================================
+   Compact informatie aanvragen formulier — [si_informatie_aanvragen_compact]
+   Geschikt voor smalle blokken (~300px breed).
+============================================================ */
+
+.si-iac,
+.si-iac *,
+.si-iac *::before,
+.si-iac *::after { box-sizing: border-box; }
+.si-iac-notice,
+.si-iac-notice *,
+.si-iac-notice *::before,
+.si-iac-notice *::after { box-sizing: border-box; }
+
+.si-iac {
+    width: 100%;
+    font-family: 'Poppins', sans-serif;
+}
+
+.si-iac__form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ── Velden ──────────────────────────────────────────────── */
+.si-iac__field {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.si-iac__label {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: #333333 !important;
+    margin-bottom: 5px !important;
+    line-height: 1.4;
+}
+
+.si-iac__req {
+    color: var(--color-primary, #3a89ff);
+    margin-left: 2px;
+}
+
+/* ── Inputs ──────────────────────────────────────────────── */
+.si-iac__input {
+    width: 100% !important;
+    padding: 8px 12px !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    color: #333333 !important;
+    background: #ffffff !important;
+    border: 1px solid #DEDEDE !important;
+    border-radius: 5px !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: border-color .2s ease, box-shadow .2s ease;
+    appearance: none;
+    line-height: 1.5 !important;
+    height: auto !important;
+}
+
+.si-iac__input:focus {
+    border-color: var(--color-primary, #3a89ff) !important;
+    box-shadow: 0 0 0 3px rgba(58,137,255,.15) !important;
+    outline: none !important;
+}
+
+.si-iac__input::placeholder {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 13px !important;
+    font-weight: 300 !important;
+    color: #999999 !important;
+    font-style: normal !important;
+    opacity: 1;
+}
+
+/* ── Footer & submit ─────────────────────────────────────── */
+.si-iac__footer {
+    display: flex;
+    justify-content: flex-start;
+    padding-top: 4px;
+}
+
+.si-iac__submit {
+    position: relative !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    background-color: var(--color-accent, #80D424) !important;
+    border: 2px solid var(--color-accent, #80D424) !important;
+    color: #ffffff !important;
+    padding: 9px 22px !important;
+    border-radius: 4px !important;
+    cursor: pointer !important;
+    width: auto !important;
+    transition: background-color .15s ease, border-color .15s ease;
+    text-decoration: none !important;
+}
+
+.si-iac__submit:hover {
+    background-color: var(--color-accent-dk, #6db81e) !important;
+    border-color: var(--color-accent-dk, #6db81e) !important;
+    color: #ffffff !important;
+}
+
+/* ── Notice ──────────────────────────────────────────────── */
+.si-iac-notice {
+    padding: 12px 14px;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    margin-bottom: 16px;
+}
+
+.si-iac-notice--error {
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    color: #991b1b;
+}
+
+.si-iac-notice strong { display: block; font-weight: 700; margin-bottom: 4px; }
+.si-iac-notice ul { margin: 4px 0 0; padding-left: 16px; }
+.si-iac-notice li + li { margin-top: 2px; }

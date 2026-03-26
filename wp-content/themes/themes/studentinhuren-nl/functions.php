@@ -3,6 +3,7 @@
 if (!defined('ABSPATH')) exit;
 
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen-compact.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-opdracht-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 

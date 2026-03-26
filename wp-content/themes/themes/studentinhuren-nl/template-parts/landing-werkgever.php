@@ -5,13 +5,12 @@ if (!defined('ABSPATH')) {
 
 $page_id         = get_the_ID();
 $hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
-$intro           = has_excerpt($page_id) ? get_the_excerpt($page_id)
-                 : 'StudentInhuren.nl is hét platform voor werkgevers die snel de juiste student of starter zoeken. Bereik duizenden gemotiveerde studenten en vind de perfecte match voor uw opdracht.';
-$primary_label   = 'Informatie aanvragen';
-$primary_url     = home_url('/informatie-aanvragen/');
-$secondary_label = 'Account aanmaken';
-$secondary_url   = 'https://platform.student-inhuren.nl/aanmelden';
-$contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '';
+$intro           = has_excerpt($page_id) ? get_the_excerpt($page_id) : '';
+$primary_label   = 'Call inplannen';
+$primary_url     = home_url('/call-inplannen/');
+$secondary_label = 'Informatie aanvragen';
+$secondary_url   = home_url('/informatie-aanvragen/');
+$contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@student-inhuren.nl';
 ?>
 
@@ -30,21 +29,25 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@st
 
                 <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
 
-                <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
+                <?php if ($intro) : ?>
+                    <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
+                <?php endif; ?>
 
                 <div class="fnd-hero__actions">
                     <?php if ($primary_label && $primary_url) : ?>
-                        <a class="si-btn si-btn--primary" href="<?php echo esc_url($primary_url); ?>">
+                        <a class="si-btn si-btn--accent" href="<?php echo esc_url($primary_url); ?>">
                             <?php echo esc_html($primary_label); ?>
                         </a>
                     <?php endif; ?>
 
                     <?php if ($secondary_label && $secondary_url) : ?>
-                        <a class="si-btn si-btn--ghost" href="<?php echo esc_url($secondary_url); ?>">
+                        <a class="si-btn si-btn--secondary" href="<?php echo esc_url($secondary_url); ?>">
                             <?php echo esc_html($secondary_label); ?>
                         </a>
                     <?php endif; ?>
                 </div>
+
+                <a class="fnd-hero__direct-link" href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>">Of plaats een gratis opdracht in ons netwerk</a>
 
             </div>
 
