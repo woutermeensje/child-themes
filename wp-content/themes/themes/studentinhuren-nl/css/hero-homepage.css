@@ -67,9 +67,9 @@
 }
 .welcome-v2__hero--freelancer-inhuren .blog-breadcrumbs,
 .welcome-v2__hero--freelancer-inhuren .blog-breadcrumbs a {
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.85) !important;
   font-size: 13px;
-  text-decoration: none;
+  text-decoration: none !important;
 }
 .welcome-v2__hero--freelancer-inhuren .blog-breadcrumbs a:hover {
   color: #fff;
@@ -114,7 +114,7 @@
   margin-top: 4px;
   display: inline-flex;
   width: fit-content;
-  color: rgba(255, 255, 255, 0.95);
+  color: rgba(255, 255, 255, 0.95) !important;
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   font-weight: 400;

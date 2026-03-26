@@ -96,21 +96,6 @@ h4, h5 {
     font-size: 16px;
 }
 
-/* Override Elementor global link color */
-:root {
-    --e-global-color-accent: var(--color-primary);
-}
-
-body a {
-    color: var(--color-primary);
-    text-decoration: none;
-}
-
-body a:hover {
-    color: var(--color-primary-dk);
-    text-decoration: underline;
-}
-
 /* Styling specifieke links */
 .special {
     color: var(--color-success);

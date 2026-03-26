@@ -4,6 +4,7 @@ if (!defined('ABSPATH')) exit;
 
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-opdracht-plaatsen.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 
 /**
  * ✅ CUSTOM HEADER: geregeld via child theme header.php (overschrijft Hello Elementor).

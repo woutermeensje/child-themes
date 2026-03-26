@@ -30,8 +30,8 @@ $contact_email  = get_post_meta($page_id, 'hero_email', true) ?: 'support@studen
                     <?php endif; ?>
 
                     <div class="welcome-v2__actions">
-                        <a href="<?php echo esc_url(home_url('/aanmelden/')); ?>" class="si-btn si-btn--accent">Ik zoek werk</a>
-                        <a href="<?php echo esc_url(home_url('/ik-zoek-personeel/')); ?>" class="si-btn si-btn--secondary">Ik zoek personeel</a>
+                        <a href="https://platform.student-inhuren.nl/aanmelden" class="si-btn si-btn--accent">Ik zoek werk</a>
+                        <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="si-btn si-btn--secondary">Ik zoek personeel</a>
                     </div>
 
                     <a class="welcome-v2__direct-link" href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>">Of plaats direct een gratis opdracht</a>

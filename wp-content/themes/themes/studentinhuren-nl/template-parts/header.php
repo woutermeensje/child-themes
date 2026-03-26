@@ -10,9 +10,9 @@ if (!defined('ABSPATH')) {
     <div class="rn-topbar">
         <div class="rn-topbar__inner">
             <div class="rn-topbar__left">
-                <a href="<?php echo esc_url(home_url('/over-ons/')); ?>">Over ons</a>
+                <a href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>">Opdracht Plaatsen</a>
                 <span class="rn-topbar__divider">|</span>
-                <a href="<?php echo esc_url(home_url('/contact/')); ?>">Contact</a>
+                <a href="tel:0852392040">085 239 2040</a>
             </div>
             <div class="rn-topbar__right">
                 <a href="<?php echo esc_url(home_url('/tarieven/')); ?>">Tarieven</a>

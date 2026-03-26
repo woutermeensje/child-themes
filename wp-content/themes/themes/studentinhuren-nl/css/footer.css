@@ -82,8 +82,8 @@
 }
 
 .si-footer a {
-  color: rgba(255, 255, 255, 0.88);
-  text-decoration: none;
+  color: rgba(255, 255, 255, 0.88) !important;
+  text-decoration: none !important;
   transition: color .15s ease, opacity .15s ease;
 }
 
@@ -146,9 +146,9 @@
 }
 
 .si-footer__legal-nav a {
-  color: rgba(255, 255, 255, 0.70);
+  color: rgba(255, 255, 255, 0.70) !important;
   font-size: 13px;
-  text-decoration: none;
+  text-decoration: none !important;
 }
 
 .si-footer__legal-nav a:hover {
