@@ -215,6 +215,15 @@
     font-family: 'Poppins', sans-serif;
 }
 
+.si-iac__title {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: #333333 !important;
+    margin: 0 0 16px !important;
+    line-height: 1.2 !important;
+}
+
 .si-iac__form {
     display: flex;
     flex-direction: column;

@@ -79,6 +79,7 @@ function si_informatie_aanvragen_compact_shortcode(): string {
     <?php endif; ?>
 
     <div class="si-iac">
+        <h2 class="si-iac__title">Informatie aanvragen</h2>
         <form method="post" class="si-iac__form" novalidate>
             <?php wp_nonce_field('si_informatie_aanvragen_compact', 'si_iac_nonce'); ?>
 
