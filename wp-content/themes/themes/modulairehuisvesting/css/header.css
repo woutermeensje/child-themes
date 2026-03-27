@@ -271,14 +271,14 @@
 
 .mh-btn--accent {
   color: #fff !important;
-  border-color: var(--mh-accent);
-  background: var(--mh-accent);
+  border-color: var(--mh-primary);
+  background: var(--mh-primary);
 }
 
 .mh-btn--accent:hover {
   color: #fff !important;
-  background: var(--mh-accent-dk);
-  border-color: var(--mh-accent-dk);
+  background: var(--mh-primary-dk);
+  border-color: var(--mh-primary-dk);
 }
 
 /* ── Hamburger ── */

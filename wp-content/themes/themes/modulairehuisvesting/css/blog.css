@@ -1,0 +1,511 @@
+/* ==========================================================================
+   Blog overzicht — Modulaire Huisvesting
+   ========================================================================== */
+
+/* Reset padding en max-width op site-main (Hello Elementor overschrijven) */
+.mh-blog-page,
+body:not([class*=elementor-page-]) .mh-blog-page {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* --------------------------------------------------------------------------
+   Blog headings — hoge specificiteit zodat Elementor dit niet overschrijft
+   -------------------------------------------------------------------------- */
+
+.mh-blog__heading,
+.mh-blog__heading:is(h1, h2, h3, h4, h5, h6) {
+    font-family: 'Poppins', sans-serif !important;
+    font-weight: 700 !important;
+    line-height: 1.3 !important;
+    letter-spacing: -0.01em !important;
+    margin-top: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    text-transform: none !important;
+    /* kleur wordt per blok ingesteld, niet via inherit */
+}
+
+/* Hero: witte titels op donkere overlay */
+.mh-blog__hero-title.mh-blog__heading {
+    color: #fff !important;
+}
+
+/* Lijstrijen: donkere titels op witte achtergrond */
+.mh-blog__row-title.mh-blog__heading {
+    color: #1a2a3a !important;
+}
+
+/* --------------------------------------------------------------------------
+   Twee hero-blokken — volledige breedte, sluiten aan op navigatie
+   -------------------------------------------------------------------------- */
+
+.mh-blog__heroes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    background: #0e1e2e; /* gap-kleur */
+}
+
+.mh-blog__hero {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background: #1a2a3a;
+}
+
+.mh-blog__hero-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.mh-blog__hero:hover .mh-blog__hero-img {
+    transform: scale(1.02);
+}
+
+.mh-blog__hero-placeholder {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0456AB 0%, #023d7a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mh-blog__hero-placeholder svg {
+    opacity: 0.15;
+    width: 80px;
+    height: 80px;
+}
+
+.mh-blog__hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to top,
+        rgba(4, 22, 40, 0.85) 0%,
+        rgba(4, 22, 40, 0.3) 50%,
+        transparent 100%
+    );
+}
+
+.mh-blog__hero-body {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 5vw;
+    max-width: 860px;
+}
+
+.mh-blog__hero-cat {
+    display: inline-block;
+    background: #0456AB;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 3px;
+    margin-bottom: 12px;
+}
+
+.mh-blog__hero-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: clamp(24px, 3.5vw, 42px);
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin: 0 0 12px;
+}
+
+.mh-blog__hero-meta {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* --------------------------------------------------------------------------
+   Lower — lijst + sidebar wrapper
+   -------------------------------------------------------------------------- */
+
+.mh-blog__lower {
+    display: flex;
+    align-items: flex-start;
+    gap: 48px;
+    max-width: 1260px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+}
+
+.mh-blog__main {
+    flex: 1;
+    min-width: 0;
+}
+
+.mh-blog__sidebar {
+    flex-shrink: 0;
+    width: 300px;
+    position: sticky;
+    top: calc(var(--mh-header-h, 68px) + var(--mh-topbar-h, 36px) + 24px);
+}
+
+/* --------------------------------------------------------------------------
+   Lijst-rijen (4e artikel en verder)
+   -------------------------------------------------------------------------- */
+
+.mh-blog__list-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #8a9aaa;
+    border-bottom: 2px solid #e8edf2;
+    padding-bottom: 12px;
+    margin: 0 0 8px;
+}
+
+.mh-blog__list {
+    display: flex;
+    flex-direction: column;
+}
+
+.mh-blog__row {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #e8edf2;
+    text-decoration: none;
+    color: inherit;
+}
+
+.mh-blog__row:last-child {
+    border-bottom: none;
+}
+
+.mh-blog__row:hover .mh-blog__row-title {
+    color: #0456AB;
+}
+
+.mh-blog__row-img-wrap {
+    flex-shrink: 0;
+    width: 120px;
+    height: 80px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #d8e5f3;
+}
+
+.mh-blog__row-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.mh-blog__row:hover .mh-blog__row-img {
+    transform: scale(1.05);
+}
+
+.mh-blog__row-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #d8e5f3 0%, #b5ccec 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mh-blog__row-placeholder svg {
+    opacity: 0.3;
+    width: 28px;
+    height: 28px;
+}
+
+.mh-blog__row-body {
+    flex: 1;
+    min-width: 0;
+}
+
+.mh-blog__row-cat {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #0456AB;
+    margin-bottom: 5px;
+}
+
+.mh-blog__row-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a2a3a;
+    line-height: 1.35;
+    margin: 0 0 6px;
+    transition: color 0.2s ease;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.mh-blog__row-excerpt {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #5a6a7a;
+    line-height: 1.6;
+    margin: 0 0 8px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.mh-blog__row-meta {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #8a9aaa;
+}
+
+/* --------------------------------------------------------------------------
+   Paginering
+   -------------------------------------------------------------------------- */
+
+.mh-blog__pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 32px;
+    margin-top: 16px;
+    border-top: 1px solid #e8edf2;
+}
+
+.mh-blog__pagination a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #0456AB;
+    text-decoration: none;
+    padding: 10px 20px;
+    border: 2px solid #0456AB;
+    border-radius: 5px;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.mh-blog__pagination a:hover {
+    background: #0456AB;
+    color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   Nieuwsbrief sidebar
+   -------------------------------------------------------------------------- */
+
+.mh-newsletter {
+    background: #f4f7fb;
+    border: 1px solid #dce7f5;
+    border-radius: 8px;
+    padding: 28px 24px 24px;
+}
+
+.mh-newsletter__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: #0456AB;
+    border-radius: 50%;
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.mh-newsletter__icon svg {
+    width: 22px;
+    height: 22px;
+}
+
+.mh-newsletter__title {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
+    color: #1a2a3a !important;
+    margin: 0 0 8px !important;
+    line-height: 1.3 !important;
+}
+
+.mh-newsletter__desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #5a6a7a;
+    line-height: 1.6;
+    margin: 0 0 20px;
+}
+
+.mh-newsletter__form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.mh-newsletter__field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mh-newsletter__label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3a4a5a;
+}
+
+.mh-newsletter__label span {
+    color: #0456AB;
+}
+
+.mh-newsletter__input {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #c8d8ea;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #333;
+    background: #fff;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    outline: none;
+}
+
+.mh-newsletter__input:focus {
+    border-color: #0456AB;
+    box-shadow: 0 0 0 3px rgba(4, 86, 171, 0.12);
+}
+
+.mh-newsletter__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 11px 20px;
+    background: #0456AB;
+    border: none;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    margin-top: 4px;
+}
+
+.mh-newsletter__btn svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.mh-newsletter__btn:hover {
+    background: #034a92;
+}
+
+.mh-newsletter__privacy {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #8a9aaa;
+    text-align: center;
+    margin: 12px 0 0;
+}
+
+.mh-newsletter__privacy a {
+    color: #0456AB;
+    text-decoration: none;
+}
+
+.mh-newsletter__privacy a:hover {
+    text-decoration: underline;
+}
+
+/* --------------------------------------------------------------------------
+   Geen berichten
+   -------------------------------------------------------------------------- */
+
+.mh-blog__empty {
+    text-align: center;
+    padding: 80px 24px;
+    color: #8a9aaa;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 960px) {
+    .mh-blog__lower {
+        flex-direction: column;
+        gap: 40px;
+        padding: 40px 24px 60px;
+    }
+
+    .mh-blog__sidebar {
+        width: 100%;
+        position: static;
+    }
+
+    .mh-newsletter {
+        max-width: 520px;
+    }
+}
+
+@media (max-width: 640px) {
+    .mh-blog__heroes {
+        grid-template-columns: 1fr;
+    }
+
+    .mh-blog__hero {
+        aspect-ratio: 16 / 9;
+    }
+
+    .mh-blog__hero-body {
+        padding: 24px 20px;
+    }
+}
+
+@media (max-width: 480px) {
+    .mh-blog__lower {
+        padding: 32px 16px 48px;
+    }
+
+    .mh-blog__row-img-wrap {
+        width: 90px;
+        height: 60px;
+    }
+
+    .mh-blog__row-excerpt {
+        display: none;
+    }
+}

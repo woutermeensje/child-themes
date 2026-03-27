@@ -98,13 +98,13 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
 a.google_map_link {
     text-decoration: none;
     font-family: Balgin Bold !important;
-    color: var(--color-primary) !important;
+    color: #FCAF2B !important;
     font-size: 15px;
 }
 
 .custom-top-section {
-    background-color: var(--color-primary);
-    color: var(--color-bg);
+    background-color: #FCAF2B;
+    color: #ffffff;
     padding: 20px;
     text-align: center;
     font-family: "Balgin Bold", sans-serif;
@@ -119,7 +119,7 @@ a.google_map_link {
 }
 
 .custom-top-section p {
-    color: var(--color-bg);
+    color: #ffffff;
     text-align: center;
     font-family: "Balgin Bold", sans-serif;
     font-size: 18px;
@@ -127,8 +127,8 @@ a.google_map_link {
 }
 
 .button-top-section {
-    background-color: var(--color-tertiary);
-    color: var(--color-primary);
+    background-color: #E09B1A;
+    color: #FCAF2B;
     border: none;
     padding: 10px 20px;
     margin: 0 auto;
@@ -141,8 +141,8 @@ a.google_map_link {
 }
 
 .button-top-section:hover {
-    background-color: var(--color-tertiary);
-    color: var(--color-primary);
+    background-color: #E09B1A;
+    color: #FCAF2B;
 }
 
 .custom-top-section-form {
@@ -152,7 +152,7 @@ a.google_map_link {
 
 .search-input {
     padding: 10px;
-    border: 1px solid var(--color-tertiary) !important;
+    border: 1px solid #E09B1A !important;
     border-radius: 5px;
     font-size: 15px;
     margin-right: 10px;
@@ -167,11 +167,11 @@ input[type=text]:focus {
 .search-input:focus,
 .search-input:active,
 .search-input:hover {
-    border-color: var(--color-tertiary) !important;
+    border-color: #E09B1A !important;
 }
 
 .search-input::placeholder {
-    color: var(--color-text-muted);
+    color: #777777;
     font-size: 14px;
     font-style: italic;
     font-family: Poppins;
@@ -185,7 +185,7 @@ h1.entry-title {
 .single_job_listing {
     max-width: 80%;
     margin: 40px auto;
-    background: var(--color-bg);
+    background: #ffffff;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     padding: 25px;
@@ -195,7 +195,7 @@ h1.entry-title {
     position: relative;
     overflow: hidden;
     height: 300px;
-    border-bottom: 2px solid var(--color-primary);
+    border-bottom: 2px solid #FCAF2B;
 }
 
 .cover-image {
@@ -225,7 +225,7 @@ h1.entry-title {
 
 .job-title h1 {
     padding-bottom: 10px;
-    border-bottom: 2px solid var(--color-primary);
+    border-bottom: 2px solid #FCAF2B;
     font-family: Balgin Bold;
     font-size: 20px !important;
     padding-top: 20px;
@@ -252,38 +252,38 @@ h1.entry-title {
     font-size: 14px;
     font-weight: 400;
     line-height: 1.6;
-    color: var(--color-text);
+    color: #2C2C31;
     margin-top: 20px !important;
 }
 
 .single_job_listing .job-application .application_button,
 input.application_button.button {
     display: inline-block;
-    background-color: var(--color-primary);
-    color: var(--color-bg) !important;
+    background-color: #FCAF2B;
+    color: #ffffff !important;
     padding: 10px 20px;
     border-radius: 4px;
     text-decoration: none;
     font-weight: 600;
     margin-top: 20px;
-    border: 1px solid var(--color-primary);
+    border: 1px solid #FCAF2B;
     font-family: Balgin Bold;
     text-align: center;
     width: 100%;
 }
 
 input.application_button.button:hover {
-    background-color: var(--color-bg);
-    color: var(--color-primary) !important;
-    border: 1px solid var(--color-primary);
+    background-color: #ffffff;
+    color: #FCAF2B !important;
+    border: 1px solid #FCAF2B;
 }
 
 .single_job_listing .single_job_listing_start,
 .single_job_listing .single_job_listing_end {
     margin-top: 20px;
     padding: 15px;
-    background: var(--color-bg-light);
-    border: 1px solid var(--color-border-light);
+    background: #f8f8f8;
+    border: 1px solid #cccccc;
     border-radius: 4px;
 }
 
@@ -298,11 +298,11 @@ input.application_button.button:hover {
 
     .meta-information-single p {
         font-size: 13px;
-        background-color: var(--color-bg);
+        background-color: #ffffff;
     }
 
     .meta-information-single p:hover {
-        background-color: var(--color-accent);
+        background-color: #FEEAD5;
     }
 
     .custom-top-section p {
@@ -311,7 +311,7 @@ input.application_button.button:hover {
 
     .button-top-section {
         font-size: 14px;
-        background-color: var(--color-accent);
+        background-color: #FEEAD5;
     }
 }
 
@@ -326,9 +326,9 @@ input.application_button.button:hover {
 }
 
 .recent-job-item {
-    background: var(--color-bg);
+    background: #ffffff;
     border-radius: 5px;
-    border: 1px solid var(--color-primary);
+    border: 1px solid #FCAF2B;
     margin: 15px 0;
     display: flex;
     padding: 20px;
@@ -348,7 +348,7 @@ input.application_button.button:hover {
 .recent-job-content h3 {
     font-family: Balgin Bold;
     font-size: 18px;
-    color: var(--color-text);
+    color: #2C2C31;
     margin: 5px 0;
 }
 
@@ -356,12 +356,12 @@ input.application_button.button:hover {
     font-family: Poppins;
     font-size: 13px;
     font-weight: 200;
-    color: var(--color-text);
+    color: #2C2C31;
     margin: 5px 0;
 }
 
 .recent-job-company h4 {
-    color: var(--color-text);
+    color: #2C2C31;
     font-family: Balgin Bold;
     font-size: 15px;
 }
@@ -378,7 +378,7 @@ a.job-listing-link {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin: auto;
     padding: 2px;
-    background: var(--color-bg);
+    background: #ffffff;
 }
 
 .logo-and-title {
@@ -386,8 +386,8 @@ a.job-listing-link {
 }
 
 .custom-bottom-section {
-    background-color: var(--color-primary);
-    color: var(--color-bg);
+    background-color: #FCAF2B;
+    color: #ffffff;
     padding: 20px;
     text-align: center;
     font-family: "Balgin Bold", sans-serif;
@@ -404,7 +404,7 @@ a.job-listing-link {
 }
 
 .custom-bottom-section p {
-    color: var(--color-bg);
+    color: #ffffff;
     text-align: center;
     font-family: "Balgin Bold", sans-serif;
     font-size: 18px;
@@ -426,9 +426,9 @@ a.job-listing-link {
 }
 
 .job-apply-button a:hover {
-    background: var(--color-bg);
-    color: var(--color-primary);
-    border: 1px solid var(--color-primary);
+    background: #ffffff;
+    color: #FCAF2B;
+    border: 1px solid #FCAF2B;
 }
 
 </style>

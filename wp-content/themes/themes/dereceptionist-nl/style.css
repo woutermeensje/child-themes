@@ -24,24 +24,24 @@ Text Domain: dereceptionist-nl
 
 
 :root {
-  /* 🔁 Verwisselbaar kleurenpalet voor branding */
-  --color-primary: #46517A;
-  --color-secondary: #DFBCE2; 
-  --color-tertiary: #DFBCE2;
-  --color-accent: #92E9AB;;
+  /* 🔁 Branding kleuren deReceptionist.nl */
+  --color-primary:   #FCAF2B;
+  --color-secondary: #FEEAD5;
+  --color-tertiary:  #E09B1A;
+  --color-accent:    #FEEAD5;
 
   /* 🧱 Vaste kleuren voor tekst en contrast */
-  --color-text: #333333;
+  --color-text:       #2C2C31;
   --color-text-muted: #777777;
 
   /* 🧱 Vaste kleuren voor achtergronden en borders */
-  --color-bg: #ffffff;
-  --color-bg-light: #f8f8f8;
-  --color-border: #e0e0e0;
+  --color-bg:           #ffffff;
+  --color-bg-light:     #f8f8f8;
+  --color-border:       #e0e0e0;
   --color-border-light: #cccccc;
 
   /* ✅ Speciale semantische kleuren */
-  --color-success: #28a745;
+  --color-success:       #28a745;
   --color-success-hover: #155724;
 }
 

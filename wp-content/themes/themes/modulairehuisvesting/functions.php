@@ -43,6 +43,15 @@ add_action('wp_enqueue_scripts', function () {
             filemtime(get_stylesheet_directory() . '/css/forms.css')
         );
     }
+
+    if ((is_home() || is_archive()) && file_exists(get_stylesheet_directory() . '/css/blog.css')) {
+        wp_enqueue_style(
+            'mh-blog',
+            get_stylesheet_directory_uri() . '/css/blog.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/blog.css')
+        );
+    }
 });
 
 /**

@@ -23,36 +23,138 @@ add_action('wp_enqueue_scripts', function() {
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
 
-    // Gravity Forms custom styles — verwijderd
+    // Header CSS
+    if ( file_exists( get_stylesheet_directory() . '/css/header.css' ) ) {
+        wp_enqueue_style('dr-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
+    }
 }, 10);
 
 // Gravity Forms spinner uitschakelen
 add_filter( 'gform_ajax_spinner_url', '__return_false' );
 
+/**
+ * ✅ CUSTOM HEADER injecteren via wp_body_open
+ * Vuurt direct na <body> af — werkt onafhankelijk van Elementor.
+ * Het Hello Elementor standaard header-blokje verbergen we via CSS.
+ */
+add_action('wp_body_open', function () {
+    $header_file = get_stylesheet_directory() . '/template-parts/header.php';
+    if ( file_exists($header_file) ) {
+        include $header_file;
+    }
+}, 1);
+
+// Verberg de lege Hello Elementor / Elementor Pro header-placeholder
+// zodat er geen dubbele header verschijnt.
+add_action('wp_head', function () {
+    echo '<style>
+.e-header, header.site-header, .site-header { display: none !important; }
+</style>';
+}, 99);
+
+/**
+ * ✅ NAV WALKER voor de custom header
+ */
+if ( ! class_exists('DR_Nav_Walker') ) :
+class DR_Nav_Walker extends Walker_Nav_Menu {
+    public function start_el( &$output, $item, $depth = 0, $args = null, $id = 0 ) {
+        $classes    = empty($item->classes) ? [] : (array) $item->classes;
+        $has_child  = in_array('menu-item-has-children', $classes, true);
+        $is_active  = in_array('current-menu-item', $classes, true) || in_array('current-menu-ancestor', $classes, true);
+        $li_class   = 'dr-nav__item';
+        if ($has_child) $li_class .= ' dr-nav__item--has-children';
+        if ($is_active) $li_class .= ' is-active';
+
+        $output .= '<li class="' . esc_attr($li_class) . '">';
+
+        $url    = !empty($item->url)        ? $item->url        : '#';
+        $title  = apply_filters('the_title', $item->title, $item->ID);
+        $attr   = !empty($item->attr_title) ? ' title="'  . esc_attr($item->attr_title) . '"' : '';
+        $target = !empty($item->target)     ? ' target="' . esc_attr($item->target)     . '"' : '';
+        $rel    = !empty($item->xfn)        ? ' rel="'    . esc_attr($item->xfn)        . '"' : '';
+
+        $output .= '<a class="dr-nav__link' . ($is_active ? ' is-active' : '') . '" href="' . esc_url($url) . '"' . $attr . $target . $rel . '>';
+        $output .= esc_html($title);
+        if ($has_child) $output .= '<span class="dr-nav__chev" aria-hidden="true"></span>';
+        $output .= '</a>';
+    }
+
+    public function start_lvl( &$output, $depth = 0, $args = null ) {
+        $output .= '<ul class="dr-nav__dropdown">';
+    }
+
+    public function end_lvl( &$output, $depth = 0, $args = null ) {
+        $output .= '</ul>';
+    }
+
+    public function end_el( &$output, $item, $depth = 0, $args = null ) {
+        $output .= '</li>';
+    }
+}
+endif;
+
+/**
+ * ✅ MENU LOCATIES registreren
+ */
+add_action('after_setup_theme', function () {
+    register_nav_menus([
+        'dr_primary_nav' => 'Primaire navigatie (deReceptionist)',
+        'dr_footer_nav'  => 'Footer navigatie (deReceptionist)',
+    ]);
+});
+
+/**
+ * ✅ SHORTCODE: [dereceptionist_header]
+ * Gebruik in Elementor als HTML-widget of in een template.
+ */
+add_shortcode('dereceptionist_header', function () {
+    ob_start();
+    include get_stylesheet_directory() . '/template-parts/header.php';
+    return ob_get_clean();
+});
+
 
 
 /**
- * ✅ WPJM AJAX-script en Select2 laden op vacaturespagina's
+ * ✅ WPJM AJAX-script laden
  */
 add_action('wp_enqueue_scripts', function () {
-    // Altijd nodig voor AJAX filters
     wp_enqueue_script('wp-job-manager-ajax-filters');
-
-    // Alleen waar [jobs] staat of op je overzichtspagina('s)
-    $load_on_this_page = false;
-    if ( function_exists('get_the_ID') ) {
-        $post_id = get_the_ID();
-        $content = $post_id ? get_post_field('post_content', $post_id) : '';
-        if ( has_shortcode($content, 'jobs') ) $load_on_this_page = true;
-    }
-    if ( is_page(array('vacatures','jobs','job-listings')) ) $load_on_this_page = true;
-
-    if ( $load_on_this_page ) {
-        // Select2 (zelfde als Sustainablejobs)
-        wp_enqueue_style('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css', [], '4.1.0-rc.0');
-        wp_enqueue_script('select2', 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js', ['jquery'], '4.1.0-rc.0', true);
-    }
 }, 20);
+
+/**
+ * ✅ Helper: lees filterwaarden uit GET/POST (voor job-filters.php template)
+ */
+if ( ! function_exists('srmb_get_req_value') ) {
+    function srmb_get_req_value($key) {
+        $filter_key = 'filter_' . $key;
+        if (!empty($_GET[$key]))         return (array) $_GET[$key];
+        if (!empty($_GET[$filter_key]))  return (array) $_GET[$filter_key];
+        if (!empty($_POST[$filter_key])) return (array) $_POST[$filter_key];
+        if (!empty($_POST[$key]))        return (array) $_POST[$key];
+        return [];
+    }
+}
+
+/**
+ * ✅ Helper: geef komma-gescheiden taxonomy-termen voor een post
+ */
+if ( ! function_exists('display_tax_terms') ) {
+    function display_tax_terms($tax, $post_id) {
+        $terms = wp_get_post_terms($post_id, $tax, ['fields' => 'names']);
+        return implode(', ', $terms);
+    }
+}
+
+/**
+ * ✅ Helper: secundaire afbeelding URL (Uncode CPT)
+ */
+if ( ! function_exists('get_secondary_imageurl') ) {
+    function get_secondary_imageurl($post_id) {
+        $image_id = get_post_meta($post_id, '_uncode_secondary_thumbnail_id', true);
+        return wp_get_attachment_image_url($image_id, 'large');
+    }
+}
 
 /**
  * ✅ WP JOB MANAGER: CUSTOM TEMPLATE OVERRIDES
