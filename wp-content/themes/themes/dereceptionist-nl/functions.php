@@ -385,3 +385,30 @@ add_filter('job_manager_get_listings_shortcode_args', function($atts){
 
     return $atts;
 }, 10, 1);
+
+/**
+ * ✅ COVER AFBEELDING: admin meta box veld
+ * Maakt het veld zichtbaar bij het bewerken van een vacature in de backend.
+ */
+add_filter('job_manager_job_listing_data_fields', function($fields) {
+    $fields['_cover_image'] = [
+        'label'       => __('Cover afbeelding', 'job_manager'),
+        'type'        => 'file',
+        'description' => __('Achtergrondafbeelding die bij de vacaturekaart wordt getoond.', 'job_manager'),
+    ];
+    return $fields;
+});
+
+/**
+ * ✅ COVER AFBEELDING: front-end vacature-formulier
+ */
+add_filter('submit_job_form_fields', function($fields) {
+    $fields['job']['cover_image'] = [
+        'label'    => __('Cover afbeelding', 'job_manager'),
+        'type'     => 'file',
+        'accept'   => 'image/png, image/jpeg',
+        'required' => false,
+        'priority' => 7,
+    ];
+    return $fields;
+});

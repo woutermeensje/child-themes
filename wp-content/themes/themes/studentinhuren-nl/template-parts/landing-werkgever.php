@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 
 $page_id         = get_the_ID();
 $hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
-$intro           = has_excerpt($page_id) ? get_the_excerpt($page_id) : '';
+$intro           = get_post_field('post_excerpt', $page_id);
 $primary_label   = 'Call inplannen';
 $primary_url     = home_url('/call-inplannen/');
 $secondary_label = 'Informatie aanvragen';

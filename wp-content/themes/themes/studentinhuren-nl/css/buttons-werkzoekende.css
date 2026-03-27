@@ -1,0 +1,63 @@
+/* =============================================
+   Knoppen werkzoekende landingspagina
+   Eigen classes zodat parent/Elementor-stijlen
+   deze nooit kunnen overschrijven.
+   ============================================= */
+
+/* ── Primair (groen) — zelfde als werkgever ── */
+.wz-btn--primary {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px 24px !important;
+  border-radius: 5px !important;
+  border: 2px solid #80D424 !important;
+  background: #80D424 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease !important;
+}
+
+.wz-btn--primary:hover,
+.wz-btn--primary:focus {
+  background: #6db81e !important;
+  border-color: #6db81e !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+  text-decoration: none !important;
+}
+
+/* ── Secundair (oranje) — zelfde als werkgever ── */
+.wz-btn--secondary {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 10px 24px !important;
+  border-radius: 5px !important;
+  border: 2px solid #FF8200 !important;
+  background: #FF8200 !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 1.4 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  cursor: pointer !important;
+  transition: background .15s ease, border-color .15s ease, transform .15s ease !important;
+}
+
+.wz-btn--secondary:hover,
+.wz-btn--secondary:focus {
+  background: #e07300 !important;
+  border-color: #e07300 !important;
+  color: #ffffff !important;
+  transform: translateY(-1px) !important;
+  text-decoration: none !important;
+}

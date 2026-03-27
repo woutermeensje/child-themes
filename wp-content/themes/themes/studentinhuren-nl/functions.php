@@ -94,6 +94,11 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('studentinhuren-buttons', get_stylesheet_directory_uri() . '/css/buttons.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/buttons.css'));
     }
 
+    // Werkzoekende knoppen (eigen classes, hardcoded kleuren)
+    if (file_exists(get_stylesheet_directory() . '/css/buttons-werkzoekende.css')) {
+        wp_enqueue_style('studentinhuren-buttons-werkzoekende', get_stylesheet_directory_uri() . '/css/buttons-werkzoekende.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/buttons-werkzoekende.css'));
+    }
+
     // Header CSS
     if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
         wp_enqueue_style('studentinhuren-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/header.css'));

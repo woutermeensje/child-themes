@@ -11,7 +11,7 @@
   padding: 10px 24px;
   border-radius: 5px;
   border: 2px solid transparent;
-  font-family: 'Balgin-Bold', serif;
+  font-family: 'Inter', sans-serif;
   font-size: 15px;
   font-weight: 700;
   line-height: 1.4;
@@ -23,42 +23,42 @@
 
 /* ── Primair: blauw ── */
 .si-btn--primary {
-  background: var(--color-primary, #3A89FF);
-  border-color: var(--color-primary, #3A89FF);
+  background: #3A89FF;
+  border-color: #3A89FF;
   color: #ffffff !important;
 }
 
 .si-btn--primary:hover {
-  background: var(--color-primary-dk, #1a6fe0);
-  border-color: var(--color-primary-dk, #1a6fe0);
+  background: #1a6fe0;
+  border-color: #1a6fe0;
   color: #ffffff !important;
   transform: translateY(-1px);
 }
 
 /* ── Secundair: oranje ── */
 .si-btn--secondary {
-  background: var(--color-secondary, #FF8200);
-  border-color: var(--color-secondary, #FF8200);
+  background: #FF8200;
+  border-color: #FF8200;
   color: #ffffff !important;
 }
 
 .si-btn--secondary:hover {
-  background: var(--color-secondary-dk, #e07300);
-  border-color: var(--color-secondary-dk, #e07300);
+  background: #e07300;
+  border-color: #e07300;
   color: #ffffff !important;
   transform: translateY(-1px);
 }
 
 /* ── Accent: groen ── */
 .si-btn--accent {
-  background: var(--color-accent, #80D424);
-  border-color: var(--color-accent, #80D424);
+  background: #80D424;
+  border-color: #80D424;
   color: #ffffff !important;
 }
 
 .si-btn--accent:hover {
-  background: var(--color-accent-dk, #6db81e);
-  border-color: var(--color-accent-dk, #6db81e);
+  background: #6db81e;
+  border-color: #6db81e;
   color: #ffffff !important;
   transform: translateY(-1px);
 }
@@ -66,36 +66,36 @@
 /* ── Ghost: transparant met primaire rand ── */
 .si-btn--ghost {
   background: transparent;
-  border-color: var(--color-primary, #3A89FF);
-  color: var(--color-primary, #3A89FF) !important;
+  border-color: #3A89FF;
+  color: #3A89FF !important;
 }
 
 .si-btn--ghost:hover {
-  background: var(--color-primary, #3A89FF);
+  background: #3A89FF;
   color: #ffffff !important;
 }
 
 /* ── Ghost wit: voor gebruik op donkere achtergrond ── */
 .si-btn--ghost-white {
   background: rgba(255, 255, 255, 0.12);
-  border-color: var(--color-border, #DEDEDE);
-  color: var(--color-primary, #3A89FF) !important;
+  border-color: #DEDEDE;
+  color: #3A89FF !important;
 }
 
 .si-btn--ghost-white:hover {
   background: rgba(255, 255, 255, 0.2);
-  color: var(--color-primary, #3A89FF) !important;
+  color: #3A89FF !important;
 }
 
 /* ── Outline: rand + gekleurde tekst, fill on hover ── */
 .si-btn--outline {
   background: transparent;
-  border-color: var(--color-primary, #3A89FF);
-  color: var(--color-primary, #3A89FF) !important;
+  border-color: #3A89FF;
+  color: #3A89FF !important;
 }
 
 .si-btn--outline:hover {
-  background: var(--color-primary, #3A89FF);
+  background: #3A89FF;
   color: #ffffff !important;
 }
 

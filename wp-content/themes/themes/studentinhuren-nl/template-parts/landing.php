@@ -3,11 +3,15 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$page_id        = get_the_ID();
-$hero_image_url = get_the_post_thumbnail_url($page_id, 'full');
-$intro          = get_post_field('post_excerpt', $page_id);
-$contact_phone  = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
-$contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'support@student-inhuren.nl';
+$page_id         = get_the_ID();
+$hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
+$intro           = get_post_field('post_excerpt', $page_id);
+$primary_label   = 'Informatie aanvragen';
+$primary_url     = home_url('/informatie-aanvragen/');
+$secondary_label = 'Opdracht plaatsen';
+$secondary_url   = home_url('/opdracht-plaatsen/');
+$contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
+$contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@student-inhuren.nl';
 ?>
 
 <main id="content" <?php post_class('fnd-page'); ?>>
@@ -30,12 +34,17 @@ $contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'support@stu
                 <?php endif; ?>
 
                 <div class="fnd-hero__actions">
-                    <a class="wz-btn--primary" href="https://platform.student-inhuren.nl/opdrachten/">
-                        Opdrachten bekijken
-                    </a>
-                    <a class="wz-btn--secondary" href="https://platform.student-inhuren.nl/aanmelden">
-                        Account aanmaken
-                    </a>
+                    <?php if ($primary_label && $primary_url) : ?>
+                        <a class="si-btn si-btn--accent" href="<?php echo esc_url($primary_url); ?>">
+                            <?php echo esc_html($primary_label); ?>
+                        </a>
+                    <?php endif; ?>
+
+                    <?php if ($secondary_label && $secondary_url) : ?>
+                        <a class="si-btn si-btn--secondary" href="<?php echo esc_url($secondary_url); ?>">
+                            <?php echo esc_html($secondary_label); ?>
+                        </a>
+                    <?php endif; ?>
                 </div>
 
             </div>
