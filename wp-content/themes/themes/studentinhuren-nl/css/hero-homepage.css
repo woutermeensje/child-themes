@@ -183,19 +183,23 @@
   .welcome-v2__hero {
     height: auto;
     display: grid;
+    background: #3A89FF;
   }
 
   .welcome-v2__hero-left {
     width: 100%;
-    min-height: 300px;
+    min-height: auto;
     clip-path: none;
-    order: 2;
+    order: 1;
+    background: #3A89FF;
   }
 
   .welcome-v2__hero-content {
-    width: min(680px, calc(100% - 34px));
+    width: min(680px, calc(100% - 32px));
     margin: 0 auto;
-    padding: 34px 0;
+    padding: 24px 0 0;
+    height: auto;
+    gap: 16px;
   }
 
   .welcome-v2__hero-right {
@@ -206,31 +210,68 @@
 
   .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-content {
     grid-template-rows: auto;
-    gap: 18px;
-    padding: 34px 0;
+    gap: 16px;
+    padding: 24px 0 0;
   }
 
   .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-right {
     display: none;
   }
 
+  .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-left {
+    background: #3A89FF;
+  }
+
   .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-copy {
     padding: 0;
+    gap: 12px;
   }
 
   .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-actions-panel {
     margin-left: 0;
     width: 100%;
-    padding: 28px 18px 18px;
-    border-radius: 14px;
+    padding: 18px 0 20px;
+    border-radius: 0;
+    border-bottom: 0;
   }
 
   .welcome-v2__actions {
     flex-direction: column;
+    gap: 10px;
   }
 
+  .welcome-v2__title {
+    font-size: clamp(30px, 10vw, 40px);
+  }
+
+  .welcome-v2__lead {
+    max-width: 100%;
+    font-size: 14px;
+  }
+
+  .welcome-v2__direct-link {
+    width: 100%;
+  }
+
+  .welcome-v2__hero-contact-list {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .welcome-v2__hero-contact-item,
+  .welcome-v2 .si-btn,
   .si-btn {
     width: 100%;
+  }
+
+  .welcome-v2__hero-contact-item {
+    justify-content: flex-start;
+  }
+
+  .welcome-v2 .si-btn,
+  .si-btn {
     justify-content: center;
   }
 }

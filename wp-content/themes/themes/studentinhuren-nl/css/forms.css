@@ -106,8 +106,27 @@
 .si-ia__quill-wrap .ql-toolbar {
     border: none !important;
     border-bottom: 1px solid #DEDEDE !important;
-    background: #EEF3FF;
+    background: #F6F8FB;
     padding: 8px 12px !important;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+}
+.si-ia__quill-wrap .ql-toolbar .ql-formats {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-right: 0 !important;
+}
+.si-ia__quill-wrap .ql-toolbar button,
+.si-ia__quill-wrap .ql-toolbar .ql-picker-label {
+    border-radius: 4px;
+    transition: background-color .15s ease, color .15s ease;
+}
+.si-ia__quill-wrap .ql-toolbar button:hover,
+.si-ia__quill-wrap .ql-toolbar .ql-picker-label:hover {
+    background: #E9EEF5;
 }
 .si-ia__quill-wrap .ql-container {
     border: none !important;
@@ -123,6 +142,17 @@
     color: var(--color-text-muted, #777777) !important;
     font-style: italic !important;
     font-weight: 400 !important;
+}
+.si-ia__quill-wrap .ql-editor a {
+    display: inline-block;
+    text-align: left;
+    font-family: 'Balgin Bold', 'Poppins', sans-serif !important;
+    font-weight: 700 !important;
+    background: var(--color-accent, #80D424);
+    color: #ffffff !important;
+    padding: 4px 10px;
+    border-radius: 4px;
+    text-decoration: none !important;
 }
 .si-ia__quill-wrap .ql-toolbar button:hover,
 .si-ia__quill-wrap .ql-toolbar button.ql-active { color: var(--color-primary, #3a89ff) !important; }
@@ -150,7 +180,7 @@
     background-color: var(--color-accent, #80D424);
     border: 2px solid var(--color-accent, #80D424);
     color: #fff !important;
-    padding: 10px 28px;
+    padding: 8px;
     border-radius: 4px;
     cursor: pointer;
     width: auto;
@@ -316,12 +346,12 @@
     align-items: center !important;
     justify-content: center !important;
     font-family: 'Poppins', sans-serif !important;
-    font-size: 14px !important;
+    font-size: 15px !important;
     font-weight: 600 !important;
     background-color: var(--color-accent, #80D424) !important;
     border: 2px solid var(--color-accent, #80D424) !important;
     color: #ffffff !important;
-    padding: 9px 22px !important;
+    padding: 8px !important;
     border-radius: 4px !important;
     cursor: pointer !important;
     width: auto !important;

@@ -175,11 +175,7 @@
   }
 
   .fnd-hero__right {
-    position: relative !important;
-    width: 100% !important;
-    height: 220px !important;
-    clip-path: none !important;
-    z-index: 1 !important;
+    display: none !important;
   }
 
   .fnd-hero__contact {
