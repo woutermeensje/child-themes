@@ -26,10 +26,10 @@ $contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'support@stu
                 <?php endif; ?>
 
                 <div class="fnd-hero__actions">
-                    <a class="wz-btn--primary" href="https://platform.student-inhuren.nl/opdrachten/">
+                    <a class="wz-btn--primary" href="https://platform.student-inhuren.nl/opdrachten/" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
                         Opdrachten bekijken
                     </a>
-                    <a class="wz-btn--secondary" href="https://platform.student-inhuren.nl/aanmelden">
+                    <a class="wz-btn--secondary" href="https://platform.student-inhuren.nl/aanmelden" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
                         Account aanmaken
                     </a>
                 </div>

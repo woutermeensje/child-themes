@@ -21,6 +21,7 @@ function si_informatie_aanvragen_compact_shortcode(): string {
         $achternaam = sanitize_text_field($_POST['iac_achternaam'] ?? '');
         $email      = sanitize_email($_POST['iac_email']           ?? '');
         $telefoon   = sanitize_text_field($_POST['iac_telefoon']   ?? '');
+        $bericht    = wp_kses_post($_POST['iac_bericht']           ?? '');
 
         if (!$voornaam)        $errors[] = 'Vul je voornaam in.';
         if (!$achternaam)      $errors[] = 'Vul je achternaam in.';
@@ -41,6 +42,7 @@ function si_informatie_aanvragen_compact_shortcode(): string {
                 update_post_meta($post_id, '_si_achternaam', $achternaam);
                 update_post_meta($post_id, '_si_email',      $email);
                 update_post_meta($post_id, '_si_telefoon',   $telefoon);
+                update_post_meta($post_id, '_si_bericht',    $bericht);
             }
 
             // ── E-mailnotificatie ────────────────────────────────
@@ -48,6 +50,9 @@ function si_informatie_aanvragen_compact_shortcode(): string {
             $body .= "Naam: $voornaam $achternaam\n";
             $body .= "E-mail: $email\n";
             $body .= "Telefoon: $telefoon\n";
+            if ($bericht) {
+                $body .= "\n--- Bericht ---\n" . strip_tags($bericht) . "\n";
+            }
 
             wp_mail(
                 get_option('admin_email'),
@@ -107,12 +112,65 @@ function si_informatie_aanvragen_compact_shortcode(): string {
                        value="<?php echo esc_attr($_POST['iac_telefoon'] ?? ''); ?>" placeholder="+31 6 00000000">
             </div>
 
+            <div class="si-iac__field">
+                <label class="si-iac__label" for="iac_bericht_hidden">Bericht</label>
+                <div class="si-iac__quill-wrap si-ia__quill-wrap">
+                    <div id="si_iac_quill_bericht" class="si-iac__quill-editor si-ia__quill-editor" style="min-height:140px;"></div>
+                </div>
+                <textarea name="iac_bericht" id="iac_bericht_hidden" class="si-ia__quill-hidden" aria-hidden="true"><?php echo esc_textarea($_POST['iac_bericht'] ?? ''); ?></textarea>
+            </div>
+
             <div class="si-iac__footer">
                 <button type="submit" class="si-iac__submit">Aanvraag versturen</button>
             </div>
 
         </form>
     </div>
+
+    <script>
+    (function () {
+        function initCompactQuill() {
+            if (typeof Quill === 'undefined') { setTimeout(initCompactQuill, 80); return; }
+
+            var target = document.getElementById('si_iac_quill_bericht');
+            var berichtHidden = document.getElementById('iac_bericht_hidden');
+            var form = document.querySelector('.si-iac__form');
+
+            if (!target || !berichtHidden || !form || target.dataset.quillReady === '1') {
+                return;
+            }
+
+            target.dataset.quillReady = '1';
+
+            var toolbarOptions = [
+                ['bold', 'italic', 'underline'],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                ['link'],
+                ['clean']
+            ];
+
+            var quillBericht = new Quill(target, {
+                theme: 'snow',
+                modules: { toolbar: toolbarOptions },
+                placeholder: 'Schrijf hier eventueel extra toelichting...'
+            });
+
+            if (berichtHidden.value) {
+                quillBericht.clipboard.dangerouslyPasteHTML(berichtHidden.value);
+            }
+
+            quillBericht.on('text-change', function () {
+                berichtHidden.value = quillBericht.root.innerHTML;
+            });
+
+            form.addEventListener('submit', function () {
+                berichtHidden.value = quillBericht.root.innerHTML;
+            });
+        }
+
+        initCompactQuill();
+    })();
+    </script>
 
     <?php
     return ob_get_clean();
