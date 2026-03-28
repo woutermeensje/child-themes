@@ -46,8 +46,8 @@ if (!defined('ABSPATH')) {
         <div class="rn-header__divider"></div>
 
         <div class="rn-header__cta">
-            <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--outline">Informatie aanvragen</a>
-            <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent">Aanmelden</a>
+            <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--outline" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Informatie aanvragen</a>
+            <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Aanmelden</a>
         </div>
 
         <button class="rn-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="rn-mobile-nav">
@@ -73,9 +73,9 @@ if (!defined('ABSPATH')) {
 
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="https://platform.student-inhuren.nl/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta">Inloggen</a>
-            <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--outline rn-mobile-nav__cta">Informatie aanvragen</a>
-            <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent rn-mobile-nav__cta">Aanmelden</a>
+            <a href="https://platform.student-inhuren.nl/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Inloggen</a>
+            <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--outline rn-mobile-nav__cta" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Informatie aanvragen</a>
+            <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent rn-mobile-nav__cta" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Aanmelden</a>
         </div>
     </div>
 </div>

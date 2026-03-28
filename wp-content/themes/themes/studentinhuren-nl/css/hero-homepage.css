@@ -79,7 +79,7 @@
 .welcome-v2__title {
   margin: 0;
   color: #ffffff !important;
-  font-size: clamp(20px, 2.2vw, 32px);
+  font-size: clamp(28px, 3.8vw, 56px);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: -0.02em;
