@@ -17,9 +17,7 @@ $contact_email  = get_post_meta($page_id, 'hero_email', true) ?: 'support@studen
 
                 <div class="welcome-v2__hero-copy">
 
-                    <?php if (function_exists('yoast_breadcrumb')) : ?>
-                        <?php yoast_breadcrumb('<nav class="blog-breadcrumbs" aria-label="Breadcrumb">', '</nav>'); ?>
-                    <?php endif; ?>
+                    <?php si_render_breadcrumbs('blog-breadcrumbs'); ?>
 
                     <h1 class="welcome-v2__title"><?php the_title(); ?></h1>
 

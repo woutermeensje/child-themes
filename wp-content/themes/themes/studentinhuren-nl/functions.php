@@ -4,6 +4,7 @@ if (!defined('ABSPATH')) exit;
 
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen-compact.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-latest-opdrachten.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-opdracht-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 
@@ -69,6 +70,29 @@ add_action('after_setup_theme', function () {
         'primary_nav' => 'Primaire navigatie',
     ]);
 });
+
+function si_render_breadcrumbs(string $nav_class = '', string $wrapper_class = ''): void
+{
+    $nav_class_attr = $nav_class ? ' class="' . esc_attr($nav_class) . '"' : '';
+
+    if ($wrapper_class) {
+        echo '<div class="' . esc_attr($wrapper_class) . '">';
+    }
+
+    if (function_exists('yoast_breadcrumb')) {
+        yoast_breadcrumb('<nav' . $nav_class_attr . ' aria-label="Breadcrumb">', '</nav>');
+    } else {
+        echo '<nav' . $nav_class_attr . ' aria-label="Breadcrumb">';
+        echo '<a href="' . esc_url(home_url('/')) . '">Home</a>';
+        echo '<span class="si-breadcrumb-sep" aria-hidden="true"> / </span>';
+        echo '<span>' . esc_html(get_the_title()) . '</span>';
+        echo '</nav>';
+    }
+
+    if ($wrapper_class) {
+        echo '</div>';
+    }
+}
 
 /**
  * ✅ ENQUEUE STYLES (with Elementor check) + Select2

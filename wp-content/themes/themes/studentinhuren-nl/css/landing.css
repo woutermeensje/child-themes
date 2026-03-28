@@ -45,7 +45,7 @@
 .fnd-hero__breadcrumb-nav a:hover { color: #ffffff !important; }
 
 .fnd-hero .fnd-hero__title {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Balgin Bold', sans-serif;
   font-size: clamp(20px, 2.2vw, 32px);
   font-weight: 700;
   line-height: 1.1;

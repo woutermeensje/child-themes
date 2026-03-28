@@ -21,11 +21,7 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@st
 
             <div class="fnd-hero__left-main">
 
-                <?php if (function_exists('yoast_breadcrumb')) : ?>
-                    <div class="fnd-hero__breadcrumbs">
-                        <?php yoast_breadcrumb('<nav class="fnd-hero__breadcrumb-nav" aria-label="Breadcrumb">', '</nav>'); ?>
-                    </div>
-                <?php endif; ?>
+                <?php si_render_breadcrumbs('fnd-hero__breadcrumb-nav', 'fnd-hero__breadcrumbs'); ?>
 
                 <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
 
