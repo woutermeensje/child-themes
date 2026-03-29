@@ -7,6 +7,7 @@ require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen-c
 require_once get_stylesheet_directory() . '/inc/shortcode-latest-opdrachten.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-opdracht-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-vacature-plaatsen.php';
 
 /**
  * ✅ CUSTOM HEADER: geregeld via child theme header.php (overschrijft Hello Elementor).

@@ -131,9 +131,11 @@
   align-items: center;
   margin-left: calc(clamp(20px, 4vw, 72px) * -1);
   width: calc(100% + clamp(20px, 4vw, 72px));
-  background: transparent;
+  background: #ffffff;
   padding: 16px clamp(20px, 4vw, 72px) 20px;
+  border-top: 1px solid #DEDEDE;
   border-bottom: 1px solid #DEDEDE;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
 }
 
 .welcome-v2__hero-contact-list {
@@ -230,9 +232,10 @@
   .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-actions-panel {
     margin-left: 0;
     width: 100%;
-    padding: 18px 0 20px;
-    border-radius: 0;
-    border-bottom: 0;
+    padding: 18px 18px 20px;
+    border: 1px solid #DEDEDE;
+    border-radius: 12px;
+    box-shadow: none;
   }
 
   .welcome-v2__actions {

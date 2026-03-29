@@ -191,7 +191,7 @@ function si_opdracht_plaatsen_shortcode(): string {
     ob_start();
 
     if (!empty($errors)): ?>
-    <div class="si-ia-notice si-ia-notice--error">
+    <div class="sj-vp-notice sj-vp-notice--error">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M236.8,188.09,149.35,36.22a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/></svg>
         <div>
             <strong>Er zijn een paar fouten:</strong>
@@ -204,62 +204,65 @@ function si_opdracht_plaatsen_shortcode(): string {
     </div>
     <?php endif; ?>
 
-    <div class="si-ia">
-        <div class="si-ia__block">
+    <div class="sj-vp">
+        <div class="sj-vp__block">
 
-            <header class="si-ia__header">
-                <h2 class="si-ia__title">Opdracht plaatsen</h2>
+            <header class="sj-vp__header">
+                <h2 class="sj-vp__title">Opdracht plaatsen</h2>
+                <p class="sj-vp__subtitle">Vul de gegevens in en we nemen zo snel mogelijk contact met je op over je opdracht.</p>
             </header>
 
             <form method="post" class="si-op__form" novalidate>
                 <?php wp_nonce_field('si_opdracht_plaatsen', 'si_op_nonce'); ?>
 
-                <div class="si-ia__grid si-ia__grid--2">
-                    <div class="si-ia__field">
-                        <label class="si-ia__label" for="si_op_voornaam">Voornaam <span class="si-ia__req">*</span></label>
-                        <input type="text" name="voornaam" id="si_op_voornaam" class="si-ia__input"
+                <div class="sj-vp__section">
+                    <p class="sj-vp__section-title">Contactgegevens</p>
+                    <div class="sj-vp__grid sj-vp__grid--2">
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_voornaam">Voornaam <span class="sj-vp__req">*</span></label>
+                        <input type="text" name="voornaam" id="si_op_voornaam" class="sj-vp__input"
                                value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" placeholder="Jan" required>
                     </div>
-                    <div class="si-ia__field">
-                        <label class="si-ia__label" for="si_op_achternaam">Achternaam <span class="si-ia__req">*</span></label>
-                        <input type="text" name="achternaam" id="si_op_achternaam" class="si-ia__input"
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_achternaam">Achternaam <span class="sj-vp__req">*</span></label>
+                        <input type="text" name="achternaam" id="si_op_achternaam" class="sj-vp__input"
                                value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" placeholder="de Vries" required>
                     </div>
-                </div>
-
-                <div class="si-ia__grid si-ia__grid--2">
-                    <div class="si-ia__field">
-                        <label class="si-ia__label" for="si_op_email">E-mailadres <span class="si-ia__req">*</span></label>
-                        <input type="email" name="email" id="si_op_email" class="si-ia__input"
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_email">E-mailadres <span class="sj-vp__req">*</span></label>
+                        <input type="email" name="email" id="si_op_email" class="sj-vp__input"
                                value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" placeholder="jan@bedrijf.nl" required>
                     </div>
-                    <div class="si-ia__field">
-                        <label class="si-ia__label" for="si_op_telefoon">Telefoonnummer</label>
-                        <input type="tel" name="telefoon" id="si_op_telefoon" class="si-ia__input"
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_telefoon">Telefoonnummer</label>
+                        <input type="tel" name="telefoon" id="si_op_telefoon" class="sj-vp__input"
                                value="<?php echo esc_attr($_POST['telefoon'] ?? ''); ?>" placeholder="+31 6 00000000">
                     </div>
+                    </div>
                 </div>
 
-                <div class="si-ia__grid si-ia__grid--1">
-                    <div class="si-ia__field">
-                        <label class="si-ia__label" for="si_op_website">Link naar website <span class="si-ia__opt">(optioneel)</span></label>
-                        <input type="url" name="website" id="si_op_website" class="si-ia__input"
+                <div class="sj-vp__section">
+                    <p class="sj-vp__section-title">Opdracht informatie</p>
+                    <div class="sj-vp__grid sj-vp__grid--1">
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_website">Link naar website <span class="sj-vp__opt">(optioneel)</span></label>
+                        <input type="url" name="website" id="si_op_website" class="sj-vp__input"
                                value="<?php echo esc_attr($_POST['website'] ?? ''); ?>" placeholder="https://www.bedrijf.nl">
                     </div>
-                </div>
-
-                <div class="si-ia__grid si-ia__grid--1">
-                    <div class="si-ia__field">
-                        <label class="si-ia__label" for="si_op_beschrijving_hidden">Opdrachtbeschrijving <span class="si-ia__req">*</span></label>
-                        <div class="si-ia__quill-wrap">
-                            <div id="si_quill_opdracht" class="si-ia__quill-editor" style="min-height:200px;"></div>
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_beschrijving_hidden">Opdrachtbeschrijving <span class="sj-vp__req">*</span></label>
+                        <div class="sj-vp__quill-wrap">
+                            <div id="si_quill_opdracht" class="sj-vp__quill-editor" style="min-height:200px;"></div>
                         </div>
-                        <textarea name="beschrijving" id="si_op_beschrijving_hidden" class="si-ia__quill-hidden" aria-hidden="true"><?php echo esc_textarea($_POST['beschrijving'] ?? ''); ?></textarea>
+                        <textarea name="beschrijving" id="si_op_beschrijving_hidden" class="sj-vp__quill-hidden" aria-hidden="true"><?php echo esc_textarea($_POST['beschrijving'] ?? ''); ?></textarea>
+                        <span class="sj-vp__hint">Beschrijf de opdracht, gewenste inzet en eventueel de context of planning.</span>
+                    </div>
                     </div>
                 </div>
 
-                <footer class="si-ia__footer">
-                    <button type="submit" class="si-ia__submit">Opdracht versturen</button>
+                <footer class="sj-vp__footer">
+                    <button type="submit" class="sj-vp__submit">Opdracht versturen</button>
+                    <p class="sj-vp__footer-note">Na je aanvraag nemen we contact met je op. Vragen? Mail naar <a href="mailto:support@student-inhuren.nl">support@student-inhuren.nl</a>.</p>
                 </footer>
 
             </form>

@@ -8,13 +8,11 @@ $keywords = isset($_GET['search_keywords']) ? sanitize_text_field($_GET['search_
 $location = isset($_GET['search_location']) ? sanitize_text_field($_GET['search_location']) : '';
 
 $selected = [
-    'job_company'   => [],
     'job_types'     => [],
     'vakgebied'     => [],
 ];
 
 $shortcode_atts = shortcode_atts([
-    'job_company'       => '',
     'job_listing_type'  => '',
     'vakgebied'         => '',
 ], $atts);
@@ -80,21 +78,6 @@ unset($value);
                     multiple>
                 <?php foreach (get_terms(['taxonomy' => 'vakgebied', 'hide_empty' => true]) as $term) : ?>
                     <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['vakgebied'], true)); ?>>
-                        <?php echo esc_html($term->name); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <!-- Opdrachtgever -->
-        <div class="job_company">
-            <select name="filter_job_company[]"
-                    id="filter_job_company"
-                    class="js-custom-select job_company"
-                    data-placeholder="Opdrachtgever"
-                    multiple>
-                <?php foreach (get_terms(['taxonomy' => 'job_company', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_company'], true)); ?>>
                         <?php echo esc_html($term->name); ?>
                     </option>
                 <?php endforeach; ?>
@@ -651,15 +634,13 @@ select.sj-hidden-select {
 }
 
 .job_type .sj-select-btn,
-.job_vakgebied .sj-select-btn,
-.job_company .sj-select-btn {
+.job_vakgebied .sj-select-btn {
   padding-left: 38px !important;
   position: relative;
 }
 
 .job_type .sj-select-btn::before,
-.job_vakgebied .sj-select-btn::before,
-.job_company .sj-select-btn::before {
+.job_vakgebied .sj-select-btn::before {
   content: '';
   position: absolute;
   left: 12px;
@@ -679,10 +660,6 @@ select.sj-hidden-select {
 
 .job_vakgebied .sj-select-btn::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233A89FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/%3E%3C/svg%3E");
-}
-
-.job_company .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233A89FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
 }
 
 .sj-select-btn:focus {
