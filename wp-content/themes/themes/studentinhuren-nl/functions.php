@@ -151,11 +151,6 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('si-forms', get_stylesheet_directory_uri() . '/css/forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/forms.css'));
     }
 
-    // Footer CSS
-    if (file_exists(get_stylesheet_directory() . '/css/footer.css')) {
-        wp_enqueue_style('studentinhuren-footer', get_stylesheet_directory_uri() . '/css/footer.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/footer.css'));
-    }
-
     // Quill.js rich text editor
     wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
     wp_enqueue_script('quill-js', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js', [], null, true);
