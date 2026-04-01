@@ -29,15 +29,24 @@ $image_ids = array_filter( array_merge(
 .pms-col-left {
 	border: 1px solid #DEDEDE;
 	border-radius: 5px;
-	box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 	overflow: hidden;
 }
 
 .pms-col-right {
+	background: #fff;
 	border: 1px solid #DEDEDE;
 	padding: 24px;
 	border-radius: 5px;
-	box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+}
+
+.single-product .pms-col-right .product_title.entry-title {
+	display: block !important;
+	margin: 0 0 12px !important;
+	color: #111 !important;
+	font-family: Inter, sans-serif;
+	font-size: 32px;
+	font-weight: 700;
+	line-height: 1.2;
 }
 
 /* Preview blok */
@@ -45,12 +54,14 @@ $image_ids = array_filter( array_merge(
 	position: relative;
 	overflow: hidden;
 	border-radius: 5px;
+	background: #fff;
 }
 
 .pms-gallery-preview img {
 	width: 100%;
 	height: 500px;
-	object-fit: cover;
+	object-fit: contain;
+	object-position: center;
 	display: none;
 }
 
@@ -132,14 +143,15 @@ h1.pms-page-title {
 .pms-col-description {
 	max-width: 1200px;
 	margin: 40px auto 0;
+	background: #fff;
 	border: 1px solid #DEDEDE;
 	padding: 24px;
 	border-radius: 5px;
-	box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 }
 
 /* Gerelateerde producten */
 .pms-related {
+	background: #FBFAF8 !important;
 	border: none !important;
 	box-shadow: none !important;
 	padding: 0 !important;
@@ -162,11 +174,10 @@ h1.pms-page-title {
 	border: 1px solid #DEDEDE;
 	border-radius: 5px;
 	overflow: hidden;
-	transition: box-shadow 0.2s;
 }
 
 .pms-related-item:hover {
-	box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+	border-color: #d2c19a;
 }
 
 .pms-related-item .pms-related-thumb {
@@ -225,13 +236,7 @@ h1.pms-page-title {
 	font-weight: 700;
 	color: #333;
 	text-decoration: none;
-	box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 	transition: border-color 0.15s;
-}
-
-.pms-product-cats a:hover {
-	border-color: #C5B17D;
-	color: #C5B17D;
 }
 
 /* Contactgegevens */
@@ -239,7 +244,7 @@ h1.pms-page-title {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
-	margin: 0 0 20px;
+	margin: 0 0 28px;
 }
 
 .pms-contact-item {
@@ -268,6 +273,125 @@ h1.pms-page-title {
 	line-height: 1.7;
 	color: #555;
 	margin-bottom: 24px;
+}
+
+/* Offerte CTA blok */
+.pms-quote-cta {
+	margin-top: 16px;
+	margin-bottom: 28px;
+}
+
+.pms-quote-cta__divider {
+	border: none;
+	border-top: 1px solid #EBEBEB;
+	margin: 20px 0 16px;
+}
+
+.pms-quote-cta__label {
+	font-family: Inter, sans-serif;
+	font-size: 13px;
+	font-weight: 600;
+	color: var(--pms-muted);
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	margin: 0 0 10px;
+}
+
+/* Offerte formulier wrapper */
+.pms-quote-fallback {
+	display: flex !important;
+	align-items: center !important;
+	gap: 10px !important;
+	width: 100% !important;
+	box-sizing: border-box !important;
+}
+
+/* Stepper: − [n] + */
+.pms-qty-stepper {
+	display: flex !important;
+	align-items: center !important;
+	border: 1px solid var(--color-border) !important;
+	border-radius: 8px !important;
+	overflow: hidden !important;
+	background: #fff !important;
+	flex: 0 0 auto !important;
+	height: 46px !important;
+}
+
+.pms-qty-btn {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	width: 36px !important;
+	height: 100% !important;
+	background: none !important;
+	border: none !important;
+	padding: 0 !important;
+	color: #555 !important;
+	cursor: pointer !important;
+	transition: background 0.15s, color 0.15s !important;
+	flex-shrink: 0 !important;
+}
+
+.pms-qty-btn:hover {
+	background: var(--color-bg, #f5f5f5) !important;
+	color: var(--color-primary) !important;
+}
+
+.pms-qty-btn svg {
+	display: block !important;
+	pointer-events: none !important;
+}
+
+.pms-qty-input {
+	-webkit-appearance: none !important;
+	appearance: none !important;
+	width: 44px !important;
+	height: 100% !important;
+	border: none !important;
+	border-left: 1px solid var(--color-border) !important;
+	border-right: 1px solid var(--color-border) !important;
+	padding: 0 !important;
+	font-family: Inter, sans-serif !important;
+	font-size: 15px !important;
+	font-weight: 600 !important;
+	color: #333 !important;
+	background: #fff !important;
+	text-align: center !important;
+	box-shadow: none !important;
+	outline: none !important;
+}
+
+.pms-qty-input::-webkit-inner-spin-button,
+.pms-qty-input::-webkit-outer-spin-button {
+	-webkit-appearance: none !important;
+}
+
+.pms-quote-fallback-btn {
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	flex: 1 1 0 !important;
+	min-width: 0 !important;
+	height: 46px !important;
+	padding: 0 16px !important;
+	background: var(--color-primary) !important;
+	color: #fff !important;
+	border: none !important;
+	border-radius: 8px !important;
+	font-family: Inter, sans-serif !important;
+	font-size: 14px !important;
+	font-weight: 700 !important;
+	text-decoration: none !important;
+	cursor: pointer !important;
+	white-space: nowrap !important;
+	transition: background-color 0.15s !important;
+	box-sizing: border-box !important;
+}
+
+.pms-quote-fallback-btn:hover {
+	background: #3d2d20 !important;
+	color: #fff !important;
 }
 
 /* Lightbox overlay */
@@ -350,15 +474,228 @@ h1.pms-page-title {
 /* Sluiten */
 .pms-lightbox-close {
 	position: absolute;
-	top: 16px;
+	top: 20px;
 	right: 20px;
-	background: none;
-	border: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 52px;
+	height: 52px;
+	background: rgba(255,255,255,0.16);
+	border: 1px solid rgba(255,255,255,0.22);
+	border-radius: 50%;
 	color: #fff;
-	font-size: 36px;
+	font-size: 30px;
+	font-weight: 400;
 	cursor: pointer;
 	line-height: 1;
 	z-index: 10;
+	transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.pms-lightbox-close:hover {
+	background: rgba(255,255,255,0.28);
+	border-color: rgba(255,255,255,0.4);
+	transform: scale(1.04);
+}
+
+@media (max-width: 980px) {
+	.pms-product-wrapper {
+		grid-template-columns: 1fr;
+		gap: 20px;
+		margin: 20px auto 0;
+	}
+
+	.pms-col-right,
+	.pms-col-description {
+		padding: 20px;
+	}
+
+	.single-product .pms-col-right .product_title.entry-title {
+		font-size: 28px;
+		margin-bottom: 14px !important;
+	}
+
+	.pms-gallery-preview {
+		padding: 12px;
+	}
+
+	.pms-gallery-preview img {
+		height: 380px;
+		max-width: 100%;
+	}
+
+	.pms-quote-fallback {
+		flex-wrap: wrap !important;
+	}
+
+	.pms-qty-stepper,
+	.pms-quote-fallback-btn {
+		width: 100% !important;
+		flex: 1 1 100% !important;
+	}
+
+	.pms-related-grid {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 14px;
+	}
+
+	.pms-lightbox-strip {
+		padding: 80px 24px 24px;
+		gap: 16px;
+	}
+
+	.pms-lightbox-strip img {
+		max-width: calc(100vw - 48px);
+		max-height: calc(100vh - 140px);
+	}
+
+	.pms-lightbox-arrow {
+		width: 44px;
+		height: 44px;
+		font-size: 24px;
+	}
+}
+
+@media (max-width: 640px) {
+	.pms-product-wrapper {
+		gap: 16px;
+		margin-top: 16px;
+	}
+
+	.pms-col-right,
+	.pms-col-description {
+		padding: 16px;
+	}
+
+	.single-product .pms-col-right .product_title.entry-title {
+		font-size: 24px;
+		line-height: 1.25;
+	}
+
+	.pms-col-left,
+	.pms-col-right,
+	.pms-col-description {
+		border-radius: 5px;
+	}
+
+	.pms-gallery-preview {
+		padding: 10px;
+	}
+
+	.pms-gallery-preview img {
+		height: 280px;
+	}
+
+	.pms-preview-arrow {
+		width: 38px;
+		height: 38px;
+		font-size: 18px;
+	}
+
+	.pms-preview-arrow--prev {
+		left: 8px;
+	}
+
+	.pms-preview-arrow--next {
+		right: 8px;
+	}
+
+	.pms-product-cats {
+		margin-bottom: 14px;
+		gap: 8px;
+	}
+
+	.pms-product-cats a {
+		padding: 6px 10px;
+		font-size: 12px;
+	}
+
+	.pms-contact-info {
+		gap: 10px;
+		margin-bottom: 22px;
+	}
+
+	.pms-contact-item,
+	.pms-intro-text {
+		font-size: 14px;
+	}
+
+	.pms-contact-item {
+		line-height: 1.5;
+	}
+
+	.pms-quote-cta {
+		margin-top: 12px;
+		margin-bottom: 20px;
+	}
+
+	.pms-quote-cta__divider {
+		margin: 16px 0 14px;
+	}
+
+	.pms-quote-cta__label {
+		font-size: 12px;
+	}
+
+	.pms-qty-stepper {
+		height: 44px !important;
+	}
+
+	.pms-qty-btn {
+		width: 40px !important;
+	}
+
+	.pms-qty-input {
+		width: 56px !important;
+		font-size: 14px !important;
+	}
+
+	.pms-quote-fallback-btn {
+		min-height: 46px !important;
+		padding: 0 14px !important;
+		font-size: 13px !important;
+	}
+
+	.pms-col-description h2 {
+		font-size: 22px;
+		line-height: 1.25;
+		margin: 0 0 14px;
+	}
+
+	.pms-related-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.pms-related-item .pms-related-thumb {
+		height: 220px;
+	}
+
+	.pms-lightbox-strip {
+		padding: 88px 16px 16px;
+	}
+
+	.pms-lightbox-arrow {
+		top: auto;
+		bottom: 16px;
+		transform: none;
+	}
+
+	.pms-lightbox-arrow--prev {
+		left: 16px;
+	}
+
+	.pms-lightbox-arrow--next {
+		right: 16px;
+	}
+
+	.pms-lightbox-close {
+		top: 16px;
+		right: 16px;
+		width: 44px;
+		height: 44px;
+		font-size: 26px;
+	}
 }
 </style>
 
@@ -412,8 +749,6 @@ h1.pms-page-title {
 		<div class="pms-col-right">
 			<?php
 			$product_id = $product->get_id();
-			$quote_url  = function_exists( 'pms_quote_get_page_url' ) ? pms_quote_get_page_url() : home_url( '/offerte-samenstellen/' );
-			$in_quote   = function_exists( 'pms_quote_has_product' ) ? pms_quote_has_product( $product_id ) : false;
 
 			// Titel
 			the_title( '<h1 class="product_title entry-title">', '</h1>' );
@@ -427,43 +762,61 @@ h1.pms-page-title {
 				}
 				echo '</div>';
 			}
+
+			$in_quote   = function_exists( 'pms_quote_has_product' ) && pms_quote_has_product( $product->get_id() );
+			$quote_url  = function_exists( 'pms_quote_get_page_url' ) ? pms_quote_get_page_url() : home_url( '/offerte-samenstellen/' );
+			$just_added = isset( $_GET['pms_added'] ) && (int) $_GET['pms_added'] === $product->get_id();
 			?>
 
-			<!-- 3. Contactgegevens -->
+			<!-- Offerte CTA -->
+			<div class="pms-quote-cta">
+				<hr class="pms-quote-cta__divider">
+				<p class="pms-quote-cta__label">Interesse in dit product?</p>
+
+				<?php if ( $in_quote || $just_added ) : ?>
+					<a href="<?php echo esc_url( $quote_url ); ?>" class="pms-quote-fallback-btn">
+						Offerte bekijken
+					</a>
+				<?php else : ?>
+					<form method="post" action="" class="pms-quote-fallback" id="pms-quote-form">
+						<?php wp_nonce_field( 'pms_add_to_quote', 'pms_nonce' ); ?>
+						<input type="hidden" name="pms_action" value="add_to_quote">
+						<input type="hidden" name="product_id" value="<?php echo esc_attr( $product->get_id() ); ?>">
+						<div class="pms-qty-stepper">
+							<button type="button" class="pms-qty-btn pms-qty-btn--minus" aria-label="Minder">
+								<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+							</button>
+							<input type="number" class="pms-qty-input" name="quantity" value="1" min="1" aria-label="Aantal">
+							<button type="button" class="pms-qty-btn pms-qty-btn--plus" aria-label="Meer">
+								<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+							</button>
+						</div>
+						<button type="submit" class="pms-quote-fallback-btn">
+							Toevoegen aan offerte
+						</button>
+					</form>
+				<?php endif; ?>
+			</div>
+
+			<!-- Contactgegevens -->
 			<div class="pms-contact-info">
 				<a href="mailto:support@projectmeubelshop.nl" class="pms-contact-item">
 					<i data-lucide="mail" width="16" height="16"></i>
 					support@projectmeubelshop.nl
 				</a>
-				<a href="tel:0852392030" class="pms-contact-item">
+				<a href="tel:0852392040" class="pms-contact-item">
 					<i data-lucide="phone" width="16" height="16"></i>
-					085 239 20 30
+					085 239 20 40
 				</a>
 			</div>
 
-			<!-- 4. Korte beschrijving -->
+			<!-- Korte beschrijving -->
 			<?php
 			$short = $product->get_short_description();
 			if ( ! empty( $short ) ) {
 				echo '<div class="pms-intro-text">' . wpautop( $short ) . '</div>';
 			}
 			?>
-
-			<!-- 4. Offerte-knop -->
-			<?php if ( $in_quote ) : ?>
-				<a class="button pms-quote-view-button" href="<?php echo esc_url( $quote_url ); ?>">
-					<?php esc_html_e( 'Offerte bekijken', 'projectmeubelshop-child' ); ?>
-				</a>
-			<?php else : ?>
-				<form method="post" class="pms-quote-form">
-					<?php wp_nonce_field( 'pms_add_to_quote', 'pms_quote_nonce' ); ?>
-					<input type="hidden" name="pms_product_id" value="<?php echo esc_attr( $product_id ); ?>">
-					<input type="hidden" name="quantity" value="1">
-					<button type="submit" name="pms_add_to_quote" value="1" class="button pms-quote-add-button" style="border-radius: 999px; color: #fff; background-color: #C5B17D; border: none; font-weight: 700;">
-						<?php esc_html_e( 'Voeg toe aan offerte', 'projectmeubelshop-child' ); ?>
-					</button>
-				</form>
-			<?php endif; ?>
 		</div>
 
 	</div>
@@ -563,6 +916,22 @@ h1.pms-page-title {
 })();
 
 if (typeof lucide !== 'undefined') lucide.createIcons();
+
+// --- Qty steppers ---
+document.querySelectorAll('.pms-qty-stepper').forEach(function (stepper) {
+	var input  = stepper.querySelector('.pms-qty-input');
+	var minus  = stepper.querySelector('.pms-qty-btn--minus');
+	var plus   = stepper.querySelector('.pms-qty-btn--plus');
+	if (!input) return;
+	minus.addEventListener('click', function () {
+		var v = parseInt(input.value, 10) || 1;
+		if (v > 1) input.value = v - 1;
+	});
+	plus.addEventListener('click', function () {
+		var v = parseInt(input.value, 10) || 1;
+		input.value = v + 1;
+	});
+});
 </script>
 
 <?php do_action( 'woocommerce_after_single_product' ); ?>

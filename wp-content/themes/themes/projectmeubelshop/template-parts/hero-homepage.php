@@ -1,0 +1,56 @@
+<?php
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+$page_id        = get_the_ID();
+$hero_image_url = get_the_post_thumbnail_url( $page_id, 'full' );
+$contact_phone  = get_post_meta( $page_id, 'hero_phone', true ) ?: '085 239 2040';
+$contact_email  = get_post_meta( $page_id, 'hero_email', true ) ?: 'support@projectmeubelshop.nl';
+?>
+
+<section class="welcome-v2">
+	<header class="welcome-v2__hero welcome-v2__hero--projectmeubelshop" aria-label="Introductie Projectmeubelshop">
+		<div class="welcome-v2__hero-left">
+			<div class="welcome-v2__hero-content">
+				<div class="welcome-v2__hero-copy">
+					<?php pms_render_breadcrumbs( 'blog-breadcrumbs' ); ?>
+
+					<h1 class="welcome-v2__title"><?php the_title(); ?></h1>
+
+					<?php if ( has_excerpt( $page_id ) ) : ?>
+						<p class="welcome-v2__lead"><?php echo esc_html( get_the_excerpt( $page_id ) ); ?></p>
+					<?php else : ?>
+						<p class="welcome-v2__lead">Op zoek naar projectmeubilair voor kantoor, school of tijdelijke inrichting? Projectmeubelshop helpt je snel aan een passende oplossing.</p>
+					<?php endif; ?>
+
+					<div class="welcome-v2__actions">
+						<a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="pms-btn pms-btn--accent">Bekijk aanbod</a>
+						<a href="<?php echo esc_url( home_url( '/offerte-samenstellen/' ) ); ?>" class="pms-btn pms-btn--outline">Offerte aanvragen</a>
+					</div>
+
+					<a class="welcome-v2__direct-link" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Of neem direct contact op voor advies</a>
+				</div>
+
+				<div class="welcome-v2__hero-actions-panel">
+					<div class="welcome-v2__hero-contact-list" aria-label="Contactmogelijkheden">
+						<a href="tel:<?php echo esc_attr( preg_replace( '/\s+/', '', $contact_phone ) ); ?>" class="welcome-v2__hero-contact-item">
+							<span class="welcome-v2__hero-contact-icon" aria-hidden="true">
+								<svg viewBox="0 0 24 24" focusable="false"><path d="M6.6 10.8a15.5 15.5 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1-.24c1.08.36 2.24.54 3.43.54a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1C10.97 21 3 13.03 3 3a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.19.18 2.35.54 3.43a1 1 0 0 1-.24 1Z" fill="currentColor"/></svg>
+							</span>
+							<span><?php echo esc_html( $contact_phone ); ?></span>
+						</a>
+						<a href="mailto:<?php echo esc_attr( $contact_email ); ?>" class="welcome-v2__hero-contact-item">
+							<span class="welcome-v2__hero-contact-icon" aria-hidden="true">
+								<svg viewBox="0 0 24 24" focusable="false"><path d="M4 5h16a2 2 0 0 1 2 2v.28l-10 5.88L2 7.28V7a2 2 0 0 1 2-2Zm18 4.03V17a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9.03l9.49 5.58a1 1 0 0 0 1.02 0Z" fill="currentColor"/></svg>
+							</span>
+							<span><?php echo esc_html( $contact_email ); ?></span>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="welcome-v2__hero-right" aria-hidden="true"<?php if ( $hero_image_url ) : ?> style="background-image: url('<?php echo esc_url( $hero_image_url ); ?>');"<?php endif; ?>></div>
+	</header>
+</section>

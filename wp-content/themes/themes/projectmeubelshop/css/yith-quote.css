@@ -1,0 +1,257 @@
+/* =============================================================
+   YITH Request a Quote – Projectmeubelshop themastyling
+   ============================================================= */
+
+/* ── Knopcontainer ── */
+.yith-ywraq-add-to-quote {
+  margin-top: 8px;
+}
+
+.yith-ywraq-add-button {
+  display: block;
+}
+
+/* ── Toevoegen aan offerte knop ── */
+.add-request-quote-button,
+a.add-request-quote-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 46px !important;
+  padding: 0 22px !important;
+  background: var(--color-primary) !important;
+  background-color: var(--color-primary) !important;
+  background-image: none !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  white-space: nowrap !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.add-request-quote-button:hover,
+a.add-request-quote-button:hover {
+  background: #3d2d20 !important;
+  background-color: #3d2d20 !important;
+  color: #fff !important;
+}
+
+/* Ajax loader verbergen */
+.yith-ywraq-add-button .ajax-loading {
+  display: none !important;
+}
+
+/* ── Na toevoegen: "Offerte bekijken" link ── */
+.yith_ywraq_add_item_browse_message,
+.yith_ywraq_add_item_response_message {
+  margin-top: 6px !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 13px !important;
+}
+
+.yith_ywraq_add_item_browse_message a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  height: 46px !important;
+  padding: 0 22px !important;
+  background: var(--color-secondary) !important;
+  background-color: var(--color-secondary) !important;
+  background-image: none !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  text-decoration: none !important;
+  white-space: nowrap !important;
+  transition: background-color 0.15s ease !important;
+}
+
+.yith_ywraq_add_item_browse_message a:hover {
+  background: #b09060 !important;
+  background-color: #b09060 !important;
+  color: #fff !important;
+}
+
+.yith_ywraq_add_item_response_message {
+  color: #666 !important;
+  margin-bottom: 4px !important;
+}
+
+/* ── Bericht na toevoegen ── */
+.yith-ywraq-message {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin-top: 10px !important;
+  padding: 10px 16px !important;
+  background: #fff !important;
+  border: 1px solid var(--color-border) !important;
+  border-left: 3px solid var(--color-secondary) !important;
+  border-radius: 6px !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+.yith-ywraq-message a {
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
+  text-decoration: underline !important;
+}
+
+.yith-ywraq-message a:hover {
+  color: var(--color-secondary) !important;
+}
+
+/* ── Offertepagina: tabel ── */
+.ywraq_items_table,
+table.ywraq_items_table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 14px !important;
+}
+
+.ywraq_items_table th {
+  text-align: left !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  color: #888 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  padding: 0 0 10px !important;
+  border-bottom: 2px solid var(--color-border) !important;
+}
+
+.ywraq_items_table td {
+  padding: 14px 0 !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  color: #333 !important;
+  vertical-align: middle !important;
+}
+
+.ywraq_items_table td:first-child {
+  font-weight: 600 !important;
+}
+
+.ywraq_items_table .product-thumbnail img {
+  width: 64px !important;
+  height: 64px !important;
+  object-fit: cover !important;
+  border-radius: 6px !important;
+  border: 1px solid var(--color-border) !important;
+}
+
+/* Verwijder-knop in tabel */
+.ywraq_items_table .product-remove a {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 28px !important;
+  height: 28px !important;
+  background: #f5f5f5 !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 50% !important;
+  color: #888 !important;
+  font-size: 16px !important;
+  text-decoration: none !important;
+  transition: background 0.15s, color 0.15s !important;
+}
+
+.ywraq_items_table .product-remove a:hover {
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #b91c1c !important;
+}
+
+/* ── Offertepagina: formulier ── */
+.woocommerce-ywraq-form,
+#ywraq-form {
+  font-family: Inter, sans-serif !important;
+}
+
+.woocommerce-ywraq-form .form-row label,
+#ywraq-form .form-row label {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+  margin-bottom: 4px !important;
+}
+
+.woocommerce-ywraq-form .form-row input,
+.woocommerce-ywraq-form .form-row textarea,
+#ywraq-form .form-row input,
+#ywraq-form .form-row textarea {
+  width: 100% !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 6px !important;
+  padding: 10px 14px !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 14px !important;
+  color: #333 !important;
+  background: #fff !important;
+  box-shadow: none !important;
+  outline: none !important;
+  transition: border-color 0.15s !important;
+  box-sizing: border-box !important;
+}
+
+.woocommerce-ywraq-form .form-row input:focus,
+.woocommerce-ywraq-form .form-row textarea:focus,
+#ywraq-form .form-row input:focus,
+#ywraq-form .form-row textarea:focus {
+  border-color: var(--color-secondary) !important;
+  box-shadow: 0 0 0 3px rgba(197, 177, 125, 0.15) !important;
+}
+
+/* Verzendknop offertepagina */
+.woocommerce-ywraq-form input[type="submit"],
+.woocommerce-ywraq-form button[type="submit"],
+#ywraq-form input[type="submit"],
+#ywraq-form button[type="submit"],
+.ywraq-send-request-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 14px 32px !important;
+  background: var(--color-primary) !important;
+  background-color: var(--color-primary) !important;
+  background-image: none !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 10px !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transition: background-color 0.15s !important;
+}
+
+.woocommerce-ywraq-form input[type="submit"]:hover,
+.woocommerce-ywraq-form button[type="submit"]:hover,
+#ywraq-form input[type="submit"]:hover,
+#ywraq-form button[type="submit"]:hover,
+.ywraq-send-request-button:hover {
+  background: #3d2d20 !important;
+  background-color: #3d2d20 !important;
+  color: #fff !important;
+}
+
+/* ── Notices op de offertepagina ── */
+.woocommerce-message.ywraq-notice {
+  border-left-color: var(--color-secondary) !important;
+}

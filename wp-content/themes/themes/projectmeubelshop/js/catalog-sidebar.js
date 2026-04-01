@@ -321,13 +321,39 @@
     // Grid wrap
     var gridWrap = document.createElement('div');
     gridWrap.className = 'pms-catalog-grid-wrap';
-    productsList.parentNode.insertBefore(wrapper, productsList);
+
+    // Op archief/categorie pagina's: schuif de header, count en ordering
+    // ook de gridWrap in zodat ze naast de sidebar staan (niet erboven).
+    var parent = productsList.parentNode;
+    var prependEls = [];
+
+    // Zoek elementen die vóór ul.products staan en erbij horen
+    var sibling = productsList.previousElementSibling;
+    while (sibling) {
+      var prev = sibling.previousElementSibling;
+      if (
+        sibling.classList.contains('pms-tax-toolbar') ||
+        sibling.classList.contains('woocommerce-products-header') ||
+        sibling.classList.contains('woocommerce-result-count') ||
+        sibling.tagName === 'FORM' && sibling.classList.contains('woocommerce-ordering')
+      ) {
+        prependEls.unshift(sibling);
+      }
+      sibling = prev;
+    }
+
+    parent.insertBefore(wrapper, productsList);
+
+    prependEls.forEach(function (el) {
+      gridWrap.appendChild(el);
+    });
+
     gridWrap.appendChild(productsList);
     wrapper.appendChild(sidebar);
     wrapper.appendChild(gridWrap);
 
     function titleOf(item) {
-      var t = item.querySelector('.woocommerce-loop-product__title');
+      var t = item.querySelector('.pms-product-card__title, .woocommerce-loop-product__title');
       return (t ? t.textContent : '').toLowerCase();
     }
 

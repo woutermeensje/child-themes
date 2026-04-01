@@ -65,7 +65,7 @@ unset($value);
         <!-- Sector -->
         <div class="job_sector">
             <select name="filter_job_sector[]" id="filter_job_sector" class="js-custom-select job_sector" data-placeholder="Sector" multiple>
-                <?php foreach (get_terms(['taxonomy' => 'job_sector', 'hide_empty' => true]) as $term) : ?>
+                <?php foreach (get_terms(['taxonomy' => 'job_sector', 'hide_empty' => false]) as $term) : ?>
                     <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_sector'], true)); ?>>
                         <?php echo esc_html($term->name); ?>
                     </option>
@@ -76,7 +76,7 @@ unset($value);
         <!-- Vakgebied -->
         <div class="vakgebied_filter">
             <select name="filter_vakgebied[]" id="filter_vakgebied" class="js-custom-select vakgebied_filter" data-placeholder="Vakgebied" multiple>
-                <?php foreach (get_terms(['taxonomy' => 'vakgebied', 'hide_empty' => true]) as $term) : ?>
+                <?php foreach (get_terms(['taxonomy' => 'vakgebied', 'hide_empty' => false]) as $term) : ?>
                     <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['vakgebied'], true)); ?>>
                         <?php echo esc_html($term->name); ?>
                     </option>
@@ -87,7 +87,7 @@ unset($value);
         <!-- Organisatie -->
         <div class="job_company">
             <select name="filter_job_company[]" id="filter_job_company" class="js-custom-select job_company" data-placeholder="Organisatie" multiple>
-                <?php foreach (get_terms(['taxonomy' => 'job_company', 'hide_empty' => true]) as $term) : ?>
+                <?php foreach (get_terms(['taxonomy' => 'job_company', 'hide_empty' => false]) as $term) : ?>
                     <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_company'], true)); ?>>
                         <?php echo esc_html($term->name); ?>
                     </option>
