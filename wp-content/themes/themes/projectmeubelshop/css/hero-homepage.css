@@ -132,9 +132,10 @@
   display: flex;
   align-items: center;
   margin-left: calc(clamp(20px, 4vw, 72px) * -1);
-  width: calc(100% + clamp(20px, 4vw, 72px));
+  margin-right: -96px;
+  width: calc(100% + clamp(20px, 4vw, 72px) + 96px);
   background: #ffffff;
-  padding: 16px clamp(20px, 4vw, 72px) 20px;
+  padding: 16px calc(clamp(20px, 4vw, 72px) + 96px) 20px clamp(20px, 4vw, 72px);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
   box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
@@ -260,6 +261,7 @@
 
   .welcome-v2__hero--projectmeubelshop .welcome-v2__hero-actions-panel {
     margin-left: 0;
+    margin-right: 0;
     width: 100%;
     padding: 18px 18px 20px;
     border: 1px solid var(--color-border);
