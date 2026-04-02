@@ -299,7 +299,7 @@ function pms_render_homepage_carousel_shortcode( $atts ) {
 		array(
 			'category' => 'carousel-homepage',
 			'limit'    => 12,
-			'title'    => 'Het beste ergonische kantoormeubilair',
+			'title'    => 'Meestverkochte kantoormeubels',
 		),
 		$atts,
 		'pms_homepage_carousel'

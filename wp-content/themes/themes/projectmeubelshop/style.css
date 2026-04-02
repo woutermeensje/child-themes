@@ -286,21 +286,38 @@ body:not(.single-product) .woocommerce ul.products li.product a.added_to_cart {
   justify-content: center;
   width: 44px;
   height: 44px;
-  border: 1px solid #dedede;
-  border-radius: 0;
-  background: #fff;
-  color: #111;
+  border: 1px solid #dedede !important;
+  border-radius: 0 !important;
+  background: #fff !important;
+  color: var(--pms-text) !important;
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
-  box-shadow: none;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
   transition: transform 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
 
+.pms-home-carousel__arrow,
+.pms-home-carousel__arrow:visited,
+.pms-home-carousel__arrow:focus,
+.pms-home-carousel__arrow:active {
+  color: var(--pms-text) !important;
+  background: #fff !important;
+  border-color: #dedede !important;
+}
+
 .pms-home-carousel__arrow:hover {
-  background: #fff;
-  border-color: #dedede;
+  color: var(--pms-primary) !important;
+  background: #fff !important;
+  border-color: var(--pms-primary) !important;
   transform: translateY(-1px);
+}
+
+.pms-home-carousel__arrow span {
+  color: currentColor !important;
 }
 
 .pms-home-carousel__viewport {
@@ -368,12 +385,13 @@ body:not(.single-product) .woocommerce ul.products li.product a.added_to_cart {
 }
 
 .pms-home-carousel__name {
-  margin: 0;
-  color: var(--pms-text);
-  font-family: Inter, sans-serif;
-  font-size: 20px;
-  font-weight: 700;
-  line-height: 1.35;
+  margin: 0 !important;
+  color: var(--pms-text) !important;
+  font-family: Inter, sans-serif !important;
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  line-height: 1.35 !important;
+  letter-spacing: 0 !important;
 }
 
 .woocommerce nav.woocommerce-pagination ul {
