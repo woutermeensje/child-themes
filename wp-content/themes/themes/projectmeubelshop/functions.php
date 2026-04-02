@@ -4,13 +4,24 @@ require_once get_stylesheet_directory() . '/includes/quote.php';
 
 add_action( 'wp_enqueue_scripts', 'projectmeubelshop_child_assets' );
 function projectmeubelshop_child_assets() {
+	$child_style_version = file_exists( get_stylesheet_directory() . '/style.css' ) ? filemtime( get_stylesheet_directory() . '/style.css' ) : wp_get_theme()->get( 'Version' );
+	$catalog_js_version  = file_exists( get_stylesheet_directory() . '/js/catalog-sidebar.js' ) ? filemtime( get_stylesheet_directory() . '/js/catalog-sidebar.js' ) : wp_get_theme()->get( 'Version' );
+	$carousel_js_version = file_exists( get_stylesheet_directory() . '/js/homepage-carousel.js' ) ? filemtime( get_stylesheet_directory() . '/js/homepage-carousel.js' ) : wp_get_theme()->get( 'Version' );
+
 	wp_enqueue_style( 'parent-style', get_template_directory_uri() . '/style.css' );
-	wp_enqueue_style( 'projectmeubelshop-child-style', get_stylesheet_uri(), array( 'parent-style' ), wp_get_theme()->get( 'Version' ) );
+	wp_enqueue_style( 'projectmeubelshop-child-style', get_stylesheet_uri(), array( 'parent-style' ), $child_style_version );
 	wp_enqueue_script(
 		'projectmeubelshop-catalog-sidebar',
 		get_stylesheet_directory_uri() . '/js/catalog-sidebar.js',
 		array(),
-		wp_get_theme()->get( 'Version' ),
+		$catalog_js_version,
+		true
+	);
+	wp_register_script(
+		'projectmeubelshop-homepage-carousel',
+		get_stylesheet_directory_uri() . '/js/homepage-carousel.js',
+		array(),
+		$carousel_js_version,
 		true
 	);
 
@@ -276,4 +287,102 @@ function projectmeubelshop_remove_reviews_tab( $tabs ) {
 		unset( $tabs['reviews'] );
 	}
 	return $tabs;
+}
+
+add_shortcode( 'pms_homepage_carousel', 'pms_render_homepage_carousel_shortcode' );
+function pms_render_homepage_carousel_shortcode( $atts ) {
+	if ( ! class_exists( 'WooCommerce' ) ) {
+		return '';
+	}
+
+	$atts = shortcode_atts(
+		array(
+			'category' => 'carousel-homepage',
+			'limit'    => 12,
+			'title'    => 'Het beste ergonische kantoormeubilair',
+		),
+		$atts,
+		'pms_homepage_carousel'
+	);
+
+	$query = new WP_Query(
+		array(
+			'post_type'           => 'product',
+			'post_status'         => 'publish',
+			'posts_per_page'      => max( 1, (int) $atts['limit'] ),
+			'ignore_sticky_posts' => true,
+			'tax_query'           => array(
+				array(
+					'taxonomy' => 'product_cat',
+					'field'    => 'slug',
+					'terms'    => sanitize_title( $atts['category'] ),
+				),
+			),
+		)
+	);
+
+	if ( ! $query->have_posts() ) {
+		wp_reset_postdata();
+		return '';
+	}
+
+	wp_enqueue_script( 'projectmeubelshop-homepage-carousel' );
+
+	$carousel_id = wp_unique_id( 'pms-home-carousel-' );
+
+	ob_start();
+	?>
+	<section class="pms-home-carousel" aria-label="Populaire producten">
+		<?php if ( ! empty( $atts['title'] ) ) : ?>
+			<h2 class="pms-home-carousel__title"><?php echo esc_html( $atts['title'] ); ?></h2>
+		<?php endif; ?>
+
+		<div class="pms-home-carousel__stage">
+			<div class="pms-home-carousel__controls pms-home-carousel__controls--prev" aria-label="Carousel navigatie">
+				<button type="button" class="pms-home-carousel__arrow" data-carousel-prev="<?php echo esc_attr( $carousel_id ); ?>" aria-label="Vorige producten">
+					<span aria-hidden="true">&larr;</span>
+				</button>
+			</div>
+
+			<div class="pms-home-carousel__viewport" id="<?php echo esc_attr( $carousel_id ); ?>" data-carousel-track tabindex="0">
+				<?php
+				while ( $query->have_posts() ) :
+					$query->the_post();
+					global $product;
+
+					if ( ! $product instanceof WC_Product || ! $product->is_visible() ) {
+						continue;
+					}
+					?>
+					<article <?php wc_product_class( 'pms-home-carousel__item', $product ); ?>>
+						<a href="<?php the_permalink(); ?>" class="pms-home-carousel__card">
+							<div class="pms-home-carousel__media">
+								<?php
+								if ( has_post_thumbnail() ) {
+									echo woocommerce_get_product_thumbnail( 'woocommerce_thumbnail', array( 'class' => 'pms-home-carousel__image' ) );
+								} else {
+									echo wc_placeholder_img( 'woocommerce_thumbnail', array( 'class' => 'pms-home-carousel__image pms-home-carousel__image--placeholder' ) );
+								}
+								?>
+							</div>
+							<div class="pms-home-carousel__body">
+								<h3 class="pms-home-carousel__name"><?php the_title(); ?></h3>
+							</div>
+						</a>
+					</article>
+				<?php endwhile; ?>
+			</div>
+
+			<div class="pms-home-carousel__controls pms-home-carousel__controls--next" aria-label="Carousel navigatie">
+				<button type="button" class="pms-home-carousel__arrow" data-carousel-next="<?php echo esc_attr( $carousel_id ); ?>" aria-label="Volgende producten">
+					<span aria-hidden="true">&rarr;</span>
+				</button>
+			</div>
+		</div>
+	</section>
+	<?php
+
+	wp_reset_postdata();
+
+	return ob_get_clean();
 }

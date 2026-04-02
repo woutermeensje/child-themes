@@ -289,6 +289,29 @@
     searchWrap.appendChild(searchInput);
     sidebarInner.appendChild(searchWrap);
 
+    // Verplaats "Sorteren op" naar de filterkolom
+    var orderingForm = null;
+    var siblingForOrdering = productsList.previousElementSibling;
+    while (siblingForOrdering) {
+      var previousOrderingSibling = siblingForOrdering.previousElementSibling;
+      if (siblingForOrdering.tagName === 'FORM' && siblingForOrdering.classList.contains('pms-tax-toolbar__ordering')) {
+        orderingForm = siblingForOrdering;
+        break;
+      }
+      if (!orderingForm && siblingForOrdering.classList && siblingForOrdering.classList.contains('pms-tax-toolbar')) {
+        orderingForm = siblingForOrdering.querySelector('form.pms-tax-toolbar__ordering');
+        if (orderingForm) break;
+      }
+      siblingForOrdering = previousOrderingSibling;
+    }
+
+    if (orderingForm) {
+      var orderingWrap = document.createElement('div');
+      orderingWrap.className = 'pms-catalog-block pms-catalog-block--ordering';
+      orderingWrap.appendChild(orderingForm);
+      sidebarInner.appendChild(orderingWrap);
+    }
+
     // Detecteer alle taxonomieën
     var taxonomyMap = detectTaxonomies(items);
     var activeSets = {};
@@ -334,8 +357,7 @@
       if (
         sibling.classList.contains('pms-tax-toolbar') ||
         sibling.classList.contains('woocommerce-products-header') ||
-        sibling.classList.contains('woocommerce-result-count') ||
-        sibling.tagName === 'FORM' && sibling.classList.contains('woocommerce-ordering')
+        sibling.classList.contains('woocommerce-result-count')
       ) {
         prependEls.unshift(sibling);
       }

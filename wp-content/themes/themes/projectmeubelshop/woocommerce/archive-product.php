@@ -11,8 +11,6 @@ if ( $is_product_cat = is_tax( 'product_cat' ) ) {
 	remove_action( 'woocommerce_before_main_content', 'woocommerce_breadcrumb', 20 );
 }
 
-do_action( 'woocommerce_before_main_content' );
-
 $term           = $is_product_cat ? get_queried_object() : null;
 $term_image_id  = $term ? (int) get_term_meta( $term->term_id, 'pms_hero_image_id', true ) : 0;
 $term_image_id  = $term_image_id ?: ( $term ? (int) get_term_meta( $term->term_id, 'thumbnail_id', true ) : 0 );
@@ -44,6 +42,10 @@ $term_excerpt   = $term_excerpt ?: wp_strip_all_tags( $term_desc );
 						<?php if ( $term_excerpt ) : ?>
 							<p class="welcome-v2__lead"><?php echo esc_html( $term_excerpt ); ?></p>
 						<?php endif; ?>
+
+						<div class="welcome-v2__actions">
+							<a class="pms-btn pms-btn--accent" href="#pms-products-grid">Producten bekijken</a>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -55,9 +57,20 @@ $term_excerpt   = $term_excerpt ?: wp_strip_all_tags( $term_desc );
 	<?php do_action( 'woocommerce_shop_loop_header' ); ?>
 <?php endif; ?>
 
+<?php do_action( 'woocommerce_before_main_content' ); ?>
+
+<?php if ( $is_product_cat ) : ?>
+	<div id="pms-products-grid" class="pms-tax-content">
+<?php endif; ?>
+
 <?php if ( woocommerce_product_loop() ) : ?>
 	<div class="pms-tax-toolbar">
-		<?php do_action( 'woocommerce_before_shop_loop' ); ?>
+		<?php if ( $is_product_cat ) : ?>
+			<?php woocommerce_result_count(); ?>
+			<?php woocommerce_catalog_ordering(); ?>
+		<?php else : ?>
+			<?php do_action( 'woocommerce_before_shop_loop' ); ?>
+		<?php endif; ?>
 	</div>
 
 	<?php woocommerce_product_loop_start(); ?>
@@ -75,6 +88,10 @@ $term_excerpt   = $term_excerpt ?: wp_strip_all_tags( $term_desc );
 	<?php do_action( 'woocommerce_after_shop_loop' ); ?>
 <?php else : ?>
 	<?php do_action( 'woocommerce_no_products_found' ); ?>
+<?php endif; ?>
+
+<?php if ( $is_product_cat ) : ?>
+	</div>
 <?php endif; ?>
 
 <?php do_action( 'woocommerce_after_main_content' ); ?>
