@@ -1,6 +1,7 @@
 <?php
 
 require_once get_stylesheet_directory() . '/includes/quote.php';
+require_once get_stylesheet_directory() . '/includes/information-request.php';
 
 add_action( 'wp_enqueue_scripts', 'projectmeubelshop_child_assets' );
 function projectmeubelshop_child_assets() {
@@ -80,126 +81,6 @@ function pms_render_breadcrumbs( string $nav_class = '', string $wrapper_class =
 	if ( $wrapper_class ) {
 		echo '</div>';
 	}
-}
-
-add_action( 'product_cat_add_form_fields', 'pms_product_cat_extra_fields_add' );
-function pms_product_cat_extra_fields_add() {
-	?>
-	<div class="form-field term-group">
-		<label for="pms_product_cat_hero_image_id">Hero afbeelding</label>
-		<input type="hidden" id="pms_product_cat_hero_image_id" name="pms_product_cat_hero_image_id" value="">
-		<div class="pms-term-image-preview" style="margin: 10px 0;"></div>
-		<button type="button" class="button pms-term-image-upload">Afbeelding kiezen</button>
-		<button type="button" class="button pms-term-image-remove" style="display:none;">Afbeelding verwijderen</button>
-		<p class="description">Deze afbeelding wordt gebruikt in de hero van de productcategorie-pagina.</p>
-	</div>
-	<div class="form-field term-group">
-		<label for="pms_product_cat_hero_excerpt">Hero introtekst</label>
-		<textarea id="pms_product_cat_hero_excerpt" name="pms_product_cat_hero_excerpt" rows="4" style="width:100%;"></textarea>
-		<p class="description">Korte tekst onder de titel in de hero. Laat leeg om terug te vallen op de beschrijving.</p>
-	</div>
-	<?php
-}
-
-add_action( 'product_cat_edit_form_fields', 'pms_product_cat_extra_fields_edit' );
-function pms_product_cat_extra_fields_edit( $term ) {
-	$image_id    = (int) get_term_meta( $term->term_id, 'pms_hero_image_id', true );
-	$hero_text   = get_term_meta( $term->term_id, 'pms_hero_excerpt', true );
-	$image_html  = $image_id ? wp_get_attachment_image( $image_id, 'medium', false, array( 'style' => 'max-width:220px;height:auto;display:block;' ) ) : '';
-	?>
-	<tr class="form-field term-group-wrap">
-		<th scope="row"><label for="pms_product_cat_hero_image_id">Hero afbeelding</label></th>
-		<td>
-			<input type="hidden" id="pms_product_cat_hero_image_id" name="pms_product_cat_hero_image_id" value="<?php echo esc_attr( $image_id ); ?>">
-			<div class="pms-term-image-preview" style="margin: 0 0 10px;"><?php echo $image_html; ?></div>
-			<button type="button" class="button pms-term-image-upload">Afbeelding kiezen</button>
-			<button type="button" class="button pms-term-image-remove" <?php echo $image_id ? '' : 'style="display:none;"'; ?>>Afbeelding verwijderen</button>
-			<p class="description">Deze afbeelding wordt gebruikt in de hero van de productcategorie-pagina.</p>
-		</td>
-	</tr>
-	<tr class="form-field term-group-wrap">
-		<th scope="row"><label for="pms_product_cat_hero_excerpt">Hero introtekst</label></th>
-		<td>
-			<textarea id="pms_product_cat_hero_excerpt" name="pms_product_cat_hero_excerpt" rows="4" style="width:100%;"><?php echo esc_textarea( $hero_text ); ?></textarea>
-			<p class="description">Korte tekst onder de titel in de hero. Laat leeg om terug te vallen op de beschrijving.</p>
-		</td>
-	</tr>
-	<?php
-}
-
-add_action( 'created_product_cat', 'pms_save_product_cat_extra_fields' );
-add_action( 'edited_product_cat', 'pms_save_product_cat_extra_fields' );
-function pms_save_product_cat_extra_fields( $term_id ) {
-	if ( isset( $_POST['pms_product_cat_hero_image_id'] ) ) {
-		update_term_meta( $term_id, 'pms_hero_image_id', absint( $_POST['pms_product_cat_hero_image_id'] ) );
-	}
-
-	if ( isset( $_POST['pms_product_cat_hero_excerpt'] ) ) {
-		update_term_meta( $term_id, 'pms_hero_excerpt', sanitize_textarea_field( wp_unslash( $_POST['pms_product_cat_hero_excerpt'] ) ) );
-	}
-}
-
-add_action( 'admin_enqueue_scripts', 'pms_product_cat_admin_media' );
-function pms_product_cat_admin_media( $hook ) {
-	if ( 'edit-tags.php' !== $hook && 'term.php' !== $hook ) {
-		return;
-	}
-
-	$screen = get_current_screen();
-	if ( ! $screen || 'edit-product_cat' !== $screen->id ) {
-		return;
-	}
-
-	wp_enqueue_media();
-
-	$script = <<<'JS'
-document.addEventListener('DOMContentLoaded', function () {
-  var uploadButtons = document.querySelectorAll('.pms-term-image-upload');
-
-  uploadButtons.forEach(function (button) {
-    button.addEventListener('click', function (event) {
-      event.preventDefault();
-
-      var wrapper = button.closest('.form-field, .term-group-wrap, td');
-      if (!wrapper) return;
-
-      var input = wrapper.querySelector('#pms_product_cat_hero_image_id');
-      var preview = wrapper.querySelector('.pms-term-image-preview');
-      var removeButton = wrapper.querySelector('.pms-term-image-remove');
-      var frame = wp.media({
-        title: 'Kies hero afbeelding',
-        button: { text: 'Gebruik afbeelding' },
-        multiple: false
-      });
-
-      frame.on('select', function () {
-        var attachment = frame.state().get('selection').first().toJSON();
-        if (input) input.value = attachment.id;
-        if (preview) preview.innerHTML = '<img src="' + attachment.url + '" style="max-width:220px;height:auto;display:block;" alt="">';
-        if (removeButton) removeButton.style.display = 'inline-block';
-      });
-
-      frame.open();
-    });
-  });
-
-  document.querySelectorAll('.pms-term-image-remove').forEach(function (button) {
-    button.addEventListener('click', function (event) {
-      event.preventDefault();
-      var wrapper = button.closest('.form-field, .term-group-wrap, td');
-      if (!wrapper) return;
-
-      var input = wrapper.querySelector('#pms_product_cat_hero_image_id');
-      var preview = wrapper.querySelector('.pms-term-image-preview');
-      if (input) input.value = '';
-      if (preview) preview.innerHTML = '';
-      button.style.display = 'none';
-    });
-  });
-});
-JS;
-
-	wp_add_inline_script( 'jquery-core', $script );
 }
 
 /**

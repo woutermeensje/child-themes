@@ -365,8 +365,211 @@ function pms_render_quote_request_meta_box( WP_Post $post ) {
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
+function pms_quote_log( string $event, array $context = array() ): void {
+	$server_host = isset( $_SERVER['HTTP_HOST'] ) ? sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '';
+	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+	$referer     = isset( $_SERVER['HTTP_REFERER'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_REFERER'] ) ) : '';
+	$session_id  = '';
+	$has_session = false;
+	$item_count  = null;
+
+	if ( function_exists( 'WC' ) && WC() && isset( WC()->session ) && WC()->session ) {
+		if ( method_exists( WC()->session, 'get_customer_id' ) ) {
+			$session_id = (string) WC()->session->get_customer_id();
+		}
+
+		if ( method_exists( WC()->session, 'has_session' ) ) {
+			$has_session = (bool) WC()->session->has_session();
+		}
+
+		$items = WC()->session->get( 'pms_quote_items' );
+		if ( is_array( $items ) ) {
+			$item_count = count( $items );
+		}
+	}
+
+	$payload = array_merge(
+		array(
+			'timestamp'   => current_time( 'mysql' ),
+			'event'       => $event,
+			'host'        => $server_host,
+			'request_uri' => $request_uri,
+			'referer'     => $referer,
+			'session_id'  => $session_id,
+			'has_session' => $has_session,
+			'item_count'  => $item_count,
+		),
+		$context
+	);
+
+	$stored_logs   = get_option( 'pms_quote_debug_entries', array() );
+	$stored_logs   = is_array( $stored_logs ) ? $stored_logs : array();
+	$stored_logs[] = $payload;
+
+	if ( count( $stored_logs ) > 200 ) {
+		$stored_logs = array_slice( $stored_logs, -200 );
+	}
+
+	update_option( 'pms_quote_debug_entries', $stored_logs, false );
+	error_log( 'PMS_QUOTE_DEBUG ' . wp_json_encode( $payload ) );
+}
+
+add_action( 'admin_menu', 'pms_quote_register_debug_page' );
+function pms_quote_register_debug_page(): void {
+	add_submenu_page(
+		'edit.php?post_type=pms_quote_request',
+		'Offerte debug log',
+		'Debug log',
+		'manage_options',
+		'pms-quote-debug-log',
+		'pms_quote_render_debug_page'
+	);
+}
+
+function pms_quote_get_debug_log_path(): string {
+	return trailingslashit( WP_CONTENT_DIR ) . 'debug.log';
+}
+
+function pms_quote_get_debug_log_entries( int $limit = 200 ): array {
+	$path = pms_quote_get_debug_log_path();
+
+	if ( ! file_exists( $path ) || ! is_readable( $path ) ) {
+		return array();
+	}
+
+	$lines = file( $path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
+	if ( ! is_array( $lines ) || empty( $lines ) ) {
+		return array();
+	}
+
+	$entries = array();
+
+	foreach ( array_reverse( $lines ) as $line ) {
+		if ( false === strpos( $line, 'PMS_QUOTE_DEBUG ' ) ) {
+			continue;
+		}
+
+		$json = substr( $line, strpos( $line, 'PMS_QUOTE_DEBUG ' ) + strlen( 'PMS_QUOTE_DEBUG ' ) );
+		$data = json_decode( trim( $json ), true );
+
+		$entries[] = array(
+			'raw'  => $line,
+			'data' => is_array( $data ) ? $data : array( 'unparsed' => $json ),
+		);
+
+		if ( count( $entries ) >= $limit ) {
+			break;
+		}
+	}
+
+	return $entries;
+}
+
+function pms_quote_render_debug_page(): void {
+	if ( ! current_user_can( 'manage_options' ) ) {
+		wp_die( esc_html__( 'Je hebt geen rechten om deze pagina te bekijken.', 'projectmeubelshop' ) );
+	}
+
+	if ( isset( $_GET['pms_clear_quote_debug'] ) && '1' === $_GET['pms_clear_quote_debug'] && check_admin_referer( 'pms_clear_quote_debug' ) ) {
+		delete_option( 'pms_quote_debug_entries' );
+		echo '<div class="notice notice-success"><p>De offerte debug log is geleegd.</p></div>';
+	}
+
+	$entries = pms_quote_get_debug_log_entries( 150 );
+	$db_logs  = get_option( 'pms_quote_debug_entries', array() );
+	$db_logs  = is_array( $db_logs ) ? array_reverse( $db_logs ) : array();
+	?>
+	<div class="wrap">
+		<h1>Offerte debug log</h1>
+		<p>Hier zie je de meest recente offerte-debugregels. Eerst uit de interne database-log, en daarna eventueel uit <code>wp-content/debug.log</code>.</p>
+
+		<p>
+			<a href="<?php echo esc_url( wp_nonce_url( add_query_arg( 'pms_clear_quote_debug', '1' ), 'pms_clear_quote_debug' ) ); ?>" class="button button-secondary">Debug log legen</a>
+		</p>
+
+		<?php if ( ! empty( $db_logs ) ) : ?>
+			<h2>Interne debug log</h2>
+			<table class="widefat striped" style="margin-top:16px;margin-bottom:28px;">
+				<thead>
+					<tr>
+						<th style="width:160px;">Tijd</th>
+						<th style="width:160px;">Event</th>
+						<th style="width:180px;">Host</th>
+						<th style="width:220px;">Request</th>
+						<th style="width:180px;">Session ID</th>
+						<th style="width:90px;">Session</th>
+						<th style="width:90px;">Items</th>
+						<th>Details</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $db_logs as $data ) : ?>
+						<tr>
+							<td><?php echo esc_html( (string) ( $data['timestamp'] ?? '-' ) ); ?></td>
+							<td><strong><?php echo esc_html( (string) ( $data['event'] ?? '-' ) ); ?></strong></td>
+							<td><?php echo esc_html( (string) ( $data['host'] ?? '-' ) ); ?></td>
+							<td><code><?php echo esc_html( (string) ( $data['request_uri'] ?? '-' ) ); ?></code></td>
+							<td><code><?php echo esc_html( (string) ( $data['session_id'] ?? '-' ) ); ?></code></td>
+							<td><?php echo ! empty( $data['has_session'] ) ? 'ja' : 'nee'; ?></td>
+							<td><?php echo isset( $data['item_count'] ) ? esc_html( (string) $data['item_count'] ) : '-'; ?></td>
+							<td>
+								<details>
+									<summary>Toon JSON</summary>
+									<pre style="white-space:pre-wrap;word-break:break-word;margin-top:8px;"><?php echo esc_html( wp_json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) ?: '' ); ?></pre>
+								</details>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php endif; ?>
+
+		<?php if ( empty( $entries ) ) : ?>
+			<div class="notice notice-warning">
+				<p>Er zijn geen regels gevonden in <code>wp-content/debug.log</code>. Dat is niet erg als de interne debug log hierboven wel gevuld wordt.</p>
+			</div>
+		<?php else : ?>
+			<h2>debug.log regels</h2>
+			<table class="widefat striped" style="margin-top:16px;">
+				<thead>
+					<tr>
+						<th style="width:160px;">Event</th>
+						<th style="width:180px;">Host</th>
+						<th style="width:220px;">Request</th>
+						<th style="width:180px;">Session ID</th>
+						<th style="width:90px;">Session</th>
+						<th style="width:90px;">Items</th>
+						<th>Details</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $entries as $entry ) : ?>
+						<?php $data = $entry['data']; ?>
+						<tr>
+							<td><strong><?php echo esc_html( (string) ( $data['event'] ?? '-' ) ); ?></strong></td>
+							<td><?php echo esc_html( (string) ( $data['host'] ?? '-' ) ); ?></td>
+							<td><code><?php echo esc_html( (string) ( $data['request_uri'] ?? '-' ) ); ?></code></td>
+							<td><code><?php echo esc_html( (string) ( $data['session_id'] ?? '-' ) ); ?></code></td>
+							<td><?php echo ! empty( $data['has_session'] ) ? 'ja' : 'nee'; ?></td>
+							<td><?php echo isset( $data['item_count'] ) ? esc_html( (string) $data['item_count'] ) : '-'; ?></td>
+							<td>
+								<details>
+									<summary>Toon JSON</summary>
+									<pre style="white-space:pre-wrap;word-break:break-word;margin-top:8px;"><?php echo esc_html( wp_json_encode( $data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) ?: $entry['raw'] ); ?></pre>
+								</details>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php endif; ?>
+	</div>
+	<?php
+}
+
 function pms_quote_ensure_session() {
 	if ( ! function_exists( 'WC' ) || ! WC() ) {
+		pms_quote_log( 'ensure_session_wc_missing' );
 		return false;
 	}
 
@@ -375,13 +578,16 @@ function pms_quote_ensure_session() {
 	}
 
 	if ( ! isset( WC()->session ) || ! WC()->session ) {
+		pms_quote_log( 'ensure_session_failed' );
 		return false;
 	}
 
 	if ( method_exists( WC()->session, 'set_customer_session_cookie' ) && ! WC()->session->has_session() ) {
 		WC()->session->set_customer_session_cookie( true );
+		pms_quote_log( 'session_cookie_initialized' );
 	}
 
+	pms_quote_log( 'ensure_session_ready' );
 	return true;
 }
 
@@ -436,10 +642,68 @@ function pms_quote_add_item( $product_id, $quantity = 1, $variation_id = 0, $var
 		);
 	}
 	pms_quote_set_items( $items );
+	pms_quote_log(
+		'item_added',
+		array(
+			'product_id'   => $product_id,
+			'quantity'     => (int) $quantity,
+			'variation_id' => (int) $variation_id,
+			'items_keys'   => array_map( 'intval', array_keys( $items ) ),
+		)
+	);
 }
 
 function pms_quote_get_page_url() {
 	return home_url( '/offerte-samenstellen/' );
+}
+
+function pms_quote_is_page_request(): bool {
+	if ( is_admin() ) {
+		return false;
+	}
+
+	$quote_page_path = wp_parse_url( pms_quote_get_page_url(), PHP_URL_PATH );
+	$current_path    = wp_parse_url( home_url( add_query_arg( array(), $GLOBALS['wp']->request ?? '' ) ), PHP_URL_PATH );
+
+	if ( is_string( $quote_page_path ) && is_string( $current_path ) ) {
+		$quote_page_path = untrailingslashit( $quote_page_path );
+		$current_path    = untrailingslashit( $current_path );
+
+		if ( $quote_page_path === $current_path ) {
+			return true;
+		}
+	}
+
+	return function_exists( 'is_page' ) && is_page( 'offerte-samenstellen' );
+}
+
+function pms_quote_is_dynamic_request(): bool {
+	if ( isset( $_POST['pms_action'] ) ) {
+		return true;
+	}
+
+	if ( isset( $_GET['pms_added'] ) || isset( $_GET['pms_sent'] ) ) {
+		return true;
+	}
+
+	return pms_quote_is_page_request();
+}
+
+add_action( 'template_redirect', 'pms_quote_disable_cache_for_dynamic_requests', 0 );
+function pms_quote_disable_cache_for_dynamic_requests() {
+	if ( ! pms_quote_is_dynamic_request() ) {
+		return;
+	}
+
+	if ( function_exists( 'wc_nocache_headers' ) ) {
+		wc_nocache_headers();
+	} else {
+		nocache_headers();
+	}
+
+	// Force the WooCommerce session to exist before the page is rendered,
+	// otherwise a cached/offloaded response can make the quote appear empty.
+	pms_quote_ensure_session();
 }
 
 // ── Action handlers (template_redirect) ────────────────────────────────────
@@ -462,10 +726,18 @@ function pms_quote_handle_add() {
 	$quantity     = isset( $_POST['quantity'] ) ? max( 1, (int) $_POST['quantity'] ) : 1;
 	$variation_id = isset( $_POST['variation_id'] ) ? (int) $_POST['variation_id'] : 0;
 	if ( $product_id < 1 ) {
+		pms_quote_log( 'add_rejected_invalid_product' );
 		return;
 	}
 	pms_quote_add_item( $product_id, $quantity, $variation_id );
 	$redirect = add_query_arg( 'pms_added', $product_id, wp_get_referer() ?: get_permalink( $product_id ) );
+	pms_quote_log(
+		'add_redirect',
+		array(
+			'product_id' => $product_id,
+			'redirect'   => $redirect,
+		)
+	);
 	wp_safe_redirect( $redirect );
 	exit;
 }
@@ -634,6 +906,12 @@ function pms_quote_render_page() {
 	}
 
 	$items = pms_quote_get_items();
+	pms_quote_log(
+		'render_page',
+		array(
+			'items_keys' => array_map( 'intval', array_keys( $items ) ),
+		)
+	);
 	$nonce = wp_create_nonce( 'pms_quote_page' );
 
 	// SVG iconen
