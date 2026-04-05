@@ -25,11 +25,10 @@ $contact_email  = get_post_meta( $page_id, 'hero_email', true ) ?: 'support@proj
 					<?php endif; ?>
 
 					<div class="welcome-v2__actions">
-						<a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="pms-btn pms-btn--accent">Bekijk aanbod</a>
-						<a href="<?php echo esc_url( home_url( '/offerte-samenstellen/' ) ); ?>" class="pms-btn pms-btn--outline">Offerte aanvragen</a>
+						<a href="<?php echo esc_url( home_url( '/afspraak-maken/' ) ); ?>" class="pms-btn pms-btn--accent">Afspraak maken</a>
+						<a href="<?php echo esc_url( home_url( '/inrichting-samenstellen/' ) ); ?>" class="pms-btn pms-btn--hero-highlight">Inrichting samenstellen</a>
 					</div>
 
-					<a class="welcome-v2__direct-link" href="<?php echo esc_url( home_url( '/contact/' ) ); ?>">Of neem direct contact op voor advies</a>
 				</div>
 
 				<div class="welcome-v2__hero-actions-panel">

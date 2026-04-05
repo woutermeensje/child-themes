@@ -113,6 +113,23 @@
   justify-content: flex-start;
 }
 
+.welcome-v2 .pms-btn {
+  font-weight: 700 !important;
+}
+
+.welcome-v2 .pms-btn--hero-highlight {
+  color: #fff !important;
+  background: #2F7C7A;
+  border-color: #2F7C7A;
+  box-shadow: 0 10px 26px rgba(20, 56, 55, 0.22);
+}
+
+.welcome-v2 .pms-btn--hero-highlight:hover {
+  color: #fff !important;
+  background: #245F5D;
+  border-color: #245F5D;
+}
+
 .welcome-v2__direct-link {
   margin-top: 4px;
   display: inline-flex;
