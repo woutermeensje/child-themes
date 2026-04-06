@@ -61,6 +61,189 @@ function pms_quote_build_items_snapshot( array $items ): array {
 	return $snapshot;
 }
 
+function pms_quote_build_category_snapshot( array $selected_categories ): array {
+	$snapshot = array();
+
+	foreach ( $selected_categories as $term_id => $quantity ) {
+		$term_id  = (int) $term_id;
+		$quantity = max( 1, (int) $quantity );
+		$term     = get_term( $term_id, 'product_cat' );
+
+		if ( ! $term || is_wp_error( $term ) ) {
+			continue;
+		}
+
+		$snapshot[] = array(
+			'product_id' => 0,
+			'name'       => $term->name,
+			'quantity'   => $quantity,
+			'permalink'  => get_term_link( $term ),
+			'sku'        => 'Categorie',
+		);
+	}
+
+	return $snapshot;
+}
+
+function pms_quote_build_room_builder_snapshot( array $selected_items ): array {
+	$snapshot = array();
+
+	foreach ( $selected_items as $item ) {
+		$quantity = isset( $item['quantity'] ) ? max( 1, (int) $item['quantity'] ) : 0;
+		if ( $quantity < 1 ) {
+			continue;
+		}
+
+		$term_id = isset( $item['term_id'] ) ? (int) $item['term_id'] : 0;
+		$label   = isset( $item['label'] ) ? sanitize_text_field( (string) $item['label'] ) : '';
+
+		if ( $term_id > 0 ) {
+			$term = get_term( $term_id, 'product_cat' );
+			if ( $term && ! is_wp_error( $term ) ) {
+				$snapshot[] = array(
+					'product_id' => 0,
+					'name'       => $term->name,
+					'quantity'   => $quantity,
+					'permalink'  => get_term_link( $term ),
+					'sku'        => 'Categorie',
+				);
+				continue;
+			}
+		}
+
+		if ( '' === $label ) {
+			continue;
+		}
+
+		$snapshot[] = array(
+			'product_id' => 0,
+			'name'       => $label,
+			'quantity'   => $quantity,
+			'permalink'  => '',
+			'sku'        => 'Categorie',
+		);
+	}
+
+	return $snapshot;
+}
+
+function pms_quote_normalize_asset_key( string $value ): string {
+	$value = remove_accents( wp_strip_all_tags( $value ) );
+	$value = strtolower( $value );
+	$value = preg_replace( '/[^a-z0-9]+/', '', $value );
+
+	return is_string( $value ) ? $value : '';
+}
+
+function pms_quote_candidate_asset_keys( WP_Term $term ): array {
+	$keys = array(
+		pms_quote_normalize_asset_key( $term->slug ),
+		pms_quote_normalize_asset_key( $term->name ),
+	);
+
+	foreach ( array_values( $keys ) as $key ) {
+		if ( str_ends_with( $key, 'en' ) ) {
+			$keys[] = substr( $key, 0, -2 );
+		}
+		if ( str_ends_with( $key, 's' ) ) {
+			$keys[] = substr( $key, 0, -1 );
+		}
+	}
+
+	return array_values( array_filter( array_unique( $keys ) ) );
+}
+
+function pms_quote_find_matching_term_for_asset( string $asset_name ): ?WP_Term {
+	$terms = get_terms(
+		array(
+			'taxonomy'   => 'product_cat',
+			'hide_empty' => false,
+		)
+	);
+
+	if ( is_wp_error( $terms ) || empty( $terms ) ) {
+		return null;
+	}
+
+	$asset_key = pms_quote_normalize_asset_key( $asset_name );
+
+	foreach ( $terms as $term ) {
+		foreach ( pms_quote_candidate_asset_keys( $term ) as $key ) {
+			if ( $key === $asset_key ) {
+				return $term;
+			}
+		}
+	}
+
+	return null;
+}
+
+function pms_quote_get_room_builder_assets(): array {
+	$asset_dir = trailingslashit( get_stylesheet_directory() ) . 'offerte-samenstellen/';
+	$asset_url = trailingslashit( get_stylesheet_directory_uri() ) . 'offerte-samenstellen/';
+	$patterns  = array( '*.png', '*.jpg', '*.jpeg', '*.webp' );
+	$files     = array();
+
+	foreach ( $patterns as $pattern ) {
+		$matched = glob( $asset_dir . $pattern );
+		if ( is_array( $matched ) ) {
+			$files = array_merge( $files, $matched );
+		}
+	}
+
+	natcasesort( $files );
+
+	$assets = array();
+
+	foreach ( $files as $file ) {
+		$basename = pathinfo( $file, PATHINFO_FILENAME );
+		$term     = pms_quote_find_matching_term_for_asset( $basename );
+
+		$assets[] = array(
+			'key'         => pms_quote_normalize_asset_key( $basename ),
+			'label'       => trim( preg_replace( '/\s+/', ' ', str_replace( array( '-', '_' ), ' ', $basename ) ) ),
+			'image_url'   => $asset_url . basename( $file ),
+			'term_id'     => $term instanceof WP_Term ? (int) $term->term_id : 0,
+			'description' => $term instanceof WP_Term ? trim( wp_strip_all_tags( term_description( $term->term_id, 'product_cat' ) ) ) : '',
+		);
+	}
+
+	return $assets;
+}
+
+function pms_quote_get_room_builder_image_url( WP_Term $term ): string {
+	$asset_dir = trailingslashit( get_stylesheet_directory() ) . 'offerte-samenstellen/';
+	$asset_url = trailingslashit( get_stylesheet_directory_uri() ) . 'offerte-samenstellen/';
+	$patterns  = array( '*.png', '*.jpg', '*.jpeg', '*.webp' );
+	$files     = array();
+
+	foreach ( $patterns as $pattern ) {
+		$matched = glob( $asset_dir . $pattern );
+		if ( is_array( $matched ) ) {
+			$files = array_merge( $files, $matched );
+		}
+	}
+
+	if ( ! empty( $files ) ) {
+		$lookup = array();
+		foreach ( $files as $file ) {
+			$base_name           = pathinfo( $file, PATHINFO_FILENAME );
+			$lookup[ pms_quote_normalize_asset_key( $base_name ) ] = basename( $file );
+		}
+
+		foreach ( pms_quote_candidate_asset_keys( $term ) as $key ) {
+			if ( isset( $lookup[ $key ] ) ) {
+				return $asset_url . $lookup[ $key ];
+			}
+		}
+	}
+
+	$term_image_id = (int) get_term_meta( $term->term_id, 'pms_hero_image_id', true );
+	$term_image_id = $term_image_id ?: (int) get_term_meta( $term->term_id, 'thumbnail_id', true );
+
+	return $term_image_id ? (string) wp_get_attachment_image_url( $term_image_id, 'large' ) : '';
+}
+
 function pms_quote_store_request( array $request_data ): int {
 	$created_at = current_time( 'mysql' );
 	$name       = trim( (string) ( $request_data['name'] ?? '' ) );
@@ -91,6 +274,7 @@ function pms_quote_store_request( array $request_data ): int {
 	update_post_meta( $post_id, '_pms_quote_message', $message );
 	update_post_meta( $post_id, '_pms_quote_items', $items );
 	update_post_meta( $post_id, '_pms_quote_created_at', $created_at );
+	update_post_meta( $post_id, '_pms_quote_source', sanitize_key( (string) ( $request_data['source'] ?? 'quote' ) ) );
 
 	return (int) $post_id;
 }
@@ -893,6 +1077,81 @@ function pms_quote_handle_standalone_form_submit() {
 	$redirect = wp_get_referer() ?: home_url( '/' );
 	$redirect = remove_query_arg( 'pms_quote_form_sent', $redirect );
 	$redirect = add_query_arg( 'pms_quote_form_sent', '1', $redirect );
+	wp_safe_redirect( $redirect );
+	exit;
+}
+
+add_action( 'template_redirect', 'pms_quote_handle_room_builder_submit' );
+function pms_quote_handle_room_builder_submit() {
+	if ( ! isset( $_POST['pms_action'] ) || 'pms_submit_room_builder_quote' !== $_POST['pms_action'] ) {
+		return;
+	}
+
+	if ( ! isset( $_POST['pms_nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pms_nonce'] ) ), 'pms_room_builder_quote_form' ) ) {
+		return;
+	}
+
+	$firstname = sanitize_text_field( wp_unslash( $_POST['pms_firstname'] ?? '' ) );
+	$lastname  = sanitize_text_field( wp_unslash( $_POST['pms_lastname'] ?? '' ) );
+	$name      = trim( $firstname . ' ' . $lastname );
+	$email     = sanitize_email( wp_unslash( $_POST['pms_email'] ?? '' ) );
+	$phone     = sanitize_text_field( wp_unslash( $_POST['pms_phone'] ?? '' ) );
+	$message   = sanitize_textarea_field( wp_unslash( $_POST['pms_message'] ?? '' ) );
+	$submitted_items = isset( $_POST['pms_room_builder_items'] ) && is_array( $_POST['pms_room_builder_items'] )
+		? wp_unslash( $_POST['pms_room_builder_items'] )
+		: array();
+
+	$selected_items = array();
+	foreach ( $submitted_items as $item_key => $item ) {
+		if ( ! is_array( $item ) ) {
+			continue;
+		}
+
+		$selected_items[ sanitize_key( (string) $item_key ) ] = array(
+			'term_id'  => isset( $item['term_id'] ) ? (int) $item['term_id'] : 0,
+			'label'    => isset( $item['label'] ) ? sanitize_text_field( (string) $item['label'] ) : '',
+			'quantity' => isset( $item['quantity'] ) ? (int) $item['quantity'] : 0,
+		);
+	}
+
+	$item_data = pms_quote_build_room_builder_snapshot( $selected_items );
+
+	pms_quote_store_request(
+		array(
+			'firstname' => $firstname,
+			'lastname'  => $lastname,
+			'name'      => $name,
+			'email'     => $email,
+			'phone'     => $phone,
+			'message'   => $message,
+			'items'     => $item_data,
+			'source'    => 'room_builder',
+		)
+	);
+
+	$html_body = pms_quote_build_email_html(
+		array(
+			'name'    => $name,
+			'email'   => $email,
+			'phone'   => $phone,
+			'message' => $message,
+			'items'   => $item_data,
+		)
+	);
+
+	$to      = 'support@projectmeubelshop.nl';
+	$subject = 'Nieuwe inrichting aanvraag – ' . $name;
+	$headers = array(
+		'From: Projectmeubelshop <support@projectmeubelshop.nl>',
+		'Reply-To: ' . $email,
+		'Content-Type: text/html; charset=UTF-8',
+	);
+
+	wp_mail( $to, $subject, $html_body, $headers );
+
+	$redirect = wp_get_referer() ?: home_url( '/inrichting-samenstellen/' );
+	$redirect = remove_query_arg( 'pms_room_builder_sent', $redirect );
+	$redirect = add_query_arg( 'pms_room_builder_sent', '1', $redirect );
 	wp_safe_redirect( $redirect );
 	exit;
 }
@@ -1854,6 +2113,448 @@ function pms_quote_render_standalone_form() {
 			</div>
 		</form>
 	</div>
+	<?php
+
+	return ob_get_clean();
+}
+
+add_shortcode( 'pms_inrichting_samenstellen', 'pms_quote_render_room_builder' );
+function pms_quote_render_room_builder( array $atts = array() ) {
+	$atts = shortcode_atts(
+		array(
+			'title'      => 'Kies hieronder waar jij (ongeveer) naar zoekt:',
+			'categories' => '',
+		),
+		$atts,
+		'pms_inrichting_samenstellen'
+	);
+
+	$assets = pms_quote_get_room_builder_assets();
+
+	if ( '' !== trim( (string) $atts['categories'] ) ) {
+		$allowed_keys = array_filter( array_map( 'sanitize_title', array_map( 'trim', explode( ',', (string) $atts['categories'] ) ) ) );
+		if ( ! empty( $allowed_keys ) ) {
+			$assets = array_values(
+				array_filter(
+					$assets,
+					static function ( array $asset ) use ( $allowed_keys ): bool {
+						return in_array( sanitize_title( $asset['label'] ), $allowed_keys, true ) || in_array( $asset['key'], $allowed_keys, true );
+					}
+				)
+			);
+		}
+	}
+
+	ob_start();
+	?>
+	<style>
+	.pms-rb {
+		max-width: 1200px;
+		margin: 0 auto;
+		font-family: Inter, sans-serif;
+		color: #2f2a24;
+	}
+	.pms-rb *, .pms-rb *::before, .pms-rb *::after {
+		box-sizing: border-box;
+	}
+	.pms-rb__sent {
+		margin-bottom: 24px;
+		padding: 18px 20px;
+		border: 1px solid #86efac;
+		border-left: 4px solid #16a34a;
+		border-radius: 8px;
+		background: #f0fdf4;
+	}
+	.pms-rb__sent strong {
+		display: block;
+		margin-bottom: 4px;
+		font-size: 16px;
+		color: #15803d;
+	}
+	.pms-rb__sent p {
+		margin: 0;
+		font-size: 14px;
+		color: #166534;
+	}
+	.pms-rb__headline {
+		margin: 0 0 22px;
+		font-family: Inter, sans-serif;
+		font-size: 24px;
+		font-weight: 700;
+		line-height: 1.15;
+		color: #2d241b;
+	}
+	.pms-rb__grid {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 20px;
+		margin-bottom: 28px;
+	}
+	.pms-rb__card {
+		display: flex;
+		flex-direction: column;
+		min-height: 100%;
+		cursor: pointer;
+		transition: transform .15s ease;
+	}
+	.pms-rb__card:hover {
+		transform: translateY(-2px);
+	}
+	.pms-rb__media {
+		position: relative;
+		aspect-ratio: 4 / 3;
+		background: linear-gradient(135deg, #f2ece3 0%, #ded1bc 100%);
+		border: 1px solid #DEDEDE;
+		border-radius: 5px;
+		overflow: hidden;
+		transition: border-color .15s ease, box-shadow .15s ease;
+	}
+	.pms-rb__card:hover .pms-rb__media {
+		border-color: #C5B17D;
+		box-shadow: none;
+	}
+	.pms-rb__card.is-active .pms-rb__media {
+		border-color: #2F7C7A;
+		box-shadow: none;
+	}
+	.pms-rb__media img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		display: block;
+	}
+	.pms-rb__media-placeholder {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		color: #6b5d4e;
+		font-family: Poppins, sans-serif;
+		font-size: 18px;
+		font-weight: 500;
+		padding: 16px;
+		text-align: center;
+	}
+	.pms-rb__body {
+		display: flex;
+		flex: 1 1 auto;
+		flex-direction: column;
+		gap: 14px;
+		padding: 18px;
+		background: transparent;
+	}
+	.pms-rb__product-title {
+		margin: 0;
+		font-family: Inter, sans-serif;
+		font-size: 20px;
+		font-weight: 700;
+		line-height: 1.2;
+		color: #2d241b;
+	}
+	.pms-rb__desc {
+		margin: 0;
+		font-size: 14px;
+		line-height: 1.6;
+		color: #62574c;
+	}
+	.pms-rb__stepper {
+		display: inline-flex;
+		align-items: center;
+		height: 46px;
+		border: 1px solid #DEDEDE;
+		border-radius: 8px;
+		overflow: hidden;
+		width: fit-content;
+		margin-top: auto;
+		background: #fff;
+	}
+	.pms-rb__qty-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 36px;
+		height: 100%;
+		border: 0;
+		background: transparent;
+		color: #555;
+		cursor: pointer;
+		padding: 0;
+		flex-shrink: 0;
+		transition: background .15s ease, color .15s ease;
+	}
+	.pms-rb__qty-btn:hover {
+		background: #f5f5f5;
+		color: #4A3728;
+	}
+	.pms-rb__qty-btn:focus,
+	.pms-rb__qty-btn:active,
+	.pms-rb__qty-btn:focus-visible,
+	.pms-rb__qty-btn:hover:active {
+		background: #f5f5f5 !important;
+		color: #4A3728 !important;
+		outline: none !important;
+		box-shadow: none !important;
+	}
+	.pms-rb__qty-btn svg {
+		display: block;
+		pointer-events: none;
+	}
+	.pms-rb__qty-input {
+		-webkit-appearance: none;
+		appearance: none;
+		width: 64px;
+		height: 100%;
+		border: 0;
+		border-left: 1px solid #DEDEDE;
+		border-right: 1px solid #DEDEDE;
+		text-align: center;
+		font: inherit;
+		font-size: 16px;
+		font-weight: 700;
+		color: #2d241b;
+		background: #fff;
+	}
+	.pms-rb__qty-input::-webkit-inner-spin-button,
+	.pms-rb__qty-input::-webkit-outer-spin-button {
+		-webkit-appearance: none;
+	}
+	.pms-rb__form {
+		margin-top: 8px;
+		padding: 28px;
+		background: #fff;
+		border: 1px solid #DEDEDE;
+		border-radius: 10px;
+	}
+	.pms-rb__form-title {
+		margin: 0 0 18px;
+		font-size: 22px;
+		color: #2d241b;
+	}
+	.pms-rb__fields {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 18px 20px;
+	}
+	.pms-rb__field--full {
+		grid-column: 1 / -1;
+	}
+	.pms-rb__label {
+		display: block;
+		margin-bottom: 8px;
+		font-family: Poppins, sans-serif;
+		font-size: 15px;
+		font-weight: 300;
+		color: #5d5144;
+	}
+	.pms-rb__input,
+	.pms-rb__textarea {
+		width: 100%;
+		padding: 12px 14px;
+		border: 1px solid #DEDEDE;
+		border-radius: 8px;
+		font: inherit;
+		font-size: 15px;
+		color: #2f2a24;
+		background: #fff;
+	}
+	.pms-rb__textarea {
+		min-height: 150px;
+		resize: vertical;
+	}
+	.pms-rb__input:focus,
+	.pms-rb__textarea:focus,
+	.pms-rb__qty-input:focus {
+		outline: none;
+		border-color: #C5B17D;
+		box-shadow: 0 0 0 3px rgba(197,177,125,0.18);
+	}
+	.pms-rb__footer {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 18px;
+		flex-wrap: wrap;
+		margin-top: 20px;
+	}
+	.pms-rb__disclaimer {
+		margin: 0;
+		font-size: 12px;
+		line-height: 1.6;
+		color: #8b8175;
+	}
+	.pms-rb__submit {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-height: 48px;
+		padding: 0 30px;
+		border: 1px solid #2F7C7A;
+		border-radius: 8px;
+		background: #2F7C7A;
+		color: #fff;
+		font: inherit;
+		font-size: 15px;
+		font-weight: 700;
+		cursor: pointer;
+		transition: background-color .15s ease, border-color .15s ease;
+	}
+	.pms-rb__submit:hover {
+		background: #245F5D;
+		border-color: #245F5D;
+	}
+	@media (max-width: 991px) {
+		.pms-rb__grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+	@media (max-width: 767px) {
+		.pms-rb__headline {
+			font-size: 28px;
+		}
+		.pms-rb__grid,
+		.pms-rb__fields {
+			grid-template-columns: 1fr;
+		}
+		.pms-rb__form {
+			padding: 20px;
+		}
+		.pms-rb__footer {
+			align-items: stretch;
+		}
+		.pms-rb__submit {
+			width: 100%;
+		}
+	}
+	</style>
+
+	<div class="pms-rb">
+		<?php if ( isset( $_GET['pms_room_builder_sent'] ) ) : ?>
+			<div class="pms-rb__sent">
+				<strong>Aanvraag verstuurd</strong>
+				<p>Bedankt! We hebben je globale inrichtingseisen ontvangen en nemen snel contact met je op.</p>
+			</div>
+		<?php endif; ?>
+
+		<h2 class="pms-rb__headline"><?php echo esc_html( $atts['title'] ); ?></h2>
+
+		<form method="post" class="pms-rb__builder-form">
+			<?php wp_nonce_field( 'pms_room_builder_quote_form', 'pms_nonce' ); ?>
+			<input type="hidden" name="pms_action" value="pms_submit_room_builder_quote">
+
+			<?php if ( empty( $assets ) ) : ?>
+				<p>Er zijn nog geen onderdelen gevonden in de map <code>offerte-samenstellen</code>.</p>
+			<?php else : ?>
+				<div class="pms-rb__grid">
+					<?php foreach ( $assets as $asset ) : ?>
+						<div class="pms-rb__card" data-category-card>
+							<div class="pms-rb__media">
+								<img src="<?php echo esc_url( $asset['image_url'] ); ?>" alt="<?php echo esc_attr( $asset['label'] ); ?>">
+							</div>
+							<div class="pms-rb__body">
+								<h3 class="pms-rb__product-title"><?php echo esc_html( $asset['label'] ); ?></h3>
+								<input type="hidden" name="pms_room_builder_items[<?php echo esc_attr( $asset['key'] ); ?>][label]" value="<?php echo esc_attr( $asset['label'] ); ?>">
+								<input type="hidden" name="pms_room_builder_items[<?php echo esc_attr( $asset['key'] ); ?>][term_id]" value="<?php echo esc_attr( $asset['term_id'] ); ?>">
+								<div class="pms-rb__stepper" data-stepper>
+									<button type="button" class="pms-rb__qty-btn pms-rb__qty-btn--minus" aria-label="Minder">
+										<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+									</button>
+									<input type="number" class="pms-rb__qty-input" name="pms_room_builder_items[<?php echo esc_attr( $asset['key'] ); ?>][quantity]" value="0" min="0" inputmode="numeric" aria-label="<?php echo esc_attr( $asset['label'] ); ?> aantal">
+									<button type="button" class="pms-rb__qty-btn pms-rb__qty-btn--plus" aria-label="Meer">
+										<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+									</button>
+								</div>
+							</div>
+						</div>
+					<?php endforeach; ?>
+				</div>
+			<?php endif; ?>
+
+			<div class="pms-rb__form">
+				<h3 class="pms-rb__form-title">Jouw gegevens</h3>
+				<div class="pms-rb__fields">
+					<div class="pms-rb__field">
+						<label class="pms-rb__label" for="pms-rb-firstname">Voornaam</label>
+						<input class="pms-rb__input" type="text" id="pms-rb-firstname" name="pms_firstname" required placeholder="Voornaam">
+					</div>
+					<div class="pms-rb__field">
+						<label class="pms-rb__label" for="pms-rb-lastname">Achternaam</label>
+						<input class="pms-rb__input" type="text" id="pms-rb-lastname" name="pms_lastname" required placeholder="Achternaam">
+					</div>
+					<div class="pms-rb__field">
+						<label class="pms-rb__label" for="pms-rb-email">E-mailadres</label>
+						<input class="pms-rb__input" type="email" id="pms-rb-email" name="pms_email" required placeholder="naam@bedrijf.nl">
+					</div>
+					<div class="pms-rb__field">
+						<label class="pms-rb__label" for="pms-rb-phone">Telefoonnummer</label>
+						<input class="pms-rb__input" type="tel" id="pms-rb-phone" name="pms_phone" placeholder="06 12 34 56 78">
+					</div>
+					<div class="pms-rb__field pms-rb__field--full">
+						<label class="pms-rb__label" for="pms-rb-message">Aanvullende toelichting</label>
+						<textarea class="pms-rb__textarea" id="pms-rb-message" name="pms_message" placeholder="Bijvoorbeeld gewenste stijl, ruimte, levermoment of andere wensen..."></textarea>
+					</div>
+				</div>
+				<div class="pms-rb__footer">
+					<p class="pms-rb__disclaimer">Je gegevens worden uitsluitend gebruikt om je aanvraag te beoordelen en contact met je op te nemen.</p>
+					<button type="submit" class="pms-rb__submit">Aanvraag samenstellen</button>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<script>
+	(function () {
+		document.querySelectorAll('.pms-rb [data-category-card]').forEach(function (card) {
+			var stepper = card.querySelector('[data-stepper]');
+			if (!stepper) return;
+
+			var input = stepper.querySelector('.pms-rb__qty-input');
+			var minus = stepper.querySelector('.pms-rb__qty-btn--minus');
+			var plus = stepper.querySelector('.pms-rb__qty-btn--plus');
+
+			if (!input || !minus || !plus) return;
+
+			var syncCardState = function () {
+				var value = parseInt(input.value, 10);
+				if (isNaN(value) || value < 0) value = 0;
+				input.value = value;
+				card.classList.toggle('is-active', value > 0);
+			};
+
+			card.addEventListener('click', function (event) {
+				if (event.target.closest('.pms-rb__stepper')) return;
+
+				var value = parseInt(input.value, 10);
+				if (isNaN(value) || value < 1) {
+					input.value = 1;
+				}
+
+				syncCardState();
+				input.focus();
+				input.select();
+			});
+
+			minus.addEventListener('click', function () {
+				var value = parseInt(input.value, 10);
+				if (isNaN(value)) value = 0;
+				input.value = Math.max(0, value - 1);
+				syncCardState();
+			});
+
+			plus.addEventListener('click', function () {
+				var value = parseInt(input.value, 10);
+				if (isNaN(value)) value = 0;
+				input.value = value + 1;
+				syncCardState();
+			});
+
+			input.addEventListener('input', syncCardState);
+			input.addEventListener('change', syncCardState);
+
+			syncCardState();
+		});
+	})();
+	</script>
 	<?php
 
 	return ob_get_clean();

@@ -172,13 +172,12 @@ function projectmeubelshop_remove_reviews_tab( $tabs ) {
 
 add_shortcode( 'pms_homepage_carousel', 'pms_render_homepage_carousel_shortcode' );
 function pms_render_homepage_carousel_shortcode( $atts ) {
-	if ( ! class_exists( 'WooCommerce' ) ) {
+	if ( ! function_exists( 'pms_quote_get_room_builder_assets' ) ) {
 		return '';
 	}
 
 	$atts = shortcode_atts(
 		array(
-			'category' => 'carousel-homepage',
 			'limit'    => 12,
 			'title'    => 'Meestverkochte kantoormeubels',
 		),
@@ -186,84 +185,53 @@ function pms_render_homepage_carousel_shortcode( $atts ) {
 		'pms_homepage_carousel'
 	);
 
-	$query = new WP_Query(
-		array(
-			'post_type'           => 'product',
-			'post_status'         => 'publish',
-			'posts_per_page'      => max( 1, (int) $atts['limit'] ),
-			'ignore_sticky_posts' => true,
-			'tax_query'           => array(
-				array(
-					'taxonomy' => 'product_cat',
-					'field'    => 'slug',
-					'terms'    => sanitize_title( $atts['category'] ),
-				),
-			),
-		)
-	);
+	$assets = pms_quote_get_room_builder_assets();
+	$assets = array_slice( $assets, 0, max( 1, (int) $atts['limit'] ) );
 
-	if ( ! $query->have_posts() ) {
-		wp_reset_postdata();
+	if ( empty( $assets ) ) {
 		return '';
 	}
 
-	wp_enqueue_script( 'projectmeubelshop-homepage-carousel' );
-
-	$carousel_id = wp_unique_id( 'pms-home-carousel-' );
-
 	ob_start();
 	?>
-	<section class="pms-home-carousel" aria-label="Populaire producten">
+	<section class="pms-home-carousel" aria-label="Inrichting inspiratie">
 		<?php if ( ! empty( $atts['title'] ) ) : ?>
 			<h2 class="pms-home-carousel__title"><?php echo esc_html( $atts['title'] ); ?></h2>
 		<?php endif; ?>
 
-		<div class="pms-home-carousel__stage">
-			<div class="pms-home-carousel__controls pms-home-carousel__controls--prev" aria-label="Carousel navigatie">
-				<button type="button" class="pms-home-carousel__arrow" data-carousel-prev="<?php echo esc_attr( $carousel_id ); ?>" aria-label="Vorige producten">
-					<span aria-hidden="true">&larr;</span>
-				</button>
-			</div>
-
-			<div class="pms-home-carousel__viewport" id="<?php echo esc_attr( $carousel_id ); ?>" data-carousel-track tabindex="0">
+		<div class="pms-home-carousel__viewport">
+			<?php foreach ( $assets as $asset ) : ?>
 				<?php
-				while ( $query->have_posts() ) :
-					$query->the_post();
-					global $product;
-
-					if ( ! $product instanceof WC_Product || ! $product->is_visible() ) {
-						continue;
+				$item_link = '';
+				if ( ! empty( $asset['term_id'] ) ) {
+					$term_link = get_term_link( (int) $asset['term_id'], 'product_cat' );
+					if ( ! is_wp_error( $term_link ) ) {
+						$item_link = (string) $term_link;
 					}
-					?>
-					<article <?php wc_product_class( 'pms-home-carousel__item', $product ); ?>>
-						<a href="<?php the_permalink(); ?>" class="pms-home-carousel__card">
+				}
+				?>
+				<article class="pms-home-carousel__item">
+					<?php if ( $item_link ) : ?>
+						<a class="pms-home-carousel__card" href="<?php echo esc_url( $item_link ); ?>">
+					<?php else : ?>
+						<div class="pms-home-carousel__card">
+					<?php endif; ?>
 							<div class="pms-home-carousel__media">
-								<?php
-								if ( has_post_thumbnail() ) {
-									echo woocommerce_get_product_thumbnail( 'woocommerce_thumbnail', array( 'class' => 'pms-home-carousel__image' ) );
-								} else {
-									echo wc_placeholder_img( 'woocommerce_thumbnail', array( 'class' => 'pms-home-carousel__image pms-home-carousel__image--placeholder' ) );
-								}
-								?>
+								<img src="<?php echo esc_url( $asset['image_url'] ); ?>" alt="<?php echo esc_attr( $asset['label'] ); ?>" class="pms-home-carousel__image">
 							</div>
 							<div class="pms-home-carousel__body">
-								<h3 class="pms-home-carousel__name"><?php the_title(); ?></h3>
+								<h3 class="pms-home-carousel__name"><?php echo esc_html( $asset['label'] ); ?></h3>
 							</div>
+					<?php if ( $item_link ) : ?>
 						</a>
-					</article>
-				<?php endwhile; ?>
-			</div>
-
-			<div class="pms-home-carousel__controls pms-home-carousel__controls--next" aria-label="Carousel navigatie">
-				<button type="button" class="pms-home-carousel__arrow" data-carousel-next="<?php echo esc_attr( $carousel_id ); ?>" aria-label="Volgende producten">
-					<span aria-hidden="true">&rarr;</span>
-				</button>
-			</div>
+					<?php else : ?>
+						</div>
+					<?php endif; ?>
+				</article>
+			<?php endforeach; ?>
 		</div>
 	</section>
 	<?php
-
-	wp_reset_postdata();
 
 	return ob_get_clean();
 }
