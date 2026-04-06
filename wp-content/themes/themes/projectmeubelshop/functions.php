@@ -196,7 +196,7 @@ function pms_render_homepage_carousel_shortcode( $atts ) {
 	?>
 	<section class="pms-home-carousel" aria-label="Inrichting inspiratie">
 		<?php if ( ! empty( $atts['title'] ) ) : ?>
-			<h2 class="pms-home-carousel__title"><?php echo esc_html( $atts['title'] ); ?></h2>
+			<h2 class="pms-home-carousel__title pms-home-carousel__heading"><?php echo esc_html( $atts['title'] ); ?></h2>
 		<?php endif; ?>
 
 		<div class="pms-home-carousel__viewport">
