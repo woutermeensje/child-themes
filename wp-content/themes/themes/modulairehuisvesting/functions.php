@@ -1,6 +1,9 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+require_once get_stylesheet_directory() . '/includes/quote.php';
+require_once get_stylesheet_directory() . '/includes/information-request.php';
+
 /**
  * Enqueue styles
  */
@@ -99,11 +102,39 @@ class MH_Nav_Walker extends Walker_Nav_Menu {
 endif;
 
 /**
- * Registreer navigatiemenu's
+ * Registreer navigatiemenu's en WooCommerce support
  */
 add_action('after_setup_theme', function () {
     register_nav_menus([
         'primary_nav' => 'Primaire navigatie',
         'footer_nav'  => 'Footer navigatie',
     ]);
+    add_theme_support('woocommerce');
+    add_theme_support('custom-logo');
 });
+
+/**
+ * WooCommerce: verwijder standaard layout CSS op productpagina's
+ */
+add_action('wp_enqueue_scripts', function () {
+    if (function_exists('is_product') && is_product()) {
+        wp_dequeue_style('woocommerce-layout');
+        wp_dequeue_style('woocommerce-smallscreen');
+    }
+}, 20);
+
+/**
+ * WooCommerce: verwijder reviews tab
+ */
+add_filter('woocommerce_product_tabs', function ($tabs) {
+    unset($tabs['reviews']);
+    return $tabs;
+}, 98);
+
+/**
+ * WooCommerce: verwijder standaard catalogus-sortering
+ */
+add_action('wp', function () {
+    if (is_admin()) return;
+    remove_action('woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30);
+}, 20);

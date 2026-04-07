@@ -4,244 +4,589 @@ if (!defined('ABSPATH')) exit;
 get_header();
 
 if (have_posts()) : while (have_posts()) : the_post();
+
+$price_note   = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
+$terms_type   = get_the_terms(get_the_ID(), 'mh_unit_type');
+$terms_cond   = get_the_terms(get_the_ID(), 'mh_unit_conditie');
+$terms_aanbod = get_the_terms(get_the_ID(), 'mh_unit_aanbod');
+$aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_aanbod[0]->name : '';
 ?>
 
-<article class="mh-unit-single">
+<main class="mhu-single">
 
-    <!-- Header -->
-    <header class="mh-unit-single-header">
-        <h1 class="mh-unit-single-title"><?php the_title(); ?></h1>
-    </header>
+    <!-- Breadcrumb -->
+    <nav class="mhu-breadcrumb" aria-label="Breadcrumb">
+        <a href="<?php echo esc_url(home_url('/')); ?>">Home</a>
+        <span class="mhu-breadcrumb__sep" aria-hidden="true">›</span>
+        <a href="<?php echo esc_url(home_url('/units/')); ?>">Units</a>
+        <span class="mhu-breadcrumb__sep" aria-hidden="true">›</span>
+        <span aria-current="page"><?php the_title(); ?></span>
+    </nav>
 
-    <!-- Top section: image + sidebar -->
-    <div class="mh-unit-single-top">
-
-        <div class="mh-unit-single-image">
-            <?php if (has_post_thumbnail()) : ?>
-                <?php the_post_thumbnail('large'); ?>
+    <!-- Title + badges -->
+    <header class="mhu-header">
+        <div class="mhu-header__top">
+            <h1 class="mhu-header__title"><?php the_title(); ?></h1>
+            <?php if ($aanbod_label): ?>
+                <span class="mhu-aanbod-badge"><?php echo esc_html($aanbod_label); ?></span>
             <?php endif; ?>
         </div>
 
-        <aside class="mh-unit-single-sidebar">
-            <div class="mh-unit-sidebar-box">
-                <h3>Interesse in deze unit?</h3>
+        <?php
+        $has_type = (!is_wp_error($terms_type) && !empty($terms_type));
+        $has_cond = (!is_wp_error($terms_cond) && !empty($terms_cond));
+        if ($has_type || $has_cond): ?>
+        <div class="mhu-header__badges">
+            <?php if ($has_type): foreach ($terms_type as $term): ?>
+                <span class="mhu-tax-badge"><?php echo esc_html($term->name); ?></span>
+            <?php endforeach; endif; ?>
+            <?php if ($has_cond): foreach ($terms_cond as $term): ?>
+                <span class="mhu-tax-badge mhu-tax-badge--cond"><?php echo esc_html($term->name); ?></span>
+            <?php endforeach; endif; ?>
+        </div>
+        <?php endif; ?>
+    </header>
 
-                <p>
-                    Neem contact op voor een bezichtiging of vrijblijvende offerte. 
-                </p>
+    <!-- Image + Sidebar -->
+    <div class="mhu-top">
 
-                <a class="mh-btn mh-btn-primary"
-                   href="/offerte-aanvragen/?unit=<?php echo esc_attr(get_the_ID()); ?>">
+        <div class="mhu-image">
+            <?php if (has_post_thumbnail()): ?>
+                <?php the_post_thumbnail('large', ['loading' => 'eager']); ?>
+            <?php else: ?>
+                <div class="mhu-image__placeholder" aria-hidden="true">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#c8d5e3" stroke-width="1.5" width="72" height="72"><rect x="2" y="10" width="60" height="44" rx="5"/><circle cx="20" cy="28" r="6"/><path d="M2 44 l18-16 12 12 10-12 22 16"/></svg>
+                </div>
+            <?php endif; ?>
+        </div>
+
+        <aside class="mhu-sidebar">
+            <div class="mhu-sidebar__box">
+
+                <?php if ($price_note || $aanbod_label || $has_type || $has_cond): ?>
+                <ul class="mhu-meta">
+                    <?php if ($aanbod_label): ?>
+                    <li class="mhu-meta__row">
+                        <span class="mhu-meta__label">Aanbod</span>
+                        <span class="mhu-meta__value"><?php echo esc_html($aanbod_label); ?></span>
+                    </li>
+                    <?php endif; ?>
+                    <?php if ($has_type): ?>
+                    <li class="mhu-meta__row">
+                        <span class="mhu-meta__label">Type</span>
+                        <span class="mhu-meta__value"><?php echo esc_html(implode(', ', wp_list_pluck($terms_type, 'name'))); ?></span>
+                    </li>
+                    <?php endif; ?>
+                    <?php if ($has_cond): ?>
+                    <li class="mhu-meta__row">
+                        <span class="mhu-meta__label">Conditie</span>
+                        <span class="mhu-meta__value"><?php echo esc_html(implode(', ', wp_list_pluck($terms_cond, 'name'))); ?></span>
+                    </li>
+                    <?php endif; ?>
+                    <?php if ($price_note): ?>
+                    <li class="mhu-meta__row mhu-meta__row--price">
+                        <span class="mhu-meta__label">Prijs</span>
+                        <span class="mhu-meta__value mhu-meta__price"><?php echo esc_html($price_note); ?></span>
+                    </li>
+                    <?php endif; ?>
+                </ul>
+                <hr class="mhu-sidebar__divider">
+                <?php endif; ?>
+
+                <h3 class="mhu-sidebar__heading">Interesse in deze unit?</h3>
+                <p class="mhu-sidebar__text">Neem contact op voor een bezichtiging of vrijblijvende offerte.</p>
+
+                <a class="mhu-btn mhu-btn--primary"
+                   href="<?php echo esc_url(home_url('/offerte-aanvragen/?unit=' . get_the_ID())); ?>">
                     Informatie aanvragen
                 </a>
+                <a class="mhu-btn mhu-btn--outline" href="tel:0852392040">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.7 10.5 19.79 19.79 0 01.67 4.08 2 2 0 012.66 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
+                    085 239 2040
+                </a>
+
+                <a class="mhu-back-link" href="<?php echo esc_url(home_url('/units/')); ?>">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+                    Terug naar alle units
+                </a>
+
             </div>
         </aside>
-
     </div>
 
-    <!-- Content -->
-    <div class="mh-unit-single-content">
-        <?php the_content(); ?>
+    <!-- Content / Omschrijving -->
+    <?php if (get_the_content()): ?>
+    <section class="mhu-content">
+        <h2 class="mhu-content__title">Omschrijving</h2>
+        <div class="mhu-content__body">
+            <?php the_content(); ?>
+        </div>
+    </section>
+    <?php endif; ?>
+
+</main>
+
+<!-- Footer CTA -->
+<section class="mhu-footer-cta">
+    <div class="mhu-footer-cta__inner">
+        <p class="mhu-footer-cta__text">Kom in contact met één van onze adviseurs.</p>
+        <a href="<?php echo esc_url(home_url('/advies/')); ?>" class="mhu-footer-cta__btn">Contact opnemen</a>
     </div>
-
-</article>
-
-<footer class="main-footer">
-
-<div class="footer-contact-advisors">
-  <div class="footer-contact-advisors-content">
-    <p>Kom in contact met één van onze adviseurs.</p>
-  </div>
-
-  <div class="footer-contact-advisors-link">
-    <a href="/advies/" class="contact-link">Contact opnemen</a>
-  </div>
-  </div>
-</footer>
-
+</section>
 
 <style>
+/* ============================================================
+   MH Units – Single Unit Page
+   ============================================================ */
 
-  .main-footer {
-    background-color: #0456AB;
-    width: 100%;
-  }
+:root {
+  --mhu-primary:    #0456AB;
+  --mhu-primary-dk: #034a92;
+  --mhu-accent:     #FF8C2C;
+  --mhu-text:       #333333;
+  --mhu-muted:      #6b7280;
+  --mhu-border:     #e5e7eb;
+  --mhu-bg:         #f8fafc;
+  --mhu-radius:     6px;
+  --mhu-shadow:     0 10px 40px -5px rgba(0, 0, 0, 0.12);
+}
 
-  .footer-contact-advisors {
-    background-color: #0456AB;
-    padding: 20px 0;
-    text-align: center;
-    margin: 0 auto;
-    display: flex; 
-    align-items: center;
-    justify-content: center;
-    justify-content: space-between;
-    gap: 20px;
-    width: 50%;
-  }
-
-.footer-contact-advisors-content p {
-    margin: 0;
-    font-size: 16px;
-    color: #fff;
-    font-family: Balgin Bold; 
-    font-weight: 500;
-  }
-
-  .footer-contact-advisors-link {
-    border: 1px solid #80D424;
-    display: inline-block;
-    border-radius: 5px;
-    background-color: #80D424;
-    font-family: Balgin Bold; 
-    padding: 10px 20px;
-    color: white; 
-  }
-
-</style>
-
-<style>
-/* ===== SINGLE UNIT LAYOUT ===== */
-
-.mh-unit-single{
+.mhu-single {
   max-width: 1200px;
-  margin: 40px auto;
-  padding: 0 16px;
+  margin: 40px auto 64px;
+  padding: 0 24px;
   font-family: 'Poppins', sans-serif;
-  color: #333;
+  color: var(--mhu-text);
 }
 
-/* Header */
-.mh-unit-single-header{
+/* ── Breadcrumb ── */
+.mhu-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
   margin-bottom: 24px;
+  font-size: 13px;
+  color: var(--mhu-muted);
 }
 
-.mh-unit-single-title{
-  font-size: 24px;
-  line-height: 1.2;
+.mhu-breadcrumb a {
+  color: var(--mhu-muted);
+  text-decoration: none;
+}
+
+.mhu-breadcrumb a:hover {
+  color: var(--mhu-primary);
+  text-decoration: underline;
+}
+
+.mhu-breadcrumb__sep {
+  color: #d1d5db;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.mhu-breadcrumb span[aria-current] {
+  color: var(--mhu-text);
+  font-weight: 500;
+}
+
+/* ── Page header ── */
+.mhu-header {
+  margin-bottom: 28px;
+}
+
+.mhu-header__top {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.mhu-header__title {
+  flex: 1 1 auto;
   margin: 0;
-  color: #333; 
+  font-size: 28px;
+  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--mhu-text);
 }
 
-/* Top section */
-.mh-unit-single-top{
+/* Aanbod badge (header) */
+.mhu-aanbod-badge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: var(--mhu-radius);
+  background: #FFF4DD;
+  color: #7A5200;
+  border: 2px solid #F4B740;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+
+/* Taxonomy badges */
+.mhu-header__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.mhu-tax-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: var(--mhu-radius);
+  background: #EAF2FF;
+  border: 2px solid #C7DBFF;
+  color: var(--mhu-primary);
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.mhu-tax-badge--cond {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #166534;
+}
+
+/* ── Top layout: image + sidebar ── */
+.mhu-top {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1fr 340px;
   gap: 32px;
-  margin-bottom: 40px;
+  margin-bottom: 48px;
+  align-items: start;
 }
 
-/* Image */
-.mh-unit-single-image{
-  width: 100%;
-  border-radius: 5px;
+/* ── Image ── */
+.mhu-image {
+  border-radius: var(--mhu-radius);
   overflow: hidden;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
-  height: 425px; 
-}
-
-.mh-unit-single-image img{
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-/* Sidebar */
-.mh-unit-single-sidebar{
+  box-shadow: var(--mhu-shadow);
+  background: var(--mhu-bg);
+  aspect-ratio: 4 / 3;
   position: relative;
 }
 
-.mh-unit-sidebar-box{
-  border: 1px solid #e5e5e5;
-  border-radius: 5px;
-  padding: 24px;
-  background: #fff;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.08);
+.mhu-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mhu-image__placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  min-height: 320px;
+}
+
+/* ── Sidebar ── */
+.mhu-sidebar {
   position: sticky;
-  top: 24px;
+  top: 100px;
 }
 
-.mh-unit-sidebar-box h3{
-  margin-top: 0;
-  margin-bottom: 12px;
-  font-size: 20px;
-  font-family: Balgin Bold; 
+.mhu-sidebar__box {
+  background: #fff;
+  border: 1px solid var(--mhu-border);
+  border-radius: var(--mhu-radius);
+  box-shadow: var(--mhu-shadow);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
-.mh-unit-sidebar-box p{
+/* Meta list */
+.mhu-meta {
+  list-style: none;
+  margin: 0 0 4px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.mhu-meta__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--mhu-border);
+  font-size: 14px;
+}
+
+.mhu-meta__row:first-child {
+  padding-top: 0;
+}
+
+.mhu-meta__label {
+  color: var(--mhu-muted);
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.mhu-meta__value {
+  color: var(--mhu-text);
+  font-weight: 600;
+  text-align: right;
+}
+
+.mhu-meta__row--price .mhu-meta__label {
+  color: var(--mhu-text);
+  font-weight: 600;
+}
+
+.mhu-meta__price {
+  color: var(--mhu-primary);
+  font-weight: 700;
   font-size: 15px;
+}
+
+.mhu-sidebar__divider {
+  border: none;
+  border-top: 1px solid var(--mhu-border);
+  margin: 20px 0;
+}
+
+.mhu-sidebar__heading {
+  margin: 0 0 10px;
+  font-size: 18px;
+  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
+  font-weight: 700;
+  color: var(--mhu-text);
+  line-height: 1.2;
+}
+
+.mhu-sidebar__text {
+  margin: 0 0 20px;
+  font-size: 14px;
   line-height: 1.6;
-  margin-bottom: 20px;
+  color: var(--mhu-muted);
 }
 
-/* Content */
-.mh-unit-single-content{
-  max-width: 800px;
-  font-size: 16px;
-  line-height: 1.7;
-  border: 1px solid #EDEDED;
-  border-radius: 5px;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
-}
-
-.mh-unit-single-content h2,
-.mh-unit-single-content h3{
-  margin-top: 32px;
-}
-
-.mh-unit-single-content p{
-  margin-bottom: 16px;
-}
-
-/* Buttons */
-.mh-btn{
-  display: inline-block;
-  padding: 12px 18px;
-  border-radius: 5px;
-  border: 1px solid #ddd;
-  text-decoration: none;
+/* ── Buttons ── */
+.mhu-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: var(--mhu-radius);
+  font-family: 'Poppins', sans-serif;
   font-size: 15px;
-  font-family: Balgin Bold; 
-  color: white; 
+  font-weight: 600;
+  text-decoration: none !important;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+  margin-bottom: 10px;
+  border: 2px solid transparent;
 }
 
-.mh-btn-primary{
-  background: #0884CC;
+.mhu-btn--primary {
+  background: var(--mhu-primary);
+  color: #fff !important;
+  border-color: var(--mhu-primary);
+}
+
+.mhu-btn--primary:hover {
+  background: var(--mhu-primary-dk);
+  border-color: var(--mhu-primary-dk);
+}
+
+.mhu-btn--outline {
+  background: transparent;
+  color: var(--mhu-primary) !important;
+  border-color: var(--mhu-primary);
+}
+
+.mhu-btn--outline:hover {
+  background: var(--mhu-primary);
+  color: #fff !important;
+}
+
+/* Back link */
+.mhu-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--mhu-muted);
+  text-decoration: none;
+  transition: color .15s ease;
+  align-self: center;
+}
+
+.mhu-back-link:hover {
+  color: var(--mhu-primary);
+}
+
+/* ── Content / Description ── */
+.mhu-content {
+  max-width: 800px;
+}
+
+.mhu-content__title {
+  margin: 0 0 20px;
+  font-size: 22px;
+  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
+  font-weight: 700;
+  color: var(--mhu-text);
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--mhu-border);
+}
+
+.mhu-content__body {
+  background: #fff;
+  border: 1px solid var(--mhu-border);
+  border-radius: var(--mhu-radius);
+  box-shadow: var(--mhu-shadow);
+  padding: 32px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--mhu-text);
+}
+
+.mhu-content__body h2,
+.mhu-content__body h3 {
+  margin-top: 28px;
+  margin-bottom: 12px;
+  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
+}
+
+.mhu-content__body h2:first-child,
+.mhu-content__body h3:first-child {
+  margin-top: 0;
+}
+
+.mhu-content__body p {
+  margin: 0 0 16px;
+}
+
+.mhu-content__body p:last-child {
+  margin-bottom: 0;
+}
+
+.mhu-content__body ul,
+.mhu-content__body ol {
+  padding-left: 20px;
+  margin: 0 0 16px;
+}
+
+.mhu-content__body li {
+  margin-bottom: 6px;
+}
+
+/* ── Footer CTA ── */
+.mhu-footer-cta {
+  background: var(--mhu-primary);
+  width: 100%;
+  margin-top: 64px;
+}
+
+.mhu-footer-cta__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.mhu-footer-cta__text {
+  margin: 0;
+  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
+  font-size: 18px;
+  font-weight: 700;
   color: #fff;
-  border-color: #0884CC;
 }
 
+.mhu-footer-cta__btn {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-radius: var(--mhu-radius);
+  background: #80D424;
+  color: #fff !important;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none !important;
+  white-space: nowrap;
+  transition: background .15s ease;
+  border: 2px solid #80D424;
+}
 
+.mhu-footer-cta__btn:hover {
+  background: #6abc1c;
+  border-color: #6abc1c;
+}
 
-/* ===== Responsive ===== */
-
-@media (max-width: 900px){
-  .mh-unit-single-top{
+/* ── Responsive ── */
+@media (max-width: 960px) {
+  .mhu-top {
     grid-template-columns: 1fr;
   }
 
-  .mh-unit-single-title{
-    font-size: 28px;
-  }
-
-  .mh-unit-sidebar-box{
+  .mhu-sidebar {
     position: relative;
     top: auto;
   }
+
+  .mhu-image {
+    aspect-ratio: 16 / 9;
+  }
 }
 
-@media (max-width: 600px){
-  .mh-unit-single{
+@media (max-width: 640px) {
+  .mhu-single {
     margin-top: 24px;
+    padding: 0 16px;
   }
 
-  .mh-unit-single-title{
-    font-size: 24px;
+  .mhu-header__title {
+    font-size: 22px;
+  }
+
+  .mhu-content__body {
+    padding: 20px;
+  }
+
+  .mhu-footer-cta__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px 16px;
+  }
+
+  .mhu-footer-cta__btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>
 
-<?php
-endwhile; endif;
+<?php endwhile; endif;
 
 get_footer();

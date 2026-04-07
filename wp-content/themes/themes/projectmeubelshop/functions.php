@@ -144,22 +144,170 @@ class PMS_Nav_Walker extends Walker_Nav_Menu {
 }
 endif;
 
+function pms_get_first_products_shortcode_data( string $content ): ?array {
+	if ( ! preg_match( '/\[(products|product_category)\b([^\]]*)\]/i', $content, $matches ) ) {
+		return null;
+	}
+
+	$tag        = strtolower( $matches[1] );
+	$attr_text  = isset( $matches[2] ) ? $matches[2] : '';
+	$attributes = shortcode_parse_atts( $attr_text );
+
+	return array(
+		'tag'   => $tag,
+		'atts'  => is_array( $attributes ) ? $attributes : array(),
+	);
+}
+
+function pms_find_products_shortcode_in_elementor_data( $elements ): ?array {
+	if ( ! is_array( $elements ) ) {
+		return null;
+	}
+
+	foreach ( $elements as $element ) {
+		if ( ! is_array( $element ) ) {
+			continue;
+		}
+
+		$settings = isset( $element['settings'] ) && is_array( $element['settings'] ) ? $element['settings'] : array();
+
+		foreach ( $settings as $value ) {
+			if ( is_string( $value ) ) {
+				$shortcode = pms_get_first_products_shortcode_data( $value );
+				if ( $shortcode ) {
+					return $shortcode;
+				}
+			}
+		}
+
+		if ( ! empty( $element['elements'] ) ) {
+			$nested_shortcode = pms_find_products_shortcode_in_elementor_data( $element['elements'] );
+			if ( $nested_shortcode ) {
+				return $nested_shortcode;
+			}
+		}
+	}
+
+	return null;
+}
+
+function pms_get_current_products_shortcode_data(): ?array {
+	if ( ! is_page() ) {
+		return null;
+	}
+
+	$post_id = get_queried_object_id();
+	if ( $post_id < 1 ) {
+		return null;
+	}
+
+	$post = get_post( $post_id );
+	if ( $post instanceof WP_Post ) {
+		$shortcode = pms_get_first_products_shortcode_data( (string) $post->post_content );
+		if ( $shortcode ) {
+			return $shortcode;
+		}
+	}
+
+	$elementor_data = get_post_meta( $post_id, '_elementor_data', true );
+	if ( ! is_string( $elementor_data ) || '' === trim( $elementor_data ) ) {
+		return null;
+	}
+
+	$decoded = json_decode( $elementor_data, true );
+	if ( ! is_array( $decoded ) ) {
+		return null;
+	}
+
+	return pms_find_products_shortcode_in_elementor_data( $decoded );
+}
+
+function pms_get_products_shortcode_result_count( ?array $shortcode_data = null ): int {
+	if ( ! class_exists( 'WC_Shortcode_Products' ) ) {
+		return 0;
+	}
+
+	if ( null === $shortcode_data ) {
+		$shortcode_data = pms_get_current_products_shortcode_data();
+	}
+
+	if ( ! is_array( $shortcode_data ) ) {
+		return 0;
+	}
+
+	$shortcode = new WC_Shortcode_Products( $shortcode_data['atts'], $shortcode_data['tag'] );
+	$query_args = $shortcode->get_query_args();
+
+	$query_args['posts_per_page'] = 1;
+	$query_args['paged']          = 1;
+	$query_args['no_found_rows']  = false;
+	$query_args['fields']         = 'ids';
+
+	$query = new WP_Query( $query_args );
+
+	return max( 0, (int) $query->found_posts );
+}
+
 // Breadcrumbs bovenaan pagina's met [products] shortcode
 add_filter( 'the_content', 'pms_prepend_breadcrumbs_on_products_page' );
+add_filter( 'elementor/frontend/the_content', 'pms_prepend_breadcrumbs_on_products_page' );
 function pms_prepend_breadcrumbs_on_products_page( $content ) {
-	if ( is_admin() || ! is_page() || ! is_main_query() || ! in_the_loop() || ! function_exists( 'woocommerce_breadcrumb' ) ) {
+	static $rendered_posts = array();
+
+	if ( is_admin() || ! is_page() || ! function_exists( 'woocommerce_breadcrumb' ) ) {
 		return $content;
 	}
-	if ( ! has_shortcode( $content, 'products' ) && ! has_shortcode( $content, 'product_category' ) ) {
+
+	if ( false !== strpos( (string) $content, 'pms-products-page-header' ) ) {
+		return $content;
+	}
+
+	$post_id = get_queried_object_id();
+	if ( $post_id > 0 && ! empty( $rendered_posts[ $post_id ] ) ) {
+		return $content;
+	}
+
+	$shortcode_data = pms_get_current_products_shortcode_data();
+	if ( ! is_array( $shortcode_data ) ) {
 		return $content;
 	}
 
 	remove_filter( 'the_content', 'pms_prepend_breadcrumbs_on_products_page' );
+	remove_filter( 'elementor/frontend/the_content', 'pms_prepend_breadcrumbs_on_products_page' );
 	ob_start();
-	woocommerce_breadcrumb();
+	woocommerce_breadcrumb(
+		array(
+			'wrap_before' => '<nav class="pms-products-page-header__breadcrumbs" aria-label="Breadcrumb">',
+			'wrap_after'  => '</nav>',
+		)
+	);
 	$breadcrumbs = ob_get_clean();
+	$excerpt      = trim( (string) get_the_excerpt() );
+	$result_count = pms_get_products_shortcode_result_count( $shortcode_data );
+
+	ob_start();
+	?>
+	<section class="pms-products-page-header">
+		<?php echo $breadcrumbs; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<h1 class="pms-products-page-header__title"><?php echo esc_html( get_the_title() ); ?></h1>
+		<?php if ( $result_count > 0 ) : ?>
+			<div class="pms-products-page-header__chips">
+				<span class="pms-products-page-header__chip"><?php echo esc_html( $result_count ); ?> resultaten</span>
+			</div>
+		<?php endif; ?>
+		<?php if ( '' !== $excerpt ) : ?>
+			<div class="pms-products-page-header__excerpt"><?php echo wp_kses_post( wpautop( $excerpt ) ); ?></div>
+		<?php endif; ?>
+	</section>
+	<?php
+	$header = ob_get_clean();
+	if ( $post_id > 0 ) {
+		$rendered_posts[ $post_id ] = true;
+	}
+
 	add_filter( 'the_content', 'pms_prepend_breadcrumbs_on_products_page' );
-	return $breadcrumbs . $content;
+	add_filter( 'elementor/frontend/the_content', 'pms_prepend_breadcrumbs_on_products_page' );
+	return $header . $content;
 }
 
 add_filter( 'woocommerce_product_tabs', 'projectmeubelshop_remove_reviews_tab', 98 );
@@ -168,6 +316,214 @@ function projectmeubelshop_remove_reviews_tab( $tabs ) {
 		unset( $tabs['reviews'] );
 	}
 	return $tabs;
+}
+
+add_action( 'wp', 'pms_remove_catalog_ordering', 20 );
+function pms_remove_catalog_ordering() {
+	if ( is_admin() ) {
+		return;
+	}
+
+	remove_action( 'woocommerce_before_shop_loop', 'woocommerce_catalog_ordering', 30 );
+}
+
+function pms_get_catalog_search_term(): string {
+	$search = isset( $_GET['pms_search'] ) ? wp_unslash( $_GET['pms_search'] ) : ''; // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+	return sanitize_text_field( (string) $search );
+}
+
+function pms_get_catalog_active_tax_filters(): array {
+	$filters            = array();
+	$product_taxonomies = get_object_taxonomies( 'product', 'names' );
+
+	foreach ( $_GET as $key => $value ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+		if ( 0 !== strpos( (string) $key, 'pms_filter_' ) ) {
+			continue;
+		}
+
+		$taxonomy = substr( (string) $key, strlen( 'pms_filter_' ) );
+		if ( ! $taxonomy || ! in_array( $taxonomy, $product_taxonomies, true ) ) {
+			continue;
+		}
+
+		$raw_values = is_array( $value ) ? $value : explode( ',', (string) $value );
+		$terms      = array_values(
+			array_filter(
+				array_unique(
+					array_map(
+						'sanitize_title',
+						array_map( 'trim', array_map( 'wp_unslash', $raw_values ) )
+					)
+				)
+			)
+		);
+
+		if ( ! empty( $terms ) ) {
+			$filters[ $taxonomy ] = $terms;
+		}
+	}
+
+	return $filters;
+}
+
+function pms_apply_catalog_filters_to_query_args( array $query_args ): array {
+	$search_term = pms_get_catalog_search_term();
+	if ( '' !== $search_term ) {
+		$query_args['s'] = $search_term;
+	}
+
+	$active_tax_filters = pms_get_catalog_active_tax_filters();
+	if ( ! empty( $active_tax_filters ) ) {
+		if ( empty( $query_args['tax_query'] ) || ! is_array( $query_args['tax_query'] ) ) {
+			$query_args['tax_query'] = array();
+		}
+
+		if ( ! isset( $query_args['tax_query']['relation'] ) ) {
+			$query_args['tax_query']['relation'] = 'AND';
+		}
+
+		foreach ( $active_tax_filters as $taxonomy => $terms ) {
+			$query_args['tax_query'][] = array(
+				'taxonomy' => $taxonomy,
+				'field'    => 'slug',
+				'terms'    => $terms,
+				'operator' => 'IN',
+			);
+		}
+	}
+
+	return $query_args;
+}
+
+add_filter( 'woocommerce_shortcode_products_query', 'pms_filter_shortcode_products_query', 10, 3 );
+function pms_filter_shortcode_products_query( $query_args, $attributes, $type ) {
+	return pms_apply_catalog_filters_to_query_args( $query_args );
+}
+
+add_action( 'woocommerce_product_query', 'pms_filter_archive_products_query', 10, 2 );
+function pms_filter_archive_products_query( $query, $wc_query ) {
+	if ( is_admin() || ! $query instanceof WP_Query || ! $query->is_main_query() ) {
+		return;
+	}
+
+	$query_vars = pms_apply_catalog_filters_to_query_args( $query->query_vars );
+
+	foreach ( $query_vars as $key => $value ) {
+		$query->set( $key, $value );
+	}
+}
+
+function pms_get_product_category_landing_page_id( int $term_id ): int {
+	return max( 0, (int) get_term_meta( $term_id, '_pms_landing_page_id', true ) );
+}
+
+function pms_render_product_category_landing_page_field( string $taxonomy, ?WP_Term $term = null ): void {
+	$field_name       = 'pms_landing_page_id';
+	$selected_page_id = $term instanceof WP_Term ? pms_get_product_category_landing_page_id( (int) $term->term_id ) : 0;
+
+	wp_nonce_field( 'pms_save_product_category_landing_page', 'pms_product_category_landing_page_nonce' );
+
+	$dropdown = wp_dropdown_pages(
+		array(
+			'name'              => $field_name,
+			'echo'              => 0,
+			'selected'          => $selected_page_id,
+			'show_option_none'  => 'Geen redirect / standaard categoriepagina gebruiken',
+			'option_none_value' => '0',
+			'sort_column'       => 'menu_order,post_title',
+		)
+	);
+
+	if ( ! $term instanceof WP_Term ) {
+		?>
+		<div class="form-field term-pms-landing-page-wrap">
+			<label for="<?php echo esc_attr( $field_name ); ?>">Landingspagina redirect</label>
+			<?php echo $dropdown; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<p>Redirect deze productcategorie naar een eigen WordPress-pagina. Laat leeg om de normale categoriepagina te gebruiken.</p>
+		</div>
+		<?php
+		return;
+	}
+	?>
+	<tr class="form-field term-pms-landing-page-wrap">
+		<th scope="row">
+			<label for="<?php echo esc_attr( $field_name ); ?>">Landingspagina redirect</label>
+		</th>
+		<td>
+			<?php echo $dropdown; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+			<p class="description">Redirect deze productcategorie naar een eigen WordPress-pagina. Laat leeg om de normale categoriepagina te gebruiken.</p>
+		</td>
+	</tr>
+	<?php
+}
+
+add_action( 'product_cat_add_form_fields', 'pms_product_category_add_landing_page_field' );
+function pms_product_category_add_landing_page_field( string $taxonomy ): void {
+	pms_render_product_category_landing_page_field( $taxonomy );
+}
+
+add_action( 'product_cat_edit_form_fields', 'pms_product_category_edit_landing_page_field', 10, 2 );
+function pms_product_category_edit_landing_page_field( WP_Term $term, string $taxonomy ): void {
+	pms_render_product_category_landing_page_field( $taxonomy, $term );
+}
+
+add_action( 'created_product_cat', 'pms_save_product_category_landing_page_meta' );
+add_action( 'edited_product_cat', 'pms_save_product_category_landing_page_meta' );
+function pms_save_product_category_landing_page_meta( int $term_id ): void {
+	if ( ! isset( $_POST['pms_product_category_landing_page_nonce'] ) ) {
+		return;
+	}
+
+	$nonce = sanitize_text_field( wp_unslash( $_POST['pms_product_category_landing_page_nonce'] ) );
+	if ( ! wp_verify_nonce( $nonce, 'pms_save_product_category_landing_page' ) ) {
+		return;
+	}
+
+	$page_id = isset( $_POST['pms_landing_page_id'] ) ? max( 0, (int) $_POST['pms_landing_page_id'] ) : 0;
+
+	if ( $page_id > 0 && 'page' !== get_post_type( $page_id ) ) {
+		$page_id = 0;
+	}
+
+	if ( $page_id > 0 ) {
+		update_term_meta( $term_id, '_pms_landing_page_id', $page_id );
+		return;
+	}
+
+	delete_term_meta( $term_id, '_pms_landing_page_id' );
+}
+
+add_action( 'template_redirect', 'pms_redirect_product_category_to_landing_page', 1 );
+function pms_redirect_product_category_to_landing_page(): void {
+	if ( is_admin() || ! function_exists( 'is_product_category' ) || ! is_product_category() ) {
+		return;
+	}
+
+	$term = get_queried_object();
+	if ( ! $term instanceof WP_Term || 'product_cat' !== $term->taxonomy ) {
+		return;
+	}
+
+	$page_id = pms_get_product_category_landing_page_id( (int) $term->term_id );
+	if ( $page_id < 1 ) {
+		return;
+	}
+
+	$target_url = get_permalink( $page_id );
+	if ( ! $target_url ) {
+		return;
+	}
+
+	$current_url = home_url( add_query_arg( array(), $GLOBALS['wp']->request ?? '' ) );
+	$current_url = trailingslashit( strtok( (string) $current_url, '?' ) );
+	$target_url  = trailingslashit( strtok( (string) $target_url, '?' ) );
+
+	if ( $current_url === $target_url ) {
+		return;
+	}
+
+	wp_safe_redirect( $target_url, 301 );
+	exit;
 }
 
 add_shortcode( 'pms_homepage_carousel', 'pms_render_homepage_carousel_shortcode' );
@@ -179,7 +535,7 @@ function pms_render_homepage_carousel_shortcode( $atts ) {
 	$atts = shortcode_atts(
 		array(
 			'limit'    => 12,
-			'title'    => 'Meestverkochte kantoormeubels',
+			'title'    => 'Complete kantoorinrichting samenstellen',
 		),
 		$atts,
 		'pms_homepage_carousel'

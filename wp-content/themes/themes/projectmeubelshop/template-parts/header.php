@@ -17,9 +17,9 @@ $quote_count = function_exists('pms_quote_get_count') ? (int) pms_quote_get_coun
                 <a href="mailto:support@projectmeubelshop.nl">support@projectmeubelshop.nl</a>
             </div>
             <div class="pms-topbar__right">
-                <a href="<?php echo esc_url(home_url('/over-ons/')); ?>">Over ons</a>
+                <a href="<?php echo esc_url(home_url('/partner-worden/')); ?>">Partner Worden</a>
                 <span class="pms-topbar__divider">|</span>
-                <a href="<?php echo esc_url(home_url('/contact/')); ?>">Contact</a>
+                <a href="<?php echo esc_url(home_url('/dealernetwerk/')); ?>">Dealernetwerk</a>
             </div>
         </div>
     </div>
@@ -84,10 +84,24 @@ $quote_count = function_exists('pms_quote_get_count') ? (int) pms_quote_get_coun
             <?php endif; ?>
         </a>
 
+        <div class="pms-header__mobile-search pms-header-search">
+            <button type="button" class="pms-header-search__toggle pms-header__mobile-search-toggle" aria-label="Zoek producten" aria-expanded="false" aria-controls="pms-header-mobile-search-form">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <form id="pms-header-mobile-search-form" class="pms-header-search__form pms-header__mobile-search-form" method="get" action="<?php echo esc_url(home_url('/')); ?>">
+                <input type="hidden" name="post_type" value="product">
+                <label class="screen-reader-text" for="pms-header-mobile-search-input">Zoek producten</label>
+                <input id="pms-header-mobile-search-input" class="pms-header-search__input" type="search" name="s" placeholder="Zoek producten">
+                <button type="submit" class="pms-header-search__submit">Zoeken</button>
+            </form>
+        </div>
+
         <button class="pms-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="pms-mobile-nav">
-            <span class="pms-hamburger__bar"></span>
-            <span class="pms-hamburger__bar"></span>
-            <span class="pms-hamburger__bar"></span>
+            <i data-lucide="menu" class="pms-header__hamburger-icon pms-header__hamburger-icon--menu" aria-hidden="true"></i>
+            <i data-lucide="x" class="pms-header__hamburger-icon pms-header__hamburger-icon--close" aria-hidden="true"></i>
         </button>
     </div>
 </header>
@@ -95,7 +109,7 @@ $quote_count = function_exists('pms_quote_get_count') ? (int) pms_quote_get_coun
 <div id="pms-mobile-nav" class="pms-mobile-nav" aria-hidden="true">
     <div class="pms-mobile-nav__panel">
         <button class="pms-mobile-nav__close" aria-label="Menu sluiten">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <span class="pms-mobile-nav__close-icon" aria-hidden="true">&times;</span>
         </button>
 
         <?php
@@ -106,6 +120,22 @@ $quote_count = function_exists('pms_quote_get_count') ? (int) pms_quote_get_coun
             'fallback_cb'    => false,
         ]);
         ?>
+
+        <div class="pms-mobile-nav__divider"></div>
+        <div class="pms-mobile-nav__search pms-header-search">
+            <button type="button" class="pms-header-search__toggle pms-mobile-nav__search-toggle" aria-label="Zoek producten" aria-expanded="false" aria-controls="pms-mobile-search-form">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <form id="pms-mobile-search-form" class="pms-header-search__form pms-mobile-nav__search-form" method="get" action="<?php echo esc_url(home_url('/')); ?>">
+                <input type="hidden" name="post_type" value="product">
+                <label class="screen-reader-text" for="pms-mobile-search-input">Zoek producten</label>
+                <input id="pms-mobile-search-input" class="pms-header-search__input" type="search" name="s" placeholder="Zoek producten">
+                <button type="submit" class="pms-header-search__submit">Zoeken</button>
+            </form>
+        </div>
 
         <div class="pms-mobile-nav__divider"></div>
         <div class="pms-mobile-nav__ctas">
@@ -125,10 +155,12 @@ $quote_count = function_exists('pms_quote_get_count') ? (int) pms_quote_get_coun
   const hamburger = document.querySelector('.pms-header__hamburger');
   const mobileNav = document.getElementById('pms-mobile-nav');
   const closeBtn  = document.querySelector('.pms-mobile-nav__close');
-  const searchToggle = document.querySelector('.pms-header-search__toggle');
-  const searchForm = document.getElementById('pms-header-search-form');
-  const searchInput = document.getElementById('pms-header-search-input');
-  const searchWrap = document.querySelector('.pms-header-search');
+  const searchBlocks = Array.from(document.querySelectorAll('.pms-header-search')).map((wrap) => ({
+    wrap,
+    toggle: wrap.querySelector('.pms-header-search__toggle'),
+    form: wrap.querySelector('.pms-header-search__form'),
+    input: wrap.querySelector('.pms-header-search__input')
+  })).filter((block) => block.toggle && block.form);
 
   if (!hamburger || !mobileNav) {
     return;
@@ -150,18 +182,23 @@ $quote_count = function_exists('pms_quote_get_count') ? (int) pms_quote_get_coun
     document.body.style.overflow = 'hidden';
   };
 
-  const closeSearch = () => {
-    if (!searchToggle || !searchForm) return;
-    searchForm.classList.remove('is-open');
-    searchToggle.setAttribute('aria-expanded', 'false');
+  const closeSearch = (targetBlock = null) => {
+    searchBlocks.forEach((block) => {
+      if (targetBlock && block !== targetBlock) {
+        return;
+      }
+      block.form.classList.remove('is-open');
+      block.toggle.setAttribute('aria-expanded', 'false');
+    });
   };
 
-  const openSearch = () => {
-    if (!searchToggle || !searchForm) return;
-    searchForm.classList.add('is-open');
-    searchToggle.setAttribute('aria-expanded', 'true');
-    if (searchInput) {
-      setTimeout(() => searchInput.focus(), 50);
+  const openSearch = (targetBlock) => {
+    if (!targetBlock) return;
+    closeSearch();
+    targetBlock.form.classList.add('is-open');
+    targetBlock.toggle.setAttribute('aria-expanded', 'true');
+    if (targetBlock.input) {
+      setTimeout(() => targetBlock.input.focus(), 50);
     }
   };
 
@@ -177,15 +214,15 @@ $quote_count = function_exists('pms_quote_get_count') ? (int) pms_quote_get_coun
     closeBtn.addEventListener('click', closeMenu);
   }
 
-  if (searchToggle && searchForm) {
-    searchToggle.addEventListener('click', () => {
-      if (searchForm.classList.contains('is-open')) {
-        closeSearch();
+  searchBlocks.forEach((block) => {
+    block.toggle.addEventListener('click', () => {
+      if (block.form.classList.contains('is-open')) {
+        closeSearch(block);
         return;
       }
-      openSearch();
+      openSearch(block);
     });
-  }
+  });
 
   mobileNav.addEventListener('click', (event) => {
     if (!event.target.closest('.pms-mobile-nav__panel')) {
@@ -198,7 +235,7 @@ $quote_count = function_exists('pms_quote_get_count') ? (int) pms_quote_get_coun
   });
 
   document.addEventListener('click', (event) => {
-    if (searchWrap && !event.target.closest('.pms-header-search')) {
+    if (!event.target.closest('.pms-header-search')) {
       closeSearch();
     }
   });
@@ -217,5 +254,9 @@ $quote_count = function_exists('pms_quote_get_count') ? (int) pms_quote_get_coun
     }
     closeSearch();
   });
+
+  if (typeof lucide !== 'undefined') {
+    lucide.createIcons();
+  }
 })();
 </script>

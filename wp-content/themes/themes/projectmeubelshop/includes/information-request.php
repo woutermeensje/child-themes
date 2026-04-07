@@ -148,6 +148,83 @@ function pms_store_information_request( array $data ): int {
 	return (int) $post_id;
 }
 
+function pms_information_request_build_email_html( array $request_data, string $recipient = 'admin' ): string {
+	$firstname = trim( (string) ( $request_data['firstname'] ?? '' ) );
+	$lastname  = trim( (string) ( $request_data['lastname'] ?? '' ) );
+	$name      = trim( (string) ( $request_data['name'] ?? trim( $firstname . ' ' . $lastname ) ) );
+	$email     = (string) ( $request_data['email'] ?? '' );
+	$phone     = (string) ( $request_data['phone'] ?? '' );
+	$message   = (string) ( $request_data['message'] ?? '' );
+
+	$is_customer  = 'customer' === $recipient;
+	$title        = $is_customer ? 'Bevestiging informatieaanvraag' : 'Nieuwe informatieaanvraag';
+	$intro        = $is_customer
+		? 'Bedankt voor je aanvraag. We hebben je informatieaanvraag goed ontvangen en nemen zo snel mogelijk contact met je op.'
+		: 'Er is een nieuwe informatieaanvraag binnengekomen via de website.';
+	$message_html = $message
+		? nl2br( esc_html( $message ) )
+		: '<span style="color:#68736d;">Geen extra bericht opgegeven.</span>';
+
+	return '
+		<!doctype html>
+		<html lang="nl">
+		<head>
+			<meta charset="UTF-8">
+			<meta name="viewport" content="width=device-width, initial-scale=1.0">
+			<title>' . esc_html( $title ) . '</title>
+		</head>
+		<body style="margin:0;padding:0;background:#f6f3ed;font-family:Inter,Arial,sans-serif;color:#1f2a24;">
+			<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f3ed;padding:32px 16px;">
+				<tr>
+					<td align="center">
+						<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:760px;background:#ffffff;border:1px solid #e7e2d7;border-radius:12px;overflow:hidden;">
+							<tr>
+								<td style="padding:28px 32px;background:#4A3728;">
+									<div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#e7dcc7;font-weight:700;">Projectmeubelshop</div>
+									<h1 style="margin:10px 0 0;font-size:28px;line-height:1.2;color:#ffffff;">' . esc_html( $title ) . '</h1>
+								</td>
+							</tr>
+							<tr>
+								<td style="padding:28px 32px;">
+									<p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#4b5563;">' . esc_html( $intro ) . '</p>
+
+									<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 24px;border-collapse:separate;border-spacing:0;">
+										<tr>
+											<td colspan="2" style="padding:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#68736d;">Contactgegevens</td>
+										</tr>
+										<tr>
+											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;font-size:13px;font-weight:700;color:#68736d;width:180px;">Naam</td>
+											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-left:none;font-size:14px;color:#1f2a24;">' . esc_html( $name ?: '-' ) . '</td>
+										</tr>
+										<tr>
+											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-top:none;font-size:13px;font-weight:700;color:#68736d;">E-mail</td>
+											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-left:none;border-top:none;font-size:14px;color:#1f2a24;"><a href="mailto:' . esc_attr( $email ) . '" style="color:#4A3728;text-decoration:none;">' . esc_html( $email ?: '-' ) . '</a></td>
+										</tr>
+										<tr>
+											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-top:none;font-size:13px;font-weight:700;color:#68736d;">Telefoon</td>
+											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-left:none;border-top:none;font-size:14px;color:#1f2a24;">' . esc_html( $phone ?: '-' ) . '</td>
+										</tr>
+									</table>
+
+									<div style="margin:0 0 24px;">
+										<div style="margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#68736d;">Bericht</div>
+										<div style="padding:16px 18px;background:#fbfaf8;border:1px solid #e7e2d7;border-radius:10px;font-size:14px;line-height:1.7;color:#1f2a24;">' . $message_html . '</div>
+									</div>' .
+									( $is_customer
+										? '<div style="padding:18px 20px;background:#f6f3ed;border:1px solid #e7e2d7;border-radius:10px;font-size:14px;line-height:1.7;color:#4b5563;">
+											We streven ernaar om je aanvraag zo snel mogelijk op te pakken. Heb je in de tussentijd aanvullende vragen? Reageer gerust op deze e-mail of neem contact met ons op via <a href="tel:0852392040" style="color:#4A3728;text-decoration:none;font-weight:600;">085 239 2040</a>.
+										</div>'
+										: '' ) . '
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</body>
+		</html>';
+}
+
 add_shortcode( 'pms_informatie_aanvragen', 'pms_information_request_shortcode' );
 function pms_information_request_shortcode( array $atts = array() ): string {
 	static $instance = 0;
@@ -207,19 +284,37 @@ function pms_information_request_shortcode( array $atts = array() ): string {
 			pms_store_information_request( $values );
 
 			$name = trim( $values['firstname'] . ' ' . $values['lastname'] );
-			$body = "Nieuwe informatieaanvraag via Projectmeubelshop.\n\n";
-			$body .= 'Naam: ' . $name . "\n";
-			$body .= 'E-mail: ' . $values['email'] . "\n";
-			$body .= 'Telefoon: ' . ( $values['phone'] ?: '-' ) . "\n\n";
-			$body .= "--- Bericht ---\n" . $values['message'] . "\n";
+			$email_data = array(
+				'firstname' => $values['firstname'],
+				'lastname'  => $values['lastname'],
+				'name'      => $name,
+				'email'     => $values['email'],
+				'phone'     => $values['phone'],
+				'message'   => $values['message'],
+			);
+
+			$admin_html    = pms_information_request_build_email_html( $email_data, 'admin' );
+			$customer_html = pms_information_request_build_email_html( $email_data, 'customer' );
 
 			wp_mail(
 				get_option( 'admin_email' ),
 				'Nieuwe informatieaanvraag - ' . $name,
-				$body,
+				$admin_html,
 				array(
-					'Content-Type: text/plain; charset=UTF-8',
+					'From: Projectmeubelshop <support@projectmeubelshop.nl>',
+					'Content-Type: text/html; charset=UTF-8',
 					'Reply-To: ' . $values['email'],
+				)
+			);
+
+			wp_mail(
+				$values['email'],
+				'Bevestiging informatieaanvraag - Projectmeubelshop',
+				$customer_html,
+				array(
+					'From: Projectmeubelshop <support@projectmeubelshop.nl>',
+					'Content-Type: text/html; charset=UTF-8',
+					'Reply-To: Projectmeubelshop <support@projectmeubelshop.nl>',
 				)
 			);
 

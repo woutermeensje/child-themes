@@ -17,6 +17,8 @@ if ( file_exists($jm_functions) ) {
     require_once $jm_functions;
 }
 
+require_once get_stylesheet_directory() . '/includes/blog-meta.php';
+
 add_theme_support('job-manager-templates');
 
 
@@ -62,6 +64,16 @@ function fondsen_enqueue_styles() {
             get_stylesheet_directory_uri() . '/css/header.css',
             ['child-style'],
             filemtime(get_stylesheet_directory() . '/css/header.css')
+        );
+    }
+
+    // Blog CSS (overzicht én single posts)
+    if ( ( is_home() || is_archive() || is_singular( 'post' ) ) && file_exists( get_stylesheet_directory() . '/css/blog.css' ) ) {
+        wp_enqueue_style(
+            'fondsen-blog',
+            get_stylesheet_directory_uri() . '/css/blog.css',
+            ['child-style'],
+            filemtime( get_stylesheet_directory() . '/css/blog.css' )
         );
     }
 

@@ -25,9 +25,15 @@ if (!defined('ABSPATH')) {
 
     <div class="mh-header__inner">
         <div class="mh-header__brand">
-            <a href="<?php echo esc_url(home_url('/')); ?>" class="mh-header__logo-link">
-                <span class="mh-header__site-name"><?php bloginfo('name'); ?></span>
-            </a>
+            <?php if ( has_custom_logo() ) : ?>
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="mh-header__logo-link">
+                    <?php the_custom_logo(); ?>
+                </a>
+            <?php else : ?>
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="mh-header__logo-link">
+                    <span class="mh-header__site-name"><?php bloginfo('name'); ?></span>
+                </a>
+            <?php endif; ?>
         </div>
 
         <nav class="mh-header__nav" aria-label="Primaire navigatie">

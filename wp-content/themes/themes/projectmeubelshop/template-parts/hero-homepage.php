@@ -26,7 +26,7 @@ $contact_email  = get_post_meta( $page_id, 'hero_email', true ) ?: 'support@proj
 
 					<div class="welcome-v2__actions">
 						<a href="<?php echo esc_url( home_url( '/afspraak-maken/' ) ); ?>" class="pms-btn pms-btn--accent">Afspraak maken</a>
-						<a href="<?php echo esc_url( home_url( '/inrichting-samenstellen/' ) ); ?>" class="pms-btn pms-btn--hero-highlight">Inrichting samenstellen</a>
+						<a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="pms-btn pms-btn--hero-highlight">Alle producten</a>
 					</div>
 
 				</div>

@@ -57,6 +57,50 @@
     return map;
   }
 
+  function getCatalogUrl() {
+    return new URL(window.location.href);
+  }
+
+  function getSelectedTermsForTaxonomy(taxSlug) {
+    var params = new URLSearchParams(window.location.search);
+    var raw = params.get('pms_filter_' + taxSlug);
+    if (!raw) return new Set();
+
+    return new Set(
+      raw
+        .split(',')
+        .map(function (value) { return value.trim(); })
+        .filter(Boolean)
+    );
+  }
+
+  function navigateWithFilters(searchValue, activeSets) {
+    var url = getCatalogUrl();
+
+    if (searchValue) {
+      url.searchParams.set('pms_search', searchValue);
+    } else {
+      url.searchParams.delete('pms_search');
+    }
+
+    Object.keys(activeSets).forEach(function (taxSlug) {
+      var selected = Array.from(activeSets[taxSlug] || []);
+      var key = 'pms_filter_' + taxSlug;
+
+      if (selected.length) {
+        url.searchParams.set(key, selected.join(','));
+      } else {
+        url.searchParams.delete(key);
+      }
+    });
+
+    url.searchParams.delete('orderby');
+    url.searchParams.delete('paged');
+    url.searchParams.delete('product-page');
+
+    window.location.href = url.toString();
+  }
+
   function closeAllSelects(except) {
     document.querySelectorAll('.pms-select.is-open').forEach(function (el) {
       if (except && el === except) return;
@@ -121,6 +165,7 @@
     var searchInput = document.createElement('input');
     searchInput.type = 'search';
     searchInput.className = 'pms-option-search';
+    searchInput.setAttribute('style', 'border:1px solid #DEDEDE; border-radius:5px; box-shadow:none; -webkit-box-shadow:none; outline:none;');
     searchInput.placeholder = 'Zoek ' + config.title.toLowerCase() + '...';
     searchInput.addEventListener('input', function () {
       var q = searchInput.value.trim().toLowerCase();
@@ -262,6 +307,8 @@
 
     var items = Array.from(productsList.querySelectorAll('li.product'));
     if (!items.length) return;
+    var currentUrl = getCatalogUrl();
+    var searchTimer = null;
 
     // Wrapper aanmaken
     var wrapper = document.createElement('section');
@@ -283,34 +330,13 @@
     var searchInput = document.createElement('input');
     searchInput.type = 'search';
     searchInput.className = 'pms-catalog-search';
+    searchInput.setAttribute('style', 'border:1px solid #DEDEDE; border-radius:5px; box-shadow:none; -webkit-box-shadow:none; outline:none;');
     searchInput.placeholder = 'Typ een productnaam';
+    searchInput.value = currentUrl.searchParams.get('pms_search') || '';
 
     searchWrap.appendChild(searchTitle);
     searchWrap.appendChild(searchInput);
     sidebarInner.appendChild(searchWrap);
-
-    // Verplaats "Sorteren op" naar de filterkolom
-    var orderingForm = null;
-    var siblingForOrdering = productsList.previousElementSibling;
-    while (siblingForOrdering) {
-      var previousOrderingSibling = siblingForOrdering.previousElementSibling;
-      if (siblingForOrdering.tagName === 'FORM' && siblingForOrdering.classList.contains('pms-tax-toolbar__ordering')) {
-        orderingForm = siblingForOrdering;
-        break;
-      }
-      if (!orderingForm && siblingForOrdering.classList && siblingForOrdering.classList.contains('pms-tax-toolbar')) {
-        orderingForm = siblingForOrdering.querySelector('form.pms-tax-toolbar__ordering');
-        if (orderingForm) break;
-      }
-      siblingForOrdering = previousOrderingSibling;
-    }
-
-    if (orderingForm) {
-      var orderingWrap = document.createElement('div');
-      orderingWrap.className = 'pms-catalog-block pms-catalog-block--ordering';
-      orderingWrap.appendChild(orderingForm);
-      sidebarInner.appendChild(orderingWrap);
-    }
 
     // Detecteer alle taxonomieën
     var taxonomyMap = detectTaxonomies(items);
@@ -318,7 +344,7 @@
 
     taxonomyMap.forEach(function (terms, taxSlug) {
       if (terms.size === 0) return;
-      activeSets[taxSlug] = new Set();
+      activeSets[taxSlug] = getSelectedTermsForTaxonomy(taxSlug);
 
       var label = TAXONOMY_LABELS[taxSlug] || slugToLabel(taxSlug.replace(/^pa_/, ''));
 
@@ -327,17 +353,11 @@
         placeholder: 'Alle ' + label.toLowerCase() + 'en',
         terms:       terms,
         selectedSet: activeSets[taxSlug],
-        onChange:    applyFilters,
+        onChange:    function () {
+          navigateWithFilters(searchInput.value.trim(), activeSets);
+        },
       }));
     });
-
-    // Teller
-    var metaWrap = document.createElement('div');
-    metaWrap.className = 'pms-catalog-meta';
-    var countText = document.createElement('p');
-    countText.className = 'pms-catalog-count';
-    metaWrap.appendChild(countText);
-    sidebarInner.appendChild(metaWrap);
 
     sidebar.appendChild(sidebarInner);
 
@@ -374,52 +394,23 @@
     wrapper.appendChild(sidebar);
     wrapper.appendChild(gridWrap);
 
-    function titleOf(item) {
-      var t = item.querySelector('.pms-product-card__title, .woocommerce-loop-product__title');
-      return (t ? t.textContent : '').toLowerCase();
-    }
+    searchInput.addEventListener('input', function () {
+      window.clearTimeout(searchTimer);
+      searchTimer = window.setTimeout(function () {
+        navigateWithFilters(searchInput.value.trim(), activeSets);
+      }, 350);
+    });
 
-    function applyFilters() {
-      var query = searchInput.value.trim().toLowerCase();
-      var visible = 0;
-
-      items.forEach(function (item) {
-        var show = true;
-
-        // Tekstzoekopdracht
-        if (query && titleOf(item).indexOf(query) === -1) show = false;
-
-        // Taxonomie filters: elk actief filter moet matchen (AND)
-        if (show) {
-          taxonomyMap.forEach(function (terms, taxSlug) {
-            var selected = activeSets[taxSlug];
-            if (!selected || selected.size === 0) return;
-
-            // Welke termen heeft dit product voor deze taxonomie?
-            var prefix = taxSlug + '-';
-            var productTerms = Array.from(item.classList)
-              .filter(function (c) { return c.indexOf(prefix) === 0; })
-              .map(function (c) { return c.slice(prefix.length); });
-
-            var match = productTerms.some(function (t) { return selected.has(t); });
-            if (!match) show = false;
-          });
-        }
-
-        item.style.display = show ? '' : 'none';
-        if (show) visible++;
-      });
-
-      countText.textContent = visible + ' van ' + items.length + ' producten';
-    }
-
-    searchInput.addEventListener('input', applyFilters);
+    searchInput.addEventListener('keydown', function (event) {
+      if (event.key !== 'Enter') return;
+      event.preventDefault();
+      window.clearTimeout(searchTimer);
+      navigateWithFilters(searchInput.value.trim(), activeSets);
+    });
 
     document.addEventListener('click', function (e) {
       if (!e.target.closest('.pms-select')) closeAllSelects();
     });
-
-    applyFilters();
   }
 
   document.addEventListener('DOMContentLoaded', function () {

@@ -2,6 +2,7 @@
 if (!defined('ABSPATH')) exit;
 
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-formulier.php';
+require_once get_stylesheet_directory() . '/includes/blog-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
 require_once get_stylesheet_directory() . '/inc/job-listing-meta.php';
@@ -77,6 +78,16 @@ add_action('wp_enqueue_scripts', function () {
             get_stylesheet_directory_uri() . '/css/forms.css',
             ['child-style'],
             filemtime(get_stylesheet_directory() . '/css/forms.css')
+        );
+    }
+
+    // Blog CSS (overzicht én single posts)
+    if ( ( is_home() || is_archive() || is_singular( 'post' ) ) && file_exists( get_stylesheet_directory() . '/css/blog.css' ) ) {
+        wp_enqueue_style(
+            'sj-blog',
+            get_stylesheet_directory_uri() . '/css/blog.css',
+            ['child-style'],
+            filemtime( get_stylesheet_directory() . '/css/blog.css' )
         );
     }
 
