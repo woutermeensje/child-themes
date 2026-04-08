@@ -9,6 +9,19 @@
 
 if ( ! defined('ABSPATH') ) exit;
 
+require_once get_stylesheet_directory() . '/inc/shortcode-vacature-formulier.php';
+require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
+
+add_filter('wp_mail_from', function () {
+    return 'informatie@fondsen.org';
+});
+
+add_filter('wp_mail_from_name', function () {
+    return 'Fondsen.org';
+});
+
+add_filter('job_manager_multi_job_type', '__return_true');
+
 // =========================================================
 // 1) Include extra WPJM functions (als je die file gebruikt)
 // =========================================================
@@ -82,6 +95,30 @@ function fondsen_enqueue_styles() {
         get_stylesheet_directory_uri() . '/css/elementor-forms.css',
         ['child-style'],
         filemtime(get_stylesheet_directory() . '/css/elementor-forms.css')
+    );
+
+    if (file_exists(get_stylesheet_directory() . '/css/forms.css')) {
+        wp_enqueue_style(
+            'fondsen-forms',
+            get_stylesheet_directory_uri() . '/css/forms.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/forms.css')
+        );
+    }
+
+    wp_enqueue_style(
+        'fondsen-quill',
+        'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css',
+        [],
+        null
+    );
+
+    wp_enqueue_script(
+        'fondsen-quill',
+        'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js',
+        [],
+        null,
+        true
     );
 }
 add_action( 'wp_enqueue_scripts', 'fondsen_enqueue_styles' );
