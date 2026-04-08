@@ -132,8 +132,59 @@ add_action('after_setup_theme', function () {
     add_post_type_support('page', 'excerpt');
 });
 
+add_shortcode('mh_units_grid', function ($atts = []) {
+    $atts = shortcode_atts([
+        'columns' => 3,
+    ], $atts, 'mh_units_grid');
+
+    $columns = max(1, min(4, (int) $atts['columns']));
+    $units_dir = trailingslashit(get_stylesheet_directory()) . 'units/';
+    $units_url = trailingslashit(get_stylesheet_directory_uri()) . 'units/';
+    $patterns  = ['*.png', '*.jpg', '*.jpeg', '*.webp', '*.svg'];
+    $files     = [];
+
+    foreach ($patterns as $pattern) {
+        $matched = glob($units_dir . $pattern);
+        if (is_array($matched)) {
+            $files = array_merge($files, $matched);
+        }
+    }
+
+    if (empty($files)) {
+        return '<div class="mh-units-gallery-empty">Er zijn nog geen units toegevoegd.</div>';
+    }
+
+    natcasesort($files);
+
+    ob_start();
+    ?>
+    <div class="mh-units-gallery mh-units-gallery--cols-<?php echo esc_attr($columns); ?>">
+        <?php foreach ($files as $file_path) :
+            $filename   = basename($file_path);
+            $basename   = pathinfo($filename, PATHINFO_FILENAME);
+            $label      = trim(str_replace(['-', '_'], ' ', $basename));
+            $target_url = home_url('/' . sanitize_title($basename) . '/');
+            ?>
+            <a class="mh-units-gallery__card" href="<?php echo esc_url($target_url); ?>">
+                <span class="mh-units-gallery__media">
+                    <img
+                        class="mh-units-gallery__image"
+                        src="<?php echo esc_url($units_url . rawurlencode($filename)); ?>"
+                        alt="<?php echo esc_attr($label); ?>"
+                        loading="lazy"
+                    />
+                </span>
+                <span class="mh-units-gallery__title"><?php echo esc_html($label); ?></span>
+            </a>
+        <?php endforeach; ?>
+    </div>
+    <?php
+
+    return ob_get_clean();
+});
+
 function mh_render_breadcrumbs(string $nav_class = '', string $wrapper_class = ''): void {
-    $nav_class_attr = $nav_class ? ' class="' . esc_attr($nav_class) . '"' : '';
+	$nav_class_attr = $nav_class ? ' class="' . esc_attr($nav_class) . '"' : '';
 
     if ($wrapper_class) {
         echo '<div class="' . esc_attr($wrapper_class) . '">';

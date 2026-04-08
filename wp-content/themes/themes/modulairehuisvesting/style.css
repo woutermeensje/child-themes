@@ -75,6 +75,82 @@ Text Domain: modulairehuisvesting
     text-decoration: none !important;
 }
 
+/* ── Units image grid shortcode ── */
+.mh-units-gallery {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  margin: 0;
+}
+
+.mh-units-gallery--cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.mh-units-gallery--cols-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.mh-units-gallery--cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.mh-units-gallery__card {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface);
+  box-shadow: 0 14px 34px rgba(37, 71, 107, 0.12);
+  color: var(--color-text) !important;
+  text-decoration: none !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.mh-units-gallery__card:hover {
+  transform: translateY(-3px);
+  border-color: var(--color-secondary-soft);
+  box-shadow: 0 18px 40px rgba(37, 71, 107, 0.16);
+}
+
+.mh-units-gallery__media {
+  display: block;
+  aspect-ratio: 4 / 3;
+  padding: 12px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-surface-alt) 100%);
+  border: 1px solid rgba(191, 227, 150, 0.8);
+}
+
+.mh-units-gallery__image {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  object-position: center;
+}
+
+.mh-units-gallery__title {
+  display: block;
+  margin: 0;
+  color: var(--color-text);
+  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
+  font-size: 24px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.mh-units-gallery-empty {
+  padding: 24px;
+  border: 1px solid var(--color-border);
+  border-radius: 5px;
+  background: var(--color-surface-alt);
+  color: var(--color-text-soft);
+  font-family: 'Poppins', sans-serif;
+}
+
 /* ── WooCommerce product cards / [products] shortcode ── */
 body:not(.single-product) .woocommerce ul.products,
 .elementor-widget-shortcode .elementor-shortcode .woocommerce ul.products {
@@ -181,6 +257,22 @@ body:not(.single-product) .woocommerce ul.products li.product .woocommerce-loop-
 }
 
 @media (max-width: 767px) {
+  .mh-units-gallery,
+  .mh-units-gallery--cols-2,
+  .mh-units-gallery--cols-3,
+  .mh-units-gallery--cols-4 {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .mh-units-gallery__card {
+    padding: 18px;
+  }
+
+  .mh-units-gallery__title {
+    font-size: 20px;
+  }
+
   body:not(.single-product) .woocommerce ul.products,
   .elementor-widget-shortcode .elementor-shortcode .woocommerce ul.products {
     grid-template-columns: 1fr;
