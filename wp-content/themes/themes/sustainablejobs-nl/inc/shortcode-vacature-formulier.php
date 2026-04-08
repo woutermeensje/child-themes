@@ -77,6 +77,25 @@ function sj_vacature_plaatsen_shortcode(): string {
                 $attachments
             );
 
+            $confirmation_body  = "Beste $voornaam,\n\n";
+            $confirmation_body .= "Bedankt voor het plaatsen van je vacature op Sustainablejobs.nl.\n\n";
+            $confirmation_body .= "We hebben je vacature in goede orde ontvangen:\n";
+            $confirmation_body .= "Vacaturetitel: $vacaturetitel\n";
+            $confirmation_body .= "Bedrijf: $bedrijfsnaam\n";
+            $confirmation_body .= "Locatie: $locatie\n";
+            $confirmation_body .= "Pakket: $pakket\n\n";
+            $confirmation_body .= "Ons team bekijkt je inzending en neemt indien nodig contact met je op. Je ontvangt de factuur per e-mail na publicatie.\n\n";
+            $confirmation_body .= "Heb je in de tussentijd vragen? Reageer gerust op deze e-mail of mail naar support@sustainablejobs.nl.\n\n";
+            $confirmation_body .= "Met vriendelijke groet,\n";
+            $confirmation_body .= "Sustainablejobs.nl";
+
+            wp_mail(
+                $email,
+                'Bevestiging van je vacatureplaatsing op Sustainablejobs.nl',
+                $confirmation_body,
+                $headers
+            );
+
             /* ── Sla inzending op als CPT ──────────────────── */
             $post_id = wp_insert_post([
                 'post_title'  => sanitize_text_field($vacaturetitel),

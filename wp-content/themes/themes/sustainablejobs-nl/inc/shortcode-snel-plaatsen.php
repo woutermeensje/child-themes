@@ -37,6 +37,23 @@ function sj_snel_plaatsen_shortcode(): string {
             ]));
             wp_mail($to, 'Snel plaatsen aanvraag', $body, $headers);
 
+            $confirmation_body  = "Beste,\n\n";
+            $confirmation_body .= "Bedankt voor je vacature-aanvraag via Sustainablejobs.nl.\n\n";
+            $confirmation_body .= "We hebben je aanvraag in goede orde ontvangen:\n";
+            $confirmation_body .= "Pakket: " . ($pakket ?: 'Snel plaatsen') . "\n";
+            $confirmation_body .= "Vacature URL: $url\n\n";
+            $confirmation_body .= "We pakken dit zo snel mogelijk op en nemen contact met je op als we nog iets nodig hebben.\n\n";
+            $confirmation_body .= "Heb je vragen? Mail gerust naar support@sustainablejobs.nl.\n\n";
+            $confirmation_body .= "Met vriendelijke groet,\n";
+            $confirmation_body .= "Sustainablejobs.nl";
+
+            wp_mail(
+                $email,
+                'Bevestiging van je vacature-aanvraag op Sustainablejobs.nl',
+                $confirmation_body,
+                $headers
+            );
+
             /* Sla op als CPT */
             $post_id = wp_insert_post([
                 'post_title'  => $url,

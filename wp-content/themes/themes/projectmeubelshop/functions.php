@@ -397,7 +397,13 @@ function pms_apply_catalog_filters_to_query_args( array $query_args ): array {
 
 add_filter( 'woocommerce_shortcode_products_query', 'pms_filter_shortcode_products_query', 10, 3 );
 function pms_filter_shortcode_products_query( $query_args, $attributes, $type ) {
-	return pms_apply_catalog_filters_to_query_args( $query_args );
+	$query_args = pms_apply_catalog_filters_to_query_args( $query_args );
+
+	// Set 30 products per page with pagination
+	$query_args['posts_per_page'] = 30;
+	$query_args['paged']           = max( 1, get_query_var( 'paged' ) );
+
+	return $query_args;
 }
 
 add_action( 'woocommerce_product_query', 'pms_filter_archive_products_query', 10, 2 );

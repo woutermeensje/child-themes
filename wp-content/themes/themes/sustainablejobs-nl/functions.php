@@ -8,6 +8,22 @@ require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
 require_once get_stylesheet_directory() . '/inc/job-listing-meta.php';
 
 /**
+ * Centrale afzender voor uitgaande mails vanuit het thema.
+ */
+add_filter('wp_mail_from', function ($from_email) {
+    return 'support@sustainablejobs.nl';
+});
+
+add_filter('wp_mail_from_name', function ($from_name) {
+    return 'Sustainablejobs.nl';
+});
+
+/**
+ * Sta meerdere job types per vacature toe in WP Job Manager.
+ */
+add_filter('job_manager_multi_job_type', '__return_true');
+
+/**
  * ✅ ENQUEUE STYLES (with Elementor check + cache busting)
  */
 add_action('wp_enqueue_scripts', function () {
@@ -365,7 +381,5 @@ require_once get_stylesheet_directory() . '/inc/jackling-import.php';
 
 
 require_once get_stylesheet_directory() . '/inc/bedrijfspagina-filters.php';
-
-
 
 
