@@ -1,10 +1,31 @@
+:root {
+  --mh-units-primary: #25476B;
+  --mh-units-secondary: #39749B;
+  --mh-units-ocean: #4188AA;
+  --mh-units-turquoise: #559EA3;
+  --mh-units-mint: #8AC697;
+  --mh-units-highlight: #BFE396;
+  --mh-units-lime: #CCDA91;
+  --mh-units-surface: #FFFFFF;
+  --mh-units-surface-alt: #F1F8EE;
+  --mh-units-border: #BFE396;
+  --mh-units-text: #25476B;
+}
 
+.mh-unit-card-body {
+  padding: 12px;
+}
 
-.mh-unit-card-body{ padding:12px; }
-.mh-unit-card-title{ margin:0 0 8px; }
-.mh-btn{ padding:10px 14px; border-radius:8px; border:1px solid #ddd; display:inline-block; text-decoration:none; }
-.mh-btn-primary{ border-color:#000; }
+.mh-unit-card-title {
+  margin: 0 0 8px;
+}
 
+.mh-units-filter-wrap,
+.mh-units-results,
+.mhu-single,
+.mhu-footer-cta {
+  color: var(--mh-units-text);
+}
 
 
 

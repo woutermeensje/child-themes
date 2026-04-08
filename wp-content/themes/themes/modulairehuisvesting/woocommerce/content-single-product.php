@@ -229,7 +229,7 @@ h1.mh-page-title {
 	align-items: center;
 	padding: 5px 14px;
 	background: #fff;
-	border: 1px solid #C5B17D;
+	border: 1px solid var(--color-border-strong);
 	border-radius: 999px;
 	font-family: Inter, sans-serif;
 	font-size: 13px;
@@ -258,13 +258,13 @@ h1.mh-page-title {
 
 .mh-contact-item svg,
 .mh-contact-item [data-lucide] {
-	color: #C5B17D;
-	stroke: #C5B17D;
+	color: var(--color-secondary-soft);
+	stroke: var(--color-secondary-soft);
 	flex-shrink: 0;
 }
 
 .mh-contact-item:hover {
-	color: #C5B17D;
+	color: var(--color-secondary);
 }
 
 /* Intro tekst */
@@ -390,7 +390,7 @@ h1.mh-page-title {
 }
 
 .mh-quote-fallback-btn:hover {
-	background: #3d2d20 !important;
+	background: var(--color-primary-hover) !important;
 	color: #fff !important;
 }
 
@@ -764,7 +764,7 @@ h1.mh-page-title {
 			}
 
 			$in_quote   = function_exists( 'mh_quote_has_product' ) && mh_quote_has_product( $product->get_id() );
-			$quote_url  = function_exists( 'mh_quote_get_page_url' ) ? mh_quote_get_page_url() : home_url( '/offerte/' );
+			$quote_url  = function_exists( 'mh_quote_get_page_url' ) ? mh_quote_get_page_url() : home_url( '/mijn-offerte/' );
 			$just_added = isset( $_GET['mh_added'] ) && (int) $_GET['mh_added'] === $product->get_id();
 			?>
 
@@ -782,6 +782,7 @@ h1.mh-page-title {
 						<?php wp_nonce_field( 'mh_add_to_quote', 'mh_nonce' ); ?>
 						<input type="hidden" name="mh_action" value="add_to_quote">
 						<input type="hidden" name="product_id" value="<?php echo esc_attr( $product->get_id() ); ?>">
+						<input type="hidden" name="item_type" value="product">
 						<div class="mh-qty-stepper">
 							<button type="button" class="mh-qty-btn mh-qty-btn--minus" aria-label="Minder">
 								<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
@@ -800,13 +801,13 @@ h1.mh-page-title {
 
 			<!-- Contactgegevens -->
 			<div class="mh-contact-info">
-				<a href="mailto:info@modulairehuisvesting.nl" class="mh-contact-item">
+				<a href="mailto:informatie@modulairehuisvesting.nl" class="mh-contact-item">
 					<i data-lucide="mail" width="16" height="16"></i>
-					info@modulairehuisvesting.nl
+					informatie@modulairehuisvesting.nl
 				</a>
-				<a href="tel:" class="mh-contact-item">
+				<a href="tel:0852392040" class="mh-contact-item">
 					<i data-lucide="phone" width="16" height="16"></i>
-					085 000 00 00
+					085 239 2040
 				</a>
 			</div>
 

@@ -40,22 +40,122 @@ function mh_register_quote_request_post_type() {
 	);
 }
 
+function mh_quote_get_supported_item_types(): array {
+	return array( 'product', 'mh_unit' );
+}
+
+function mh_quote_resolve_item_type( int $item_id, array $item = array() ): string {
+	$stored_type = isset( $item['item_type'] ) ? sanitize_key( (string) $item['item_type'] ) : '';
+	if ( in_array( $stored_type, mh_quote_get_supported_item_types(), true ) ) {
+		return $stored_type;
+	}
+
+	$post_type = get_post_type( $item_id );
+	if ( is_string( $post_type ) && in_array( $post_type, mh_quote_get_supported_item_types(), true ) ) {
+		return $post_type;
+	}
+
+	if ( function_exists( 'wc_get_product' ) && wc_get_product( $item_id ) ) {
+		return 'product';
+	}
+
+	return '';
+}
+
+function mh_quote_get_item_snapshot_data( int $item_id, array $item = array() ): ?array {
+	$item_type = mh_quote_resolve_item_type( $item_id, $item );
+	$quantity  = isset( $item['quantity'] ) ? max( 1, (int) $item['quantity'] ) : 1;
+
+	if ( 'product' === $item_type && function_exists( 'wc_get_product' ) ) {
+		$product = wc_get_product( $item_id );
+		if ( ! $product ) {
+			return null;
+		}
+
+		return array(
+			'product_id' => $item_id,
+			'item_type'  => 'product',
+			'name'       => $product->get_name(),
+			'quantity'   => $quantity,
+			'permalink'  => get_permalink( $item_id ),
+			'sku'        => $product->get_sku(),
+		);
+	}
+
+	if ( 'mh_unit' === $item_type ) {
+		$post = get_post( $item_id );
+		if ( ! $post instanceof WP_Post ) {
+			return null;
+		}
+
+		return array(
+			'product_id' => $item_id,
+			'item_type'  => 'mh_unit',
+			'name'       => get_the_title( $item_id ),
+			'quantity'   => $quantity,
+			'permalink'  => get_permalink( $item_id ),
+			'sku'        => 'Unit',
+		);
+	}
+
+	return null;
+}
+
+function mh_quote_get_item_display_data( int $item_id, array $item = array() ): ?array {
+	$snapshot = mh_quote_get_item_snapshot_data( $item_id, $item );
+	if ( ! $snapshot ) {
+		return null;
+	}
+
+	$item_type = $snapshot['item_type'];
+	$thumb_id  = 0;
+	$meta      = '';
+
+	if ( 'product' === $item_type && function_exists( 'wc_get_product' ) ) {
+		$product = wc_get_product( $item_id );
+		if ( ! $product ) {
+			return null;
+		}
+
+		$thumb_id = (int) $product->get_image_id();
+		$cats     = get_the_terms( $item_id, 'product_cat' );
+		if ( ! empty( $cats ) && ! is_wp_error( $cats ) ) {
+			$meta = (string) $cats[0]->name;
+		}
+	} elseif ( 'mh_unit' === $item_type ) {
+		$thumb_id   = (int) get_post_thumbnail_id( $item_id );
+		$meta_parts = array();
+		$aanbod     = get_the_terms( $item_id, 'mh_unit_aanbod' );
+		$types      = get_the_terms( $item_id, 'mh_unit_type' );
+		$condities  = get_the_terms( $item_id, 'mh_unit_conditie' );
+
+		if ( ! empty( $aanbod ) && ! is_wp_error( $aanbod ) ) {
+			$meta_parts[] = $aanbod[0]->name;
+		}
+		if ( ! empty( $types ) && ! is_wp_error( $types ) ) {
+			$meta_parts[] = $types[0]->name;
+		}
+		if ( ! empty( $condities ) && ! is_wp_error( $condities ) ) {
+			$meta_parts[] = $condities[0]->name;
+		}
+
+		$meta = implode( ' • ', array_filter( array_unique( $meta_parts ) ) );
+	}
+
+	$snapshot['thumb_id'] = $thumb_id;
+	$snapshot['meta']     = $meta;
+
+	return $snapshot;
+}
+
 function mh_quote_build_items_snapshot( array $items ): array {
 	$snapshot = array();
 
 	foreach ( $items as $pid => $item ) {
-		$product = wc_get_product( $pid );
-		if ( ! $product ) {
-			continue;
+		$item_snapshot = mh_quote_get_item_snapshot_data( (int) $pid, (array) $item );
+		if ( $item_snapshot ) {
+			$snapshot[] = $item_snapshot;
 		}
-
-		$snapshot[] = array(
-			'product_id' => (int) $pid,
-			'name'       => $product->get_name(),
-			'quantity'   => isset( $item['quantity'] ) ? max( 1, (int) $item['quantity'] ) : 1,
-			'permalink'  => get_permalink( $pid ),
-			'sku'        => $product->get_sku(),
-		);
 	}
 
 	return $snapshot;
@@ -178,9 +278,32 @@ function mh_quote_find_matching_term_for_asset( string $asset_name ): ?WP_Term {
 	return null;
 }
 
+function mh_quote_get_room_builder_asset_paths(): array {
+	$candidates = array(
+		'offerte/',
+		'offerte-samenstellen/',
+	);
+
+	foreach ( $candidates as $relative_path ) {
+		$asset_dir = trailingslashit( get_stylesheet_directory() ) . $relative_path;
+		if ( is_dir( $asset_dir ) ) {
+			return array(
+				'dir' => $asset_dir,
+				'url' => trailingslashit( get_stylesheet_directory_uri() ) . $relative_path,
+			);
+		}
+	}
+
+	return array(
+		'dir' => trailingslashit( get_stylesheet_directory() ) . 'offerte/',
+		'url' => trailingslashit( get_stylesheet_directory_uri() ) . 'offerte/',
+	);
+}
+
 function mh_quote_get_room_builder_assets(): array {
-	$asset_dir = trailingslashit( get_stylesheet_directory() ) . 'offerte/';
-	$asset_url = trailingslashit( get_stylesheet_directory_uri() ) . 'offerte/';
+	$asset_paths = mh_quote_get_room_builder_asset_paths();
+	$asset_dir   = $asset_paths['dir'];
+	$asset_url   = $asset_paths['url'];
 	$patterns  = array( '*.png', '*.jpg', '*.jpeg', '*.webp' );
 	$files     = array();
 
@@ -212,8 +335,9 @@ function mh_quote_get_room_builder_assets(): array {
 }
 
 function mh_quote_get_room_builder_image_url( WP_Term $term ): string {
-	$asset_dir = trailingslashit( get_stylesheet_directory() ) . 'offerte/';
-	$asset_url = trailingslashit( get_stylesheet_directory_uri() ) . 'offerte/';
+	$asset_paths = mh_quote_get_room_builder_asset_paths();
+	$asset_dir   = $asset_paths['dir'];
+	$asset_url   = $asset_paths['url'];
 	$patterns  = array( '*.png', '*.jpg', '*.jpeg', '*.webp' );
 	$files     = array();
 
@@ -297,7 +421,7 @@ function mh_quote_build_email_html( array $request_data ): string {
 		$item_rows .= '<td style="padding:14px 16px;border-bottom:1px solid #e7e2d7;font-size:14px;color:#1f2a24;text-align:center;">' . $item_qty . '</td>';
 		$item_rows .= '<td style="padding:14px 16px;border-bottom:1px solid #e7e2d7;font-size:14px;text-align:right;">';
 		if ( $item_link ) {
-			$item_rows .= '<a href="' . $item_link . '" style="color:#4A3728;text-decoration:none;font-weight:600;">Bekijk product</a>';
+			$item_rows .= '<a href="' . $item_link . '" style="color:#25476B;text-decoration:none;font-weight:600;">Bekijk product</a>';
 		} else {
 			$item_rows .= '<span style="color:#68736d;">-</span>';
 		}
@@ -321,52 +445,52 @@ function mh_quote_build_email_html( array $request_data ): string {
 			<meta name="viewport" content="width=device-width, initial-scale=1.0">
 			<title>Nieuwe offerte aanvraag</title>
 		</head>
-		<body style="margin:0;padding:0;background:#f6f3ed;font-family:Inter,Arial,sans-serif;color:#1f2a24;">
-			<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f3ed;padding:32px 16px;">
+		<body style="margin:0;padding:0;background:#f7fbf7;font-family:Inter,Arial,sans-serif;color:#1f2a24;">
+			<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f7fbf7;padding:32px 16px;">
 				<tr>
 					<td align="center">
-						<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:760px;background:#ffffff;border:1px solid #e7e2d7;border-radius:12px;overflow:hidden;">
+						<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:760px;background:#ffffff;border:1px solid #BFE396;border-radius:12px;overflow:hidden;">
 							<tr>
-								<td style="padding:28px 32px;background:#4A3728;">
-									<div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#e7dcc7;font-weight:700;">Modulairehuisvesting</div>
+								<td style="padding:28px 32px;background:#25476B;">
+									<div style="font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#CCDA91;font-weight:700;">Modulairehuisvesting</div>
 									<h1 style="margin:10px 0 0;font-size:28px;line-height:1.2;color:#ffffff;">Nieuwe offerte aanvraag</h1>
 								</td>
 							</tr>
 							<tr>
 								<td style="padding:28px 32px;">
-									<p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#4b5563;">Er is een nieuwe offerteaanvraag binnengekomen via de website.</p>
+									<p style="margin:0 0 24px;font-size:15px;line-height:1.7;color:#39749B;">Er is een nieuwe offerteaanvraag binnengekomen via de website.</p>
 
 									<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:0 0 24px;border-collapse:separate;border-spacing:0;">
 										<tr>
-											<td colspan="2" style="padding:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#68736d;">Klantgegevens</td>
+											<td colspan="2" style="padding:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#39749B;">Klantgegevens</td>
 										</tr>
 										<tr>
-											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;font-size:13px;font-weight:700;color:#68736d;width:180px;">Naam</td>
-											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-left:none;font-size:14px;color:#1f2a24;">' . esc_html( $name ?: '-' ) . '</td>
+											<td style="padding:12px 14px;background:#F1F8EE;border:1px solid #BFE396;font-size:13px;font-weight:700;color:#39749B;width:180px;">Naam</td>
+											<td style="padding:12px 14px;background:#F1F8EE;border:1px solid #BFE396;border-left:none;font-size:14px;color:#1f2a24;">' . esc_html( $name ?: '-' ) . '</td>
 										</tr>
 										<tr>
-											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-top:none;font-size:13px;font-weight:700;color:#68736d;">E-mail</td>
-											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-left:none;border-top:none;font-size:14px;color:#1f2a24;"><a href="mailto:' . esc_attr( $email ) . '" style="color:#4A3728;text-decoration:none;">' . esc_html( $email ?: '-' ) . '</a></td>
+											<td style="padding:12px 14px;background:#F1F8EE;border:1px solid #BFE396;border-top:none;font-size:13px;font-weight:700;color:#39749B;">E-mail</td>
+											<td style="padding:12px 14px;background:#F1F8EE;border:1px solid #BFE396;border-left:none;border-top:none;font-size:14px;color:#1f2a24;"><a href="mailto:' . esc_attr( $email ) . '" style="color:#25476B;text-decoration:none;">' . esc_html( $email ?: '-' ) . '</a></td>
 										</tr>
 										<tr>
-											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-top:none;font-size:13px;font-weight:700;color:#68736d;">Telefoon</td>
-											<td style="padding:12px 14px;background:#fbfaf8;border:1px solid #e7e2d7;border-left:none;border-top:none;font-size:14px;color:#1f2a24;">' . esc_html( $phone ?: '-' ) . '</td>
+											<td style="padding:12px 14px;background:#F1F8EE;border:1px solid #BFE396;border-top:none;font-size:13px;font-weight:700;color:#39749B;">Telefoon</td>
+											<td style="padding:12px 14px;background:#F1F8EE;border:1px solid #BFE396;border-left:none;border-top:none;font-size:14px;color:#1f2a24;">' . esc_html( $phone ?: '-' ) . '</td>
 										</tr>
 									</table>
 
 									<div style="margin:0 0 24px;">
-										<div style="margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#68736d;">Opmerkingen of vragen</div>
-										<div style="padding:16px 18px;background:#fbfaf8;border:1px solid #e7e2d7;border-radius:10px;font-size:14px;line-height:1.7;color:#1f2a24;">' . $message_html . '</div>
+										<div style="margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#39749B;">Opmerkingen of vragen</div>
+										<div style="padding:16px 18px;background:#F1F8EE;border:1px solid #BFE396;border-radius:10px;font-size:14px;line-height:1.7;color:#1f2a24;">' . $message_html . '</div>
 									</div>
 
 									<div style="margin:0;">
-										<div style="margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#68736d;">Aangevraagde producten</div>
-										<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:0;border:1px solid #e7e2d7;border-radius:10px;overflow:hidden;">
+										<div style="margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#39749B;">Aangevraagde producten</div>
+										<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:0;border:1px solid #BFE396;border-radius:10px;overflow:hidden;">
 											<thead>
 												<tr>
-													<th align="left" style="padding:14px 16px;background:#C5B17D;color:#ffffff;font-size:12px;letter-spacing:.05em;text-transform:uppercase;">Product</th>
-													<th align="center" style="padding:14px 16px;background:#C5B17D;color:#ffffff;font-size:12px;letter-spacing:.05em;text-transform:uppercase;">Aantal</th>
-													<th align="right" style="padding:14px 16px;background:#C5B17D;color:#ffffff;font-size:12px;letter-spacing:.05em;text-transform:uppercase;">Link</th>
+													<th align="left" style="padding:14px 16px;background:#39749B;color:#ffffff;font-size:12px;letter-spacing:.05em;text-transform:uppercase;">Product</th>
+													<th align="center" style="padding:14px 16px;background:#39749B;color:#ffffff;font-size:12px;letter-spacing:.05em;text-transform:uppercase;">Aantal</th>
+													<th align="right" style="padding:14px 16px;background:#39749B;color:#ffffff;font-size:12px;letter-spacing:.05em;text-transform:uppercase;">Link</th>
 												</tr>
 											</thead>
 											<tbody>' . $item_rows . '</tbody>
@@ -813,16 +937,21 @@ function mh_quote_get_count() {
 	return $count;
 }
 
-function mh_quote_add_item( $product_id, $quantity = 1, $variation_id = 0, $variation_data = array() ) {
+function mh_quote_add_item( $product_id, $quantity = 1, $variation_id = 0, $variation_data = array(), $item_type = '' ) {
 	$items      = mh_quote_get_items();
 	$product_id = (int) $product_id;
+	$item_type  = sanitize_key( (string) $item_type );
 	if ( isset( $items[ $product_id ] ) ) {
 		$items[ $product_id ]['quantity'] = max( 1, (int) $items[ $product_id ]['quantity'] + (int) $quantity );
+		if ( $item_type ) {
+			$items[ $product_id ]['item_type'] = $item_type;
+		}
 	} else {
 		$items[ $product_id ] = array(
 			'quantity'       => max( 1, (int) $quantity ),
 			'variation_id'   => (int) $variation_id,
 			'variation_data' => (array) $variation_data,
+			'item_type'      => $item_type,
 		);
 	}
 	mh_quote_set_items( $items );
@@ -832,13 +961,14 @@ function mh_quote_add_item( $product_id, $quantity = 1, $variation_id = 0, $vari
 			'product_id'   => $product_id,
 			'quantity'     => (int) $quantity,
 			'variation_id' => (int) $variation_id,
+			'item_type'    => $item_type,
 			'items_keys'   => array_map( 'intval', array_keys( $items ) ),
 		)
 	);
 }
 
 function mh_quote_get_page_url() {
-	return home_url( '/offerte/' );
+	return home_url( '/mijn-offerte/' );
 }
 
 function mh_quote_is_page_request(): bool {
@@ -858,7 +988,7 @@ function mh_quote_is_page_request(): bool {
 		}
 	}
 
-	return function_exists( 'is_page' ) && is_page( 'offerte' );
+	return function_exists( 'is_page' ) && ( is_page( 'mijn-offerte' ) || is_page( 'offerte' ) );
 }
 
 function mh_quote_is_dynamic_request(): bool {
@@ -909,16 +1039,19 @@ function mh_quote_handle_add() {
 	$product_id   = isset( $_POST['product_id'] ) ? (int) $_POST['product_id'] : 0;
 	$quantity     = isset( $_POST['quantity'] ) ? max( 1, (int) $_POST['quantity'] ) : 1;
 	$variation_id = isset( $_POST['variation_id'] ) ? (int) $_POST['variation_id'] : 0;
-	if ( $product_id < 1 ) {
+	$item_type    = isset( $_POST['item_type'] ) ? sanitize_key( wp_unslash( $_POST['item_type'] ) ) : '';
+	$item_type    = mh_quote_resolve_item_type( $product_id, array( 'item_type' => $item_type ) );
+	if ( $product_id < 1 || '' === $item_type ) {
 		mh_quote_log( 'add_rejected_invalid_product' );
 		return;
 	}
-	mh_quote_add_item( $product_id, $quantity, $variation_id );
+	mh_quote_add_item( $product_id, $quantity, $variation_id, array(), $item_type );
 	$redirect = add_query_arg( 'mh_added', $product_id, wp_get_referer() ?: get_permalink( $product_id ) );
 	mh_quote_log(
 		'add_redirect',
 		array(
 			'product_id' => $product_id,
+			'item_type'  => $item_type,
 			'redirect'   => $redirect,
 		)
 	);
@@ -1160,11 +1293,7 @@ function mh_quote_handle_room_builder_submit() {
 
 add_shortcode( 'mh_quote_page', 'mh_quote_render_page' );
 function mh_quote_render_page() {
-	if ( ! function_exists( 'WC' ) ) {
-		return '<p>WooCommerce is niet actief.</p>';
-	}
-
-	$items = mh_quote_get_items();
+	$items = function_exists( 'WC' ) ? mh_quote_get_items() : array();
 	mh_quote_log(
 		'render_page',
 		array(
@@ -1250,7 +1379,7 @@ function mh_quote_render_page() {
 		align-items: center;
 		height: 44px;
 		padding: 0 24px;
-		background: var(--color-primary, #4A3728);
+		background: var(--color-primary, #25476B);
 		color: #fff;
 		border-radius: 8px;
 		font-weight: 700;
@@ -1258,7 +1387,7 @@ function mh_quote_render_page() {
 		text-decoration: none;
 		transition: background 0.15s;
 	}
-	.mh-qp__empty a:hover { background: #3d2d20; }
+	.mh-qp__empty a:hover { background: var(--color-primary-hover, #325F8D); }
 
 	/* ── Sectie-kaarten ── */
 	.mh-qp__card {
@@ -1293,7 +1422,7 @@ function mh_quote_render_page() {
 		min-width: 22px;
 		height: 22px;
 		padding: 0 6px;
-		background: var(--color-primary, #4A3728);
+		background: var(--color-primary, #25476B);
 		color: #fff;
 		border-radius: 999px;
 		font-size: 11px;
@@ -1350,7 +1479,7 @@ function mh_quote_render_page() {
 		text-overflow: ellipsis;
 		margin-bottom: 2px;
 	}
-	.mh-qp__product-name:hover { color: var(--color-primary, #4A3728); }
+	.mh-qp__product-name:hover { color: var(--color-primary, #25476B); }
 	.mh-qp__product-cat {
 		font-size: 12px;
 		color: #999;
@@ -1391,7 +1520,7 @@ function mh_quote_render_page() {
 	}
 	.mh-qp__qty-btn:hover {
 		background: var(--color-bg, #f5f5f5);
-		color: var(--color-primary, #4A3728);
+		color: var(--color-primary, #25476B);
 	}
 	.mh-qp__qty-btn svg { display: block; pointer-events: none; }
 	.mh-qp__qty-input {
@@ -1471,17 +1600,17 @@ function mh_quote_render_page() {
 		white-space: nowrap;
 	}
 	.mh-qp__btn--primary {
-		background: var(--color-primary, #4A3728);
+		background: var(--color-primary, #25476B);
 		color: #fff;
-		border-color: var(--color-primary, #4A3728);
+		border-color: var(--color-primary, #25476B);
 	}
-	.mh-qp__btn--primary:hover { background: #3d2d20; border-color: #3d2d20; color: #fff; }
+	.mh-qp__btn--primary:hover { background: var(--color-primary-hover, #325F8D); border-color: var(--color-primary-hover, #325F8D); color: #fff; }
 	.mh-qp__btn--outline {
 		background: #fff;
-		color: var(--color-primary, #4A3728);
+		color: var(--color-primary, #25476B);
 		border-color: var(--color-border, #dedede);
 	}
-	.mh-qp__btn--outline:hover { border-color: var(--color-primary, #4A3728); }
+	.mh-qp__btn--outline:hover { border-color: var(--color-primary, #25476B); }
 
 	/* ── Formulier ── */
 	.mh-qp__fields {
@@ -1522,8 +1651,8 @@ function mh_quote_render_page() {
 	.mh-qp__input:focus,
 	.mh-qp__textarea:focus {
 		outline: none;
-		border-color: var(--color-secondary, #C5B17D);
-		box-shadow: 0 0 0 3px rgba(197,177,125,0.18);
+		border-color: var(--color-secondary-soft, #559EA3);
+		box-shadow: 0 0 0 3px var(--color-focus-ring, rgba(85, 158, 163, 0.22));
 	}
 	.mh-qp__textarea { resize: vertical; min-height: 100px; }
 
@@ -1765,11 +1894,10 @@ function mh_quote_render_page() {
 				</div>
 				<div class="mh-qp__card-body">
 					<?php foreach ( $items as $product_id => $item ) :
-						$product = wc_get_product( $product_id );
-						if ( ! $product ) continue;
-						$thumb_id = $product->get_image_id();
-						$cats     = get_the_terms( $product_id, 'product_cat' );
-						$cat_name = ( ! empty( $cats ) && ! is_wp_error( $cats ) ) ? esc_html( $cats[0]->name ) : '';
+						$item_data = mh_quote_get_item_display_data( (int) $product_id, (array) $item );
+						if ( ! $item_data ) continue;
+						$thumb_id   = (int) $item_data['thumb_id'];
+						$meta_label = isset( $item_data['meta'] ) ? (string) $item_data['meta'] : '';
 					?>
 					<div class="mh-qp__product-row">
 						<?php if ( $thumb_id ) : ?>
@@ -1781,11 +1909,11 @@ function mh_quote_render_page() {
 						<?php endif; ?>
 
 						<div class="mh-qp__product-info">
-							<a href="<?php echo esc_url( get_permalink( $product_id ) ); ?>" class="mh-qp__product-name">
-								<?php echo esc_html( $product->get_name() ); ?>
+							<a href="<?php echo esc_url( (string) $item_data['permalink'] ); ?>" class="mh-qp__product-name">
+								<?php echo esc_html( (string) $item_data['name'] ); ?>
 							</a>
-							<?php if ( $cat_name ) : ?>
-								<span class="mh-qp__product-cat"><?php echo $cat_name; ?></span>
+							<?php if ( $meta_label ) : ?>
+								<span class="mh-qp__product-cat"><?php echo esc_html( $meta_label ); ?></span>
 							<?php endif; ?>
 						</div>
 
@@ -1998,8 +2126,8 @@ function mh_quote_render_standalone_form() {
 	.mh-sqf__input:focus,
 	.mh-sqf__textarea:focus {
 		outline: none;
-		border-color: var(--color-secondary, #C5B17D);
-		box-shadow: 0 0 0 3px rgba(197,177,125,0.18);
+		border-color: var(--color-secondary-soft, #559EA3);
+		box-shadow: 0 0 0 3px var(--color-focus-ring, rgba(85, 158, 163, 0.22));
 	}
 	.mh-sqf__textarea {
 		min-height: 140px;
@@ -2026,9 +2154,9 @@ function mh_quote_render_standalone_form() {
 		justify-content: center;
 		min-height: 48px;
 		padding: 0 28px;
-		border: 1px solid var(--color-primary, #4A3728);
+		border: 1px solid var(--color-primary, #25476B);
 		border-radius: 6px;
-		background: var(--color-primary, #4A3728);
+		background: var(--color-primary, #25476B);
 		color: #fff;
 		font-family: Inter, sans-serif;
 		font-size: 15px;
@@ -2036,8 +2164,8 @@ function mh_quote_render_standalone_form() {
 		cursor: pointer;
 	}
 	.mh-sqf__submit:hover {
-		background: #3d2d20;
-		border-color: #3d2d20;
+		background: var(--color-primary-hover, #325F8D);
+		border-color: var(--color-primary-hover, #325F8D);
 	}
 	@media (max-width: 767px) {
 		.mh-sqf__header {
@@ -2210,7 +2338,7 @@ function mh_quote_render_room_builder( array $atts = array() ) {
 		transition: border-color .15s ease, box-shadow .15s ease;
 	}
 	.mh-rb__card:hover .mh-rb__media {
-		border-color: #C5B17D;
+		border-color: var(--color-border-strong, #8AC697);
 		box-shadow: none;
 	}
 	.mh-rb__card.is-active .mh-rb__media {
@@ -2285,14 +2413,14 @@ function mh_quote_render_room_builder( array $atts = array() ) {
 	}
 	.mh-rb__qty-btn:hover {
 		background: #f5f5f5;
-		color: #4A3728;
+		color: var(--color-primary, #25476B);
 	}
 	.mh-rb__qty-btn:focus,
 	.mh-rb__qty-btn:active,
 	.mh-rb__qty-btn:focus-visible,
 	.mh-rb__qty-btn:hover:active {
 		background: #f5f5f5 !important;
-		color: #4A3728 !important;
+		color: var(--color-primary, #25476B) !important;
 		outline: none !important;
 		box-shadow: none !important;
 	}
@@ -2366,8 +2494,8 @@ function mh_quote_render_room_builder( array $atts = array() ) {
 	.mh-rb__textarea:focus,
 	.mh-rb__qty-input:focus {
 		outline: none;
-		border-color: #C5B17D;
-		box-shadow: 0 0 0 3px rgba(197,177,125,0.18);
+		border-color: var(--color-secondary-soft, #559EA3);
+		box-shadow: 0 0 0 3px var(--color-focus-ring, rgba(85, 158, 163, 0.22));
 	}
 	.mh-rb__footer {
 		display: flex;

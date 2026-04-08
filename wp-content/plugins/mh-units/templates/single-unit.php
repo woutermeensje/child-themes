@@ -10,6 +10,10 @@ $terms_type   = get_the_terms(get_the_ID(), 'mh_unit_type');
 $terms_cond   = get_the_terms(get_the_ID(), 'mh_unit_conditie');
 $terms_aanbod = get_the_terms(get_the_ID(), 'mh_unit_aanbod');
 $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_aanbod[0]->name : '';
+$unit_id      = get_the_ID();
+$in_quote     = function_exists('mh_quote_has_product') && mh_quote_has_product($unit_id);
+$quote_url    = function_exists('mh_quote_get_page_url') ? mh_quote_get_page_url() : home_url('/mijn-offerte/');
+$just_added   = isset($_GET['mh_added']) && (int) $_GET['mh_added'] === $unit_id;
 ?>
 
 <main class="mhu-single">
@@ -96,6 +100,20 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
                 <h3 class="mhu-sidebar__heading">Interesse in deze unit?</h3>
                 <p class="mhu-sidebar__text">Neem contact op voor een bezichtiging of vrijblijvende offerte.</p>
 
+                <?php if ($in_quote || $just_added): ?>
+                <a class="mhu-btn mhu-btn--quote" href="<?php echo esc_url($quote_url); ?>">
+                    Bekijk mijn offerte
+                </a>
+                <?php else: ?>
+                <form method="post" action="" class="mhu-quote-form">
+                    <?php wp_nonce_field('mh_add_to_quote', 'mh_nonce'); ?>
+                    <input type="hidden" name="mh_action" value="add_to_quote">
+                    <input type="hidden" name="product_id" value="<?php echo esc_attr($unit_id); ?>">
+                    <input type="hidden" name="item_type" value="mh_unit">
+                    <button type="submit" class="mhu-btn mhu-btn--quote">Toevoegen aan offerte</button>
+                </form>
+                <?php endif; ?>
+
                 <a class="mhu-btn mhu-btn--primary"
                    href="<?php echo esc_url(home_url('/offerte-aanvragen/?unit=' . get_the_ID())); ?>">
                     Informatie aanvragen
@@ -140,15 +158,21 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
    ============================================================ */
 
 :root {
-  --mhu-primary:    #0456AB;
-  --mhu-primary-dk: #034a92;
-  --mhu-accent:     #FF8C2C;
-  --mhu-text:       #333333;
-  --mhu-muted:      #6b7280;
-  --mhu-border:     #e5e7eb;
-  --mhu-bg:         #f8fafc;
+  --mhu-primary:    var(--color-primary, #25476B);
+  --mhu-primary-dk: var(--color-primary-hover, #325F8D);
+  --mhu-secondary:  var(--color-secondary, #39749B);
+  --mhu-ocean:      var(--color-ocean, #4188AA);
+  --mhu-accent:     var(--color-accent, #8AC697);
+  --mhu-highlight:  var(--color-highlight, #BFE396);
+  --mhu-lime:       var(--color-highlight-soft, #CCDA91);
+  --mhu-surface:    var(--color-surface, #FFFFFF);
+  --mhu-surface-alt: var(--color-surface-alt, #F1F8EE);
+  --mhu-text:       var(--color-text, #25476B);
+  --mhu-muted:      var(--color-text-soft, #39749B);
+  --mhu-border:     var(--color-border, #BFE396);
+  --mhu-bg:         var(--color-bg, #F7FBF7);
   --mhu-radius:     6px;
-  --mhu-shadow:     0 10px 40px -5px rgba(0, 0, 0, 0.12);
+  --mhu-shadow:     0 14px 34px rgba(37, 71, 107, 0.12);
 }
 
 .mhu-single {
@@ -221,9 +245,9 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
   align-items: center;
   padding: 6px 14px;
   border-radius: var(--mhu-radius);
-  background: #FFF4DD;
-  color: #7A5200;
-  border: 2px solid #F4B740;
+  background: var(--mhu-lime);
+  color: var(--mhu-primary);
+  border: 2px solid var(--mhu-highlight);
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   font-size: 13px;
@@ -244,9 +268,9 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
   align-items: center;
   padding: 5px 12px;
   border-radius: var(--mhu-radius);
-  background: #EAF2FF;
-  border: 2px solid #C7DBFF;
-  color: var(--mhu-primary);
+  background: rgba(65, 136, 170, 0.10);
+  border: 2px solid rgba(65, 136, 170, 0.24);
+  color: var(--mhu-secondary);
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 13px;
@@ -254,9 +278,9 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
 }
 
 .mhu-tax-badge--cond {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
-  color: #166534;
+  background: rgba(109, 180, 156, 0.12);
+  border-color: rgba(109, 180, 156, 0.26);
+  color: #2f6b69;
 }
 
 /* ── Top layout: image + sidebar ── */
@@ -302,7 +326,7 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
 }
 
 .mhu-sidebar__box {
-  background: #fff;
+  background: var(--mhu-surface);
   border: 1px solid var(--mhu-border);
   border-radius: var(--mhu-radius);
   box-shadow: var(--mhu-shadow);
@@ -354,7 +378,7 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
 }
 
 .mhu-meta__price {
-  color: var(--mhu-primary);
+  color: var(--mhu-secondary);
   font-weight: 700;
   font-size: 15px;
 }
@@ -381,6 +405,10 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
   color: var(--mhu-muted);
 }
 
+.mhu-quote-form {
+  margin: 0;
+}
+
 /* ── Buttons ── */
 .mhu-btn {
   display: flex;
@@ -400,27 +428,42 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
   transition: background .15s ease, color .15s ease, border-color .15s ease;
   margin-bottom: 10px;
   border: 2px solid transparent;
+  box-shadow: 0 10px 24px rgba(37, 71, 107, 0.12);
 }
 
 .mhu-btn--primary {
-  background: var(--mhu-primary);
+  background: linear-gradient(135deg, var(--mhu-ocean) 0%, var(--mhu-secondary) 100%);
   color: #fff !important;
-  border-color: var(--mhu-primary);
+  border-color: var(--mhu-ocean);
 }
 
 .mhu-btn--primary:hover {
-  background: var(--mhu-primary-dk);
-  border-color: var(--mhu-primary-dk);
+  background: linear-gradient(135deg, var(--mhu-secondary) 0%, var(--mhu-primary-dk) 100%);
+  border-color: var(--mhu-secondary);
+}
+
+.mhu-btn--quote {
+  background: linear-gradient(135deg, var(--mhu-lime) 0%, var(--mhu-highlight) 45%, var(--mhu-accent) 100%);
+  color: var(--mhu-primary) !important;
+  border-color: var(--mhu-highlight);
+}
+
+.mhu-btn--quote:hover {
+  background: linear-gradient(135deg, var(--mhu-highlight) 0%, var(--mhu-accent) 50%, var(--color-tertiary, #6DB49C) 100%);
+  border-color: var(--mhu-accent);
+  color: var(--mhu-primary) !important;
 }
 
 .mhu-btn--outline {
-  background: transparent;
+  background: var(--mhu-surface-alt);
   color: var(--mhu-primary) !important;
-  border-color: var(--mhu-primary);
+  border-color: var(--mhu-border);
+  box-shadow: none;
 }
 
 .mhu-btn--outline:hover {
   background: var(--mhu-primary);
+  border-color: var(--mhu-primary);
   color: #fff !important;
 }
 
@@ -457,7 +500,7 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
 }
 
 .mhu-content__body {
-  background: #fff;
+  background: var(--mhu-surface);
   border: 1px solid var(--mhu-border);
   border-radius: var(--mhu-radius);
   box-shadow: var(--mhu-shadow);
@@ -499,7 +542,7 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
 
 /* ── Footer CTA ── */
 .mhu-footer-cta {
-  background: var(--mhu-primary);
+  background: linear-gradient(135deg, var(--mhu-primary) 0%, var(--mhu-primary-dk) 100%);
   width: 100%;
   margin-top: 64px;
 }
@@ -528,20 +571,20 @@ $aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_
   align-items: center;
   padding: 12px 24px;
   border-radius: var(--mhu-radius);
-  background: #80D424;
-  color: #fff !important;
+  background: var(--mhu-highlight);
+  color: var(--mhu-primary) !important;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   font-size: 15px;
   text-decoration: none !important;
   white-space: nowrap;
   transition: background .15s ease;
-  border: 2px solid #80D424;
+  border: 2px solid var(--mhu-highlight);
 }
 
 .mhu-footer-cta__btn:hover {
-  background: #6abc1c;
-  border-color: #6abc1c;
+  background: var(--mhu-lime);
+  border-color: var(--mhu-lime);
 }
 
 /* ── Responsive ── */

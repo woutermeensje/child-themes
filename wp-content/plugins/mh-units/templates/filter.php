@@ -112,9 +112,9 @@ $condities = get_terms([
   max-width: 1050px;
   margin: 20px auto;
   padding: 24px;
-  background: #fff;
-  border: 1px solid #E0E0E0;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
+  background: var(--color-surface, #FFFFFF);
+  border: 1px solid var(--color-border, #BFE396);
+  box-shadow: 0 14px 34px rgba(37, 71, 107, 0.12);
 }
 
 /* Header */
@@ -123,7 +123,7 @@ $condities = get_terms([
   font-size: 28px;
   line-height: 1.2;
   margin: 0 0 10px 0;
-  color: #333 !important;
+  color: var(--color-text, #25476B) !important;
   font-weight: 700;
 }
 
@@ -131,13 +131,13 @@ $condities = get_terms([
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
   margin: 0 0 18px 0;
-  color: #333;
+  color: var(--color-text-soft, #39749B);
 }
 
 .mh-filter-header-link{
-  color: #0456ABFA !important;
+  color: var(--color-secondary, #39749B) !important;
   text-decoration: none !important;
-  font-weight: 400;
+  font-weight: 600;
 }
 
 
@@ -155,7 +155,7 @@ $condities = get_terms([
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   margin-bottom: 6px;
-  color: #333;
+  color: var(--color-text, #25476B);
 }
 
 /* Kolombreedtes */
@@ -175,11 +175,11 @@ $condities = get_terms([
   width: 100%;
   padding: 12px 14px;
   font-size: 16px;
-  border: 1px solid #E0E0E0;
+  border: 1px solid var(--color-border, #BFE396);
   border-radius: 6px;
-  background: #fff;
-  color: #333;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: var(--color-surface, #FFFFFF);
+  color: var(--color-text, #25476B);
+  box-shadow: 0 4px 14px rgba(37, 71, 107, 0.08);
   font-family: 'Poppins', sans-serif;
   box-sizing: border-box;
 }
@@ -187,8 +187,8 @@ $condities = get_terms([
 /* Focus */
 .mh-filter-item input:focus{
   outline: none;
-  border-color: #0a6b8d;
-  box-shadow: 0 2px 8px rgba(10, 107, 141, 0.25);
+  border-color: var(--color-secondary-soft, #559EA3);
+  box-shadow: 0 0 0 3px var(--color-focus-ring, rgba(85, 158, 163, 0.22));
 }
 
 /* ===== Custom multiselect ===== */
@@ -201,11 +201,11 @@ $condities = get_terms([
   width: 100%;
   padding: 12px 14px;
   font-size: 16px;
-  border: 1px solid #E0E0E0;
+  border: 1px solid var(--color-border, #BFE396);
   border-radius: 6px;
-  background: #fff;
-  color: #333;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  background: var(--color-surface, #FFFFFF);
+  color: var(--color-text, #25476B);
+  box-shadow: 0 4px 14px rgba(37, 71, 107, 0.08);
   font-family: 'Poppins', sans-serif;
   cursor: pointer;
   display: flex;

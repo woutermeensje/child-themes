@@ -3,6 +3,11 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+$quote_count = function_exists('mh_quote_get_count') ? (int) mh_quote_get_count() : 0;
+$logo_rel_path = '/site-logo/Modulaire-huisvesting-logo.svg';
+$logo_abs_path = get_stylesheet_directory() . $logo_rel_path;
+$logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
+
 ?>
 
 <header id="mh-header" class="mh-header" role="banner">
@@ -25,9 +30,13 @@ if (!defined('ABSPATH')) {
 
     <div class="mh-header__inner">
         <div class="mh-header__brand">
-            <?php if ( has_custom_logo() ) : ?>
-                <a href="<?php echo esc_url(home_url('/')); ?>" class="mh-header__logo-link">
-                    <?php the_custom_logo(); ?>
+            <?php if ( file_exists( $logo_abs_path ) ) : ?>
+                <a href="<?php echo esc_url(home_url('/')); ?>" class="mh-header__logo-link" aria-label="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>">
+                    <img
+                        src="<?php echo esc_url( $logo_url ); ?>"
+                        alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>"
+                        class="mh-header__logo-image"
+                    />
                 </a>
             <?php else : ?>
                 <a href="<?php echo esc_url(home_url('/')); ?>" class="mh-header__logo-link">
@@ -51,7 +60,13 @@ if (!defined('ABSPATH')) {
         <div class="mh-header__divider"></div>
 
         <div class="mh-header__cta">
-            <a href="<?php echo esc_url(home_url('/offerte-aanvragen/')); ?>" class="mh-btn mh-btn--accent">Offerte aanvragen</a>
+            <a href="<?php echo esc_url(home_url('/mijn-offerte/')); ?>" class="mh-btn mh-btn--outline mh-btn--has-badge mh-btn--nav-quote">
+                <span>Mijn offerte</span>
+                <?php if ($quote_count > 0) : ?>
+                    <span class="mh-nav-badge" aria-label="<?php echo esc_attr($quote_count); ?> producten in offerte"><?php echo esc_html($quote_count); ?></span>
+                <?php endif; ?>
+            </a>
+            <a href="<?php echo esc_url(home_url('/contact/')); ?>" class="mh-btn mh-btn--accent mh-btn--nav-contact">Contact opnemen</a>
         </div>
 
         <button class="mh-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="mh-mobile-nav">
@@ -79,7 +94,13 @@ if (!defined('ABSPATH')) {
 
         <div class="mh-mobile-nav__divider"></div>
         <div class="mh-mobile-nav__ctas">
-            <a href="<?php echo esc_url(home_url('/offerte-aanvragen/')); ?>" class="mh-btn mh-btn--accent mh-mobile-nav__cta">Offerte aanvragen</a>
+            <a href="<?php echo esc_url(home_url('/mijn-offerte/')); ?>" class="mh-btn mh-btn--outline mh-btn--has-badge mh-btn--nav-quote mh-mobile-nav__cta">
+                <span>Mijn offerte</span>
+                <?php if ($quote_count > 0) : ?>
+                    <span class="mh-nav-badge" aria-label="<?php echo esc_attr($quote_count); ?> producten in offerte"><?php echo esc_html($quote_count); ?></span>
+                <?php endif; ?>
+            </a>
+            <a href="<?php echo esc_url(home_url('/contact/')); ?>" class="mh-btn mh-btn--accent mh-btn--nav-contact mh-mobile-nav__cta">Contact opnemen</a>
         </div>
     </div>
 </div>

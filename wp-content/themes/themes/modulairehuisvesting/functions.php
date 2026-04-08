@@ -38,12 +38,30 @@ add_action('wp_enqueue_scripts', function () {
         );
     }
 
+    if (file_exists(get_stylesheet_directory() . '/css/buttons.css')) {
+        wp_enqueue_style(
+            'mh-buttons',
+            get_stylesheet_directory_uri() . '/css/buttons.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/buttons.css')
+        );
+    }
+
     if (file_exists(get_stylesheet_directory() . '/css/forms.css')) {
         wp_enqueue_style(
             'mh-forms',
             get_stylesheet_directory_uri() . '/css/forms.css',
             ['child-style'],
             filemtime(get_stylesheet_directory() . '/css/forms.css')
+        );
+    }
+
+    if (file_exists(get_stylesheet_directory() . '/css/hero-homepage.css')) {
+        wp_enqueue_style(
+            'mh-hero-homepage',
+            get_stylesheet_directory_uri() . '/css/hero-homepage.css',
+            ['child-style', 'mh-header', 'mh-buttons'],
+            filemtime(get_stylesheet_directory() . '/css/hero-homepage.css')
         );
     }
 
@@ -111,7 +129,30 @@ add_action('after_setup_theme', function () {
     ]);
     add_theme_support('woocommerce');
     add_theme_support('custom-logo');
+    add_post_type_support('page', 'excerpt');
 });
+
+function mh_render_breadcrumbs(string $nav_class = '', string $wrapper_class = ''): void {
+    $nav_class_attr = $nav_class ? ' class="' . esc_attr($nav_class) . '"' : '';
+
+    if ($wrapper_class) {
+        echo '<div class="' . esc_attr($wrapper_class) . '">';
+    }
+
+    if (function_exists('yoast_breadcrumb')) {
+        yoast_breadcrumb('<nav' . $nav_class_attr . ' aria-label="Breadcrumb">', '</nav>');
+    } else {
+        echo '<nav' . $nav_class_attr . ' aria-label="Breadcrumb">';
+        echo '<a href="' . esc_url(home_url('/')) . '">Home</a>';
+        echo '<span class="mh-breadcrumb-sep" aria-hidden="true"> / </span>';
+        echo '<span>' . esc_html(get_the_title()) . '</span>';
+        echo '</nav>';
+    }
+
+    if ($wrapper_class) {
+        echo '</div>';
+    }
+}
 
 /**
  * WooCommerce: verwijder standaard layout CSS op productpagina's

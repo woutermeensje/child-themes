@@ -85,9 +85,9 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
   right: 14px;
   z-index: 5;
 
-  background: #FFF4DD;          /* licht amber */
-  color: #7A5200;               /* warme donkere tekst */
-  border: 2px solid #F4B740;    /* goud/amber rand */
+  background: var(--color-highlight-soft, #CCDA91);
+  color: var(--color-primary, #25476B);
+  border: 2px solid var(--color-highlight, #BFE396);
 
   padding: 8px 14px;
   border-radius: 5px;
@@ -115,20 +115,21 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
   display: flex;
   gap: 16px;
   width: 100%;
-  border: 1px solid #ededed;
+  border: 1px solid var(--color-border, #BFE396);
   overflow: hidden;
   text-decoration: none;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,.15) !important;
+  box-shadow: 0 14px 34px rgba(37, 71, 107, 0.12) !important;
   margin-bottom: 24px;
   margin-top: 24px; 
   height: 325px; 
+  background: var(--color-surface, #FFFFFF);
 }
 
 /* 1/3 afbeelding links */
 .mh-unit-row-image{
   flex: 0 0 40%;
   position: relative;
-  background: #f5f5f5;
+  background: var(--color-surface-alt, #F1F8EE);
 }
 
 .mh-unit-row-image img{
@@ -146,7 +147,7 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
   flex-direction: column;
   justify-content: center;
   font-family: 'Poppins', sans-serif;
-    color: #333;
+    color: var(--color-text, #25476B);
     font-size: 15px;
 }
 
@@ -154,7 +155,7 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
     margin: 0 0 16px; /* meer ruimte onder de titel */
   line-height: 1.2;
   font-family: 'Poppins', sans-serif;
-    color: #333;
+    color: var(--color-text, #25476B);
     font-size: 24px;
     font-family: Balgin Bold; 
 }
@@ -164,7 +165,7 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
 
   line-height: 1.5;
   font-family: 'Poppins', sans-serif;
-    color: #333;
+    color: var(--color-text-soft, #39749B);
     font-size: 15px;
 }
 
@@ -174,7 +175,8 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
   border-radius: 5px;
             width: 33%; 
     margin-top: 16px;
-    background-color: #0456ABFA; 
+    background: linear-gradient(135deg, var(--color-ocean, #4188AA) 0%, var(--color-secondary, #39749B) 100%);
+    border: 1px solid var(--color-ocean, #4188AA);
     color: #fff;
     font-family: Balgin Bold; 
     font-size: 14px;
@@ -184,7 +186,7 @@ $price_note = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
 
 /* Hover effect */
 .mh-unit-row:hover{
-  border-color: #ccc;
+  border-color: var(--color-secondary-soft, #559EA3);
 }
 
 /* Mobile: onder elkaar (afbeelding boven, tekst onder) */

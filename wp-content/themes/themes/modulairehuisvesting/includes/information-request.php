@@ -372,7 +372,7 @@ function mh_information_request_shortcode( array $atts = array() ): string {
 		padding: 0 28px;
 		border: 0;
 		border-radius: 8px;
-		background: #4a3728;
+		background: var(--color-primary, #25476B);
 		color: #fff;
 		font: inherit;
 		font-size: 15px;
@@ -381,7 +381,7 @@ function mh_information_request_shortcode( array $atts = array() ): string {
 		transition: background-color .15s ease;
 	}
 	.mh-info-form__submit:hover {
-		background: #3d2d20;
+		background: var(--color-primary-hover, #325F8D);
 	}
 	@media (max-width: 767px) {
 		.mh-info-form__grid {

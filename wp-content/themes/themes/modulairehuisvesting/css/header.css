@@ -1,14 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 :root {
-  --mh-primary:    var(--color-primary, #0456AB);
-  --mh-primary-dk: #034a92;
-  --mh-accent:     var(--color-secondary, #FF8C2C);
-  --mh-accent-dk:  #e07820;
-  --mh-text:       #333333;
-  --mh-bg:         #ffffff;
-  --mh-border:     #dedede;
-  --mh-shadow:     0 2px 16px rgba(0, 0, 0, 0.08);
+  --mh-primary:    var(--color-primary, #25476B);
+  --mh-primary-dk: var(--color-primary-hover, #325F8D);
+  --mh-accent:     var(--color-secondary-soft, #559EA3);
+  --mh-accent-dk:  var(--color-secondary, #39749B);
+  --mh-text:       var(--color-text, #25476B);
+  --mh-bg:         var(--color-surface, #ffffff);
+  --mh-border:     var(--color-border, #BFE396);
+  --mh-shadow:     0 8px 28px var(--color-shadow, rgba(37, 71, 107, 0.12));
   --mh-radius:     5px;
   --mh-header-h:   68px;
   --mh-topbar-h:   36px;
@@ -76,7 +76,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.92) !important;
+  color: rgba(255, 255, 255, 0.94) !important;
   text-decoration: none !important;
 }
 
@@ -100,17 +100,39 @@
 
 .mh-header__brand {
   flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  min-height: var(--mh-header-h);
 }
 
 .mh-header__logo-link {
   display: inline-flex;
   align-items: center;
   text-decoration: none !important;
+  max-height: var(--mh-header-h);
+}
+
+.mh-header__logo-link .custom-logo-link {
+  display: inline-flex;
+  align-items: center;
+  line-height: 0;
+  max-height: var(--mh-header-h);
+  text-decoration: none !important;
+}
+
+.mh-header__logo-link .custom-logo {
+  height: calc(var(--mh-header-h) * 0.65);
+  width: auto;
+  max-width: min(260px, 24vw);
+  object-fit: contain;
+  display: block;
 }
 
 .mh-header__logo-link img {
-  height: calc(var(--mh-header-h) * 0.65);
+  max-height: calc(var(--mh-header-h) * 0.65);
   width: auto;
+  object-fit: contain;
+  display: block;
 }
 
 .mh-header__site-name {
@@ -203,7 +225,7 @@
   background: #fff;
   border: 1px solid var(--mh-border);
   border-radius: var(--mh-radius);
-  box-shadow: 0 22px 44px rgba(4, 86, 171, 0.16);
+  box-shadow: 0 22px 44px rgba(37, 71, 107, 0.16);
   opacity: 0;
   visibility: hidden;
   transform: translateY(8px);
@@ -263,47 +285,6 @@
   height: 24px;
   background: var(--mh-border);
   flex-shrink: 0;
-}
-
-/* ── CTA Buttons ── */
-.mh-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 9px 20px;
-  border-radius: var(--mh-radius);
-  border: 1.5px solid transparent;
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.5;
-  text-decoration: none !important;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background .15s ease, color .15s ease, border-color .15s ease;
-}
-
-.mh-btn--outline {
-  color: var(--mh-primary) !important;
-  border-color: var(--mh-primary);
-  background: transparent;
-}
-
-.mh-btn--outline:hover {
-  color: #fff !important;
-  background: var(--mh-primary);
-}
-
-.mh-btn--accent {
-  color: #fff !important;
-  border-color: var(--mh-primary);
-  background: var(--mh-primary);
-}
-
-.mh-btn--accent:hover {
-  color: #fff !important;
-  background: var(--mh-primary-dk);
-  border-color: var(--mh-primary-dk);
 }
 
 /* ── Hamburger ── */
