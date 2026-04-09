@@ -21908,3 +21908,698 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 [09-Apr-2026 10:41:04 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:41:04","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/?mh_added=489","referer":"http:\/\/localhost:8881\/product\/kantoor-unit-20ft\/","session_id":"1","has_session":true,"item_count":1}
 [09-Apr-2026 10:41:04 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:41:04","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/?mh_added=489","referer":"http:\/\/localhost:8881\/product\/kantoor-unit-20ft\/","session_id":"1","has_session":true,"item_count":1}
 [09-Apr-2026 10:41:04 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:41:04","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/?mh_added=489","referer":"http:\/\/localhost:8881\/product\/kantoor-unit-20ft\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:41:26 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:41:26 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:41:26","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:41:26 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:41:26","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:41:44 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:43:45 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:43:46 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:43:47 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:43:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1262, last_attempt_gmt='2026-04-09 10:43:47', last_attempt_local='2026-04-09 10:43:47'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1262, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:43:47, pending, 2026-04-09 10:43:47, 2026-04-09 10:43:47</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1262, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'Async Request')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('Async Request')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_AsyncRequest_QueueRunner.php(48): do_action('action_schedule...', 'Async Request')
+#10 /var/www/html/wp-content/plugins/woocommerce/includes/libraries/wp-async-request.php(147): ActionScheduler_AsyncRequest_QueueRunner->handle()
+#11 /var/www/html/wp-includes/class-wp-hook.php(341): WP_Async_Request->maybe_handle('')
+#12 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#13 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#14 /var/www/html/wp-admin/admin-ajax.php(192): do_action('wp_ajax_as_asyn...')
+#15 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:43:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1262, last_attempt_gmt='2026-04-09 10:43:47', last_attempt_local='2026-04-09 10:43:47' made by do_action('wp_ajax_as_async_request_queue_runner'), WP_Hook->do_action, WP_Hook->apply_filters, WP_Async_Request->maybe_handle, ActionScheduler_AsyncRequest_QueueRunner->handle, do_action('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:43:47 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:43:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1262, last_attempt_gmt='2026-04-09 10:43:47', last_attempt_local='2026-04-09 10:43:47'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:43:48 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:43:48 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:43:48' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1263, last_attempt_gmt='2026-04-09 10:43:48', last_attempt_local='2026-04-09 10:43:48'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1263, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:43:48, pending, 2026-04-09 10:43:48, 2026-04-09 10:43:48</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1263, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:43:48' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1263, last_attempt_gmt='2026-04-09 10:43:48', last_attempt_local='2026-04-09 10:43:48' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:43:48 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:43:48' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1263, last_attempt_gmt='2026-04-09 10:43:48', last_attempt_local='2026-04-09 10:43:48'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:45:46 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:45:47 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:45:47 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:45:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1264, last_attempt_gmt='2026-04-09 10:45:47', last_attempt_local='2026-04-09 10:45:47'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1264, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:45:47, pending, 2026-04-09 10:45:47, 2026-04-09 10:45:47</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1264, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'Async Request')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('Async Request')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_AsyncRequest_QueueRunner.php(48): do_action('action_schedule...', 'Async Request')
+#10 /var/www/html/wp-content/plugins/woocommerce/includes/libraries/wp-async-request.php(147): ActionScheduler_AsyncRequest_QueueRunner->handle()
+#11 /var/www/html/wp-includes/class-wp-hook.php(341): WP_Async_Request->maybe_handle('')
+#12 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#13 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#14 /var/www/html/wp-admin/admin-ajax.php(192): do_action('wp_ajax_as_asyn...')
+#15 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:45:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1264, last_attempt_gmt='2026-04-09 10:45:47', last_attempt_local='2026-04-09 10:45:47' made by do_action('wp_ajax_as_async_request_queue_runner'), WP_Hook->do_action, WP_Hook->apply_filters, WP_Async_Request->maybe_handle, ActionScheduler_AsyncRequest_QueueRunner->handle, do_action('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:45:47 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:45:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1264, last_attempt_gmt='2026-04-09 10:45:47', last_attempt_local='2026-04-09 10:45:47'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:45:47 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:45:47 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:45:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1265, last_attempt_gmt='2026-04-09 10:45:47', last_attempt_local='2026-04-09 10:45:47'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1265, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:45:47, pending, 2026-04-09 10:45:47, 2026-04-09 10:45:47</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1265, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:45:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1265, last_attempt_gmt='2026-04-09 10:45:47', last_attempt_local='2026-04-09 10:45:47' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:45:47 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:45:47' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1265, last_attempt_gmt='2026-04-09 10:45:47', last_attempt_local='2026-04-09 10:45:47'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:46:39 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:46:39 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:46:39","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:46:39 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:46:39","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:46:43 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:46:43 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:46:43","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/mijn-offerte\/","referer":"http:\/\/localhost:8881\/product\/kantoor-unit-20ft\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:46:43 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:46:43","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/mijn-offerte\/","referer":"http:\/\/localhost:8881\/product\/kantoor-unit-20ft\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:46:47 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:46:47 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:46:47","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/offerte-aanvragen\/","referer":"http:\/\/localhost:8881\/mijn-offerte\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:46:48 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:46:48 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:46:48' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1266, last_attempt_gmt='2026-04-09 10:46:48', last_attempt_local='2026-04-09 10:46:48'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1266, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:46:48, pending, 2026-04-09 10:46:48, 2026-04-09 10:46:48</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1266, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:46:48' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1266, last_attempt_gmt='2026-04-09 10:46:48', last_attempt_local='2026-04-09 10:46:48' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:46:48 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:46:48' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1266, last_attempt_gmt='2026-04-09 10:46:48', last_attempt_local='2026-04-09 10:46:48'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:46:52 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:46:52 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:46:52","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/","referer":"http:\/\/localhost:8881\/offerte-aanvragen\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:46:53 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:46:54 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:46:54","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/producten\/","referer":"http:\/\/localhost:8881\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:47:09 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:47:10 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:47:10 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:47:10' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1267, last_attempt_gmt='2026-04-09 10:47:10', last_attempt_local='2026-04-09 10:47:10'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1267, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:47:10, pending, 2026-04-09 10:47:10, 2026-04-09 10:47:10</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1267, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'Async Request')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('Async Request')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_AsyncRequest_QueueRunner.php(48): do_action('action_schedule...', 'Async Request')
+#10 /var/www/html/wp-content/plugins/woocommerce/includes/libraries/wp-async-request.php(147): ActionScheduler_AsyncRequest_QueueRunner->handle()
+#11 /var/www/html/wp-includes/class-wp-hook.php(341): WP_Async_Request->maybe_handle('')
+#12 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#13 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#14 /var/www/html/wp-admin/admin-ajax.php(192): do_action('wp_ajax_as_asyn...')
+#15 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:47:10' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1267, last_attempt_gmt='2026-04-09 10:47:10', last_attempt_local='2026-04-09 10:47:10' made by do_action('wp_ajax_as_async_request_queue_runner'), WP_Hook->do_action, WP_Hook->apply_filters, WP_Async_Request->maybe_handle, ActionScheduler_AsyncRequest_QueueRunner->handle, do_action('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:47:10 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:47:10' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1267, last_attempt_gmt='2026-04-09 10:47:10', last_attempt_local='2026-04-09 10:47:10'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:48:41 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:48:41 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:48:41","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/?mh_added=489","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:48:41 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:48:41","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/?mh_added=489","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:48:41 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:48:41","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/?mh_added=489","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:48:42 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:48:42 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:48:42' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1268, last_attempt_gmt='2026-04-09 10:48:42', last_attempt_local='2026-04-09 10:48:42'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1268, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:48:42, pending, 2026-04-09 10:48:42, 2026-04-09 10:48:42</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1268, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:48:42' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1268, last_attempt_gmt='2026-04-09 10:48:42', last_attempt_local='2026-04-09 10:48:42' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:48:42 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:48:42' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1268, last_attempt_gmt='2026-04-09 10:48:42', last_attempt_local='2026-04-09 10:48:42'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:49:10 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:49:11 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:49:11 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:49:11' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1269, last_attempt_gmt='2026-04-09 10:49:11', last_attempt_local='2026-04-09 10:49:11'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1269, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:49:11, pending, 2026-04-09 10:49:11, 2026-04-09 10:49:11</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1269, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'Async Request')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('Async Request')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_AsyncRequest_QueueRunner.php(48): do_action('action_schedule...', 'Async Request')
+#10 /var/www/html/wp-content/plugins/woocommerce/includes/libraries/wp-async-request.php(147): ActionScheduler_AsyncRequest_QueueRunner->handle()
+#11 /var/www/html/wp-includes/class-wp-hook.php(341): WP_Async_Request->maybe_handle('')
+#12 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#13 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#14 /var/www/html/wp-admin/admin-ajax.php(192): do_action('wp_ajax_as_asyn...')
+#15 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:49:11' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1269, last_attempt_gmt='2026-04-09 10:49:11', last_attempt_local='2026-04-09 10:49:11' made by do_action('wp_ajax_as_async_request_queue_runner'), WP_Hook->do_action, WP_Hook->apply_filters, WP_Async_Request->maybe_handle, ActionScheduler_AsyncRequest_QueueRunner->handle, do_action('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:49:11 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:49:11' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1269, last_attempt_gmt='2026-04-09 10:49:11', last_attempt_local='2026-04-09 10:49:11'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:51:11 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:51:13 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:51:13 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:51:13' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1270, last_attempt_gmt='2026-04-09 10:51:13', last_attempt_local='2026-04-09 10:51:13'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1270, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:51:13, pending, 2026-04-09 10:51:13, 2026-04-09 10:51:13</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1270, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'Async Request')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('Async Request')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_AsyncRequest_QueueRunner.php(48): do_action('action_schedule...', 'Async Request')
+#10 /var/www/html/wp-content/plugins/woocommerce/includes/libraries/wp-async-request.php(147): ActionScheduler_AsyncRequest_QueueRunner->handle()
+#11 /var/www/html/wp-includes/class-wp-hook.php(341): WP_Async_Request->maybe_handle('')
+#12 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#13 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#14 /var/www/html/wp-admin/admin-ajax.php(192): do_action('wp_ajax_as_asyn...')
+#15 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:51:13' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1270, last_attempt_gmt='2026-04-09 10:51:13', last_attempt_local='2026-04-09 10:51:13' made by do_action('wp_ajax_as_async_request_queue_runner'), WP_Hook->do_action, WP_Hook->apply_filters, WP_Async_Request->maybe_handle, ActionScheduler_AsyncRequest_QueueRunner->handle, do_action('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:51:13 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:51:13' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1270, last_attempt_gmt='2026-04-09 10:51:13', last_attempt_local='2026-04-09 10:51:13'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:51:14 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:51:14 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:51:14' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1271, last_attempt_gmt='2026-04-09 10:51:14', last_attempt_local='2026-04-09 10:51:14'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1271, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:51:14, pending, 2026-04-09 10:51:14, 2026-04-09 10:51:14</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1271, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:51:14' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1271, last_attempt_gmt='2026-04-09 10:51:14', last_attempt_local='2026-04-09 10:51:14' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:51:14 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:51:14' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1271, last_attempt_gmt='2026-04-09 10:51:14', last_attempt_local='2026-04-09 10:51:14'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:53:12 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:53:13 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:53:13 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:53:13' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1272, last_attempt_gmt='2026-04-09 10:53:13', last_attempt_local='2026-04-09 10:53:13'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1272, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:53:13, pending, 2026-04-09 10:53:13, 2026-04-09 10:53:13</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1272, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'Async Request')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('Async Request')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_AsyncRequest_QueueRunner.php(48): do_action('action_schedule...', 'Async Request')
+#10 /var/www/html/wp-content/plugins/woocommerce/includes/libraries/wp-async-request.php(147): ActionScheduler_AsyncRequest_QueueRunner->handle()
+#11 /var/www/html/wp-includes/class-wp-hook.php(341): WP_Async_Request->maybe_handle('')
+#12 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#13 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#14 /var/www/html/wp-admin/admin-ajax.php(192): do_action('wp_ajax_as_asyn...')
+#15 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:53:13' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1272, last_attempt_gmt='2026-04-09 10:53:13', last_attempt_local='2026-04-09 10:53:13' made by do_action('wp_ajax_as_async_request_queue_runner'), WP_Hook->do_action, WP_Hook->apply_filters, WP_Async_Request->maybe_handle, ActionScheduler_AsyncRequest_QueueRunner->handle, do_action('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:53:13 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:53:13' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1272, last_attempt_gmt='2026-04-09 10:53:13', last_attempt_local='2026-04-09 10:53:13'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:53:14 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:53:14 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:53:14' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1273, last_attempt_gmt='2026-04-09 10:53:14', last_attempt_local='2026-04-09 10:53:14'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1273, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:53:14, pending, 2026-04-09 10:53:14, 2026-04-09 10:53:14</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1273, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:53:14' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1273, last_attempt_gmt='2026-04-09 10:53:14', last_attempt_local='2026-04-09 10:53:14' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:53:14 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:53:14' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1273, last_attempt_gmt='2026-04-09 10:53:14', last_attempt_local='2026-04-09 10:53:14'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:53:39 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:53:39 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:53:39","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/?mh_added=489","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:53:39 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:53:39","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/?mh_added=489","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:53:39 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:53:39","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/?mh_added=489","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:53:47 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:53:47 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:53:47","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:53:47 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:53:47","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/product\/kantoor-unit-20ft\/","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:53:51 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:53:51 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:53:51","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/mijn-offerte\/","referer":"http:\/\/localhost:8881\/product\/kantoor-unit-20ft\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:53:51 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:53:51","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/mijn-offerte\/","referer":"http:\/\/localhost:8881\/product\/kantoor-unit-20ft\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:54:10 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:54:10 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:54:10","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/producten\/","referer":"http:\/\/localhost:8881\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:54:12 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:54:13 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:54:13 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:54:13' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1274, last_attempt_gmt='2026-04-09 10:54:13', last_attempt_local='2026-04-09 10:54:13'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1274, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:54:13, pending, 2026-04-09 10:54:13, 2026-04-09 10:54:13</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1274, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:54:13' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1274, last_attempt_gmt='2026-04-09 10:54:13', last_attempt_local='2026-04-09 10:54:13' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:54:13 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:54:13' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1274, last_attempt_gmt='2026-04-09 10:54:13', last_attempt_local='2026-04-09 10:54:13'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:54:17 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:54:17 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 10:54:17","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/","referer":"http:\/\/localhost:8881\/producten\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 10:55:24 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:55:28 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:55:29 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:55:29 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:55:29' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1275, last_attempt_gmt='2026-04-09 10:55:29', last_attempt_local='2026-04-09 10:55:29'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1275, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:55:29, pending, 2026-04-09 10:55:29, 2026-04-09 10:55:29</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1275, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'Async Request')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('Async Request')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_AsyncRequest_QueueRunner.php(48): do_action('action_schedule...', 'Async Request')
+#10 /var/www/html/wp-content/plugins/woocommerce/includes/libraries/wp-async-request.php(147): ActionScheduler_AsyncRequest_QueueRunner->handle()
+#11 /var/www/html/wp-includes/class-wp-hook.php(341): WP_Async_Request->maybe_handle('')
+#12 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#13 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#14 /var/www/html/wp-admin/admin-ajax.php(192): do_action('wp_ajax_as_asyn...')
+#15 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:55:29' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1275, last_attempt_gmt='2026-04-09 10:55:29', last_attempt_local='2026-04-09 10:55:29' made by do_action('wp_ajax_as_async_request_queue_runner'), WP_Hook->do_action, WP_Hook->apply_filters, WP_Async_Request->maybe_handle, ActionScheduler_AsyncRequest_QueueRunner->handle, do_action('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:55:29 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:55:29' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1275, last_attempt_gmt='2026-04-09 10:55:29', last_attempt_local='2026-04-09 10:55:29'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 10:55:30 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 10:55:30 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:55:30' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1276, last_attempt_gmt='2026-04-09 10:55:30', last_attempt_local='2026-04-09 10:55:30'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1276, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 10:55:30, pending, 2026-04-09 10:55:30, 2026-04-09 10:55:30</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1276, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:55:30' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1276, last_attempt_gmt='2026-04-09 10:55:30', last_attempt_local='2026-04-09 10:55:30' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 10:55:30 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 10:55:30' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1276, last_attempt_gmt='2026-04-09 10:55:30', last_attempt_local='2026-04-09 10:55:30'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 12:20:16 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 12:20:16 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 12:20:16","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/mijn-offerte\/","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 12:20:17 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 12:20:17","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/mijn-offerte\/","referer":"","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 12:20:17 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 12:20:18 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 12:20:18' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1277, last_attempt_gmt='2026-04-09 12:20:18', last_attempt_local='2026-04-09 12:20:18'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1277, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 12:20:18, pending, 2026-04-09 12:20:18, 2026-04-09 12:20:18</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1277, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 12:20:18' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1277, last_attempt_gmt='2026-04-09 12:20:18', last_attempt_local='2026-04-09 12:20:18' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 12:20:18 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 12:20:18' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1277, last_attempt_gmt='2026-04-09 12:20:18', last_attempt_local='2026-04-09 12:20:18'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019
+[09-Apr-2026 12:54:22 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 12:54:22 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-09 12:54:22","event":"ensure_session_ready","host":"localhost:8881","request_uri":"\/","referer":"http:\/\/localhost:8881\/mijn-offerte\/","session_id":"1","has_session":true,"item_count":1}
+[09-Apr-2026 12:54:23 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[09-Apr-2026 12:54:23 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 12:54:23' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1278, last_attempt_gmt='2026-04-09 12:54:23', last_attempt_local='2026-04-09 12:54:23'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1278, last_attempt_gmt=:param2 , last_attempt_local=:param3  | parameters: 2026-04-09 12:54:23, pending, 2026-04-09 12:54:23, 2026-04-09 12:54:23</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "t1": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(1014): WP_SQLite_DB->query('UPDATE wp_actio...')
+#2 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php(861): ActionScheduler_DBStore->claim_actions(1278, 25, NULL, '', '')
+#3 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_HybridStore.php(253): ActionScheduler_DBStore->stake_claim(25, NULL, Array, '')
+#4 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(179): ActionScheduler_HybridStore->stake_claim(25)
+#5 /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/ActionScheduler_QueueRunner.php(158): ActionScheduler_QueueRunner->do_batch(25, 'WP Cron')
+#6 /var/www/html/wp-includes/class-wp-hook.php(341): ActionScheduler_QueueRunner->run('WP Cron')
+#7 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#8 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#9 /var/www/html/wp-cron.php(191): do_action_ref_array('action_schedule...', Array)
+#10 {main}</pre>
+ for query UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 12:54:23' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1278, last_attempt_gmt='2026-04-09 12:54:23', last_attempt_local='2026-04-09 12:54:23' made by do_action_ref_array('action_scheduler_run_queue'), WP_Hook->do_action, WP_Hook->apply_filters, ActionScheduler_QueueRunner->run, ActionScheduler_QueueRunner->do_batch, ActionScheduler_HybridStore->stake_claim, ActionScheduler_DBStore->stake_claim, ActionScheduler_DBStore->claim_actions, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[09-Apr-2026 12:54:23 UTC] PHP Fatal error:  Uncaught RuntimeException: Unable to claim actions. Database error: <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt <= '2026-04-09 12:54:23' AND status='pending' ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_id = t2.action_id SET claim_id=1278, last_attempt_gmt='2026-04-09 12:54:23', last_attempt_local='2026-04-09 12:54:23'</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_actionscheduler_actions t1 JOIN ( SELECT action_id from wp_actionscheduler_actions WHERE claim_id = 0 AND scheduled_date_gmt &lt;= :param0  AND status=:param1  ORDER BY priority ASC, attempts ASC, scheduled_date_gmt ASC, action_id ASC LIMIT 25 FOR UPDATE ) t2 ON t1.action_ in /var/www/html/wp-content/plugins/woocommerce/packages/action-scheduler/classes/data-stores/ActionScheduler_DBStore.php on line 1019

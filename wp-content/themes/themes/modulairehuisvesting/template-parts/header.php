@@ -66,7 +66,7 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
                     <span class="mh-nav-badge" aria-label="<?php echo esc_attr($quote_count); ?> producten in offerte"><?php echo esc_html($quote_count); ?></span>
                 <?php endif; ?>
             </a>
-            <a href="<?php echo esc_url(home_url('/contact/')); ?>" class="mh-btn mh-btn--accent mh-btn--nav-contact">Contact opnemen</a>
+            <a href="<?php echo esc_url(home_url('/offerte-aanvragen/')); ?>" class="mh-btn mh-btn--accent mh-btn--nav-contact">Informatie aanvragen</a>
         </div>
 
         <button class="mh-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="mh-mobile-nav">
@@ -100,7 +100,7 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
                     <span class="mh-nav-badge" aria-label="<?php echo esc_attr($quote_count); ?> producten in offerte"><?php echo esc_html($quote_count); ?></span>
                 <?php endif; ?>
             </a>
-            <a href="<?php echo esc_url(home_url('/contact/')); ?>" class="mh-btn mh-btn--accent mh-btn--nav-contact mh-mobile-nav__cta">Contact opnemen</a>
+            <a href="<?php echo esc_url(home_url('/offerte-aanvragen/')); ?>" class="mh-btn mh-btn--accent mh-btn--nav-contact mh-mobile-nav__cta">Informatie aanvragen</a>
         </div>
     </div>
 </div>

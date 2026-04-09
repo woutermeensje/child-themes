@@ -339,8 +339,8 @@ h1.mh-page-title {
 }
 
 .mh-color-picker__swatch {
-	width: 66px;
-	height: 66px;
+	width: 50px;
+	height: 50px;
 	border-radius: 999px;
 	border: 2px solid #cfcfcf;
 	box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
@@ -351,7 +351,7 @@ h1.mh-page-title {
 .mh-color-picker__swatch::before {
 	content: "";
 	position: absolute;
-	inset: 8px;
+	inset: 6px;
 	border-radius: inherit;
 	background: var(--mh-color-swatch, #fff);
 }
