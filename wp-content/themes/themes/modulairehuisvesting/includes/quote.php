@@ -44,6 +44,43 @@ function mh_quote_get_supported_item_types(): array {
 	return array( 'product', 'mh_unit' );
 }
 
+function mh_quote_get_color_options(): array {
+	return array(
+		'white' => array(
+			'label'       => 'Wit',
+			'description' => 'RAL 9003 / 9010',
+			'value'       => 'Wit (RAL 9003 / 9010)',
+			'swatches'    => array( '#F7F7F4', '#FFFFFF' ),
+		),
+		'gray'  => array(
+			'label'       => 'Grijs',
+			'description' => 'RAL 7035, 7040, 7016',
+			'value'       => 'Grijs (RAL 7035, 7040, 7016)',
+			'swatches'    => array( '#D7D9D4', '#A7ADB4', '#383E42' ),
+		),
+		'blue'  => array(
+			'label'       => 'Blauw',
+			'description' => 'RAL 5010, 5005',
+			'value'       => 'Blauw (RAL 5010, 5005)',
+			'swatches'    => array( '#004C97', '#0072CE' ),
+		),
+	);
+}
+
+function mh_quote_normalize_color_key( string $color_key ): string {
+	$color_key = sanitize_key( $color_key );
+	$options   = mh_quote_get_color_options();
+
+	return isset( $options[ $color_key ] ) ? $color_key : 'white';
+}
+
+function mh_quote_get_color_data( string $color_key ): array {
+	$options   = mh_quote_get_color_options();
+	$color_key = mh_quote_normalize_color_key( $color_key );
+
+	return $options[ $color_key ];
+}
+
 function mh_quote_resolve_item_type( int $item_id, array $item = array() ): string {
 	$stored_type = isset( $item['item_type'] ) ? sanitize_key( (string) $item['item_type'] ) : '';
 	if ( in_array( $stored_type, mh_quote_get_supported_item_types(), true ) ) {
@@ -65,6 +102,8 @@ function mh_quote_resolve_item_type( int $item_id, array $item = array() ): stri
 function mh_quote_get_item_snapshot_data( int $item_id, array $item = array() ): ?array {
 	$item_type = mh_quote_resolve_item_type( $item_id, $item );
 	$quantity  = isset( $item['quantity'] ) ? max( 1, (int) $item['quantity'] ) : 1;
+	$color_key = isset( $item['color'] ) ? mh_quote_normalize_color_key( (string) $item['color'] ) : 'white';
+	$color     = mh_quote_get_color_data( $color_key );
 
 	if ( 'product' === $item_type && function_exists( 'wc_get_product' ) ) {
 		$product = wc_get_product( $item_id );
@@ -72,15 +111,17 @@ function mh_quote_get_item_snapshot_data( int $item_id, array $item = array() ):
 			return null;
 		}
 
-		return array(
-			'product_id' => $item_id,
-			'item_type'  => 'product',
-			'name'       => $product->get_name(),
-			'quantity'   => $quantity,
-			'permalink'  => get_permalink( $item_id ),
-			'sku'        => $product->get_sku(),
-		);
-	}
+			return array(
+				'product_id' => $item_id,
+				'item_type'  => 'product',
+				'name'       => $product->get_name(),
+				'quantity'   => $quantity,
+				'permalink'  => get_permalink( $item_id ),
+				'sku'        => $product->get_sku(),
+				'color'      => $color_key,
+				'color_label'=> $color['value'],
+			);
+		}
 
 	if ( 'mh_unit' === $item_type ) {
 		$post = get_post( $item_id );
@@ -88,15 +129,17 @@ function mh_quote_get_item_snapshot_data( int $item_id, array $item = array() ):
 			return null;
 		}
 
-		return array(
-			'product_id' => $item_id,
-			'item_type'  => 'mh_unit',
-			'name'       => get_the_title( $item_id ),
-			'quantity'   => $quantity,
-			'permalink'  => get_permalink( $item_id ),
-			'sku'        => 'Unit',
-		);
-	}
+			return array(
+				'product_id' => $item_id,
+				'item_type'  => 'mh_unit',
+				'name'       => get_the_title( $item_id ),
+				'quantity'   => $quantity,
+				'permalink'  => get_permalink( $item_id ),
+				'sku'        => 'Unit',
+				'color'      => $color_key,
+				'color_label'=> $color['value'],
+			);
+		}
 
 	return null;
 }
@@ -140,6 +183,11 @@ function mh_quote_get_item_display_data( int $item_id, array $item = array() ): 
 		}
 
 		$meta = implode( ' • ', array_filter( array_unique( $meta_parts ) ) );
+	}
+
+	$color_label = isset( $snapshot['color_label'] ) ? (string) $snapshot['color_label'] : '';
+	if ( $color_label ) {
+		$meta = $meta ? $meta . ' • ' . $color_label : $color_label;
 	}
 
 	$snapshot['thumb_id'] = $thumb_id;
@@ -411,14 +459,19 @@ function mh_quote_build_email_html( array $request_data ): string {
 	$items   = isset( $request_data['items'] ) && is_array( $request_data['items'] ) ? $request_data['items'] : array();
 
 	$item_rows = '';
-	foreach ( $items as $item ) {
-		$item_name = esc_html( $item['name'] ?? '' );
-		$item_qty  = esc_html( (string) ( $item['quantity'] ?? 1 ) );
-		$item_link = ! empty( $item['permalink'] ) ? esc_url( $item['permalink'] ) : '';
+		foreach ( $items as $item ) {
+			$item_name = esc_html( $item['name'] ?? '' );
+			$item_qty  = esc_html( (string) ( $item['quantity'] ?? 1 ) );
+			$item_link = ! empty( $item['permalink'] ) ? esc_url( $item['permalink'] ) : '';
+			$item_color = ! empty( $item['color_label'] ) ? esc_html( (string) $item['color_label'] ) : '';
 
-		$item_rows .= '<tr>';
-		$item_rows .= '<td style="padding:14px 16px;border-bottom:1px solid #e7e2d7;font-size:14px;color:#1f2a24;font-weight:600;">' . $item_name . '</td>';
-		$item_rows .= '<td style="padding:14px 16px;border-bottom:1px solid #e7e2d7;font-size:14px;color:#1f2a24;text-align:center;">' . $item_qty . '</td>';
+			$item_rows .= '<tr>';
+			$item_rows .= '<td style="padding:14px 16px;border-bottom:1px solid #e7e2d7;font-size:14px;color:#1f2a24;font-weight:600;">' . $item_name;
+			if ( $item_color ) {
+				$item_rows .= '<div style="margin-top:4px;font-size:12px;font-weight:500;color:#68736d;">Kleur: ' . $item_color . '</div>';
+			}
+			$item_rows .= '</td>';
+			$item_rows .= '<td style="padding:14px 16px;border-bottom:1px solid #e7e2d7;font-size:14px;color:#1f2a24;text-align:center;">' . $item_qty . '</td>';
 		$item_rows .= '<td style="padding:14px 16px;border-bottom:1px solid #e7e2d7;font-size:14px;text-align:right;">';
 		if ( $item_link ) {
 			$item_rows .= '<a href="' . $item_link . '" style="color:#25476B;text-decoration:none;font-weight:600;">Bekijk product</a>';
@@ -640,24 +693,26 @@ function mh_render_quote_request_meta_box( WP_Post $post ) {
 				<tr>
 					<th>Product</th>
 					<th>Aantal</th>
-					<th>SKU</th>
-					<th>Link</th>
-				</tr>
-			</thead>
-			<tbody>
-				<?php if ( empty( $items ) ) : ?>
-					<tr>
-						<td colspan="4">Geen producten opgeslagen.</td>
+						<th>SKU</th>
+						<th>Kleur</th>
+						<th>Link</th>
 					</tr>
-				<?php else : ?>
-					<?php foreach ( $items as $item ) : ?>
+				</thead>
+				<tbody>
+					<?php if ( empty( $items ) ) : ?>
 						<tr>
-							<td><?php echo esc_html( $item['name'] ?? '' ); ?></td>
-							<td><?php echo esc_html( $item['quantity'] ?? 1 ); ?></td>
-							<td><?php echo esc_html( $item['sku'] ?? '-' ); ?></td>
-							<td>
-								<?php if ( ! empty( $item['permalink'] ) ) : ?>
-									<a href="<?php echo esc_url( $item['permalink'] ); ?>" target="_blank" rel="noopener noreferrer">Bekijk product</a>
+							<td colspan="5">Geen producten opgeslagen.</td>
+						</tr>
+					<?php else : ?>
+						<?php foreach ( $items as $item ) : ?>
+							<tr>
+								<td><?php echo esc_html( $item['name'] ?? '' ); ?></td>
+								<td><?php echo esc_html( $item['quantity'] ?? 1 ); ?></td>
+								<td><?php echo esc_html( $item['sku'] ?? '-' ); ?></td>
+								<td><?php echo esc_html( $item['color_label'] ?? '-' ); ?></td>
+								<td>
+									<?php if ( ! empty( $item['permalink'] ) ) : ?>
+										<a href="<?php echo esc_url( $item['permalink'] ); ?>" target="_blank" rel="noopener noreferrer">Bekijk product</a>
 								<?php else : ?>
 									-
 								<?php endif; ?>
@@ -937,21 +992,24 @@ function mh_quote_get_count() {
 	return $count;
 }
 
-function mh_quote_add_item( $product_id, $quantity = 1, $variation_id = 0, $variation_data = array(), $item_type = '' ) {
+function mh_quote_add_item( $product_id, $quantity = 1, $variation_id = 0, $variation_data = array(), $item_type = '', $extra_data = array() ) {
 	$items      = mh_quote_get_items();
 	$product_id = (int) $product_id;
 	$item_type  = sanitize_key( (string) $item_type );
+	$color_key  = isset( $extra_data['color'] ) ? mh_quote_normalize_color_key( (string) $extra_data['color'] ) : 'white';
 	if ( isset( $items[ $product_id ] ) ) {
 		$items[ $product_id ]['quantity'] = max( 1, (int) $items[ $product_id ]['quantity'] + (int) $quantity );
 		if ( $item_type ) {
 			$items[ $product_id ]['item_type'] = $item_type;
 		}
+		$items[ $product_id ]['color'] = $color_key;
 	} else {
 		$items[ $product_id ] = array(
 			'quantity'       => max( 1, (int) $quantity ),
 			'variation_id'   => (int) $variation_id,
 			'variation_data' => (array) $variation_data,
 			'item_type'      => $item_type,
+			'color'          => $color_key,
 		);
 	}
 	mh_quote_set_items( $items );
@@ -959,12 +1017,13 @@ function mh_quote_add_item( $product_id, $quantity = 1, $variation_id = 0, $vari
 		'item_added',
 		array(
 			'product_id'   => $product_id,
-			'quantity'     => (int) $quantity,
-			'variation_id' => (int) $variation_id,
-			'item_type'    => $item_type,
-			'items_keys'   => array_map( 'intval', array_keys( $items ) ),
-		)
-	);
+				'quantity'     => (int) $quantity,
+				'variation_id' => (int) $variation_id,
+				'item_type'    => $item_type,
+				'color'        => $color_key,
+				'items_keys'   => array_map( 'intval', array_keys( $items ) ),
+			)
+		);
 }
 
 function mh_quote_get_page_url() {
@@ -1040,12 +1099,13 @@ function mh_quote_handle_add() {
 	$quantity     = isset( $_POST['quantity'] ) ? max( 1, (int) $_POST['quantity'] ) : 1;
 	$variation_id = isset( $_POST['variation_id'] ) ? (int) $_POST['variation_id'] : 0;
 	$item_type    = isset( $_POST['item_type'] ) ? sanitize_key( wp_unslash( $_POST['item_type'] ) ) : '';
+	$color_key    = isset( $_POST['mh_color'] ) ? mh_quote_normalize_color_key( (string) wp_unslash( $_POST['mh_color'] ) ) : 'white';
 	$item_type    = mh_quote_resolve_item_type( $product_id, array( 'item_type' => $item_type ) );
 	if ( $product_id < 1 || '' === $item_type ) {
 		mh_quote_log( 'add_rejected_invalid_product' );
 		return;
 	}
-	mh_quote_add_item( $product_id, $quantity, $variation_id, array(), $item_type );
+	mh_quote_add_item( $product_id, $quantity, $variation_id, array(), $item_type, array( 'color' => $color_key ) );
 	$redirect = add_query_arg( 'mh_added', $product_id, wp_get_referer() ?: get_permalink( $product_id ) );
 	mh_quote_log(
 		'add_redirect',
@@ -1118,6 +1178,9 @@ function mh_quote_handle_submit() {
 	$body .= "\n--- Gevraagde producten ---\n\n";
 	foreach ( $item_data as $item ) {
 		$body .= '- ' . $item['name'] . ' (aantal: ' . $item['quantity'] . ")\n";
+		if ( ! empty( $item['color_label'] ) ) {
+			$body .= '  Kleur: ' . $item['color_label'] . "\n";
+		}
 		$body .= '  ' . $item['permalink'] . "\n\n";
 	}
 
