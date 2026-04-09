@@ -26,6 +26,12 @@ $image_ids = array_filter( array_merge(
 	gap: 40px;
 }
 
+.single-product .woocommerce-breadcrumb {
+	max-width: 1200px;
+	margin: 32px auto 0;
+	padding-top: 8px;
+}
+
 .mh-col-left {
 	border: 1px solid #DEDEDE;
 	border-radius: 5px;
@@ -55,14 +61,18 @@ $image_ids = array_filter( array_merge(
 	overflow: hidden;
 	border-radius: 5px;
 	background: #fff;
+	line-height: 0;
 }
 
 .mh-gallery-preview img {
 	width: 100%;
-	height: 500px;
+	height: auto;
+	max-height: 500px;
 	object-fit: contain;
-	object-position: center;
+	object-position: center top;
 	display: none;
+	vertical-align: top;
+	margin: 0 auto;
 }
 
 .mh-gallery-preview img.is-active {
@@ -151,7 +161,7 @@ h1.mh-page-title {
 
 /* Gerelateerde producten */
 .mh-related {
-	background: #FBFAF8 !important;
+	background: transparent !important;
 	border: none !important;
 	box-shadow: none !important;
 	padding: 0 !important;
@@ -171,6 +181,7 @@ h1.mh-page-title {
 	gap: 0 !important;
 	text-decoration: none !important;
 	color: #222 !important;
+	background: transparent !important;
 	border: 1px solid #DEDEDE;
 	border-radius: 5px;
 	overflow: hidden;
@@ -517,11 +528,12 @@ h1.mh-page-title {
 	}
 
 	.mh-gallery-preview {
-		padding: 12px;
+		padding: 0;
 	}
 
 	.mh-gallery-preview img {
-		height: 380px;
+		height: auto;
+		max-height: 380px;
 		max-width: 100%;
 	}
 
@@ -580,11 +592,12 @@ h1.mh-page-title {
 	}
 
 	.mh-gallery-preview {
-		padding: 10px;
+		padding: 0;
 	}
 
 	.mh-gallery-preview img {
-		height: 280px;
+		height: auto;
+		max-height: 280px;
 	}
 
 	.mh-preview-arrow {
