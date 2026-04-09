@@ -18,6 +18,15 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
     wp_enqueue_style('lf-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
     wp_enqueue_style('lf-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
+
+    if (file_exists(get_stylesheet_directory() . '/css/hero-homepage.css')) {
+        wp_enqueue_style(
+            'lf-hero-homepage',
+            get_stylesheet_directory_uri() . '/css/hero-homepage.css',
+            ['child-style', 'lf-header'],
+            filemtime(get_stylesheet_directory() . '/css/hero-homepage.css')
+        );
+    }
 });
 
 
@@ -67,6 +76,8 @@ add_action('after_setup_theme', function() {
         'primary_nav' => 'Primaire navigatie',
         'footer_nav'  => 'Footer navigatie',
     ]);
+
+    add_post_type_support('page', 'excerpt');
 });
 
 // =========================================================
@@ -85,3 +96,25 @@ add_shortcode('lf_header', function() {
 add_filter('wpseo_breadcrumb_separator', function($separator) {
     return ' / ';
 });
+
+function lf_render_breadcrumbs(string $nav_class = '', string $wrapper_class = ''): void {
+    $nav_class_attr = $nav_class ? ' class="' . esc_attr($nav_class) . '"' : '';
+
+    if ($wrapper_class) {
+        echo '<div class="' . esc_attr($wrapper_class) . '">';
+    }
+
+    if (function_exists('yoast_breadcrumb')) {
+        yoast_breadcrumb('<nav' . $nav_class_attr . ' aria-label="Breadcrumb">', '</nav>');
+    } else {
+        echo '<nav' . $nav_class_attr . ' aria-label="Breadcrumb">';
+        echo '<a href="' . esc_url(home_url('/')) . '">Home</a>';
+        echo '<span class="lf-breadcrumb-sep" aria-hidden="true"> / </span>';
+        echo '<span>' . esc_html(get_the_title()) . '</span>';
+        echo '</nav>';
+    }
+
+    if ($wrapper_class) {
+        echo '</div>';
+    }
+}

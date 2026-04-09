@@ -1,0 +1,253 @@
+/* Homepage hero template */
+
+.welcome-v2__hero {
+  position: relative;
+  height: 500px;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+}
+
+.welcome-v2__hero-left {
+  background: var(--color-primary);
+  color: #fff;
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  width: min(64%, 980px);
+  clip-path: polygon(0 0, 85% 0, 70% 100%, 0 100%);
+}
+
+.welcome-v2__hero-content {
+  width: min(560px, calc(100% - 150px));
+  margin: 0 auto 0 clamp(20px, 4vw, 72px);
+  height: 100%;
+  display: grid;
+  align-content: center;
+  gap: 14px;
+}
+
+.welcome-v2__hero-copy {
+  display: grid;
+  gap: 14px;
+}
+
+.welcome-v2__hero--lansingerland-fit .welcome-v2__hero-content {
+  align-content: stretch;
+  grid-template-rows: 80fr 20fr;
+  gap: 0;
+  padding: 0;
+}
+
+.welcome-v2__hero--lansingerland-fit .welcome-v2__hero-left {
+  background: linear-gradient(
+    180deg,
+    var(--color-secondary) 0%,
+    var(--color-secondary) 80%,
+    #ffffff 80%,
+    #ffffff 100%
+  );
+}
+
+.welcome-v2__hero--lansingerland-fit .welcome-v2__hero-copy {
+  align-content: center;
+  padding: 40px 0 24px;
+}
+
+.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs {
+  margin-bottom: 10px;
+}
+
+.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs,
+.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs a,
+.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs span {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-family: Poppins, sans-serif;
+  font-size: 13px;
+  text-decoration: none !important;
+}
+
+.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs a:hover {
+  color: #fff !important;
+}
+
+.welcome-v2__title {
+  margin: 0;
+  color: #ffffff !important;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.welcome-v2__lead {
+  margin: 0;
+  max-width: 52ch;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: Poppins, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.welcome-v2__actions {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.welcome-v2__hero-actions-panel {
+  display: flex;
+  align-items: center;
+  margin-left: calc(clamp(20px, 4vw, 72px) * -1);
+  margin-right: -96px;
+  width: calc(100% + clamp(20px, 4vw, 72px) + 96px);
+  background: #f5f5f5;
+  padding: 16px calc(clamp(20px, 4vw, 72px) + 96px) 20px clamp(20px, 4vw, 72px);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+}
+
+.welcome-v2__hero-contact-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 28px;
+}
+
+.welcome-v2__hero-contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #333333 !important;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none !important;
+}
+
+.welcome-v2__hero-contact-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  color: var(--color-secondary);
+  flex: 0 0 auto;
+}
+
+.welcome-v2__hero-contact-icon svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.welcome-v2__hero-contact-item:hover {
+  color: var(--color-primary) !important;
+}
+
+.welcome-v2__hero-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  background-size: cover;
+  background-position: center 20%;
+  background-color: var(--color-bg);
+}
+
+@media (max-width: 768px) {
+  .welcome-v2__hero {
+    height: auto;
+    display: grid;
+    background: var(--color-secondary);
+  }
+
+  .welcome-v2__hero-left {
+    width: 100%;
+    min-height: auto;
+    clip-path: none;
+    order: 1;
+    background: var(--color-secondary);
+  }
+
+  .welcome-v2__hero-content {
+    width: min(680px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 24px 0 0;
+    height: auto;
+    gap: 16px;
+  }
+
+  .welcome-v2__hero-right {
+    position: relative;
+    height: 220px;
+    order: -1;
+    display: none;
+  }
+
+  .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-content {
+    grid-template-rows: auto;
+    gap: 16px;
+    padding: 24px 0 0;
+  }
+
+  .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-left {
+    background: var(--color-secondary);
+  }
+
+  .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-copy {
+    padding: 0;
+    gap: 12px;
+  }
+
+  .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-actions-panel {
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    width: 100vw;
+    padding: 18px 18px 20px;
+    border: 1px solid var(--color-border);
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .welcome-v2__actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .welcome-v2__title {
+    font-size: 32px;
+  }
+
+  .welcome-v2__lead {
+    max-width: 100%;
+    font-size: 14px;
+  }
+
+  .welcome-v2__hero-contact-list {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .welcome-v2__hero-contact-item,
+  .welcome-v2 .rn-btn {
+    width: 100%;
+  }
+
+  .welcome-v2__hero-contact-item {
+    justify-content: flex-start;
+  }
+
+  .welcome-v2 .rn-btn {
+    justify-content: center;
+  }
+}
