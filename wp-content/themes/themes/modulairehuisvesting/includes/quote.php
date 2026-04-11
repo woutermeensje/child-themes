@@ -483,7 +483,7 @@ function mh_quote_build_email_html( array $request_data ): string {
 									</div>
 
 									<div style="margin:0;">
-										<div style="margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#39749B;">Aangevraagde producten</div>
+										<div style="margin:0 0 10px;font-size:13px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:#39749B;">Aangevraagde items</div>
 										<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:separate;border-spacing:0;border:1px solid #BFE396;border-radius:10px;overflow:hidden;">
 											<thead>
 												<tr>
@@ -633,7 +633,7 @@ function mh_render_quote_request_meta_box( WP_Post $post ) {
 	</div>
 
 	<div class="mh-quote-admin-items">
-		<strong>Aangevraagde producten</strong>
+		<strong>Aangevraagde items</strong>
 		<table>
 			<thead>
 				<tr>
@@ -1114,7 +1114,7 @@ function mh_quote_handle_submit() {
 	if ( $message ) {
 		$body .= "\nBericht:\n{$message}\n";
 	}
-	$body .= "\n--- Gevraagde producten ---\n\n";
+		$body .= "\n--- Gevraagde items ---\n\n";
 	foreach ( $item_data as $item ) {
 		$body .= '- ' . $item['name'] . ' (aantal: ' . $item['quantity'] . ")\n";
 		$body .= '  ' . $item['permalink'] . "\n\n";
@@ -1888,7 +1888,7 @@ function mh_quote_render_page() {
 
 			<div class="mh-qp__card">
 				<div class="mh-qp__card-header">
-					<h2 class="mh-qp__card-title">Geselecteerde producten</h2>
+					<h2 class="mh-qp__card-title">Geselecteerde items</h2>
 					<span class="mh-qp__item-count"><?php echo count( $items ); ?></span>
 				</div>
 				<div class="mh-qp__card-body">
