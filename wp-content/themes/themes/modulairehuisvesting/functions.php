@@ -308,6 +308,67 @@ function mh_get_units_active_view(array $atts = []): string {
     return $view;
 }
 
+function mh_get_units_shortcode_intro_html(WP_Query $query, string $active_view, string $search = '', array $types_selected = []): string {
+    $page_title = get_the_title();
+    $count      = (int) $query->found_posts;
+
+    ob_start();
+    ?>
+    <div class="mh-units-catalog__intro">
+        <div class="mh-units-catalog__intro-main">
+            <?php mh_render_breadcrumbs('mh-units-catalog__breadcrumbs'); ?>
+            <?php if ($page_title) : ?>
+                <h1 class="mh-units-catalog__title"><?php echo esc_html($page_title); ?></h1>
+            <?php endif; ?>
+            <p class="mh-units-catalog__count">
+                <?php
+                printf(
+                    esc_html(_n('%d resultaat', '%d resultaten', $count, 'modulairehuisvesting')),
+                    $count
+                );
+                ?>
+            </p>
+        </div>
+
+        <form class="mh-units-catalog__toggle-form" method="get">
+            <?php if ('' !== $search) : ?>
+                <input type="hidden" name="mh_search" value="<?php echo esc_attr($search); ?>">
+            <?php endif; ?>
+
+            <?php foreach ($types_selected as $selected_type) : ?>
+                <input type="hidden" name="mh_type[]" value="<?php echo esc_attr($selected_type); ?>">
+            <?php endforeach; ?>
+
+            <div class="mh-units-catalog__toggle" role="radiogroup" aria-label="Selecteer type aanbod">
+                <label class="mh-units-catalog__toggle-option<?php echo 'new' === $active_view ? ' is-active' : ''; ?>">
+                    <input
+                        class="mh-units-catalog__toggle-input"
+                        type="radio"
+                        name="mh_units_state"
+                        value="new"
+                        <?php checked('new', $active_view); ?>
+                    >
+                    <span>Nieuwe units</span>
+                </label>
+
+                <label class="mh-units-catalog__toggle-option<?php echo 'used' === $active_view ? ' is-active' : ''; ?>">
+                    <input
+                        class="mh-units-catalog__toggle-input"
+                        type="radio"
+                        name="mh_units_state"
+                        value="used"
+                        <?php checked('used', $active_view); ?>
+                    >
+                    <span>Gebruikte units</span>
+                </label>
+            </div>
+        </form>
+    </div>
+    <?php
+
+    return (string) ob_get_clean();
+}
+
 add_shortcode('mh_units', function ($atts) {
     if (!function_exists('mh_units_render_template')) {
         return '';
@@ -372,15 +433,22 @@ add_shortcode('mh_units', function ($atts) {
 
     ob_start();
 
-    mh_units_render_template('filter.php', [
-        'search'         => $search,
-        'types_selected' => $types_selected,
-        'active_view'    => $active_view,
-    ]);
+    echo mh_get_units_shortcode_intro_html($query, $active_view, $search, $types_selected);
+    ?>
+    <div class="mh-catalog-layout mh-units-catalog-layout mh-units-catalog">
+        <?php
+        mh_units_render_template('filter.php', [
+            'search'         => $search,
+            'types_selected' => $types_selected,
+            'active_view'    => $active_view,
+        ]);
+        ?>
 
-    mh_units_render_template('loop.php', [
-        'query' => $query,
-    ]);
+        <div class="mh-catalog-grid-wrap mh-units-catalog-grid-wrap">
+            <?php mh_units_render_template('loop.php', ['query' => $query]); ?>
+        </div>
+    </div>
+    <?php
 
     wp_reset_postdata();
 

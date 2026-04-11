@@ -151,29 +151,41 @@ Text Domain: modulairehuisvesting
   font-family: 'Poppins', sans-serif;
 }
 
-.mh-units-filter-wrap--theme {
-  margin: 0 0 28px;
-  padding: 24px;
-  border: 1px solid #DEDEDE;
-  border-radius: 5px;
-  background: var(--color-surface);
-  box-shadow: 0 14px 34px rgba(37, 71, 107, 0.12);
+.mh-units-catalog__intro {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0 0 24px;
 }
 
-.mh-units-filter-header {
-  margin-bottom: 18px;
+.mh-units-catalog__intro-main {
+  min-width: 0;
 }
 
-.mh-units-filter-title {
+.mh-units-catalog__breadcrumbs,
+.mh-units-catalog__breadcrumbs a {
+  color: var(--color-text-soft);
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  text-decoration: none;
+}
+
+.mh-units-catalog__breadcrumbs {
+  margin: 0 0 10px;
+}
+
+.mh-units-catalog__title {
   margin: 0 0 8px;
   color: var(--color-text);
   font-family: 'Balgin Bold', 'Balgin-Bold', serif;
-  font-size: clamp(28px, 3vw, 38px);
-  line-height: 1;
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 0.95;
   font-weight: 700;
 }
 
-.mh-units-filter-copy {
+.mh-units-catalog__count {
   margin: 0;
   color: var(--color-text-soft);
   font-family: 'Poppins', sans-serif;
@@ -181,24 +193,21 @@ Text Domain: modulairehuisvesting
   line-height: 1.6;
 }
 
-.mh-units-filter-link {
-  color: var(--color-secondary);
-  font-weight: 700;
-  text-decoration: none;
+.mh-units-catalog__toggle-form {
+  flex: 0 0 auto;
 }
 
-.mh-units-view-toggle {
+.mh-units-catalog__toggle {
   display: inline-flex;
   align-items: stretch;
   padding: 4px;
-  margin-bottom: 18px;
   border: 1px solid #DEDEDE;
   border-radius: 999px;
   background: var(--color-surface-alt);
   gap: 4px;
 }
 
-.mh-units-view-toggle__option {
+.mh-units-catalog__toggle-option {
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -215,37 +224,34 @@ Text Domain: modulairehuisvesting
   transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.mh-units-view-toggle__option.is-active {
+.mh-units-catalog__toggle-option.is-active {
   background: #fff;
   color: var(--color-text);
   box-shadow: 0 6px 16px rgba(37, 71, 107, 0.12);
 }
 
-.mh-units-view-toggle__input {
+.mh-units-catalog__toggle-input {
   position: absolute;
   inset: 0;
   opacity: 0;
   cursor: pointer;
 }
 
+.mh-units-catalog__sidebar-inner {
+  padding: 20px !important;
+}
+
 .mh-units-filter-form {
   display: flex;
   flex-direction: column;
-  gap: 18px;
-}
-
-.mh-units-filter-controls {
-  display: grid;
-  grid-template-columns: minmax(260px, 360px) minmax(0, 1fr);
-  gap: 18px 24px;
-  align-items: start;
+  gap: 0;
 }
 
 .mh-units-filter-field {
   min-width: 0;
 }
 
-.mh-units-filter-field label,
+.mh-units-filter-label,
 .mh-units-filter-field legend {
   display: block;
   margin: 0 0 8px;
@@ -260,80 +266,226 @@ Text Domain: modulairehuisvesting
   padding: 0;
 }
 
+.mh-units-catalog__filter-block h3,
+.mh-units-filter-field--types legend {
+  margin: 0 0 10px;
+  color: #333 !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 1.2;
+}
+
 .mh-units-filter-field--types {
   margin: 0;
   border: 0;
+  padding: 0;
 }
 
-.mh-units-filter-field--search input[type="text"] {
+.mh-units-catalog__search {
   width: 100%;
-  min-height: 46px;
-  padding: 11px 14px;
+  min-height: 42px;
+  padding: 10px 14px;
   border: 1px solid #DEDEDE;
   border-radius: 8px;
   background: #fff;
   color: #333;
   font-family: 'Poppins', sans-serif;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.4;
   box-sizing: border-box;
+  box-shadow: none;
 }
 
-.mh-units-filter-field--search input[type="text"]:focus {
+.mh-units-catalog__search:focus {
   outline: none;
   border-color: var(--color-secondary-soft);
   box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
-.mh-units-filter-pills {
+.mh-units-catalog__select {
+  position: relative;
+  width: 100%;
+}
+
+.mh-units-catalog__select-btn {
+  appearance: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 14px;
+  border: 1px solid #DEDEDE;
+  border-radius: 8px;
+  background: #fff;
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  gap: 10px;
+  box-sizing: border-box;
+  box-shadow: none;
+}
+
+.mh-units-catalog__select-label {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.mh-units-catalog__select-label.is-placeholder {
+  color: #9A9A9A;
+}
+
+.mh-units-catalog__select-chevron {
+  width: 15px;
+  height: 15px;
+  color: #9a9a9a;
+  flex: 0 0 auto;
+  transition: transform 0.2s ease;
+}
+
+.mh-units-catalog__select.is-open .mh-units-catalog__select-chevron {
+  transform: rotate(180deg);
+}
+
+.mh-units-catalog__select-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  max-height: 280px;
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid #DEDEDE;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.12);
+  box-sizing: border-box;
+}
+
+.mh-units-catalog__select.is-open .mh-units-catalog__select-panel {
+  display: block;
+}
+
+.mh-units-catalog__select-search-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  padding: 4px 2px 8px;
+  background: #fff;
+}
+
+.mh-units-catalog__select-search {
+  appearance: none;
+  width: 100%;
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid #DEDEDE;
+  border-radius: 5px;
+  background: #f9f9f9;
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  box-sizing: border-box;
+  box-shadow: none;
+  outline: none;
+}
+
+.mh-units-catalog__select-option {
+  display: flex;
+  align-items: center;
+  padding: 9px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #333;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  transition: background 0.12s;
+  user-select: none;
+}
+
+.mh-units-catalog__select-option:hover {
+  background: #f5f5f5;
+}
+
+.mh-units-catalog__select-option.is-selected {
+  background: #f1f8ee;
+  color: #111;
+  font-weight: 600;
+}
+
+.mh-units-catalog__select-option.is-selected::after {
+  content: '✓';
+  margin-left: auto;
+  padding-left: 8px;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mh-units-catalog__select-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 6px;
+  margin-top: 8px;
 }
 
-.mh-units-filter-pill {
-  position: relative;
-  display: inline-flex;
-}
-
-.mh-units-filter-pill input {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.mh-units-filter-pill span {
+.mh-units-catalog__select-tag {
   display: inline-flex;
   align-items: center;
-  min-height: 42px;
-  padding: 10px 14px;
+  gap: 6px;
+  padding: 7px 12px 7px 16px;
   border: 1px solid #DEDEDE;
   border-radius: 999px;
   background: #fff;
-  color: var(--color-text-soft);
+  color: #333;
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 1.2;
-  transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.08);
 }
 
-.mh-units-filter-pill input:checked + span {
-  border-color: var(--color-secondary-soft);
-  background: var(--color-surface-alt);
-  color: var(--color-text);
-  box-shadow: 0 8px 18px rgba(37, 71, 107, 0.1);
-}
-
-.mh-units-filter-actions {
+.mh-units-catalog__select-tag-remove {
+  appearance: none;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #999;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.mh-units-catalog__select-tag-remove:hover {
+  background: rgba(0, 0, 0, 0.08);
+  color: #333;
+}
+
+.mh-units-catalog__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 12px;
 }
 
-.mh-units-filter-submit,
-.mh-units-filter-reset {
+.mh-units-catalog__submit,
+.mh-units-catalog__reset {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -347,7 +499,7 @@ Text Domain: modulairehuisvesting
   text-decoration: none !important;
 }
 
-.mh-units-filter-submit {
+.mh-units-catalog__submit {
   appearance: none;
   border: 1px solid var(--color-ocean);
   background: linear-gradient(135deg, var(--color-ocean) 0%, var(--color-secondary) 100%);
@@ -355,7 +507,8 @@ Text Domain: modulairehuisvesting
   cursor: pointer;
 }
 
-.mh-units-filter-reset {
+.mh-units-catalog__reset {
+  justify-content: center;
   border: 1px solid #DEDEDE;
   background: #fff;
   color: var(--color-text-soft);
@@ -986,10 +1139,6 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .mh-units-filter-controls {
-    grid-template-columns: 1fr;
-  }
-
   .mh-product-card__title--shortcode {
     font-size: 21px;
   }
@@ -1027,29 +1176,29 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
     font-size: 20px;
   }
 
-  .mh-units-filter-wrap--theme {
-    padding: 18px;
+  .mh-units-catalog__intro {
+    flex-direction: column;
+    align-items: stretch;
   }
 
-  .mh-units-view-toggle {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+  .mh-units-catalog__toggle-form,
+  .mh-units-catalog__toggle {
     width: 100%;
   }
 
-  .mh-units-view-toggle__option {
+  .mh-units-catalog__toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .mh-units-catalog__toggle-option {
     min-width: 0;
     padding: 0 12px;
     text-align: center;
   }
 
-  .mh-units-filter-actions {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .mh-units-filter-submit,
-  .mh-units-filter-reset {
+  .mh-units-catalog__submit,
+  .mh-units-catalog__reset {
     width: 100%;
   }
 
