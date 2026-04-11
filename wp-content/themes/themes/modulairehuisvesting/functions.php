@@ -73,6 +73,16 @@ add_action('wp_enqueue_scripts', function () {
             filemtime(get_stylesheet_directory() . '/css/blog.css')
         );
     }
+
+    if (file_exists(get_stylesheet_directory() . '/js/catalog-filters.js')) {
+        wp_enqueue_script(
+            'mh-catalog-filters',
+            get_stylesheet_directory_uri() . '/js/catalog-filters.js',
+            [],
+            filemtime(get_stylesheet_directory() . '/js/catalog-filters.js'),
+            true
+        );
+    }
 });
 
 /**
@@ -131,6 +141,63 @@ add_action('after_setup_theme', function () {
     add_theme_support('custom-logo');
     add_post_type_support('page', 'excerpt');
 });
+
+add_action('init', function () {
+    register_taxonomy('mh_product_unit_type', ['product'], [
+        'labels' => [
+            'name'              => 'Type unit',
+            'singular_name'     => 'Type unit',
+            'search_items'      => 'Zoek type unit',
+            'all_items'         => 'Alle type units',
+            'edit_item'         => 'Type unit bewerken',
+            'update_item'       => 'Type unit bijwerken',
+            'add_new_item'      => 'Nieuw type unit toevoegen',
+            'new_item_name'     => 'Nieuwe type unit',
+            'menu_name'         => 'Type unit',
+        ],
+        'public'            => false,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'show_in_rest'      => true,
+        'hierarchical'      => false,
+        'rewrite'           => false,
+    ]);
+
+    register_taxonomy('mh_product_purchase_type', ['product'], [
+        'labels' => [
+            'name'              => 'Type aanschaf',
+            'singular_name'     => 'Type aanschaf',
+            'search_items'      => 'Zoek type aanschaf',
+            'all_items'         => 'Alle typen aanschaf',
+            'edit_item'         => 'Type aanschaf bewerken',
+            'update_item'       => 'Type aanschaf bijwerken',
+            'add_new_item'      => 'Nieuw type aanschaf toevoegen',
+            'new_item_name'     => 'Nieuwe type aanschaf',
+            'menu_name'         => 'Type aanschaf',
+        ],
+        'public'            => false,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'show_in_rest'      => true,
+        'hierarchical'      => false,
+        'rewrite'           => false,
+    ]);
+}, 20);
+
+add_action('init', function () {
+    $default_terms = [
+        'mh_product_unit_type' => ['Nieuw', 'Gebruikt', 'Jong gebruikt'],
+        'mh_product_purchase_type' => ['Koop', 'Huur', 'Huurkoop'],
+    ];
+
+    foreach ($default_terms as $taxonomy => $terms) {
+        foreach ($terms as $term_name) {
+            if (!term_exists($term_name, $taxonomy)) {
+                wp_insert_term($term_name, $taxonomy);
+            }
+        }
+    }
+}, 30);
 
 add_shortcode('mh_units_grid', function ($atts = []) {
     $atts = shortcode_atts([
@@ -200,10 +267,235 @@ function mh_render_breadcrumbs(string $nav_class = '', string $wrapper_class = '
         echo '</nav>';
     }
 
-    if ($wrapper_class) {
-        echo '</div>';
+	    if ($wrapper_class) {
+	        echo '</div>';
+	    }
+	}
+
+function mh_get_products_shortcode_intro_html(string $products_html): string {
+    if (is_admin() || !is_singular()) {
+        return '';
     }
+
+    if (false === strpos($products_html, 'ul class="products') && false === strpos($products_html, "ul class='products")) {
+        return '';
+    }
+
+    $product_count = preg_match_all('/<li\b[^>]*class="[^"]*\bproduct\b[^"]*"/i', $products_html, $matches);
+    $product_count = is_int($product_count) ? $product_count : 0;
+    $page_title    = get_the_title();
+
+    ob_start();
+    ?>
+    <div class="mh-products-intro">
+        <?php mh_render_breadcrumbs('mh-products-intro__breadcrumbs'); ?>
+        <?php if ($page_title) : ?>
+            <h1 class="mh-products-intro__title"><?php echo esc_html($page_title); ?></h1>
+        <?php endif; ?>
+        <p class="mh-products-intro__count">
+            <?php
+            printf(
+                esc_html(_n('%d resultaat', '%d resultaten', $product_count, 'modulairehuisvesting')),
+                (int) $product_count
+            );
+            ?>
+        </p>
+    </div>
+    <?php
+
+    return (string) ob_get_clean();
 }
+
+function mh_get_catalog_filter_definitions(): array {
+    return [
+        'mh_product_unit_type' => [
+            'label' => 'Type unit',
+            'order' => ['nieuw', 'gebruikt', 'jong-gebruikt'],
+        ],
+        'mh_product_purchase_type' => [
+            'label' => 'Type aanschaf',
+            'order' => ['koop', 'huur', 'huurkoop'],
+        ],
+    ];
+}
+
+function mh_get_catalog_active_tax_filters(): array {
+    $filters     = [];
+    $definitions = mh_get_catalog_filter_definitions();
+
+    foreach ($_GET as $key => $value) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if (0 !== strpos((string) $key, 'mh_filter_')) {
+            continue;
+        }
+
+        $taxonomy = substr((string) $key, strlen('mh_filter_'));
+        if (!$taxonomy || !isset($definitions[$taxonomy])) {
+            continue;
+        }
+
+        $raw_values = is_array($value) ? $value : explode(',', (string) $value);
+        $terms      = array_values(
+            array_filter(
+                array_unique(
+                    array_map(
+                        'sanitize_title',
+                        array_map('trim', array_map('wp_unslash', $raw_values))
+                    )
+                )
+            )
+        );
+
+        if (!empty($terms)) {
+            $filters[$taxonomy] = $terms;
+        }
+    }
+
+    return $filters;
+}
+
+function mh_apply_catalog_filters_to_query_args(array $query_args): array {
+    $active_tax_filters = mh_get_catalog_active_tax_filters();
+    if (empty($active_tax_filters)) {
+        return $query_args;
+    }
+
+    if (empty($query_args['tax_query']) || !is_array($query_args['tax_query'])) {
+        $query_args['tax_query'] = [];
+    }
+
+    if (!isset($query_args['tax_query']['relation'])) {
+        $query_args['tax_query']['relation'] = 'AND';
+    }
+
+    foreach ($active_tax_filters as $taxonomy => $terms) {
+        $query_args['tax_query'][] = [
+            'taxonomy' => $taxonomy,
+            'field'    => 'slug',
+            'terms'    => $terms,
+            'operator' => 'IN',
+        ];
+    }
+
+    return $query_args;
+}
+
+add_filter('woocommerce_shortcode_products_query', function ($query_args, $attributes, $type) {
+    return mh_apply_catalog_filters_to_query_args((array) $query_args);
+}, 10, 3);
+
+function mh_get_catalog_filter_terms(string $taxonomy, array $definition): array {
+    $terms = get_terms([
+        'taxonomy'   => $taxonomy,
+        'hide_empty' => false,
+    ]);
+
+    if (is_wp_error($terms) || empty($terms)) {
+        return [];
+    }
+
+    $order_lookup = [];
+    foreach (($definition['order'] ?? []) as $index => $slug) {
+        $order_lookup[(string) $slug] = $index;
+    }
+
+    usort($terms, function ($a, $b) use ($order_lookup) {
+        $a_index = $order_lookup[$a->slug] ?? 999;
+        $b_index = $order_lookup[$b->slug] ?? 999;
+
+        if ($a_index === $b_index) {
+            return strcasecmp($a->name, $b->name);
+        }
+
+        return $a_index <=> $b_index;
+    });
+
+    return $terms;
+}
+
+function mh_get_products_shortcode_filters_html(): string {
+    $definitions    = mh_get_catalog_filter_definitions();
+    $active_filters = mh_get_catalog_active_tax_filters();
+
+    ob_start();
+    ?>
+    <aside class="mh-catalog-sidebar" aria-label="Productfilters" style="width:100%;min-width:0;">
+        <div class="mh-catalog-sidebar-inner" style="position:sticky;top:20px;background:#fff;border:1px solid #DEDEDE;border-radius:5px;padding:20px;box-sizing:border-box;">
+            <?php foreach ($definitions as $taxonomy => $definition) :
+                $terms = mh_get_catalog_filter_terms($taxonomy, $definition);
+                if (empty($terms)) {
+                    continue;
+                }
+                $selected = $active_filters[$taxonomy] ?? [];
+                ?>
+                <div class="mh-catalog-block" style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid #EBEBEB;">
+                    <h3 style="margin:0 0 10px;padding:0;color:#333;font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;line-height:1.2;background:none;border:none;"><?php echo esc_html($definition['label']); ?></h3>
+                    <div class="mh-select-wrap" style="position:relative;width:100%;">
+                        <div class="mh-select" data-taxonomy="<?php echo esc_attr($taxonomy); ?>" style="position:relative;width:100%;">
+                            <button type="button" class="mh-select-btn" aria-haspopup="listbox" aria-expanded="false" style="appearance:none;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:42px;padding:9px 14px;border:1px solid #DEDEDE;border-radius:8px;background:#fff;color:#333;box-shadow:none;text-decoration:none;cursor:pointer;gap:10px;box-sizing:border-box;">
+                                <span class="mh-select-label is-placeholder" style="min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;color:#9A9A9A;font-family:'Poppins',sans-serif;font-size:14px;">Selecteer <?php echo esc_html(strtolower($definition['label'])); ?></span>
+                                <svg class="mh-select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </button>
+                            <div class="mh-select-options" role="listbox" aria-multiselectable="true" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:50;max-height:280px;overflow-y:auto;padding:6px;border:1px solid #DEDEDE;border-radius:10px;background:#fff;box-shadow:0 8px 30px -4px rgba(0,0,0,0.12);box-sizing:border-box;">
+                                <div class="mh-option-search-wrap" style="position:sticky;top:0;z-index:1;padding:4px 2px 8px;background:#fff;">
+                                    <input type="search" class="mh-option-search" placeholder="Zoek <?php echo esc_attr(strtolower($definition['label'])); ?>..." style="appearance:none;width:100%;min-height:36px;padding:6px 10px;border:1px solid #DEDEDE;border-radius:5px;background:#f9f9f9;color:#333;font-family:'Poppins',sans-serif;font-size:13px;box-sizing:border-box;box-shadow:none;outline:none;">
+                                </div>
+                                <?php foreach ($terms as $term) : ?>
+                                    <div
+                                        class="mh-select-option<?php echo in_array($term->slug, $selected, true) ? ' is-selected' : ''; ?>"
+                                        role="option"
+                                        aria-selected="<?php echo in_array($term->slug, $selected, true) ? 'true' : 'false'; ?>"
+                                        data-slug="<?php echo esc_attr($term->slug); ?>"
+                                        data-label="<?php echo esc_attr($term->name); ?>"
+                                        style="display:flex;align-items:center;padding:9px 10px;border-radius:6px;cursor:pointer;color:#333;font-family:'Poppins',sans-serif;font-size:14px;user-select:none;"
+                                    >
+                                        <span class="mh-select-option-text"><?php echo esc_html($term->name); ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <div class="mh-selected-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;"></div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            <div class="mh-catalog-block mh-catalog-block--actions" style="padding-bottom:0;margin-bottom:0;border-bottom:none;">
+                <button type="button" class="mh-catalog-reset" style="appearance:none;width:100%;min-height:42px;padding:10px 14px;border:1px solid #DEDEDE;border-radius:8px;background:#fff;color:#333;font-family:'Poppins',sans-serif;font-size:14px;font-weight:600;cursor:pointer;">Filters wissen</button>
+            </div>
+        </div>
+    </aside>
+    <?php
+
+    return (string) ob_get_clean();
+}
+
+add_filter('do_shortcode_tag', function ($output, $tag, $attr) {
+    if ('products' !== $tag || !is_string($output) || '' === trim($output)) {
+        return $output;
+    }
+
+    static $rendered_shortcodes = [];
+    $post_id = get_the_ID() ?: 0;
+    $key     = $post_id . ':' . md5(wp_json_encode($attr) ?: 'products');
+
+    if (isset($rendered_shortcodes[$key])) {
+        return $output;
+    }
+
+    $intro_html = mh_get_products_shortcode_intro_html($output);
+    if ('' === $intro_html) {
+        return $output;
+    }
+
+    $rendered_shortcodes[$key] = true;
+
+    return $intro_html
+        . '<div class="mh-catalog-layout" style="display:grid;grid-template-columns:minmax(240px, 280px) minmax(0, 1fr);gap:24px;align-items:start;">'
+        . mh_get_products_shortcode_filters_html()
+        . '<div class="mh-catalog-grid-wrap" style="min-width:0;width:100%;">'
+        . $output
+        . '</div></div>';
+}, 10, 3);
 
 /**
  * WooCommerce: verwijder standaard layout CSS op productpagina's

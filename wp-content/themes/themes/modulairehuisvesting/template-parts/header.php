@@ -57,6 +57,21 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
             ?>
         </nav>
 
+        <div class="mh-header__search mh-header-search">
+            <button type="button" class="mh-header-search__toggle" aria-label="Zoek producten" aria-expanded="false" aria-controls="mh-header-search-form">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <form id="mh-header-search-form" class="mh-header-search__form" method="get" action="<?php echo esc_url(home_url('/')); ?>">
+                <input type="hidden" name="post_type" value="product">
+                <label class="screen-reader-text" for="mh-header-search-input">Zoek producten</label>
+                <input id="mh-header-search-input" class="mh-header-search__input" type="search" name="s" placeholder="Zoek producten">
+                <button type="submit" class="mh-header-search__submit">Zoeken</button>
+            </form>
+        </div>
+
         <div class="mh-header__divider"></div>
 
         <div class="mh-header__cta">
@@ -68,6 +83,32 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
             </a>
             <a href="<?php echo esc_url(home_url('/offerte-aanvragen/')); ?>" class="mh-btn mh-btn--accent mh-btn--nav-contact">Informatie aanvragen</a>
         </div>
+
+        <div class="mh-header__mobile-search mh-header-search">
+            <button type="button" class="mh-header-search__toggle mh-header__mobile-search-toggle" aria-label="Zoek producten" aria-expanded="false" aria-controls="mh-header-mobile-search-form">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+            </button>
+            <form id="mh-header-mobile-search-form" class="mh-header-search__form mh-header__mobile-search-form" method="get" action="<?php echo esc_url(home_url('/')); ?>">
+                <input type="hidden" name="post_type" value="product">
+                <label class="screen-reader-text" for="mh-header-mobile-search-input">Zoek producten</label>
+                <input id="mh-header-mobile-search-input" class="mh-header-search__input" type="search" name="s" placeholder="Zoek producten">
+                <button type="submit" class="mh-header-search__submit">Zoeken</button>
+            </form>
+        </div>
+
+        <a href="<?php echo esc_url(home_url('/mijn-offerte/')); ?>" class="mh-header__quote-icon" aria-label="Mijn offerte">
+            <svg class="mh-header__quote-icon-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 10h14" />
+                <path d="M6 10l1.25 8.5A2 2 0 0 0 9.23 20h5.54a2 2 0 0 0 1.98-1.5L18 10" />
+                <path d="M9 10V8a3 3 0 0 1 6 0v2" />
+            </svg>
+            <?php if ($quote_count > 0) : ?>
+                <span class="mh-header__quote-badge" aria-label="<?php echo esc_attr($quote_count); ?> producten in offerte"><?php echo esc_html($quote_count); ?></span>
+            <?php endif; ?>
+        </a>
 
         <button class="mh-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="mh-mobile-nav">
             <span class="mh-hamburger__bar"></span>
@@ -128,8 +169,34 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
     const hamburger = document.querySelector('.mh-header__hamburger');
     const mobileNav = document.getElementById('mh-mobile-nav');
     const closeBtn  = document.querySelector('.mh-mobile-nav__close');
+    const searchBlocks = Array.from(document.querySelectorAll('.mh-header-search')).map((wrap) => ({
+        wrap,
+        toggle: wrap.querySelector('.mh-header-search__toggle'),
+        form: wrap.querySelector('.mh-header-search__form'),
+        input: wrap.querySelector('.mh-header-search__input')
+    })).filter((block) => block.toggle && block.form);
 
     if (hamburger && mobileNav) {
+        const closeSearch = (targetBlock = null) => {
+            searchBlocks.forEach((block) => {
+                if (targetBlock && block !== targetBlock) {
+                    return;
+                }
+                block.form.classList.remove('is-open');
+                block.toggle.setAttribute('aria-expanded', 'false');
+            });
+        };
+
+        const openSearch = (targetBlock) => {
+            if (!targetBlock) return;
+            closeSearch();
+            targetBlock.form.classList.add('is-open');
+            targetBlock.toggle.setAttribute('aria-expanded', 'true');
+            if (targetBlock.input) {
+                setTimeout(() => targetBlock.input.focus(), 50);
+            }
+        };
+
         const openMenu = () => {
             mobileNav.classList.add('is-open');
             hamburger.classList.add('is-open');
@@ -144,10 +211,21 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
             hamburger.setAttribute('aria-expanded', 'false');
             mobileNav.setAttribute('aria-hidden', 'true');
             document.body.style.overflow = '';
+            closeSearch();
         };
 
         hamburger.addEventListener('click', () => {
             mobileNav.classList.contains('is-open') ? closeMenu() : openMenu();
+        });
+
+        searchBlocks.forEach((block) => {
+            block.toggle.addEventListener('click', () => {
+                if (block.form.classList.contains('is-open')) {
+                    closeSearch(block);
+                    return;
+                }
+                openSearch(block);
+            });
         });
 
         if (closeBtn) closeBtn.addEventListener('click', closeMenu);

@@ -308,94 +308,10 @@ h1.mh-page-title {
 	margin: 0 0 10px;
 }
 
-.mh-color-picker {
-	display: flex;
-	flex-wrap: wrap;
-	gap: 12px;
-	margin: 0 0 14px;
-	flex: 1 1 100%;
-	width: 100%;
-	order: -1;
-}
-
-.mh-color-picker__option {
-	position: relative;
-}
-
-.mh-color-picker__input {
-	position: absolute;
-	opacity: 0;
-	pointer-events: none;
-}
-
-.mh-color-picker__label {
-	display: flex;
-	align-items: center;
-	gap: 10px;
-	cursor: pointer;
-	padding: 8px 10px;
-	border-radius: 999px;
-	transition: background-color 0.15s ease, transform 0.15s ease;
-}
-
-.mh-color-picker__swatch {
-	width: 50px;
-	height: 50px;
-	border-radius: 999px;
-	border: 2px solid #cfcfcf;
-	box-shadow: inset 0 0 0 1px rgba(255,255,255,0.5);
-	flex-shrink: 0;
-	position: relative;
-}
-
-.mh-color-picker__swatch::before {
-	content: "";
-	position: absolute;
-	inset: 6px;
-	border-radius: inherit;
-	background: var(--mh-color-swatch, #fff);
-}
-
-.mh-color-picker__text {
-	display: flex;
-	flex-direction: column;
-	gap: 2px;
-}
-
-.mh-color-picker__name {
-	font-family: Inter, sans-serif;
-	font-size: 14px;
-	font-weight: 600;
-	color: #1f1f1f;
-	line-height: 1.2;
-}
-
-.mh-color-picker__meta {
-	font-family: Inter, sans-serif;
-	font-size: 12px;
-	color: #6a6a6a;
-	line-height: 1.3;
-}
-
-.mh-color-picker__input:checked + .mh-color-picker__label .mh-color-picker__swatch {
-	border-color: var(--color-primary, #25476B);
-	box-shadow: 0 0 0 6px rgba(37, 71, 107, 0.16);
-}
-
-.mh-color-picker__input:checked + .mh-color-picker__label {
-	background: rgba(37, 71, 107, 0.06);
-}
-
-.mh-color-picker__label:hover {
-	background: rgba(37, 71, 107, 0.04);
-	transform: translateY(-1px);
-}
-
 /* Offerte formulier wrapper */
 .mh-quote-fallback {
 	display: flex !important;
 	align-items: center !important;
-	flex-wrap: wrap !important;
 	gap: 10px !important;
 	width: 100% !important;
 	box-sizing: border-box !important;
@@ -863,7 +779,6 @@ h1.mh-page-title {
 				$in_quote   = function_exists( 'mh_quote_has_product' ) && mh_quote_has_product( $product->get_id() );
 				$quote_url  = function_exists( 'mh_quote_get_page_url' ) ? mh_quote_get_page_url() : home_url( '/mijn-offerte/' );
 				$just_added = isset( $_GET['mh_added'] ) && (int) $_GET['mh_added'] === $product->get_id();
-				$color_options = function_exists( 'mh_quote_get_color_options' ) ? mh_quote_get_color_options() : array();
 				?>
 
 			<!-- Offerte CTA -->
@@ -881,33 +796,6 @@ h1.mh-page-title {
 							<input type="hidden" name="mh_action" value="add_to_quote">
 							<input type="hidden" name="product_id" value="<?php echo esc_attr( $product->get_id() ); ?>">
 							<input type="hidden" name="item_type" value="product">
-							<?php if ( ! empty( $color_options ) ) : ?>
-								<div class="mh-color-picker" aria-label="Kleur selecteren">
-									<?php foreach ( $color_options as $color_key => $color_data ) : ?>
-										<?php
-										$swatches = isset( $color_data['swatches'] ) && is_array( $color_data['swatches'] ) ? $color_data['swatches'] : array( '#ffffff' );
-										$primary_swatch = (string) reset( $swatches );
-										?>
-										<div class="mh-color-picker__option">
-											<input
-												class="mh-color-picker__input"
-												type="radio"
-												name="mh_color"
-												id="mh-color-<?php echo esc_attr( $color_key ); ?>"
-												value="<?php echo esc_attr( $color_key ); ?>"
-												<?php checked( 'white', $color_key ); ?>
-											>
-											<label class="mh-color-picker__label" for="mh-color-<?php echo esc_attr( $color_key ); ?>">
-												<span class="mh-color-picker__swatch" style="--mh-color-swatch: <?php echo esc_attr( $primary_swatch ); ?>;"></span>
-												<span class="mh-color-picker__text">
-													<span class="mh-color-picker__name"><?php echo esc_html( (string) $color_data['label'] ); ?></span>
-													<span class="mh-color-picker__meta"><?php echo esc_html( (string) $color_data['description'] ); ?></span>
-												</span>
-											</label>
-										</div>
-									<?php endforeach; ?>
-								</div>
-							<?php endif; ?>
 							<div class="mh-qty-stepper">
 								<button type="button" class="mh-qty-btn mh-qty-btn--minus" aria-label="Minder">
 								<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
