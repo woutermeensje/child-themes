@@ -1,491 +1,270 @@
-<?php if (!defined('ABSPATH')) exit;
+<?php if (!defined('ABSPATH')) exit; ?>
 
-// fallback als deze variabelen niet zijn meegegeven vanuit shortcode
-$search = isset($search) ? $search : '';
+<?php
+$search         = isset($search) ? (string) $search : '';
 $types_selected = isset($types_selected) && is_array($types_selected) ? $types_selected : [];
-$condities_selected = isset($condities_selected) && is_array($condities_selected) ? $condities_selected : [];
+$active_view    = isset($active_view) && in_array($active_view, ['new', 'used'], true) ? $active_view : 'new';
 
 $types = get_terms([
-    'taxonomy' => 'mh_unit_type',
-    'hide_empty' => false,
-]);
-
-$condities = get_terms([
-    'taxonomy' => 'mh_unit_conditie',
+    'taxonomy'   => 'mh_unit_type',
     'hide_empty' => false,
 ]);
 ?>
 
-<div class="mh-units-filter-wrap">
+<aside class="mh-catalog-sidebar mh-units-catalog__sidebar" aria-label="Unit filters" style="width:100%;min-width:0;">
+    <div class="mh-catalog-sidebar-inner mh-units-catalog__sidebar-inner" style="position:sticky;top:20px;background:#fff;border:1px solid #DEDEDE;border-radius:5px;padding:20px;box-sizing:border-box;">
+        <form class="mh-units-filter-form" method="get">
+            <input type="hidden" name="mh_units_state" value="<?php echo esc_attr($active_view); ?>">
 
-  <div class="mh-filter-header">
-    <h1>Doorzoek alle modulaire units</h1>
-      <p>Of <a href="https://modulairehuisvesting.nl/offerte-aanvragen/" class="mh-filter-header-link">plaats jouw units</a>
-        in het netwerk van ModulaireHuisvesting.nl
-      </p>
+            <div class="mh-catalog-block mh-units-catalog__filter-block" style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid #EBEBEB;">
+                <label class="mh-units-filter-label" for="mh_search" style="display:block;margin:0 0 8px;color:var(--color-text, #25476B);font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;line-height:1.3;">Zoek</label>
+                <input
+                    id="mh_search"
+                    name="mh_search"
+                    type="text"
+                    class="mh-units-catalog__search"
+                    placeholder="Zoek op naam, trefwoord..."
+                    value="<?php echo esc_attr($search); ?>"
+                    style="width:100%;min-height:42px;padding:10px 14px;border:1px solid #DEDEDE;border-radius:8px;background:#fff;color:#333;font-family:'Poppins',sans-serif;font-size:14px;line-height:1.4;box-sizing:border-box;box-shadow:none;outline:none;"
+                >
+            </div>
+
+            <fieldset class="mh-catalog-block mh-units-catalog__filter-block mh-units-filter-field--types" style="margin:0;padding:0 0 16px 0;border:0;border-bottom:1px solid #EBEBEB;margin-bottom:16px;">
+                <legend style="display:block;margin:0 0 10px;padding:0;color:#333;font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;line-height:1.2;">Type unit</legend>
+
+                <div class="mh-units-catalog__select" data-name="mh_type[]" style="position:relative;width:100%;">
+                    <button type="button" class="mh-units-catalog__select-btn" aria-haspopup="listbox" aria-expanded="false" style="appearance:none;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:42px;padding:9px 14px;border:1px solid #DEDEDE;border-radius:8px;background:#fff;color:#333;font-family:'Poppins',sans-serif;font-size:14px;cursor:pointer;gap:10px;box-sizing:border-box;box-shadow:none;text-decoration:none;">
+                        <span class="mh-units-catalog__select-label is-placeholder" style="min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;color:#9A9A9A;">Selecteer type unit</span>
+                        <svg class="mh-units-catalog__select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:15px;height:15px;color:#9A9A9A;flex:0 0 auto;transition:transform 0.2s ease;">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+
+                    <div class="mh-units-catalog__select-panel" role="listbox" aria-multiselectable="true" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:50;max-height:280px;overflow-y:auto;padding:6px;border:1px solid #DEDEDE;border-radius:10px;background:#fff;box-shadow:0 8px 30px -4px rgba(0,0,0,0.12);box-sizing:border-box;">
+                        <div class="mh-units-catalog__select-search-wrap" style="position:sticky;top:0;z-index:1;padding:4px 2px 8px;background:#fff;">
+                            <input type="search" class="mh-units-catalog__select-search" placeholder="Zoek type unit..." style="appearance:none;width:100%;min-height:36px;padding:6px 10px;border:1px solid #DEDEDE;border-radius:5px;background:#f9f9f9;color:#333;font-family:'Poppins',sans-serif;font-size:13px;box-sizing:border-box;box-shadow:none;outline:none;">
+                        </div>
+
+                        <div class="mh-units-catalog__select-options">
+                            <?php if (!is_wp_error($types) && !empty($types)) : ?>
+                                <?php foreach ($types as $type): ?>
+                                    <div
+                                        class="mh-units-catalog__select-option<?php echo in_array($type->slug, $types_selected, true) ? ' is-selected' : ''; ?>"
+                                        role="option"
+                                        aria-selected="<?php echo in_array($type->slug, $types_selected, true) ? 'true' : 'false'; ?>"
+                                        data-value="<?php echo esc_attr($type->slug); ?>"
+                                        data-label="<?php echo esc_attr($type->name); ?>"
+                                        style="display:flex;align-items:center;padding:9px 10px;border-radius:6px;cursor:pointer;color:#333;font-family:'Poppins',sans-serif;font-size:14px;transition:background 0.12s;user-select:none;"
+                                    >
+                                        <span><?php echo esc_html($type->name); ?></span>
+                                    </div>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="mh-units-catalog__select-empty" style="display:none;padding:10px 12px;color:#8a8a8a;font-family:'Poppins',sans-serif;font-size:13px;line-height:1.4;">
+                            Geen types gevonden.
+                        </div>
+                    </div>
+
+                    <div class="mh-units-catalog__select-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+                        <?php if (!is_wp_error($types) && !empty($types)) : ?>
+                            <?php foreach ($types as $type): ?>
+                                <?php if (!in_array($type->slug, $types_selected, true)) continue; ?>
+                                <span class="mh-units-catalog__select-tag" data-value="<?php echo esc_attr($type->slug); ?>" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px 7px 16px;border:1px solid #DEDEDE;border-radius:999px;background:#fff;color:#333;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;line-height:1.3;box-shadow:0 4px 20px -4px rgba(0,0,0,0.08);">
+                                    <span><?php echo esc_html($type->name); ?></span>
+                                    <button type="button" class="mh-units-catalog__select-tag-remove" data-value="<?php echo esc_attr($type->slug); ?>" aria-label="Verwijder <?php echo esc_attr($type->name); ?>" style="appearance:none;display:flex;align-items:center;justify-content:center;width:16px;height:16px;padding:0;margin:0;border:none;border-radius:50%;background:transparent;color:#999;font-size:17px;font-weight:700;line-height:1;cursor:pointer;">&times;</button>
+                                </span>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="mh-units-catalog__select-hidden">
+                        <?php foreach ($types_selected as $selected_type): ?>
+                            <input type="hidden" name="mh_type[]" value="<?php echo esc_attr($selected_type); ?>">
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </fieldset>
+
+            <div class="mh-catalog-block mh-catalog-block--actions mh-units-catalog__actions" style="padding-bottom:0;margin-bottom:0;border-bottom:none;display:flex;flex-direction:column;align-items:stretch;gap:12px;">
+                <button type="submit" class="mh-units-catalog__submit" style="appearance:none;display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:42px;padding:10px 18px;border:1px solid var(--color-ocean, #4188AA);border-radius:5px;background:linear-gradient(135deg, var(--color-ocean, #4188AA) 0%, var(--color-secondary, #39749B) 100%);color:#fff;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;line-height:1;cursor:pointer;box-sizing:border-box;">Filters toepassen</button>
+                <a class="mh-units-catalog__reset" href="<?php echo esc_url(get_permalink()); ?>" style="display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:42px;padding:10px 18px;border:1px solid #DEDEDE;border-radius:5px;background:#fff;color:var(--color-text-soft, #39749B);font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;line-height:1;text-decoration:none;box-sizing:border-box;">Filters wissen</a>
+            </div>
+        </form>
     </div>
-
-  <form class="mh-units-filter" method="get">
-
-      <div class="mh-filter-top-row">
-
-          <!-- Zoek (50%) -->
-          <div class="mh-filter-item mh-filter-search">
-              <label for="mh_search">Zoek</label>
-              <input id="mh_search" name="mh_search" type="text"
-                     placeholder="Zoek op naam, trefwoord..."
-                     value="<?php echo esc_attr($search); ?>">
-          </div>
-
-          <!-- MULTI 1: Type unit -->
-          <div class="mh-filter-item mh-filter-type">
-              <label>Type unit</label>
-
-              <div class="mh-multi" data-name="mh_type[]">
-                  <button type="button" class="mh-multi-btn" aria-expanded="false">
-                      <span class="mh-multi-placeholder">Selecteer type</span>
-                      <span class="mh-multi-tags" aria-hidden="true"></span>
-                      <span class="mh-multi-caret">▾</span>
-                  </button>
-
-                  <div class="mh-multi-panel" role="listbox">
-                      <div class="mh-multi-options">
-                          <?php foreach ($types as $t): ?>
-                              <label class="mh-multi-option">
-                                  <input type="checkbox"
-                                         value="<?php echo esc_attr($t->slug); ?>"
-                                         <?php checked(in_array($t->slug, $types_selected, true)); ?>>
-                                  <span><?php echo esc_html($t->name); ?></span>
-                              </label>
-                          <?php endforeach; ?>
-                      </div>
-                  </div>
-
-                  <div class="mh-multi-hidden"></div>
-              </div>
-          </div>
-
-          <!-- MULTI 2: Conditie -->
-          <div class="mh-filter-item mh-filter-conditie">
-              <label>Conditie</label>
-
-              <div class="mh-multi" data-name="mh_conditie[]">
-                  <button type="button" class="mh-multi-btn" aria-expanded="false">
-                      <span class="mh-multi-placeholder">Selecteer conditie</span>
-                      <span class="mh-multi-tags" aria-hidden="true"></span>
-                      <span class="mh-multi-caret">▾</span>
-                  </button>
-
-                  <div class="mh-multi-panel" role="listbox">
-                      <div class="mh-multi-options">
-                          <?php foreach ($condities as $c): ?>
-                              <label class="mh-multi-option">
-                                  <input type="checkbox"
-                                         value="<?php echo esc_attr($c->slug); ?>"
-                                         <?php checked(in_array($c->slug, $condities_selected, true)); ?>>
-                                  <span><?php echo esc_html($c->name); ?></span>
-                              </label>
-                          <?php endforeach; ?>
-                      </div>
-                  </div>
-
-                  <div class="mh-multi-hidden"></div>
-              </div>
-          </div>
-
-      </div>
-
-      <div class="mh-filter-reset-row">
-          <a class="reset-link" href="<?php echo esc_url(get_permalink()); ?>">Reset</a>
-      </div>
-
-  </form>
-
-</div>
-
-
-
-
-<style>
-/* ✅ Container zoals Fondsen blok */
-.mh-units-filter-wrap{
-  max-width: 1050px;
-  margin: 20px auto;
-  padding: 24px;
-  background: var(--color-surface, #FFFFFF);
-  border: 1px solid var(--color-border, #BFE396);
-  box-shadow: 0 14px 34px rgba(37, 71, 107, 0.12);
-}
-
-/* Header */
-.mh-filter-header h1{
-  font-family: Balgin Bold; 
-  font-size: 28px;
-  line-height: 1.2;
-  margin: 0 0 10px 0;
-  color: var(--color-text, #25476B) !important;
-  font-weight: 700;
-}
-
-.mh-filter-header p{
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  margin: 0 0 18px 0;
-  color: var(--color-text-soft, #39749B);
-}
-
-.mh-filter-header-link{
-  color: var(--color-secondary, #39749B) !important;
-  text-decoration: none !important;
-  font-weight: 600;
-}
-
-
-
-/* ✅ Nieuwe top row: 50% / 25% / 25% */
-.mh-filter-top-row{
-  display: flex;
-  gap: 20px;
-  align-items: flex-end;
-}
-
-/* Labels */
-.mh-filter-item label{
-  display: block;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  margin-bottom: 6px;
-  color: var(--color-text, #25476B);
-}
-
-/* Kolombreedtes */
-.mh-filter-search{
-  flex: 0 0 calc(50% - 10px); /* -10px = helft van gap (20px) */
-  min-width: 320px;
-}
-
-.mh-filter-type,
-.mh-filter-conditie{
-  flex: 1 1 0;  /* beide nemen gelijk deel van resterende ruimte (25/25) */
-  min-width: 220px;
-}
-
-/* Zoek input */
-.mh-filter-item input[type="text"]{
-  width: 100%;
-  padding: 12px 14px;
-  font-size: 16px;
-  border: 1px solid var(--color-border, #BFE396);
-  border-radius: 6px;
-  background: var(--color-surface, #FFFFFF);
-  color: var(--color-text, #25476B);
-  box-shadow: 0 4px 14px rgba(37, 71, 107, 0.08);
-  font-family: 'Poppins', sans-serif;
-  box-sizing: border-box;
-}
-
-/* Focus */
-.mh-filter-item input:focus{
-  outline: none;
-  border-color: var(--color-secondary-soft, #559EA3);
-  box-shadow: 0 0 0 3px var(--color-focus-ring, rgba(85, 158, 163, 0.22));
-}
-
-/* ===== Custom multiselect ===== */
-.mh-multi{
-  position: relative;
-  width: 100%;              /* ✅ geen vaste 260px meer */
-}
-
-.mh-multi-btn{
-  width: 100%;
-  padding: 12px 14px;
-  font-size: 16px;
-  border: 1px solid var(--color-border, #BFE396);
-  border-radius: 6px;
-  background: var(--color-surface, #FFFFFF);
-  color: var(--color-text, #25476B);
-  box-shadow: 0 4px 14px rgba(37, 71, 107, 0.08);
-  font-family: 'Poppins', sans-serif;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  box-sizing: border-box;
-}
-
-.mh-multi-placeholder{
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.mh-multi-tags{ display:none; }
-.mh-multi-caret{ opacity:.7; }
-
-.mh-multi-panel{
-  display: none;
-  position: absolute;
-  top: calc(100% + 8px);
-  left: 0;
-  right: 0;
-  background: #fff;
-  border: 1px solid #E0E0E0;
-  border-radius: 10px;
-  box-shadow: 0 14px 40px rgba(0,0,0,0.12);
-  z-index: 9999;
-  padding: 10px;
-}
-
-.mh-multi.is-open .mh-multi-panel{
-  display: block;
-}
-
-.mh-multi-options{
-  max-height: 240px;
-  overflow: auto;
-  padding-right: 6px;
-}
-
-.mh-multi-option{
-  display: flex;
-  gap: 10px;
-  align-items: center;
-  padding: 8px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  user-select: none;
-  font-family: 'Poppins', sans-serif;
-}
-
-.mh-multi-option:hover{
-  background: #f6f7f9;
-}
-
-.mh-multi-option input{
-  width: 16px;
-  height: 16px;
-}
-
-/* Reset onder filters */
-.mh-filter-reset-row{
-  margin-top: 16px;
-}
-
-.reset-link{
-  font-family: 'Poppins', sans-serif;
-  color: #333;
-  text-decoration: underline;
-}
-
-/* ✅ Responsive: stacken op mobiel/tablet */
-@media (max-width: 900px){
-  .mh-filter-top-row{
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .mh-filter-search,
-  .mh-filter-type,
-  .mh-filter-conditie{
-    flex: 1 1 auto;
-    width: 100%;
-    min-width: 0;
-  }
-}
-
-@media (max-width: 600px){
-  .mh-units-filter-wrap{
-    padding: 16px;
-  }
-}
-
-
-/* ✅ Checkboxjes verbergen, maar functionaliteit behouden */
-.mh-multi-option input[type="checkbox"]{
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-  width: 1px;
-  height: 1px;
-}
-
-
-/* Zorg dat de label/option de klikbare rij blijft */
-.mh-multi-option{
-  position: relative;
-  padding: 10px 10px;       /* iets ruimer */
-  gap: 0;                   /* checkbox gap niet meer nodig */
-}
-
-/* Selected state: als checkbox checked is, geef de rij styling */
-.mh-multi-option input[type="checkbox"]:checked + span{
-  font-weight: 600;
-}
-
-/* Selected state: achtergrond + rand op de hele rij */
-.mh-multi-option:has(input[type="checkbox"]:checked){
-  background: #eef6ff;
-  border: 1px solid #cfe6ff;
-}
-
-/* Voeg een klein “check” bolletje rechts (zonder echte checkbox) */
-.mh-multi-option:after{
-  content: "";
-  width: 10px;
-  height: 10px;
-  border-radius: 999px;
-  border: 0px solid #c7c7c7;
-  margin-left: auto;
-  flex: 0 0 auto;
-}
-
-.mh-multi-option:has(input[type="checkbox"]:checked):after{
-  border-color: #0884CC;
-  background: #0884CC;
-}
-
-/* Button: altijd wit met donkere tekst, ook bij focus/active */
-.mh-multi-btn,
-.mh-multi-btn:hover,
-.mh-multi-btn:focus,
-.mh-multi-btn:active,
-.mh-multi-btn:focus-visible{
-  background: #fff !important;
-  color: #333 !important;
-  outline: none;
-}
-
-/* Zorg dat alle teksten binnen de button ook donker blijven */
-.mh-multi-btn .mh-multi-placeholder,
-.mh-multi-btn .mh-multi-caret{
-  color: #333 !important;
-}
-
-/* Opties: wit met donkere tekst */
-.mh-multi-option,
-.mh-multi-option:hover,
-.mh-multi-option:active{
-  background: #fff !important;
-  color: #333 !important;
-}
-
-.mh-multi-option span{
-  color: #333 !important;
-}
-
-/* Geselecteerd: lichte highlight (optioneel) */
-.mh-multi-option:has(input[type="checkbox"]:checked){
-  background: #eef6ff !important;
-  border: 1px solid #cfe6ff;
-}
-
-
-
-</style>
-
-
-
-
-
-
-
+</aside>
 
 <script>
-(function(){
-  function closeAll(except){
-    document.querySelectorAll('.mh-multi.is-open').forEach(el=>{
-      if(except && el === except) return;
-      el.classList.remove('is-open');
-      const btn = el.querySelector('.mh-multi-btn');
-      if(btn) btn.setAttribute('aria-expanded','false');
+document.addEventListener('DOMContentLoaded', function () {
+  var toggleForm = document.querySelector('.mh-units-catalog__toggle-form');
+  if (toggleForm) {
+    toggleForm.querySelectorAll('.mh-units-catalog__toggle-input').forEach(function (input) {
+      input.addEventListener('change', function () {
+        toggleForm.submit();
+      });
     });
   }
 
-  function updateHiddenInputs(multi){
-    const name = multi.getAttribute('data-name'); // e.g. mh_type[]
-    const hiddenWrap = multi.querySelector('.mh-multi-hidden');
-    hiddenWrap.innerHTML = '';
+  var filterForm = document.querySelector('.mh-units-filter-form');
+  if (!filterForm) return;
 
-    const checked = Array.from(multi.querySelectorAll('input[type="checkbox"]:checked'));
-    checked.forEach(cb=>{
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = name;
-      input.value = cb.value;
-      hiddenWrap.appendChild(input);
+  function closeAllSelects(except) {
+    document.querySelectorAll('.mh-units-catalog__select.is-open').forEach(function (select) {
+      if (except && select === except) return;
+      select.classList.remove('is-open');
+      var button = select.querySelector('.mh-units-catalog__select-btn');
+      var panel = select.querySelector('.mh-units-catalog__select-panel');
+      var chevron = select.querySelector('.mh-units-catalog__select-chevron');
+      if (button) button.setAttribute('aria-expanded', 'false');
+      if (panel) panel.style.display = 'none';
+      if (chevron) chevron.style.transform = '';
     });
+  }
 
-    // Placeholder "x geselecteerd"
-    const placeholderEl = multi.querySelector('.mh-multi-placeholder');
-    if(!placeholderEl) return;
+  document.querySelectorAll('.mh-units-catalog__select').forEach(function (select) {
+    var button = select.querySelector('.mh-units-catalog__select-btn');
+    var label = select.querySelector('.mh-units-catalog__select-label');
+    var options = Array.from(select.querySelectorAll('.mh-units-catalog__select-option'));
+    var tagsWrap = select.querySelector('.mh-units-catalog__select-tags');
+    var hiddenWrap = select.querySelector('.mh-units-catalog__select-hidden');
+    var searchInput = select.querySelector('.mh-units-catalog__select-search');
+    var emptyState = select.querySelector('.mh-units-catalog__select-empty');
+    var inputName = select.getAttribute('data-name') || 'mh_type[]';
+    var selected = new Set();
 
-    if(checked.length === 0){
-      placeholderEl.textContent = placeholderEl.getAttribute('data-default') || placeholderEl.textContent;
-      return;
+    function syncHiddenInputs() {
+      hiddenWrap.innerHTML = '';
+      Array.from(selected).forEach(function (value) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = inputName;
+        input.value = value;
+        hiddenWrap.appendChild(input);
+      });
     }
 
-    placeholderEl.textContent = checked.length === 1
-      ? '1 geselecteerd'
-      : checked.length + ' geselecteerd';
-  }
+    function syncLabel() {
+      if (!selected.size) {
+        label.textContent = 'Selecteer type unit';
+        label.classList.add('is-placeholder');
+        return;
+      }
 
-  function submitFormFrom(el){
-    const form = el.closest('form');
-    if(form) form.submit();
-  }
-
-  // Init: sla default placeholder op
-  document.querySelectorAll('.mh-multi').forEach(multi=>{
-    const placeholderEl = multi.querySelector('.mh-multi-placeholder');
-    if(placeholderEl){
-      placeholderEl.setAttribute('data-default', placeholderEl.textContent.trim());
+      label.textContent = selected.size === 1 ? '1 geselecteerd' : selected.size + ' geselecteerd';
+      label.classList.remove('is-placeholder');
     }
 
-    // Open/close
-    const btn = multi.querySelector('.mh-multi-btn');
-    btn.addEventListener('click', function(e){
-      e.preventDefault();
-      const isOpen = multi.classList.contains('is-open');
-      closeAll(multi);
-      multi.classList.toggle('is-open', !isOpen);
-      btn.setAttribute('aria-expanded', (!isOpen) ? 'true' : 'false');
-    });
+    function renderTags() {
+      tagsWrap.innerHTML = '';
 
-    // Change => update hidden inputs + ✅ auto-submit
-    multi.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
-      cb.addEventListener('change', function(){
-        updateHiddenInputs(multi);
-        submitFormFrom(multi);   // ✅ direct filteren zonder enter/knop
+      Array.from(selected).forEach(function (value) {
+        var option = options.find(function (item) { return item.getAttribute('data-value') === value; });
+        if (!option) return;
+
+        var tag = document.createElement('span');
+        tag.className = 'mh-units-catalog__select-tag';
+        tag.style.cssText = 'display:inline-flex;align-items:center;gap:6px;padding:7px 12px 7px 16px;border:1px solid #DEDEDE;border-radius:999px;background:#fff;color:#333;font-family:"Poppins",sans-serif;font-size:13px;font-weight:700;line-height:1.3;box-shadow:0 4px 20px -4px rgba(0,0,0,0.08);';
+
+        var text = document.createElement('span');
+        text.textContent = option.getAttribute('data-label') || value;
+
+        var remove = document.createElement('button');
+        remove.type = 'button';
+        remove.className = 'mh-units-catalog__select-tag-remove';
+        remove.setAttribute('aria-label', 'Verwijder ' + text.textContent);
+        remove.innerHTML = '&times;';
+        remove.style.cssText = 'appearance:none;display:flex;align-items:center;justify-content:center;width:16px;height:16px;padding:0;margin:0;border:none;border-radius:50%;background:transparent;color:#999;font-size:17px;font-weight:700;line-height:1;cursor:pointer;';
+        remove.addEventListener('click', function (event) {
+          event.stopPropagation();
+          selected.delete(value);
+          syncState();
+        });
+
+        tag.appendChild(text);
+        tag.appendChild(remove);
+        tagsWrap.appendChild(tag);
+      });
+    }
+
+    function syncOptions() {
+      options.forEach(function (option) {
+        var isSelected = selected.has(option.getAttribute('data-value') || '');
+        option.classList.toggle('is-selected', isSelected);
+        option.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+        option.style.background = isSelected ? '#f1f8ee' : '';
+        option.style.color = isSelected ? '#111' : '#333';
+        option.style.fontWeight = isSelected ? '600' : '400';
+      });
+    }
+
+    function syncState() {
+      syncOptions();
+      syncHiddenInputs();
+      syncLabel();
+      renderTags();
+    }
+
+    function syncEmptyState() {
+      if (!emptyState) return;
+      var hasVisible = options.some(function (option) {
+        return option.style.display !== 'none';
+      });
+      emptyState.style.display = hasVisible ? 'none' : 'block';
+    }
+
+    options.forEach(function (option) {
+      var value = option.getAttribute('data-value') || '';
+      if (option.classList.contains('is-selected')) {
+        selected.add(value);
+      }
+
+      option.addEventListener('click', function (event) {
+        event.stopPropagation();
+        if (selected.has(value)) {
+          selected.delete(value);
+        } else {
+          selected.add(value);
+        }
+        syncState();
       });
     });
 
-    // initial
-    updateHiddenInputs(multi);
-  });
-
-  // ✅ Live zoeken zonder enter (debounce)
-  const searchInput = document.querySelector('#mh_search');
-  if(searchInput){
-    let t;
-    searchInput.addEventListener('input', function(){
-      clearTimeout(t);
-      t = setTimeout(function(){
-        submitFormFrom(searchInput);
-      }, 400);
+    button.addEventListener('click', function (event) {
+      event.stopPropagation();
+      var willOpen = !select.classList.contains('is-open');
+      var panel = select.querySelector('.mh-units-catalog__select-panel');
+      var chevron = select.querySelector('.mh-units-catalog__select-chevron');
+      closeAllSelects(select);
+      select.classList.toggle('is-open', willOpen);
+      button.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+      if (panel) panel.style.display = willOpen ? 'block' : 'none';
+      if (chevron) chevron.style.transform = willOpen ? 'rotate(180deg)' : '';
+      if (willOpen && searchInput) searchInput.focus();
     });
-  }
 
-  // Close on outside click
-  document.addEventListener('click', function(e){
-    const inside = e.target.closest('.mh-multi');
-    if(!inside) closeAll(null);
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        var query = searchInput.value.trim().toLowerCase();
+        options.forEach(function (option) {
+          var text = (option.getAttribute('data-label') || '').toLowerCase();
+          option.style.display = !query || text.indexOf(query) !== -1 ? '' : 'none';
+        });
+        syncEmptyState();
+      });
+    }
+
+    syncState();
+    syncEmptyState();
   });
 
-  // Escape close
-  document.addEventListener('keydown', function(e){
-    if(e.key === 'Escape') closeAll(null);
+  document.addEventListener('click', function () {
+    closeAllSelects();
   });
-})();
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeAllSelects();
+    }
+  });
+});
 </script>

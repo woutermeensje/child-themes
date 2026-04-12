@@ -18,7 +18,7 @@ if (!$excerpt) {
 ?>
 
 <article class="mh-unit-card mh-product-card">
-    <a class="mh-product-card__link mh-unit-card__link mh-unit-card__media-link" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr(get_the_title()); ?>">
+    <a class="mh-unit-card__link mh-unit-card__media-link" href="<?php the_permalink(); ?>" aria-label="<?php echo esc_attr(get_the_title()); ?>">
         <div class="mh-product-card__media mh-unit-card__media">
             <?php if ($aanbod_label): ?>
                 <span class="mh-unit-card__badge"><?php echo esc_html($aanbod_label); ?></span>

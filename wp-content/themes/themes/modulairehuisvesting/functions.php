@@ -369,6 +369,7 @@ function mh_get_units_shortcode_intro_html(WP_Query $query, string $active_view,
     return (string) ob_get_clean();
 }
 
+if (!shortcode_exists('mh_units')) {
 add_shortcode('mh_units', function ($atts) {
     if (!function_exists('mh_units_render_template')) {
         return '';
@@ -454,6 +455,7 @@ add_shortcode('mh_units', function ($atts) {
 
     return ob_get_clean();
 });
+}
 
 function mh_render_breadcrumbs(string $nav_class = '', string $wrapper_class = ''): void {
 	$nav_class_attr = $nav_class ? ' class="' . esc_attr($nav_class) . '"' : '';

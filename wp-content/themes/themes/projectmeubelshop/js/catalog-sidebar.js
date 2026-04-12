@@ -309,6 +309,7 @@
     if (!items.length) return;
     var currentUrl = getCatalogUrl();
     var searchTimer = null;
+    var productsHeader = document.querySelector('.pms-products-page-header');
 
     // Wrapper aanmaken
     var wrapper = document.createElement('section');
@@ -385,6 +386,10 @@
     }
 
     parent.insertBefore(wrapper, productsList);
+
+    if (productsHeader && productsHeader.parentNode === parent) {
+      wrapper.appendChild(productsHeader);
+    }
 
     prependEls.forEach(function (el) {
       gridWrap.appendChild(el);

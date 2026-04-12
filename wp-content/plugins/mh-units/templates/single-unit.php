@@ -3,633 +3,786 @@ if (!defined('ABSPATH')) exit;
 
 get_header();
 
-if (have_posts()) : while (have_posts()) : the_post();
+if (!have_posts()) {
+    get_footer();
+    return;
+}
 
-$price_note   = get_post_meta(get_the_ID(), '_mh_unit_price_note', true);
-$terms_type   = get_the_terms(get_the_ID(), 'mh_unit_type');
-$terms_cond   = get_the_terms(get_the_ID(), 'mh_unit_conditie');
-$terms_aanbod = get_the_terms(get_the_ID(), 'mh_unit_aanbod');
-$aanbod_label = (!is_wp_error($terms_aanbod) && !empty($terms_aanbod)) ? $terms_aanbod[0]->name : '';
-$unit_id      = get_the_ID();
-$in_quote     = function_exists('mh_quote_has_product') && mh_quote_has_product($unit_id);
-$quote_url    = function_exists('mh_quote_get_page_url') ? mh_quote_get_page_url() : home_url('/mijn-offerte/');
-$just_added   = isset($_GET['mh_added']) && (int) $_GET['mh_added'] === $unit_id;
-?>
+while (have_posts()) :
+    the_post();
 
-<main class="mhu-single">
+    $unit_id      = get_the_ID();
+    $price_note   = get_post_meta($unit_id, '_mh_unit_price_note', true);
+    $gallery_meta = get_post_meta($unit_id, '_mh_unit_gallery_ids', true);
+    $gallery_ids  = array_values(array_filter(array_map('absint', explode(',', (string) $gallery_meta))));
+    $image_ids    = array_values(array_filter(array_unique(array_merge(
+        [get_post_thumbnail_id($unit_id)],
+        $gallery_ids
+    ))));
 
-    <!-- Breadcrumb -->
-    <nav class="mhu-breadcrumb" aria-label="Breadcrumb">
-        <a href="<?php echo esc_url(home_url('/')); ?>">Home</a>
-        <span class="mhu-breadcrumb__sep" aria-hidden="true">›</span>
-        <a href="<?php echo esc_url(home_url('/units/')); ?>">Units</a>
-        <span class="mhu-breadcrumb__sep" aria-hidden="true">›</span>
-        <span aria-current="page"><?php the_title(); ?></span>
-    </nav>
+    $terms_type   = get_the_terms($unit_id, 'mh_unit_type');
+    $terms_cond   = get_the_terms($unit_id, 'mh_unit_conditie');
+    $terms_aanbod = get_the_terms($unit_id, 'mh_unit_aanbod');
+    $excerpt      = get_the_excerpt();
+    $content      = get_the_content();
+    $in_quote     = function_exists('mh_quote_has_product') && mh_quote_has_product($unit_id);
+    $quote_url    = function_exists('mh_quote_get_page_url') ? mh_quote_get_page_url() : home_url('/mijn-offerte/');
+    $just_added   = isset($_GET['mh_added']) && (int) $_GET['mh_added'] === $unit_id;
 
-    <!-- Title + badges -->
-    <header class="mhu-header">
-        <div class="mhu-header__top">
-            <h1 class="mhu-header__title"><?php the_title(); ?></h1>
-            <?php if ($aanbod_label): ?>
-                <span class="mhu-aanbod-badge"><?php echo esc_html($aanbod_label); ?></span>
-            <?php endif; ?>
-        </div>
+    $all_terms = [];
+    foreach ([$terms_aanbod, $terms_type, $terms_cond] as $group) {
+        if (!empty($group) && !is_wp_error($group)) {
+            foreach ($group as $term) {
+                $all_terms[$term->taxonomy . ':' . $term->term_id] = $term;
+            }
+        }
+    }
 
-        <?php
-        $has_type = (!is_wp_error($terms_type) && !empty($terms_type));
-        $has_cond = (!is_wp_error($terms_cond) && !empty($terms_cond));
-        if ($has_type || $has_cond): ?>
-        <div class="mhu-header__badges">
-            <?php if ($has_type): foreach ($terms_type as $term): ?>
-                <span class="mhu-tax-badge"><?php echo esc_html($term->name); ?></span>
-            <?php endforeach; endif; ?>
-            <?php if ($has_cond): foreach ($terms_cond as $term): ?>
-                <span class="mhu-tax-badge mhu-tax-badge--cond"><?php echo esc_html($term->name); ?></span>
-            <?php endforeach; endif; ?>
-        </div>
-        <?php endif; ?>
-    </header>
+    $related_tax_query = [];
+    $type_ids = !empty($terms_type) && !is_wp_error($terms_type) ? wp_list_pluck($terms_type, 'term_id') : [];
+    $cond_ids = !empty($terms_cond) && !is_wp_error($terms_cond) ? wp_list_pluck($terms_cond, 'term_id') : [];
 
-    <!-- Image + Sidebar -->
-    <div class="mhu-top">
+    if (!empty($type_ids)) {
+        $related_tax_query[] = [
+            'taxonomy' => 'mh_unit_type',
+            'field'    => 'term_id',
+            'terms'    => $type_ids,
+        ];
+    }
 
-        <div class="mhu-image">
-            <?php if (has_post_thumbnail()): ?>
-                <?php the_post_thumbnail('large', ['loading' => 'eager']); ?>
-            <?php else: ?>
-                <div class="mhu-image__placeholder" aria-hidden="true">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#c8d5e3" stroke-width="1.5" width="72" height="72"><rect x="2" y="10" width="60" height="44" rx="5"/><circle cx="20" cy="28" r="6"/><path d="M2 44 l18-16 12 12 10-12 22 16"/></svg>
-                </div>
-            <?php endif; ?>
-        </div>
+    if (!empty($cond_ids)) {
+        $related_tax_query[] = [
+            'taxonomy' => 'mh_unit_conditie',
+            'field'    => 'term_id',
+            'terms'    => $cond_ids,
+        ];
+    }
 
-        <aside class="mhu-sidebar">
-            <div class="mhu-sidebar__box">
+    if (count($related_tax_query) > 1) {
+        $related_tax_query = array_merge([['relation' => 'OR']], $related_tax_query);
+    }
 
-                <?php if ($price_note || $aanbod_label || $has_type || $has_cond): ?>
-                <ul class="mhu-meta">
-                    <?php if ($aanbod_label): ?>
-                    <li class="mhu-meta__row">
-                        <span class="mhu-meta__label">Aanbod</span>
-                        <span class="mhu-meta__value"><?php echo esc_html($aanbod_label); ?></span>
-                    </li>
-                    <?php endif; ?>
-                    <?php if ($has_type): ?>
-                    <li class="mhu-meta__row">
-                        <span class="mhu-meta__label">Type</span>
-                        <span class="mhu-meta__value"><?php echo esc_html(implode(', ', wp_list_pluck($terms_type, 'name'))); ?></span>
-                    </li>
-                    <?php endif; ?>
-                    <?php if ($has_cond): ?>
-                    <li class="mhu-meta__row">
-                        <span class="mhu-meta__label">Conditie</span>
-                        <span class="mhu-meta__value"><?php echo esc_html(implode(', ', wp_list_pluck($terms_cond, 'name'))); ?></span>
-                    </li>
-                    <?php endif; ?>
-                    <?php if ($price_note): ?>
-                    <li class="mhu-meta__row mhu-meta__row--price">
-                        <span class="mhu-meta__label">Prijs</span>
-                        <span class="mhu-meta__value mhu-meta__price"><?php echo esc_html($price_note); ?></span>
-                    </li>
-                    <?php endif; ?>
-                </ul>
-                <hr class="mhu-sidebar__divider">
+    $related_units = new WP_Query([
+        'post_type'      => 'mh_unit',
+        'posts_per_page' => 6,
+        'post__not_in'   => [$unit_id],
+        'tax_query'      => !empty($related_tax_query) ? $related_tax_query : [],
+    ]);
+    ?>
+
+    <style>
+    .mhu-single-page .mh-product-wrapper {
+        max-width: 1200px;
+        margin: 40px auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+    }
+
+    .mhu-single-page .mhu-breadcrumb {
+        max-width: 1200px;
+        margin: 32px auto 0;
+        padding-top: 8px;
+        color: #777;
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .mhu-single-page .mhu-breadcrumb a {
+        color: #777;
+        text-decoration: none;
+    }
+
+    .mhu-single-page .mhu-breadcrumb a:hover {
+        color: var(--color-primary, #25476B);
+    }
+
+    .mhu-single-page .mhu-breadcrumb__sep {
+        margin: 0 8px;
+        color: #b4b4b4;
+    }
+
+    .mhu-single-page .mh-col-left {
+        border: 1px solid #DEDEDE;
+        border-radius: 5px;
+        overflow: hidden;
+        background: #fff;
+    }
+
+    .mhu-single-page .mh-col-right {
+        background: #fff;
+        border: 1px solid #DEDEDE;
+        padding: 24px;
+        border-radius: 5px;
+    }
+
+    .mhu-single-page .product_title.entry-title {
+        display: block !important;
+        margin: 0 0 12px !important;
+        color: #111 !important;
+        font-family: Inter, sans-serif;
+        font-size: 32px;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .mhu-single-page .mh-gallery-preview {
+        position: relative;
+        overflow: hidden;
+        border-radius: 5px;
+        background: #fff;
+        line-height: 0;
+    }
+
+    .mhu-single-page .mh-gallery-preview img {
+        width: 100%;
+        height: auto;
+        max-height: 500px;
+        object-fit: contain;
+        object-position: center top;
+        display: none;
+        vertical-align: top;
+        margin: 0 auto;
+    }
+
+    .mhu-single-page .mh-gallery-preview img.is-active {
+        display: block;
+    }
+
+    .mhu-single-page .mh-preview-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0,0,0,0.45);
+        border: none;
+        color: #fff;
+        font-size: 22px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+        transition: background 0.2s;
+    }
+
+    .mhu-single-page .mh-preview-arrow:hover {
+        background: rgba(0,0,0,0.7);
+    }
+
+    .mhu-single-page .mh-preview-arrow--prev { left: 12px; }
+    .mhu-single-page .mh-preview-arrow--next { right: 12px; }
+
+    .mhu-single-page .mh-preview-counter {
+        position: absolute;
+        bottom: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+    }
+
+    .mhu-single-page .mh-preview-counter span {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: rgba(255,255,255,0.5);
+        display: block;
+    }
+
+    .mhu-single-page .mh-preview-counter span.is-active {
+        background: #fff;
+    }
+
+    .mhu-single-page .mh-product-cats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 4px 0 16px;
+        padding: 0;
+        list-style: none;
+    }
+
+    .mhu-single-page .mh-product-cats a,
+    .mhu-single-page .mh-product-cats span {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 14px;
+        background: #fff;
+        border: 1px solid var(--color-border-strong, #8AC697);
+        border-radius: 999px;
+        font-family: Inter, sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        color: #333;
+        text-decoration: none;
+    }
+
+    .mhu-single-page .mh-quote-cta {
+        margin-top: 16px;
+        margin-bottom: 28px;
+    }
+
+    .mhu-single-page .mh-quote-cta__divider {
+        border: none;
+        border-top: 1px solid #EBEBEB;
+        margin: 20px 0 16px;
+    }
+
+    .mhu-single-page .mh-quote-cta__label {
+        font-family: Inter, sans-serif;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--color-text-soft, #39749B);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0 0 10px;
+    }
+
+    .mhu-single-page .mh-quote-fallback {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .mhu-single-page .mh-qty-stepper {
+        display: flex !important;
+        align-items: center !important;
+        border: 1px solid var(--color-border, #BFE396) !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        background: #fff !important;
+        flex: 0 0 auto !important;
+        height: 46px !important;
+    }
+
+    .mhu-single-page .mh-qty-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 36px !important;
+        height: 100% !important;
+        background: none !important;
+        border: none !important;
+        padding: 0 !important;
+        color: #555 !important;
+        cursor: pointer !important;
+        transition: background 0.15s, color 0.15s !important;
+        flex-shrink: 0 !important;
+    }
+
+    .mhu-single-page .mh-qty-btn:hover {
+        background: var(--color-bg, #f5f5f5) !important;
+        color: var(--color-primary, #25476B) !important;
+    }
+
+    .mhu-single-page .mh-qty-input {
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        width: 44px !important;
+        height: 100% !important;
+        border: none !important;
+        border-left: 1px solid var(--color-border, #BFE396) !important;
+        border-right: 1px solid var(--color-border, #BFE396) !important;
+        padding: 0 !important;
+        font-family: Inter, sans-serif !important;
+        font-size: 15px !important;
+        font-weight: 600 !important;
+        color: #333 !important;
+        background: #fff !important;
+        text-align: center !important;
+        box-shadow: none !important;
+        outline: none !important;
+    }
+
+    .mhu-single-page .mh-quote-fallback-btn {
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        height: 46px !important;
+        padding: 0 16px !important;
+        background: var(--color-primary, #25476B) !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-family: Inter, sans-serif !important;
+        font-size: 14px !important;
+        font-weight: 700 !important;
+        text-decoration: none !important;
+        cursor: pointer !important;
+        white-space: nowrap !important;
+        transition: background-color 0.15s !important;
+        box-sizing: border-box !important;
+    }
+
+    .mhu-single-page .mh-quote-fallback-btn:hover {
+        background: var(--color-primary-hover, #325F8D) !important;
+        color: #fff !important;
+    }
+
+    .mhu-single-page .mh-contact-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        margin: 0 0 28px;
+    }
+
+    .mhu-single-page .mh-contact-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 15px;
+        color: #333 !important;
+        text-decoration: none;
+    }
+
+    .mhu-single-page .mh-contact-item:hover {
+        color: var(--color-secondary, #39749B);
+    }
+
+    .mhu-single-page .mh-intro-text {
+        font-size: 15px;
+        line-height: 1.7;
+        color: #555;
+        margin-bottom: 24px;
+    }
+
+    .mhu-single-page .mh-col-description {
+        max-width: 1200px;
+        margin: 40px auto 0;
+        background: #fff;
+        border: 1px solid #DEDEDE;
+        padding: 24px;
+        border-radius: 5px;
+    }
+
+    .mhu-single-page .mh-related {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        margin-top: 40px;
+    }
+
+    .mhu-single-page .mh-related-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .mhu-single-page .mh-related-item {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 0 !important;
+        text-decoration: none !important;
+        color: #222 !important;
+        background: transparent !important;
+        border: 1px solid #DEDEDE;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .mhu-single-page .mh-related-item:hover {
+        border-color: #d2c19a;
+    }
+
+    .mhu-single-page .mh-related-thumb {
+        width: 100%;
+        height: 180px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: #fff;
+    }
+
+    .mhu-single-page .mh-related-thumb img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        display: block !important;
+    }
+
+    .mhu-single-page .mh-related-name {
+        font-weight: 600;
+        font-size: 15px;
+        color: #222;
+        padding: 10px 12px 4px;
+        display: block;
+    }
+
+    .mhu-single-page .mh-related-cats {
+        font-size: 13px;
+        color: #888;
+        padding: 0 12px 12px;
+        display: block;
+    }
+
+    .mhu-single-page .mh-lightbox {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.9);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .mhu-single-page .mh-lightbox.is-open { display: flex; }
+    .mhu-single-page .mh-lightbox-inner {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .mhu-single-page .mh-lightbox-strip {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scrollbar-width: none;
+        padding: 40px 80px;
+        width: 100%;
+        height: 100%;
+        box-sizing: border-box;
+    }
+
+    .mhu-single-page .mh-lightbox-strip::-webkit-scrollbar { display: none; }
+
+    .mhu-single-page .mh-lightbox-strip img {
+        flex: 0 0 auto;
+        max-height: calc(100vh - 120px);
+        max-width: 85vw;
+        object-fit: contain;
+        scroll-snap-align: center;
+        border-radius: 4px;
+    }
+
+    .mhu-single-page .mh-lightbox-arrow,
+    .mhu-single-page .mh-lightbox-close {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        color: #fff;
+        cursor: pointer;
+        z-index: 10;
+    }
+
+    .mhu-single-page .mh-lightbox-arrow {
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(255,255,255,0.15);
+        border: none;
+        font-size: 28px;
+        width: 52px;
+        height: 52px;
+    }
+
+    .mhu-single-page .mh-lightbox-arrow--prev { left: 16px; }
+    .mhu-single-page .mh-lightbox-arrow--next { right: 16px; }
+
+    .mhu-single-page .mh-lightbox-close {
+        top: 20px;
+        right: 20px;
+        width: 52px;
+        height: 52px;
+        background: rgba(255,255,255,0.16);
+        border: 1px solid rgba(255,255,255,0.22);
+        font-size: 30px;
+        line-height: 1;
+    }
+
+    @media (max-width: 980px) {
+        .mhu-single-page .mh-product-wrapper {
+            grid-template-columns: 1fr;
+            gap: 20px;
+            margin: 20px auto 0;
+        }
+
+        .mhu-single-page .mh-col-right,
+        .mhu-single-page .mh-col-description {
+            padding: 20px;
+        }
+
+        .mhu-single-page .product_title.entry-title {
+            font-size: 28px;
+            margin-bottom: 14px !important;
+        }
+
+        .mhu-single-page .mh-quote-fallback {
+            flex-wrap: wrap !important;
+        }
+
+        .mhu-single-page .mh-qty-stepper,
+        .mhu-single-page .mh-quote-fallback-btn {
+            width: 100% !important;
+            flex: 1 1 100% !important;
+        }
+
+        .mhu-single-page .mh-related-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .mhu-single-page .mh-product-wrapper {
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .mhu-single-page .mh-col-right,
+        .mhu-single-page .mh-col-description {
+            padding: 16px;
+        }
+
+        .mhu-single-page .product_title.entry-title {
+            font-size: 24px;
+            line-height: 1.25;
+        }
+
+        .mhu-single-page .mh-gallery-preview img {
+            max-height: 280px;
+        }
+
+        .mhu-single-page .mh-related-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    </style>
+
+    <main class="mhu-single-page">
+        <nav class="mhu-breadcrumb" aria-label="Breadcrumb">
+            <a href="<?php echo esc_url(home_url('/')); ?>">Home</a>
+            <span class="mhu-breadcrumb__sep" aria-hidden="true">›</span>
+            <a href="<?php echo esc_url(get_post_type_archive_link('mh_unit') ?: home_url('/units/')); ?>">Units</a>
+            <span class="mhu-breadcrumb__sep" aria-hidden="true">›</span>
+            <span aria-current="page"><?php the_title(); ?></span>
+        </nav>
+
+        <div class="mh-product-wrapper">
+            <div class="mh-col-left">
+                <?php if (!empty($image_ids)) : ?>
+                    <div class="mh-gallery-preview" id="mh-open-gallery">
+                        <?php foreach ($image_ids as $index => $image_id) : ?>
+                            <?php echo wp_get_attachment_image($image_id, 'large', false, ['class' => 0 === $index ? 'is-active' : '']); ?>
+                        <?php endforeach; ?>
+
+                        <?php if (count($image_ids) > 1) : ?>
+                            <button class="mh-preview-arrow mh-preview-arrow--prev" id="mh-preview-prev" aria-label="Vorige">&#8592;</button>
+                            <button class="mh-preview-arrow mh-preview-arrow--next" id="mh-preview-next" aria-label="Volgende">&#8594;</button>
+                            <div class="mh-preview-counter" id="mh-preview-counter">
+                                <?php for ($j = 0; $j < count($image_ids); $j++) : ?>
+                                    <span class="<?php echo 0 === $j ? 'is-active' : ''; ?>"></span>
+                                <?php endfor; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+
+                    <div class="mh-lightbox" id="mh-lightbox" role="dialog" aria-modal="true">
+                        <div class="mh-lightbox-inner">
+                            <button class="mh-lightbox-close" id="mh-lightbox-close" aria-label="Sluiten">&times;</button>
+                            <button class="mh-lightbox-arrow mh-lightbox-arrow--prev" id="mh-arrow-prev" aria-label="Vorige">&#8592;</button>
+                            <div class="mh-lightbox-strip" id="mh-lightbox-strip">
+                                <?php foreach ($image_ids as $image_id) : ?>
+                                    <?php echo wp_get_attachment_image($image_id, 'full'); ?>
+                                <?php endforeach; ?>
+                            </div>
+                            <button class="mh-lightbox-arrow mh-lightbox-arrow--next" id="mh-arrow-next" aria-label="Volgende">&#8594;</button>
+                        </div>
+                    </div>
+                <?php else : ?>
+                    <div class="mh-gallery-preview">
+                        <div style="display:flex;align-items:center;justify-content:center;min-height:420px;background:#f7fbf7;color:#9aa6b2;">
+                            Geen afbeeldingen toegevoegd
+                        </div>
+                    </div>
                 <?php endif; ?>
-
-                <h3 class="mhu-sidebar__heading">Interesse in deze unit?</h3>
-                <p class="mhu-sidebar__text">Neem contact op voor een bezichtiging of vrijblijvende offerte.</p>
-
-                <?php if ($in_quote || $just_added): ?>
-                <a class="mhu-btn mhu-btn--quote" href="<?php echo esc_url($quote_url); ?>">
-                    Bekijk mijn offerte
-                </a>
-                <?php else: ?>
-                <form method="post" action="" class="mhu-quote-form">
-                    <?php wp_nonce_field('mh_add_to_quote', 'mh_nonce'); ?>
-                    <input type="hidden" name="mh_action" value="add_to_quote">
-                    <input type="hidden" name="product_id" value="<?php echo esc_attr($unit_id); ?>">
-                    <input type="hidden" name="item_type" value="mh_unit">
-                    <button type="submit" class="mhu-btn mhu-btn--quote">Toevoegen aan offerte</button>
-                </form>
-                <?php endif; ?>
-
-                <a class="mhu-btn mhu-btn--primary"
-                   href="<?php echo esc_url(home_url('/offerte-aanvragen/?unit=' . get_the_ID())); ?>">
-                    Informatie aanvragen
-                </a>
-                <a class="mhu-btn mhu-btn--outline" href="tel:0852392040">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.7 10.5 19.79 19.79 0 01.67 4.08 2 2 0 012.66 2h3a2 2 0 012 1.72c.13.96.36 1.9.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.18 6.18l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg>
-                    085 239 2040
-                </a>
-
-                <a class="mhu-back-link" href="<?php echo esc_url(home_url('/units/')); ?>">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
-                    Terug naar alle units
-                </a>
-
             </div>
-        </aside>
-    </div>
 
-    <!-- Content / Omschrijving -->
-    <?php if (get_the_content()): ?>
-    <section class="mhu-content">
-        <h2 class="mhu-content__title">Omschrijving</h2>
-        <div class="mhu-content__body">
-            <?php the_content(); ?>
+            <div class="mh-col-right">
+                <?php the_title('<h1 class="product_title entry-title">', '</h1>'); ?>
+
+                <?php if (!empty($all_terms)) : ?>
+                    <div class="mh-product-cats">
+                        <?php foreach ($all_terms as $term) : ?>
+                            <a href="<?php echo esc_url(get_term_link($term)); ?>"><?php echo esc_html($term->name); ?></a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <div class="mh-quote-cta">
+                    <hr class="mh-quote-cta__divider">
+                    <p class="mh-quote-cta__label">Interesse in deze unit?</p>
+
+                    <?php if ($in_quote || $just_added) : ?>
+                        <a href="<?php echo esc_url($quote_url); ?>" class="mh-quote-fallback-btn">Offerte bekijken</a>
+                    <?php else : ?>
+                        <form method="post" action="" class="mh-quote-fallback" id="mh-quote-form">
+                            <?php wp_nonce_field('mh_add_to_quote', 'mh_nonce'); ?>
+                            <input type="hidden" name="mh_action" value="add_to_quote">
+                            <input type="hidden" name="product_id" value="<?php echo esc_attr($unit_id); ?>">
+                            <input type="hidden" name="item_type" value="mh_unit">
+                            <div class="mh-qty-stepper">
+                                <button type="button" class="mh-qty-btn mh-qty-btn--minus" aria-label="Minder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/></svg>
+                                </button>
+                                <input type="number" class="mh-qty-input" name="quantity" value="1" min="1" aria-label="Aantal">
+                                <button type="button" class="mh-qty-btn mh-qty-btn--plus" aria-label="Meer">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                                </button>
+                            </div>
+                            <button type="submit" class="mh-quote-fallback-btn">Toevoegen aan offerte</button>
+                        </form>
+                    <?php endif; ?>
+                </div>
+
+                <div class="mh-contact-info">
+                    <a href="mailto:informatie@modulairehuisvesting.nl" class="mh-contact-item">informatie@modulairehuisvesting.nl</a>
+                    <a href="tel:0852392040" class="mh-contact-item">085 239 2040</a>
+                </div>
+
+                <?php if (!empty($excerpt)) : ?>
+                    <div class="mh-intro-text"><?php echo wpautop(esc_html($excerpt)); ?></div>
+                <?php endif; ?>
+
+                <?php if ($price_note) : ?>
+                    <div class="mh-intro-text"><strong>Prijsindicatie:</strong> <?php echo esc_html($price_note); ?></div>
+                <?php endif; ?>
+            </div>
         </div>
-    </section>
-    <?php endif; ?>
 
-</main>
-
-<!-- Footer CTA -->
-<section class="mhu-footer-cta">
-    <div class="mhu-footer-cta__inner">
-        <p class="mhu-footer-cta__text">Kom in contact met één van onze adviseurs.</p>
-        <a href="<?php echo esc_url(home_url('/advies/')); ?>" class="mhu-footer-cta__btn">Contact opnemen</a>
-    </div>
-</section>
-
-<style>
-/* ============================================================
-   MH Units – Single Unit Page
-   ============================================================ */
-
-:root {
-  --mhu-primary:    var(--color-primary, #25476B);
-  --mhu-primary-dk: var(--color-primary-hover, #325F8D);
-  --mhu-secondary:  var(--color-secondary, #39749B);
-  --mhu-ocean:      var(--color-ocean, #4188AA);
-  --mhu-accent:     var(--color-accent, #8AC697);
-  --mhu-highlight:  var(--color-highlight, #BFE396);
-  --mhu-lime:       var(--color-highlight-soft, #CCDA91);
-  --mhu-surface:    var(--color-surface, #FFFFFF);
-  --mhu-surface-alt: var(--color-surface-alt, #F1F8EE);
-  --mhu-text:       var(--color-text, #25476B);
-  --mhu-muted:      var(--color-text-soft, #39749B);
-  --mhu-border:     var(--color-border, #BFE396);
-  --mhu-bg:         var(--color-bg, #F7FBF7);
-  --mhu-radius:     6px;
-  --mhu-shadow:     0 14px 34px rgba(37, 71, 107, 0.12);
-}
-
-.mhu-single {
-  max-width: 1200px;
-  margin: 40px auto 64px;
-  padding: 0 24px;
-  font-family: 'Poppins', sans-serif;
-  color: var(--mhu-text);
-}
-
-/* ── Breadcrumb ── */
-.mhu-breadcrumb {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 4px;
-  margin-bottom: 24px;
-  font-size: 13px;
-  color: var(--mhu-muted);
-}
-
-.mhu-breadcrumb a {
-  color: var(--mhu-muted);
-  text-decoration: none;
-}
-
-.mhu-breadcrumb a:hover {
-  color: var(--mhu-primary);
-  text-decoration: underline;
-}
-
-.mhu-breadcrumb__sep {
-  color: #d1d5db;
-  font-size: 16px;
-  line-height: 1;
-}
-
-.mhu-breadcrumb span[aria-current] {
-  color: var(--mhu-text);
-  font-weight: 500;
-}
-
-/* ── Page header ── */
-.mhu-header {
-  margin-bottom: 28px;
-}
-
-.mhu-header__top {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 14px;
-}
-
-.mhu-header__title {
-  flex: 1 1 auto;
-  margin: 0;
-  font-size: 28px;
-  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
-  font-weight: 700;
-  line-height: 1.2;
-  color: var(--mhu-text);
-}
-
-/* Aanbod badge (header) */
-.mhu-aanbod-badge {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  padding: 6px 14px;
-  border-radius: var(--mhu-radius);
-  background: var(--mhu-lime);
-  color: var(--mhu-primary);
-  border: 2px solid var(--mhu-highlight);
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 13px;
-  line-height: 1;
-  white-space: nowrap;
-  margin-top: 4px;
-}
-
-/* Taxonomy badges */
-.mhu-header__badges {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.mhu-tax-badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 12px;
-  border-radius: var(--mhu-radius);
-  background: rgba(65, 136, 170, 0.10);
-  border: 2px solid rgba(65, 136, 170, 0.24);
-  color: var(--mhu-secondary);
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-.mhu-tax-badge--cond {
-  background: rgba(109, 180, 156, 0.12);
-  border-color: rgba(109, 180, 156, 0.26);
-  color: #2f6b69;
-}
-
-/* ── Top layout: image + sidebar ── */
-.mhu-top {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 32px;
-  margin-bottom: 48px;
-  align-items: start;
-}
-
-/* ── Image ── */
-.mhu-image {
-  border-radius: var(--mhu-radius);
-  overflow: hidden;
-  box-shadow: var(--mhu-shadow);
-  background: var(--mhu-bg);
-  aspect-ratio: 4 / 3;
-  position: relative;
-}
-
-.mhu-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.mhu-image__placeholder {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f1f5f9;
-  min-height: 320px;
-}
-
-/* ── Sidebar ── */
-.mhu-sidebar {
-  position: sticky;
-  top: 100px;
-}
-
-.mhu-sidebar__box {
-  background: var(--mhu-surface);
-  border: 1px solid var(--mhu-border);
-  border-radius: var(--mhu-radius);
-  box-shadow: var(--mhu-shadow);
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-/* Meta list */
-.mhu-meta {
-  list-style: none;
-  margin: 0 0 4px;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-}
-
-.mhu-meta__row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 0;
-  border-bottom: 1px solid var(--mhu-border);
-  font-size: 14px;
-}
-
-.mhu-meta__row:first-child {
-  padding-top: 0;
-}
-
-.mhu-meta__label {
-  color: var(--mhu-muted);
-  font-weight: 400;
-  white-space: nowrap;
-}
-
-.mhu-meta__value {
-  color: var(--mhu-text);
-  font-weight: 600;
-  text-align: right;
-}
-
-.mhu-meta__row--price .mhu-meta__label {
-  color: var(--mhu-text);
-  font-weight: 600;
-}
-
-.mhu-meta__price {
-  color: var(--mhu-secondary);
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.mhu-sidebar__divider {
-  border: none;
-  border-top: 1px solid var(--mhu-border);
-  margin: 20px 0;
-}
-
-.mhu-sidebar__heading {
-  margin: 0 0 10px;
-  font-size: 18px;
-  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
-  font-weight: 700;
-  color: var(--mhu-text);
-  line-height: 1.2;
-}
-
-.mhu-sidebar__text {
-  margin: 0 0 20px;
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--mhu-muted);
-}
-
-.mhu-quote-form {
-  margin: 0;
-}
-
-/* ── Buttons ── */
-.mhu-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 13px 16px;
-  border-radius: var(--mhu-radius);
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none !important;
-  text-align: center;
-  white-space: nowrap;
-  cursor: pointer;
-  transition: background .15s ease, color .15s ease, border-color .15s ease;
-  margin-bottom: 10px;
-  border: 2px solid transparent;
-  box-shadow: 0 10px 24px rgba(37, 71, 107, 0.12);
-}
-
-.mhu-btn--primary {
-  background: linear-gradient(135deg, var(--mhu-ocean) 0%, var(--mhu-secondary) 100%);
-  color: #fff !important;
-  border-color: var(--mhu-ocean);
-}
-
-.mhu-btn--primary:hover {
-  background: linear-gradient(135deg, var(--mhu-secondary) 0%, var(--mhu-primary-dk) 100%);
-  border-color: var(--mhu-secondary);
-}
-
-.mhu-btn--quote {
-  background: linear-gradient(135deg, var(--mhu-lime) 0%, var(--mhu-highlight) 45%, var(--mhu-accent) 100%);
-  color: var(--mhu-primary) !important;
-  border-color: var(--mhu-highlight);
-}
-
-.mhu-btn--quote:hover {
-  background: linear-gradient(135deg, var(--mhu-highlight) 0%, var(--mhu-accent) 50%, var(--color-tertiary, #6DB49C) 100%);
-  border-color: var(--mhu-accent);
-  color: var(--mhu-primary) !important;
-}
-
-.mhu-btn--outline {
-  background: var(--mhu-surface-alt);
-  color: var(--mhu-primary) !important;
-  border-color: var(--mhu-border);
-  box-shadow: none;
-}
-
-.mhu-btn--outline:hover {
-  background: var(--mhu-primary);
-  border-color: var(--mhu-primary);
-  color: #fff !important;
-}
-
-/* Back link */
-.mhu-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  margin-top: 8px;
-  font-size: 13px;
-  color: var(--mhu-muted);
-  text-decoration: none;
-  transition: color .15s ease;
-  align-self: center;
-}
-
-.mhu-back-link:hover {
-  color: var(--mhu-primary);
-}
-
-/* ── Content / Description ── */
-.mhu-content {
-  max-width: 800px;
-}
-
-.mhu-content__title {
-  margin: 0 0 20px;
-  font-size: 22px;
-  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
-  font-weight: 700;
-  color: var(--mhu-text);
-  padding-bottom: 14px;
-  border-bottom: 2px solid var(--mhu-border);
-}
-
-.mhu-content__body {
-  background: var(--mhu-surface);
-  border: 1px solid var(--mhu-border);
-  border-radius: var(--mhu-radius);
-  box-shadow: var(--mhu-shadow);
-  padding: 32px;
-  font-size: 16px;
-  line-height: 1.75;
-  color: var(--mhu-text);
-}
-
-.mhu-content__body h2,
-.mhu-content__body h3 {
-  margin-top: 28px;
-  margin-bottom: 12px;
-  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
-}
-
-.mhu-content__body h2:first-child,
-.mhu-content__body h3:first-child {
-  margin-top: 0;
-}
-
-.mhu-content__body p {
-  margin: 0 0 16px;
-}
-
-.mhu-content__body p:last-child {
-  margin-bottom: 0;
-}
-
-.mhu-content__body ul,
-.mhu-content__body ol {
-  padding-left: 20px;
-  margin: 0 0 16px;
-}
-
-.mhu-content__body li {
-  margin-bottom: 6px;
-}
-
-/* ── Footer CTA ── */
-.mhu-footer-cta {
-  background: linear-gradient(135deg, var(--mhu-primary) 0%, var(--mhu-primary-dk) 100%);
-  width: 100%;
-  margin-top: 64px;
-}
-
-.mhu-footer-cta__inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 32px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-
-.mhu-footer-cta__text {
-  margin: 0;
-  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-}
-
-.mhu-footer-cta__btn {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  padding: 12px 24px;
-  border-radius: var(--mhu-radius);
-  background: var(--mhu-highlight);
-  color: var(--mhu-primary) !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 15px;
-  text-decoration: none !important;
-  white-space: nowrap;
-  transition: background .15s ease;
-  border: 2px solid var(--mhu-highlight);
-}
-
-.mhu-footer-cta__btn:hover {
-  background: var(--mhu-lime);
-  border-color: var(--mhu-lime);
-}
-
-/* ── Responsive ── */
-@media (max-width: 960px) {
-  .mhu-top {
-    grid-template-columns: 1fr;
-  }
-
-  .mhu-sidebar {
-    position: relative;
-    top: auto;
-  }
-
-  .mhu-image {
-    aspect-ratio: 16 / 9;
-  }
-}
-
-@media (max-width: 640px) {
-  .mhu-single {
-    margin-top: 24px;
-    padding: 0 16px;
-  }
-
-  .mhu-header__title {
-    font-size: 22px;
-  }
-
-  .mhu-content__body {
-    padding: 20px;
-  }
-
-  .mhu-footer-cta__inner {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 24px 16px;
-  }
-
-  .mhu-footer-cta__btn {
-    width: 100%;
-    justify-content: center;
-  }
-}
-</style>
-
-<?php endwhile; endif;
+        <?php if (!empty(trim(wp_strip_all_tags($content)))) : ?>
+            <div class="mh-col-description">
+                <h2>Unit beschrijving</h2>
+                <?php echo apply_filters('the_content', $content); ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if ($related_units->have_posts()) : ?>
+            <div class="mh-col-description mh-related">
+                <h2>Gerelateerde units</h2>
+                <div class="mh-related-grid">
+                    <?php while ($related_units->have_posts()) : $related_units->the_post(); ?>
+                        <a href="<?php the_permalink(); ?>" class="mh-related-item">
+                            <div class="mh-related-thumb">
+                                <?php if (has_post_thumbnail()) : ?>
+                                    <?php the_post_thumbnail('medium'); ?>
+                                <?php else : ?>
+                                    <div style="width:100%;height:100%;background:#f7fbf7;"></div>
+                                <?php endif; ?>
+                            </div>
+                            <span class="mh-related-name"><?php the_title(); ?></span>
+                            <?php
+                            $related_meta = [];
+                            $related_types = get_the_terms(get_the_ID(), 'mh_unit_type');
+                            $related_cond = get_the_terms(get_the_ID(), 'mh_unit_conditie');
+                            if (!empty($related_types) && !is_wp_error($related_types)) {
+                                $related_meta[] = $related_types[0]->name;
+                            }
+                            if (!empty($related_cond) && !is_wp_error($related_cond)) {
+                                $related_meta[] = $related_cond[0]->name;
+                            }
+                            ?>
+                            <?php if (!empty($related_meta)) : ?>
+                                <span class="mh-related-cats"><?php echo esc_html(implode(' • ', $related_meta)); ?></span>
+                            <?php endif; ?>
+                        </a>
+                    <?php endwhile; ?>
+                </div>
+            </div>
+            <?php wp_reset_postdata(); ?>
+        <?php endif; ?>
+    </main>
+
+    <script>
+    (function () {
+      const previewImgs = document.querySelectorAll('#mh-open-gallery img');
+      const dots = document.querySelectorAll('#mh-preview-counter span');
+      const prevBtn = document.getElementById('mh-preview-prev');
+      const nextBtn = document.getElementById('mh-preview-next');
+      let current = 0;
+
+      function showSlide(index) {
+        if (!previewImgs.length) return;
+        current = (index + previewImgs.length) % previewImgs.length;
+        previewImgs.forEach((img, i) => img.classList.toggle('is-active', i === current));
+        dots.forEach((dot, i) => dot.classList.toggle('is-active', i === current));
+      }
+
+      if (prevBtn) prevBtn.addEventListener('click', function (e) { e.stopPropagation(); showSlide(current - 1); });
+      if (nextBtn) nextBtn.addEventListener('click', function (e) { e.stopPropagation(); showSlide(current + 1); });
+
+      const lightbox = document.getElementById('mh-lightbox');
+      const closeBtn = document.getElementById('mh-lightbox-close');
+      const strip = document.getElementById('mh-lightbox-strip');
+      const lbPrev = document.getElementById('mh-arrow-prev');
+      const lbNext = document.getElementById('mh-arrow-next');
+
+      if (lightbox && strip) {
+        const lbImgs = strip.querySelectorAll('img');
+        let lbCurrent = 0;
+
+        function lbScrollTo(index) {
+          if (!lbImgs.length) return;
+          lbCurrent = Math.max(0, Math.min(lbImgs.length - 1, index));
+          lbImgs[lbCurrent].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+
+        previewImgs.forEach(function (img) {
+          img.style.cursor = 'zoom-in';
+          img.addEventListener('click', function () {
+            lbScrollTo(current);
+            lightbox.classList.add('is-open');
+            document.body.style.overflow = 'hidden';
+          });
+        });
+
+        if (closeBtn) closeBtn.addEventListener('click', closeLb);
+        lightbox.addEventListener('click', function (e) { if (e.target === lightbox) closeLb(); });
+        if (lbPrev) lbPrev.addEventListener('click', function () { lbScrollTo(lbCurrent - 1); });
+        if (lbNext) lbNext.addEventListener('click', function () { lbScrollTo(lbCurrent + 1); });
+
+        document.addEventListener('keydown', function (e) {
+          if (!lightbox.classList.contains('is-open')) return;
+          if (e.key === 'Escape') closeLb();
+          if (e.key === 'ArrowLeft') lbScrollTo(lbCurrent - 1);
+          if (e.key === 'ArrowRight') lbScrollTo(lbCurrent + 1);
+        });
+
+        function closeLb() {
+          lightbox.classList.remove('is-open');
+          document.body.style.overflow = '';
+        }
+      }
+
+      document.querySelectorAll('.mh-qty-stepper').forEach(function (stepper) {
+        var input = stepper.querySelector('.mh-qty-input');
+        var minus = stepper.querySelector('.mh-qty-btn--minus');
+        var plus = stepper.querySelector('.mh-qty-btn--plus');
+        if (!input) return;
+        if (minus) minus.addEventListener('click', function () {
+          var v = parseInt(input.value, 10) || 1;
+          if (v > 1) input.value = v - 1;
+        });
+        if (plus) plus.addEventListener('click', function () {
+          var v = parseInt(input.value, 10) || 1;
+          input.value = v + 1;
+        });
+      });
+    })();
+    </script>
+<?php
+endwhile;
 
 get_footer();

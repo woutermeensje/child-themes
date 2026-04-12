@@ -635,6 +635,9 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
 }
 
 .mh-units-grid .mh-unit-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   margin: 0;
   min-width: 0;
   border: 1px solid #DEDEDE;
@@ -658,6 +661,8 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
 
 .mh-unit-card__media-link {
   display: block;
+  flex: 0 0 auto;
+  height: auto;
 }
 
 .mh-unit-card__media {
@@ -711,6 +716,8 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
 }
 
 .mh-unit-card__body {
+  display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   align-items: stretch;
   gap: 12px;
@@ -763,6 +770,10 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
+}
+
+.mh-unit-card__actions > * {
+  flex: 0 0 auto;
 }
 
 .mh-unit-card__cta {
