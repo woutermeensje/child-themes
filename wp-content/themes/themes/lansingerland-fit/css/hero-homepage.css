@@ -2,18 +2,22 @@
 
 .welcome-v2__hero {
   position: relative;
-  height: 500px;
+  min-height: 500px;
   overflow: hidden;
   isolation: isolate;
   display: flex;
+  align-items: stretch;
+  background: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .welcome-v2__hero-left {
-  background: var(--color-primary);
   color: #fff;
   position: relative;
   z-index: 2;
-  height: 100%;
+  min-height: 100%;
+  align-self: stretch;
+  display: flex;
   width: min(64%, 980px);
   clip-path: polygon(0 0, 85% 0, 70% 100%, 0 100%);
 }
@@ -21,7 +25,8 @@
 .welcome-v2__hero-content {
   width: min(560px, calc(100% - 150px));
   margin: 0 auto 0 clamp(20px, 4vw, 72px);
-  height: 100%;
+  min-height: 100%;
+  flex: 1 1 auto;
   display: grid;
   align-content: center;
   gap: 14px;
@@ -34,24 +39,19 @@
 
 .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-content {
   align-content: stretch;
-  grid-template-rows: 80fr 20fr;
+  grid-template-rows: minmax(0, 1fr) auto;
   gap: 0;
   padding: 0;
 }
 
 .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-left {
-  background: linear-gradient(
-    180deg,
-    var(--color-secondary) 0%,
-    var(--color-secondary) 80%,
-    #ffffff 80%,
-    #ffffff 100%
-  );
+  background: var(--color-primary);
 }
 
 .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-copy {
   align-content: center;
-  padding: 40px 0 24px;
+  min-height: 0;
+  padding: 36px 0 22px;
 }
 
 .welcome-v2__hero--lansingerland-fit .blog-breadcrumbs {
@@ -74,10 +74,25 @@
 .welcome-v2__title {
   margin: 0;
   color: #ffffff !important;
-  font-size: 32px;
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(34px, 4.4vw, 56px);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.04;
   letter-spacing: -0.02em;
+  max-width: 9ch;
+  text-wrap: pretty;
+}
+
+.welcome-v2__title--homepage {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  margin-right: 0;
+  font-size: 32px;
+  line-height: 1.2;
+  letter-spacing: -0.045em;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .welcome-v2__lead {
@@ -101,14 +116,16 @@
 .welcome-v2__hero-actions-panel {
   display: flex;
   align-items: center;
+  min-height: 96px;
+  margin-top: -1px;
   margin-left: calc(clamp(20px, 4vw, 72px) * -1);
   margin-right: -96px;
   width: calc(100% + clamp(20px, 4vw, 72px) + 96px);
-  background: #f5f5f5;
-  padding: 16px calc(clamp(20px, 4vw, 72px) + 96px) 20px clamp(20px, 4vw, 72px);
+  background: var(--color-bg-light);
+  padding: 16px calc(clamp(20px, 4vw, 72px) + 96px) 18px clamp(20px, 4vw, 72px);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
-  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+  box-shadow: none;
 }
 
 .welcome-v2__hero-contact-list {
@@ -122,7 +139,7 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: #333333 !important;
+  color: var(--color-text) !important;
   font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 500;
@@ -136,7 +153,7 @@
   justify-content: center;
   width: 22px;
   height: 22px;
-  color: var(--color-secondary);
+  color: var(--color-turquoise);
   flex: 0 0 auto;
 }
 
@@ -164,9 +181,9 @@
 
 @media (max-width: 768px) {
   .welcome-v2__hero {
-    height: auto;
+    min-height: auto;
     display: grid;
-    background: var(--color-secondary);
+    background: var(--color-primary);
   }
 
   .welcome-v2__hero-left {
@@ -174,7 +191,7 @@
     min-height: auto;
     clip-path: none;
     order: 1;
-    background: var(--color-secondary);
+    background: var(--color-primary);
   }
 
   .welcome-v2__hero-content {
@@ -199,7 +216,7 @@
   }
 
   .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-left {
-    background: var(--color-secondary);
+    background: var(--color-primary);
   }
 
   .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-copy {
@@ -223,7 +240,15 @@
   }
 
   .welcome-v2__title {
+    font-size: 34px;
+    max-width: 100%;
+    line-height: 1.02;
+  }
+
+  .welcome-v2__title--homepage {
     font-size: 32px;
+    line-height: 1.2;
+    letter-spacing: -0.03em;
   }
 
   .welcome-v2__lead {

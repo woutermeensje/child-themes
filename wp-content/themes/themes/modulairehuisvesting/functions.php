@@ -513,6 +513,125 @@ function mh_get_products_shortcode_intro_html(string $products_html): string {
     return (string) ob_get_clean();
 }
 
+function mh_get_werkwijze_steps(): array {
+    $email = 'informatie@modulairehuisvesting.nl';
+    $phone = '085 239 20 40';
+
+    return [
+        [
+            'icon'  => 'search',
+            'title' => 'U zoekt een tijdelijke huisvesting',
+            'body'  => sprintf(
+                'U kunt via onze mail <a href="mailto:%1$s">%1$s</a> contact zoeken of per telefoon via <a href="tel:%2$s">%3$s</a>.',
+                esc_html($email),
+                esc_attr(preg_replace('/\s+/', '', $phone)),
+                esc_html($phone)
+            ),
+        ],
+        [
+            'icon'  => 'quote',
+            'title' => 'U vraagt een offerte aan',
+            'body'  => sprintf(
+                'Dit kan via <a href="mailto:%1$s">%1$s</a> of per telefoon via <a href="tel:%2$s">%3$s</a>. U kunt precies aangeven waar en naar hoeveel u op zoek bent.',
+                esc_html($email),
+                esc_attr(preg_replace('/\s+/', '', $phone)),
+                esc_html($phone)
+            ),
+        ],
+        [
+            'icon'  => 'document',
+            'title' => 'Wij sturen u een offerte',
+            'body'  => 'Wij sturen u diezelfde dag nog een op maat gemaakte offerte per mail. Deze offerte bevat alle informatie, specificaties en kosten afgestemd op uw wens(en).',
+        ],
+        [
+            'icon'  => 'checklist',
+            'title' => 'Wij maken een order aan en stemmen die met u af',
+            'body'  => 'Na uw akkoord, zullen wij uw order definitief maken en stemmen we alle laatste details met u af zoals bijvoorbeeld de planning.',
+        ],
+        [
+            'icon'  => 'placement',
+            'title' => 'Wij plaatsen de modulaire unit(s)',
+            'body'  => 'Onze professionals zorgen ervoor dat de modulaire unit(s) veilig en efficient op uw locatie worden geplaatst.',
+        ],
+        [
+            'icon'  => 'service',
+            'title' => 'Uitstekende service tijdens huur van modulaire unit(s)',
+            'body'  => sprintf(
+                'Heeft u gedurende de huurperiode vragen of wilt u iets aanpassen of wijzigen? Neem dan contact op via <a href="mailto:%1$s">%1$s</a> of per telefoon <a href="tel:%2$s">%3$s</a> en wij zoeken naar een passende snelle oplossing.',
+                esc_html($email),
+                esc_attr(preg_replace('/\s+/', '', $phone)),
+                esc_html($phone)
+            ),
+        ],
+        [
+            'icon'  => 'stop',
+            'title' => 'Huur van modulaire unit(s) beeindigen',
+            'body'  => sprintf(
+                'U heeft de modulaire unit(s) niet meer langer nodig? Mail ons via <a href="mailto:%1$s">%1$s</a> of per telefoon naar <a href="tel:%2$s">%3$s</a> en wij zullen u laten weten wanneer de modulaire unit(s) kunnen worden opgehaald.',
+                esc_html($email),
+                esc_attr(preg_replace('/\s+/', '', $phone)),
+                esc_html($phone)
+            ),
+        ],
+        [
+            'icon'  => 'pickup',
+            'title' => 'Ophalen van de gehuurde modulaire unit(s)',
+            'body'  => 'Op de afgesproken dag zullen wij de modulaire unit(s) ophalen. Onze professionals zorgen voor demontage en transport.',
+        ],
+    ];
+}
+
+function mh_get_werkwijze_icon(string $icon): string {
+    $icons = [
+        'search' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l5 5"></path></svg>',
+        'quote' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7.5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z"></path><path d="m6 10 6 4 6-4"></path></svg>',
+        'document' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3.5h6l4 4V20a1 1 0 0 1-1 1H8a2 2 0 0 1-2-2V5.5a2 2 0 0 1 2-2Z"></path><path d="M14 3.5V8h4"></path><path d="M9 12h6"></path><path d="M9 16h6"></path></svg>',
+        'checklist' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6h10"></path><path d="M9 12h10"></path><path d="M9 18h10"></path><path d="m4 6 1.4 1.4L7.8 5"></path><path d="m4 12 1.4 1.4L7.8 11"></path><path d="m4 18 1.4 1.4L7.8 17"></path></svg>',
+        'placement' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 10.5 12 4l8.5 6.5"></path><path d="M5 10v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9"></path><path d="M9 20v-5h6v5"></path></svg>',
+        'service' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 13v-1a8 8 0 0 1 16 0v1"></path><path d="M4 13v4a2 2 0 0 0 2 2h2v-6H6a2 2 0 0 0-2 2Z"></path><path d="M20 13v4a2 2 0 0 1-2 2h-2v-6h2a2 2 0 0 1 2 2Z"></path><path d="M12 19v1.5"></path></svg>',
+        'stop' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M9 9h6v6H9z"></path></svg>',
+        'pickup' => '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7h11v8H3z"></path><path d="M14 10h3l3 3v2h-6z"></path><circle cx="7" cy="18" r="2"></circle><circle cx="17" cy="18" r="2"></circle></svg>',
+    ];
+
+    return $icons[$icon] ?? $icons['document'];
+}
+
+add_shortcode('mh_werkwijze', function (): string {
+    $steps = mh_get_werkwijze_steps();
+
+    ob_start();
+    ?>
+    <section class="mh-process" aria-labelledby="mh-process-title">
+        <div class="mh-process__intro">
+            <span class="mh-process__eyebrow">Onze Werkwijze</span>
+            <h2 id="mh-process-title" class="mh-process__title">Van eerste zoektocht tot definitieve plaatsing</h2>
+            <p class="mh-process__lead">Wij hebben hieronder een overzicht gemaakt van onze werkwijze van zoektocht naar definitieve plaatsing van een modulaire unit.</p>
+        </div>
+
+        <div class="mh-process__timeline">
+            <?php foreach ($steps as $index => $step) : ?>
+                <article class="mh-process__step">
+                    <div class="mh-process__rail">
+                        <span class="mh-process__icon" aria-hidden="true"><?php echo mh_get_werkwijze_icon($step['icon']); ?></span>
+                        <span class="mh-process__line" aria-hidden="true"></span>
+                    </div>
+                    <div class="mh-process__content">
+                        <div class="mh-process__meta">
+                            <span class="mh-process__number"><?php echo esc_html(str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT)); ?></span>
+                            <span class="mh-process__label">Stap <?php echo esc_html((string) ($index + 1)); ?></span>
+                        </div>
+                        <h3 class="mh-process__card-title"><?php echo esc_html($step['title']); ?></h3>
+                        <div class="mh-process__card-text"><?php echo wp_kses_post(wpautop($step['body'])); ?></div>
+                    </div>
+                </article>
+            <?php endforeach; ?>
+        </div>
+    </section>
+    <?php
+
+    return (string) ob_get_clean();
+});
+
 function mh_get_catalog_filter_definitions(): array {
     return [
         'mh_product_unit_type' => [

@@ -85,7 +85,7 @@ function mh_units_plugin_get_intro_html(WP_Query $query, string $active_view, st
     ?>
     <div class="mh-units-catalog__intro">
         <div class="mh-units-catalog__intro-main">
-            <?php echo mh_units_plugin_render_breadcrumbs('mh-units-catalog__breadcrumbs'); ?>
+            <?php echo mh_units_plugin_render_breadcrumbs('mh-units-catalog__breadcrumbs mh-units-shortcode__breadcrumbs'); ?>
             <?php if ($page_title) : ?>
                 <h1 class="mh-units-catalog__title"><?php echo esc_html($page_title); ?></h1>
             <?php endif; ?>

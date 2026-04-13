@@ -1,0 +1,82 @@
+.rn-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 20px;
+  border-radius: 5px;
+  border: 1.5px solid transparent;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-decoration: none !important;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+}
+
+.rn-btn--outline {
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary);
+  background: transparent;
+}
+
+.rn-btn--outline:hover,
+.rn-btn--outline:focus-visible {
+  color: #fff !important;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.rn-btn--accent {
+  color: #fff !important;
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.rn-btn--accent:hover,
+.rn-btn--accent:focus-visible {
+  color: #fff !important;
+  background: var(--color-primary-dk);
+  border-color: var(--color-primary-dk);
+}
+
+.welcome-v2__actions .rn-btn {
+  min-height: 50px;
+  padding: 11px 22px;
+  box-shadow: none;
+}
+
+.welcome-v2__actions .rn-btn--accent {
+  background: linear-gradient(135deg, var(--color-highlight-soft) 0%, var(--color-accent-soft) 46%, var(--color-accent) 100%);
+  border-color: var(--color-highlight-soft);
+  color: var(--color-navy-dark) !important;
+}
+
+.welcome-v2__actions .rn-btn--accent:hover,
+.welcome-v2__actions .rn-btn--accent:focus-visible {
+  background: linear-gradient(135deg, var(--color-spring-soft) 0%, var(--color-sea) 52%, var(--color-turquoise) 100%);
+  border-color: var(--color-sea);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+.welcome-v2__actions .rn-btn--outline {
+  background: linear-gradient(135deg, rgba(65, 136, 170, 0.18) 0%, rgba(85, 158, 163, 0.12) 100%);
+  border-color: var(--color-ocean);
+  color: #ffffff !important;
+}
+
+.welcome-v2__actions .rn-btn--outline:hover,
+.welcome-v2__actions .rn-btn--outline:focus-visible {
+  background: linear-gradient(135deg, var(--color-ocean) 0%, var(--color-secondary) 100%);
+  border-color: var(--color-ocean);
+  color: #ffffff !important;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .welcome-v2__actions .rn-btn {
+    width: 100%;
+  }
+}

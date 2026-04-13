@@ -1,6 +1,6 @@
 /* ============================================================
    Elementor Forms – File Upload Styling
-   Lansingerland-fit  |  primary #2E7D32
+   Lansingerland-fit  |  theme-driven colors
    ============================================================ */
 
 .elementor-field-type-upload {
@@ -28,15 +28,15 @@
   width: 100%;
   min-height: 130px;
   padding: 30px 20px;
-  background: #f1f8f1;
-  border: 2px dashed var(--color-primary, #2E7D32);
+  background: var(--color-bg-light, #F1F8EE);
+  border: 2px dashed var(--color-primary, #25476B);
   border-radius: 8px;
   cursor: pointer;
   text-align: center;
   font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: var(--color-text, #25476B);
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
@@ -46,7 +46,7 @@
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
   font-size: 30px;
-  color: var(--color-primary, #2E7D32);
+  color: var(--color-primary, #25476B);
   line-height: 1;
 }
 
@@ -61,8 +61,8 @@
 
 /* Hover */
 .elementor-field-type-upload:hover .elementor-field-label {
-  border-color: var(--color-primary-dk, #1B5E20);
-  background: #e8f5e9;
+  border-color: var(--color-primary-dk, #325F8D);
+  background: var(--color-bg-soft, #EEF6F2);
 }
 
 /* Mobiel */

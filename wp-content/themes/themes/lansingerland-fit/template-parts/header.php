@@ -3,6 +3,24 @@
  * Lansingerland-fit – Custom header template
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
+
+$logo_url = '';
+$logo_file = '';
+// Pick the newest logo asset from the child-theme logo folder first,
+// so uploads do not depend on one exact filename.
+$logo_candidates = glob( get_stylesheet_directory() . '/site-logo/*.{svg,png,webp,jpg,jpeg}', GLOB_BRACE );
+
+if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
+    usort(
+        $logo_candidates,
+        static function ( string $file_a, string $file_b ): int {
+            return filemtime( $file_b ) <=> filemtime( $file_a );
+        }
+    );
+
+    $logo_file = $logo_candidates[0];
+    $logo_url = get_stylesheet_directory_uri() . '/site-logo/' . basename( $logo_file );
+}
 ?>
 
 <style>
@@ -16,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   top: 0 !important;
   z-index: 9000 !important;
   background: #ffffff !important;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08) !important;
+  box-shadow: none !important;
   width: 100% !important;
 }
 
@@ -45,8 +63,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 /* ---- Brand / Logo ---- */
 #rn-header .rn-header__brand { flex: 0 0 auto; display: flex; align-items: center; }
-#rn-header .rn-header__brand a { display: block; text-decoration: none !important; }
-#rn-header .rn-header__logo { display: block; height: 44px; width: auto; }
+#rn-header .rn-header__brand a { display: inline-flex; align-items: center; text-decoration: none !important; }
+#rn-header .rn-header__logo { display: block; max-height: 52px; width: auto; max-width: 220px; }
+#rn-header .rn-header__logo--svg { display: block; width: min(220px, 32vw); height: auto; }
+#rn-header .rn-header__logo--svg svg { display: block; width: 100%; height: auto; }
 
 /* ---- Desktop nav ---- */
 #rn-header .rn-header__nav { flex: 1 1 auto; display: flex; align-items: center; justify-content: flex-end; }
@@ -57,7 +77,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   padding: 8px 12px !important;
   font-family: 'Poppins', sans-serif !important;
   font-size: 15px !important; font-weight: 300 !important;
-  color: #333333 !important;
+  color: var(--color-text) !important;
   text-decoration: none !important;
   border-radius: 6px; white-space: nowrap;
   height: 68px;
@@ -83,7 +103,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   min-width: 210px; background: #fff;
   border: 1px solid #e8ecf0; border-top: 3px solid var(--color-primary);
   border-radius: 0 0 8px 8px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  box-shadow: none;
   padding: 6px; list-style: none; margin: 0; z-index: 9001;
 }
 #rn-header .rn-nav__item--has-children:hover > .rn-nav__dropdown { display: block; }
@@ -93,7 +113,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   padding: 9px 14px !important; font-size: 14px !important; font-weight: 400 !important;
   width: 100%; box-shadow: none !important;
 }
-#rn-header .rn-nav__dropdown .rn-nav__link:hover { background: rgba(46,125,50,0.08) !important; }
+#rn-header .rn-nav__dropdown .rn-nav__link:hover { background: rgba(65, 136, 170, 0.10) !important; }
 
 /* ---- CTA knoppen ---- */
 #rn-header .rn-header__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
@@ -114,7 +134,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 #rn-header .rn-btn--accent {
   background: var(--color-secondary) !important; color: #fff !important;
   border: 2px solid var(--color-secondary) !important;
-  box-shadow: 0 2px 8px rgba(46,125,50,0.22) !important;
+  box-shadow: none !important;
 }
 #rn-header .rn-btn--accent:hover {
   background: var(--color-tertiary) !important; border-color: var(--color-tertiary) !important;
@@ -129,7 +149,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   cursor: pointer; padding: 8px; margin-left: auto; flex-shrink: 0;
 }
 #rn-header .rn-header__hamburger:hover { background: #fff !important; border-color: #e8ecf0 !important; }
-#rn-header .rn-hamburger__bar { display: block; width: 100%; height: 2px; background: #333333; border-radius: 2px; transition: transform .25s ease, opacity .25s ease; }
+#rn-header .rn-hamburger__bar { display: block; width: 100%; height: 2px; background: var(--color-text); border-radius: 2px; transition: transform .25s ease, opacity .25s ease; }
 #rn-header .rn-header__hamburger.is-open .rn-hamburger__bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 #rn-header .rn-header__hamburger.is-open .rn-hamburger__bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
 #rn-header .rn-header__hamburger.is-open .rn-hamburger__bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -217,11 +237,12 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <!-- Logo -->
         <div class="rn-header__brand">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-                <?php
-                $logo_path = get_stylesheet_directory_uri() . '/site-logo/lansingerland-fit-logo.png';
-                $logo_file = get_stylesheet_directory() . '/site-logo/lansingerland-fit-logo.png';
-                if ( file_exists( $logo_file ) ) : ?>
-                    <img src="<?php echo esc_url( $logo_path ); ?>"
+                <?php if ( $logo_file && preg_match( '/\.svg$/i', $logo_file ) ) : ?>
+                    <span class="rn-header__logo rn-header__logo--svg" aria-label="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" role="img">
+                        <?php echo file_get_contents( $logo_file ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                    </span>
+                <?php elseif ( $logo_url ) : ?>
+                    <img src="<?php echo esc_url( $logo_url ); ?>"
                          alt="<?php bloginfo( 'name' ); ?>"
                          class="rn-header__logo">
                 <?php else : ?>

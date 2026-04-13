@@ -1,13 +1,13 @@
 :root {
-  --rn-primary:    var(--color-primary,    #80D424);
-  --rn-primary-dk: var(--color-primary-dk, #63a81b);
-  --rn-primary-mid:var(--color-primary-mid,#b3e86e);
-  --rn-accent:     var(--color-secondary,  #3A8F0F);
-  --rn-accent-dk:  var(--color-tertiary,   #2d6e0b);
-  --rn-text:       var(--color-text,       #333333);
-  --rn-bg:         var(--color-bg,         #FBFAF8);
-  --rn-border:     var(--color-border,     #dedede);
-  --rn-shadow:     0 2px 16px rgba(0,0,0,0.08);
+  --rn-primary:    var(--color-primary,    #25476B);
+  --rn-primary-dk: var(--color-primary-dk, #325F8D);
+  --rn-primary-mid:var(--color-primary-mid,#39749B);
+  --rn-accent:     var(--color-secondary,  #39749B);
+  --rn-accent-dk:  var(--color-tertiary,   #6DB49C);
+  --rn-text:       var(--color-text,       #25476B);
+  --rn-bg:         var(--color-bg,         #F7FBF7);
+  --rn-border:     var(--color-border,     #BFE396);
+  --rn-shadow:     none;
   --rn-header-h:   68px;
   --rn-topbar-h:   36px;
 }
@@ -135,7 +135,7 @@
   border: 1px solid var(--rn-border);
   border-top: 3px solid var(--rn-primary);
   border-radius: 0 0 8px 8px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
+  box-shadow: none;
   padding: 6px;
   list-style: none;
   margin: 0;
@@ -153,7 +153,7 @@
   width: 100%;
   box-shadow: none !important;
 }
-.rn-nav__dropdown .rn-nav__link:hover { background: rgba(46,125,50,0.08); }
+.rn-nav__dropdown .rn-nav__link:hover { background: rgba(65,136,170,0.10); }
 
 /* ---- CTA knoppen ---- */
 .rn-header__cta {
@@ -192,7 +192,7 @@
   background: var(--rn-primary);
   color: #fff !important;
   border: 2px solid var(--rn-primary);
-  box-shadow: 0 2px 8px rgba(128,212,36,0.28);
+  box-shadow: none;
 }
 .rn-btn--accent:hover {
   background: var(--rn-primary-dk);

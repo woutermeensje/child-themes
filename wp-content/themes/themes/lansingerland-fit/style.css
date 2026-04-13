@@ -23,54 +23,77 @@ Text Domain: lansingerland-fit
 }
 
 :root {
-  /* 🔁 Brandingkleuren */
-  --color-primary:     #80D424;   /* lime groen – hoofdkleur */
-  --color-primary-dk:  #63a81b;   /* donkerder lime – hover/actief */
-  --color-primary-mid: #b3e86e;   /* lichte tint lime – subtiele accenten */
-  --color-secondary:   #3A8F0F;   /* diep groen – secundaire kleur */
-  --color-tertiary:    #2d6e0b;   /* nog dieper groen – derde toon */
-  --color-accent:      #e8f8c8;   /* licht lime tint – warme accenten */
+  --color-lime-light: #CCDA91;
+  --color-spring-soft: #BFE396;
+  --color-grass-fresh: #A7D794;
+  --color-mint: #8AC697;
+  --color-sea: #6DB49C;
+  --color-turquoise: #559EA3;
+  --color-ocean: #4188AA;
+  --color-steel: #39749B;
+  --color-blue-deep: #325F8D;
+  --color-navy-dark: #25476B;
 
-  /* 🧱 Tekst & contrast */
-  --color-text:        #333333;
-  --color-text-muted:  #777777;
+  --color-primary: var(--color-navy-dark);
+  --color-primary-dk: var(--color-blue-deep);
+  --color-primary-mid: var(--color-steel);
+  --color-secondary: var(--color-steel);
+  --color-tertiary: var(--color-sea);
+  --color-accent: var(--color-mint);
+  --color-accent-soft: var(--color-grass-fresh);
+  --color-highlight: var(--color-spring-soft);
+  --color-highlight-soft: var(--color-lime-light);
 
-  /* 🧱 Achtergronden & borders */
-  --color-bg:          #FBFAF8;
-  --color-bg-light:    #f3f9e8;   /* lichte lime tint – lichte secties */
-  --color-border:      #dedede;
-  --color-border-light:#eeeeee;
+  --color-text: #25476B;
+  --color-text-muted: #39749B;
+  --color-heading: #25476B;
+  --color-surface: #FFFFFF;
+  --color-bg: #F7FBF7;
+  --color-bg-light: #F1F8EE;
+  --color-bg-soft: #EEF6F2;
+  --color-border: #BFE396;
+  --color-border-light: rgba(191, 227, 150, 0.58);
+  --color-shadow: 0 18px 45px rgba(37, 71, 107, 0.12);
+  --color-shadow-soft: 0 10px 30px rgba(37, 71, 107, 0.08);
 
-  /* 🔲 Border radius */
-  --border-radius: 5px;
+  --border-radius: 10px;
+  --border-radius-lg: 18px;
 
-  /* ✅ Semantische kleuren */
-  --color-success:       #80D424;
-  --color-success-hover: #63a81b;
-  --color-bg-filter:     #f3f9e8;
+  --color-success: var(--color-accent);
+  --color-success-hover: var(--color-tertiary);
+  --color-bg-filter: var(--color-bg-light);
 }
 
 html, body {
     width: 100%;
     max-width: 100vw;
-    overflow-x: visible;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--color-text);
+    background: transparent;
+    line-height: 1.65;
+    overflow-x: clip;
 }
 
 p {
-    font-family: 'Balgin Bold';
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 400;
     color: var(--color-text);
+    line-height: 1.7;
 }
 
 li {
-    font-family: 'Balgin Bold';
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 400;
     color: var(--color-text);
     margin: 0 5px;
     padding: 0;
     list-style-type: disc;
+    line-height: 1.7;
 }
 
 ul {
@@ -84,28 +107,39 @@ h1.entry-title {
 }
 
 h1, h2, h3, h4, h5 {
-    font-family: 'Balgin Bold';
-    color: var(--color-text);
-    line-height: 0.8;
+    font-family: 'Balgin-Bold', 'Inter', sans-serif;
+    color: var(--color-heading);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
     margin-top: 15px;
     margin-bottom: 15px;
 }
 
 h1, h2 {
-    font-size: 25px;
+    font-size: clamp(30px, 4vw, 48px);
 }
 
 h3 {
-    font-size: 18px;
+    font-size: clamp(22px, 3vw, 30px);
 }
 
 h4, h5 {
-    font-size: 16px;
+    font-size: clamp(18px, 2.2vw, 24px);
+}
+
+a {
+    color: var(--color-primary);
+    transition: color .18s ease, opacity .18s ease;
+}
+
+a:hover,
+a:focus-visible {
+    color: var(--color-primary-dk);
 }
 
 /* Styling specifieke links */
 .special {
-    color: var(--color-success);
+    color: var(--color-secondary);
     font-style: italic;
 }
 

@@ -5,8 +5,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $page_id        = get_the_ID();
 $hero_image_url = get_the_post_thumbnail_url( $page_id, 'full' );
-$contact_phone  = get_post_meta( $page_id, 'hero_phone', true ) ?: '010 307 54 54';
-$contact_email  = get_post_meta( $page_id, 'hero_email', true ) ?: 'info@lansingerlandfit.nl';
+$contact_phone  = get_post_meta( $page_id, 'hero_phone', true ) ?: '06 34049481';
+$contact_email  = get_post_meta( $page_id, 'hero_email', true ) ?: 'cindystarre@hotmail.com';
 ?>
 
 <section class="welcome-v2">
@@ -16,7 +16,7 @@ $contact_email  = get_post_meta( $page_id, 'hero_email', true ) ?: 'info@lansing
                 <div class="welcome-v2__hero-copy">
                     <?php lf_render_breadcrumbs( 'blog-breadcrumbs' ); ?>
 
-                    <h1 class="welcome-v2__title"><?php the_title(); ?></h1>
+                    <h1 class="welcome-v2__title welcome-v2__title--homepage"><?php the_title(); ?></h1>
 
                     <?php if ( has_excerpt( $page_id ) ) : ?>
                         <p class="welcome-v2__lead"><?php echo esc_html( get_the_excerpt( $page_id ) ); ?></p>
@@ -25,8 +25,8 @@ $contact_email  = get_post_meta( $page_id, 'hero_email', true ) ?: 'info@lansing
                     <?php endif; ?>
 
                     <div class="welcome-v2__actions">
-                        <a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>" class="rn-btn rn-btn--accent">Plan een kennismaking</a>
-                        <a href="<?php echo esc_url( home_url( '/aanbod/' ) ); ?>" class="rn-btn rn-btn--outline">Bekijk het aanbod</a>
+                        <a href="<?php echo esc_url( home_url( '/lesrooster/' ) ); ?>" class="rn-btn rn-btn--accent">Lesrooster</a>
+                        <a href="<?php echo esc_url( home_url( '/informatie-aanvragen/' ) ); ?>" class="rn-btn rn-btn--outline">Informatie aanvragen</a>
                     </div>
                 </div>
 
