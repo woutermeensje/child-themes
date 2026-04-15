@@ -2,6 +2,7 @@
 if (!defined('ABSPATH')) exit;
 
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-formulier.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 require_once get_stylesheet_directory() . '/includes/blog-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
@@ -48,6 +49,12 @@ add_action('wp_enqueue_scripts', function () {
         $dependencies,
         filemtime(get_stylesheet_directory() . '/style.css')
     );
+
+    foreach (['elementor-icons-fa-solid', 'elementor-icons-fa-regular', 'elementor-icons-fa-brands'] as $handle) {
+        if (wp_style_is($handle, 'registered')) {
+            wp_enqueue_style($handle);
+        }
+    }
 
     // Google Fonts
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
@@ -381,5 +388,3 @@ require_once get_stylesheet_directory() . '/inc/jackling-import.php';
 
 
 require_once get_stylesheet_directory() . '/inc/bedrijfspagina-filters.php';
-
-

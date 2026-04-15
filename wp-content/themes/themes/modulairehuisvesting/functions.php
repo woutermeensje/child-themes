@@ -815,12 +815,13 @@ add_filter('do_shortcode_tag', function ($output, $tag, $attr) {
 
     $rendered_shortcodes[$key] = true;
 
-    return $intro_html
+    return '<div class="mh-products-shortcode">'
+        . $intro_html
         . '<div class="mh-catalog-layout" style="display:grid;grid-template-columns:minmax(240px, 280px) minmax(0, 1fr);gap:24px;align-items:start;">'
         . mh_get_products_shortcode_filters_html()
         . '<div class="mh-catalog-grid-wrap" style="min-width:0;width:100%;">'
         . $output
-        . '</div></div>';
+        . '</div></div></div>';
 }, 10, 3);
 
 /**
