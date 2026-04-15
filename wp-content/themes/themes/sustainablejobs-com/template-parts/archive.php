@@ -1,10 +1,10 @@
 <?php
 /**
- * Blog overzichtspagina — Sustainablejobs NL child theme
+ * Blog archive page — Sustainablejobs COM child theme
  *
  * Layout:
- *  1. Twee hero-blokken — volledige breedte, sluiten aan op navigatie
- *  2. Lower: lijst (artikelen) + nieuwsbrief sidebar
+ *  1. Two hero blocks — full width, flush with navigation
+ *  2. Lower: list (articles) + newsletter sidebar
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -22,7 +22,7 @@ while ( have_posts() ) {
 <main id="content" class="site-main sj-blog-page">
 
     <?php if ( empty( $posts_all ) ) : ?>
-        <p class="sj-blog__empty">Er zijn nog geen artikelen gepubliceerd.</p>
+        <p class="sj-blog__empty">No articles have been published yet.</p>
     <?php else : ?>
 
         <?php
@@ -30,11 +30,9 @@ while ( have_posts() ) {
         $list_rows = array_slice( $posts_all, 3 );
 
         // --------------------------------------------------------------------
-        // 1. TWEE HERO-BLOKKEN — volledige breedte, sluiten aan op header
+        // 1. HERO BLOCKS — full width, flush with header
         // --------------------------------------------------------------------
         if ( ! empty( $top_posts ) ) :
-        ?>
-        <?php
         $hero_main = isset( $top_posts[0] ) ? $top_posts[0] : null;
         $hero_side = array_slice( $top_posts, 1, 2 );
         ?>
@@ -43,7 +41,7 @@ while ( have_posts() ) {
             <?php if ( $hero_main ) :
                 $link    = get_permalink( $hero_main );
                 $title   = get_the_title( $hero_main );
-                $date    = get_the_date( 'd F Y', $hero_main );
+                $date    = get_the_date( 'F j, Y', $hero_main );
                 $cats    = get_the_category( $hero_main );
                 $cat_lbl = $cats ? esc_html( $cats[0]->name ) : '';
                 $thumb   = get_the_post_thumbnail( $hero_main, 'full' );
@@ -77,7 +75,7 @@ while ( have_posts() ) {
                 <?php foreach ( $hero_side as $post ) :
                     $link    = get_permalink( $post );
                     $title   = get_the_title( $post );
-                    $date    = get_the_date( 'd F Y', $post );
+                    $date    = get_the_date( 'F j, Y', $post );
                     $cats    = get_the_category( $post );
                     $cat_lbl = $cats ? esc_html( $cats[0]->name ) : '';
                     $thumb   = get_the_post_thumbnail( $post, 'full' );
@@ -113,7 +111,7 @@ while ( have_posts() ) {
 
         <?php
         // --------------------------------------------------------------------
-        // 2. LOWER — lijst + sidebar wrapper
+        // 2. LOWER — list + sidebar wrapper
         // --------------------------------------------------------------------
         ?>
         <div class="sj-blog__lower">
@@ -121,13 +119,13 @@ while ( have_posts() ) {
             <div class="sj-blog__main">
 
                 <?php if ( ! empty( $list_rows ) ) : ?>
-                <h2 class="sj-blog__list-title">Alle artikelen</h2>
+                <h2 class="sj-blog__list-title">All articles</h2>
                 <div class="sj-blog__list">
                     <?php foreach ( $list_rows as $post ) :
                         $link    = get_permalink( $post );
                         $title   = get_the_title( $post );
                         $excerpt = get_the_excerpt( $post );
-                        $date    = get_the_date( 'd F Y', $post );
+                        $date    = get_the_date( 'F j, Y', $post );
                         $cats    = get_the_category( $post );
                         $cat_lbl = $cats ? esc_html( $cats[0]->name ) : '';
                         $thumb   = get_the_post_thumbnail( $post, 'thumbnail' );
@@ -168,9 +166,9 @@ while ( have_posts() ) {
                     $prev_arrow = is_rtl() ? '&rarr;' : '&larr;';
                     $next_arrow = is_rtl() ? '&larr;' : '&rarr;';
                 ?>
-                <nav class="sj-blog__pagination" aria-label="Blogpaginering">
-                    <div><?php previous_posts_link( $prev_arrow . ' Nieuwere artikelen' ); ?></div>
-                    <div><?php next_posts_link( 'Oudere artikelen ' . $next_arrow ); ?></div>
+                <nav class="sj-blog__pagination" aria-label="Blog pagination">
+                    <div><?php previous_posts_link( $prev_arrow . ' Newer articles' ); ?></div>
+                    <div><?php next_posts_link( 'Older articles ' . $next_arrow ); ?></div>
                 </nav>
                 <?php endif; ?>
 
@@ -180,33 +178,33 @@ while ( have_posts() ) {
 
                 <div class="sj-sidebar-newsletter">
                     <div class="sj-sidebar-newsletter__body">
-                        <p class="sj-sidebar-newsletter__label">Blijf op de hoogte</p>
-                        <h3 class="sj-sidebar-newsletter__title">Nieuws over duurzame banen direct in je inbox</h3>
-                        <a href="/nieuwsbrief/" class="sj-sidebar-newsletter__btn">
-                            Nieuwsbrief
+                        <p class="sj-sidebar-newsletter__label">Stay up to date</p>
+                        <h3 class="sj-sidebar-newsletter__title">Sustainable jobs news straight to your inbox</h3>
+                        <a href="/newsletter/" class="sj-sidebar-newsletter__btn">
+                            Newsletter
                             <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clip-rule="evenodd"/></svg>
                         </a>
                     </div>
                 </div>
 
                 <div class="sj-sidebar-links">
-                    <a href="/vacature-plaatsen/" class="sj-sidebar-link">
+                    <a href="/post-a-job/" class="sj-sidebar-link">
                         <span class="sj-sidebar-link__icon" aria-hidden="true">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="17"/><line x1="9.5" y1="14.5" x2="14.5" y2="14.5"/></svg>
                         </span>
                         <span class="sj-sidebar-link__text">
-                            <strong>Vacature plaatsen</strong>
-                            <span>Bereik duizenden duurzame professionals</span>
+                            <strong>Post a job</strong>
+                            <span>Reach thousands of sustainable professionals</span>
                         </span>
                         <svg class="sj-sidebar-link__arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clip-rule="evenodd"/></svg>
                     </a>
-                    <a href="https://platform.sustainablejobs.nl/aanmelden" class="sj-sidebar-link" target="_blank" rel="noopener noreferrer">
+                    <a href="https://platform.sustainablejobs.com/sign-up" class="sj-sidebar-link" target="_blank" rel="noopener noreferrer">
                         <span class="sj-sidebar-link__icon" aria-hidden="true">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                         </span>
                         <span class="sj-sidebar-link__text">
-                            <strong>Account aanmaken</strong>
-                            <span>Sla vacatures op en stel alerts in</span>
+                            <strong>Create an account</strong>
+                            <span>Save jobs and set up alerts</span>
                         </span>
                         <svg class="sj-sidebar-link__arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clip-rule="evenodd"/></svg>
                     </a>

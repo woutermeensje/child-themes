@@ -1,6 +1,37 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+require_once get_stylesheet_directory() . '/inc/shortcode-job-form.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-pricing.php';
+require_once get_stylesheet_directory() . '/includes/blog-meta.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-quick-post.php';
+require_once get_stylesheet_directory() . '/inc/job-cpt.php';
+require_once get_stylesheet_directory() . '/inc/job-listing-meta.php';
+require_once get_stylesheet_directory() . '/inc/company-page-filters.php';
+
+/**
+ * Outgoing mail sender for the theme.
+ */
+add_filter('wp_mail_from', function ($from_email) {
+    return 'support@sustainablejobs.com';
+});
+
+add_filter('wp_mail_from_name', function ($from_name) {
+    return 'Sustainablejobs.com';
+});
+
+/**
+ * Allow multiple job types per listing in WP Job Manager.
+ */
+add_filter('job_manager_multi_job_type', '__return_true');
+
+/**
+ * Enable featured image (thumbnail) support for job_listing posts.
+ */
+add_action('init', function () {
+    add_post_type_support('job_listing', 'thumbnail');
+});
+
 /**
  * ENQUEUE STYLES
  */
@@ -56,6 +87,37 @@ add_action('wp_enqueue_scripts', function () {
         get_stylesheet_directory_uri() . '/css/elementor-forms.css',
         ['child-style'],
         filemtime(get_stylesheet_directory() . '/css/elementor-forms.css')
+    );
+
+    // Forms styling (job posting form etc.)
+    if (file_exists(get_stylesheet_directory() . '/css/forms.css')) {
+        wp_enqueue_style(
+            'sc-forms',
+            get_stylesheet_directory_uri() . '/css/forms.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/forms.css')
+        );
+    }
+
+    // Blog CSS (archive and single posts)
+    if ( ( is_home() || is_archive() || is_singular( 'post' ) ) && file_exists( get_stylesheet_directory() . '/css/blog.css' ) ) {
+        wp_enqueue_style(
+            'sc-blog',
+            get_stylesheet_directory_uri() . '/css/blog.css',
+            ['child-style'],
+            filemtime( get_stylesheet_directory() . '/css/blog.css' )
+        );
+    }
+
+    // Quill.js rich text editor
+    wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
+    wp_enqueue_script('quill-js', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js', [], null, true);
+    wp_enqueue_script(
+        'sc-elementor-forms',
+        get_stylesheet_directory_uri() . '/js/elementor-forms.js',
+        ['quill-js'],
+        filemtime(get_stylesheet_directory() . '/js/elementor-forms.js'),
+        true
     );
 });
 
