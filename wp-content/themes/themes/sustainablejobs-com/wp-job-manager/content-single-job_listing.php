@@ -19,6 +19,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     $salary    = get_post_meta($post_id, '_job_salary_range', true);
     $hours     = get_post_meta($post_id, '_job_hours_per_week', true);
     $location  = get_post_meta($post_id, '_job_location', true);
+    $cover_image = get_post_meta($post_id, '_cover_image', true);
     $company   = get_the_company_name();
     $con_first = get_post_meta($post_id, '_job_contact_firstname', true);
     $con_last  = get_post_meta($post_id, '_job_contact_lastname', true);
@@ -84,9 +85,13 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                     <div class="content-part-job-description">
                         <div class="top-div">
 
-                            <?php if ( has_post_thumbnail( $post_id ) ) : ?>
+                            <?php if ( ! empty( $cover_image ) ) : ?>
                             <div class="sj-single-featured-image">
-                                <?php echo get_the_post_thumbnail( $post_id, 'large', ['class' => 'sj-single-featured-image__img'] ); ?>
+                                <img
+                                    src="<?php echo esc_url( $cover_image ); ?>"
+                                    alt="<?php echo esc_attr( wpjm_get_the_job_title( $post_id ) ); ?>"
+                                    class="sj-single-featured-image__img"
+                                >
                             </div>
                             <?php endif; ?>
 
