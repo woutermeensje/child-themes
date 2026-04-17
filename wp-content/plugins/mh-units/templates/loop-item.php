@@ -34,14 +34,15 @@ if (!$excerpt) {
                     ]
                 );
             } else {
-                echo wc_placeholder_img(
-                    'large',
-                    [
-                        'class'   => 'mh-product-card__image mh-product-card__image--placeholder mh-unit-card__image',
-                        'loading' => 'lazy',
-                        'alt'     => get_the_title(),
-                    ]
-                );
+                ?>
+                <div class="mh-product-card__image mh-product-card__image--placeholder mh-unit-card__image mh-unit-card__image--placeholder" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <path d="M21 15l-5-5L5 21"></path>
+                    </svg>
+                </div>
+                <?php
             }
             ?>
         </div>
@@ -76,10 +77,8 @@ if (!$excerpt) {
 
         <div class="mh-unit-card__footer">
             <div class="mh-unit-card__actions">
-                <a class="mh-unit-card__action-button mh-unit-card__action-button--view mh-unit-card__cta" href="<?php the_permalink(); ?>">Bekijk unit</a>
-
                 <?php if ($in_quote || $just_added): ?>
-                    <a class="mh-unit-card__action-button mh-unit-card__action-button--quote mh-unit-card__action-button--quote-added mh-unit-card__quote mh-unit-card__quote--added" href="<?php echo esc_url($quote_url); ?>">
+                    <a class="mh-unit-card__action-button mh-unit-card__action-button--quote mh-unit-card__action-button--quote-added mh-unit-card__quote mh-unit-card__quote--added mh-unit-card__quote-button mh-unit-card__quote-button--added" href="<?php echo esc_url($quote_url); ?>">
                         Bekijk offerte
                     </a>
                 <?php else: ?>
@@ -88,7 +87,7 @@ if (!$excerpt) {
                         <input type="hidden" name="mh_action" value="add_to_quote">
                         <input type="hidden" name="product_id" value="<?php echo esc_attr($unit_id); ?>">
                         <input type="hidden" name="item_type" value="mh_unit">
-                        <button type="submit" class="mh-unit-card__action-button mh-unit-card__action-button--quote mh-unit-card__quote">Toevoegen aan offerte</button>
+                        <button type="submit" class="mh-unit-card__action-button mh-unit-card__action-button--quote mh-unit-card__quote mh-unit-card__quote-button">Toevoegen aan offerte</button>
                     </form>
                 <?php endif; ?>
             </div>

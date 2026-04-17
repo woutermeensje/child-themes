@@ -17,6 +17,10 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
     wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
+
+    if (is_page_template('page-landingspagina.php')) {
+        wp_enqueue_style('itp-template', get_stylesheet_directory_uri() . '/css/template.css', ['child-style'], wp_get_theme()->get('Version'));
+    }
 });
 
 add_theme_support('job-manager-templates');

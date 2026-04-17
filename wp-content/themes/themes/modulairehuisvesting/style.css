@@ -514,138 +514,6 @@ Text Domain: modulairehuisvesting
   color: var(--color-text-soft);
 }
 
-/* ── WooCommerce product cards / [products] shortcode ── */
-body:not(.single-product) .woocommerce ul.products,
-.elementor-widget-shortcode .elementor-shortcode .woocommerce ul.products {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 24px;
-  margin: 12px 0 0;
-  padding: 0;
-}
-
-body:not(.single-product) .woocommerce ul.products::before,
-body:not(.single-product) .woocommerce ul.products::after,
-.elementor-widget-shortcode .elementor-shortcode .woocommerce ul.products::before,
-.elementor-widget-shortcode .elementor-shortcode .woocommerce ul.products::after {
-  display: none;
-}
-
-body:not(.single-product) .woocommerce ul.products li.product {
-  margin: 0;
-  width: auto;
-}
-
-body:not(.single-product) .woocommerce ul.products li.product .price,
-body:not(.single-product) .woocommerce ul.products li.product .button,
-body:not(.single-product) .woocommerce ul.products li.product a.added_to_cart {
-  display: none !important;
-}
-
-body:not(.single-product) .woocommerce ul.products li.product.mh-product-card {
-  margin: 0 !important;
-  width: auto !important;
-  min-width: 0;
-  border: 1px solid #DEDEDE;
-  border-radius: 5px;
-  background: var(--color-surface);
-  padding: 0 !important;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 14px 34px rgba(37, 71, 107, 0.12) !important;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-body:not(.single-product) .woocommerce ul.products li.product.mh-product-card:hover {
-  transform: translateY(-3px);
-  border-color: var(--color-secondary-soft);
-  box-shadow: 0 18px 40px rgba(37, 71, 107, 0.16) !important;
-}
-
-.mh-product-card__link {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  color: inherit;
-  text-decoration: none !important;
-}
-
-body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .mh-product-card__media {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  background: transparent;
-  border: 0 !important;
-  border-radius: 5px 5px 0 0;
-  line-height: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .mh-product-card__image {
-  width: 100% !important;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
-  margin: 0 !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  object-fit: contain;
-  object-position: center top;
-  display: block;
-  vertical-align: top;
-}
-
-.mh-product-card__body {
-  display: flex;
-  flex: 1 1 auto;
-  align-items: flex-start;
-  padding: 18px 22px 22px;
-}
-
-.mh-product-card__title--shortcode {
-  margin: 0;
-  color: var(--color-text);
-  font-family: 'Inter', sans-serif;
-  font-size: 24px;
-  line-height: 1.2;
-  font-weight: 700;
-  letter-spacing: 0;
-  padding: 0;
-}
-
-.mh-products-intro {
-  margin: 0 0 24px;
-}
-
-.mh-products-shortcode,
-.elementor-widget-shortcode .elementor-shortcode .mh-products-shortcode {
-  width: 100%;
-  min-width: 0;
-}
-
-.mh-products-shortcode .mh-products-intro,
-.elementor-widget-shortcode .elementor-shortcode .mh-products-shortcode .mh-products-intro {
-  display: block !important;
-  width: 100%;
-  max-width: none;
-  text-align: left !important;
-}
-
-.mh-products-shortcode .mh-products-intro > *,
-.elementor-widget-shortcode .elementor-shortcode .mh-products-shortcode .mh-products-intro > * {
-  display: block;
-  width: 100%;
-  max-width: none;
-  float: none;
-  clear: both;
-  text-align: left !important;
-}
-
 .mh-process {
   position: relative;
   margin: 48px 0;
@@ -1074,40 +942,6 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
   text-align: right;
 }
 
-.mh-products-intro__breadcrumbs,
-.mh-products-intro__breadcrumbs a {
-  color: var(--color-text-soft);
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  text-decoration: none;
-}
-
-.mh-products-intro__breadcrumbs {
-  margin: 0 0 10px;
-}
-
-.mh-products-intro__breadcrumbs a:hover {
-  color: var(--color-primary);
-}
-
-.mh-products-intro__title {
-  margin: 0 0 8px;
-  color: var(--color-text);
-  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
-  font-size: clamp(34px, 5vw, 64px);
-  line-height: 0.95;
-  font-weight: 700;
-}
-
-.mh-products-intro__count {
-  margin: 0;
-  color: var(--color-text-soft);
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  line-height: 1.6;
-}
-
 .mh-catalog-layout,
 .elementor-widget-shortcode .elementor-shortcode .mh-catalog-layout {
   display: grid;
@@ -1403,18 +1237,8 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
     gap: 18px;
   }
 
-  body:not(.single-product) .woocommerce ul.products,
-  .elementor-widget-shortcode .elementor-shortcode .woocommerce ul.products,
   .mh-units-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .mh-product-card__title--shortcode {
-    font-size: 21px;
-  }
-
-  .mh-products-intro {
-    margin-bottom: 20px;
   }
 
   .mh-catalog-layout,
@@ -1511,24 +1335,6 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
     width: 100%;
   }
 
-  body:not(.single-product) .woocommerce ul.products,
-  .elementor-widget-shortcode .elementor-shortcode .woocommerce ul.products {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-
-  .mh-product-card {
-    padding: 18px !important;
-  }
-
-  .mh-product-card__body {
-    padding-top: 14px;
-  }
-
-  .mh-product-card__title--shortcode {
-    font-size: 20px;
-  }
-
   .mh-unit-card__badge {
     top: 10px;
     right: 10px;
@@ -1554,11 +1360,6 @@ body:not(.single-product) .woocommerce ul.products li.product.mh-product-card .m
   .mh-unit-card__price-note {
     text-align: left;
   }
-
-  .mh-products-intro__title {
-    line-height: 1;
-  }
-
   .mh-catalog-sidebar-inner,
   .elementor-widget-shortcode .elementor-shortcode .mh-catalog-sidebar-inner {
     padding: 16px !important;

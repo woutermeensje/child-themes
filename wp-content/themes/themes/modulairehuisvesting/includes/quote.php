@@ -1,10 +1,19 @@
 <?php
 /**
  * Modulairehuisvesting – Offerte tool
- * Slaat items op in de WooCommerce sessie en rendert de offertepagina via [mh_quote_page].
+ * Slaat offerte-items op in de sessie en rendert de offertepagina via [mh_quote_page].
  */
 
 defined( 'ABSPATH' ) || exit;
+
+function mh_quote_get_browse_units_url(): string {
+	$archive_url = get_post_type_archive_link( 'mh_unit' );
+	if ( is_string( $archive_url ) && '' !== $archive_url ) {
+		return $archive_url;
+	}
+
+	return home_url( '/units/' );
+}
 
 add_action( 'init', 'mh_register_quote_request_post_type' );
 function mh_register_quote_request_post_type() {
@@ -1875,8 +1884,8 @@ function mh_quote_render_page() {
 				<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
 			</div>
 			<h3>Je offerte is leeg</h3>
-			<p>Voeg producten toe via de productpagina's.</p>
-			<a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>">Bekijk ons aanbod</a>
+			<p>Voeg units toe via de unitpagina&apos;s.</p>
+			<a href="<?php echo esc_url( mh_quote_get_browse_units_url() ); ?>">Bekijk onze units</a>
 		</div>
 
 	<?php else : ?>
@@ -1947,8 +1956,8 @@ function mh_quote_render_page() {
 						<button type="submit" name="mh_action" value="mh_update_quote" class="mh-qp__btn mh-qp__btn--outline">
 							Aantallen bijwerken
 						</button>
-						<a href="<?php echo esc_url( home_url( '/shop/' ) ); ?>" class="mh-qp__btn mh-qp__btn--outline">
-							+ Meer producten toevoegen
+						<a href="<?php echo esc_url( mh_quote_get_browse_units_url() ); ?>" class="mh-qp__btn mh-qp__btn--outline">
+							+ Meer units toevoegen
 						</a>
 					</div>
 				</div>

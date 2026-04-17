@@ -58,16 +58,16 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
         </nav>
 
         <div class="mh-header__search mh-header-search">
-            <button type="button" class="mh-header-search__toggle" aria-label="Zoek producten" aria-expanded="false" aria-controls="mh-header-search-form">
+            <button type="button" class="mh-header-search__toggle" aria-label="Zoek units" aria-expanded="false" aria-controls="mh-header-search-form">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
                     <circle cx="11" cy="11" r="7"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
             </button>
             <form id="mh-header-search-form" class="mh-header-search__form" method="get" action="<?php echo esc_url(home_url('/')); ?>">
-                <input type="hidden" name="post_type" value="product">
-                <label class="screen-reader-text" for="mh-header-search-input">Zoek producten</label>
-                <input id="mh-header-search-input" class="mh-header-search__input" type="search" name="s" placeholder="Zoek producten">
+                <input type="hidden" name="post_type" value="mh_unit">
+                <label class="screen-reader-text" for="mh-header-search-input">Zoek units</label>
+                <input id="mh-header-search-input" class="mh-header-search__input" type="search" name="s" placeholder="Zoek units">
                 <button type="submit" class="mh-header-search__submit">Zoeken</button>
             </form>
         </div>
@@ -78,23 +78,23 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
             <a href="<?php echo esc_url(home_url('/mijn-offerte/')); ?>" class="mh-btn mh-btn--outline mh-btn--has-badge mh-btn--nav-quote">
                 <span>Mijn offerte</span>
                 <?php if ($quote_count > 0) : ?>
-                    <span class="mh-nav-badge" aria-label="<?php echo esc_attr($quote_count); ?> producten in offerte"><?php echo esc_html($quote_count); ?></span>
+                    <span class="mh-nav-badge" aria-label="<?php echo esc_attr($quote_count); ?> items in offerte"><?php echo esc_html($quote_count); ?></span>
                 <?php endif; ?>
             </a>
             <a href="<?php echo esc_url(home_url('/offerte-aanvragen/')); ?>" class="mh-btn mh-btn--accent mh-btn--nav-contact">Informatie aanvragen</a>
         </div>
 
         <div class="mh-header__mobile-search mh-header-search">
-            <button type="button" class="mh-header-search__toggle mh-header__mobile-search-toggle" aria-label="Zoek producten" aria-expanded="false" aria-controls="mh-header-mobile-search-form">
+            <button type="button" class="mh-header-search__toggle mh-header__mobile-search-toggle" aria-label="Zoek units" aria-expanded="false" aria-controls="mh-header-mobile-search-form">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true">
                     <circle cx="11" cy="11" r="7"></circle>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
             </button>
             <form id="mh-header-mobile-search-form" class="mh-header-search__form mh-header__mobile-search-form" method="get" action="<?php echo esc_url(home_url('/')); ?>">
-                <input type="hidden" name="post_type" value="product">
-                <label class="screen-reader-text" for="mh-header-mobile-search-input">Zoek producten</label>
-                <input id="mh-header-mobile-search-input" class="mh-header-search__input" type="search" name="s" placeholder="Zoek producten">
+                <input type="hidden" name="post_type" value="mh_unit">
+                <label class="screen-reader-text" for="mh-header-mobile-search-input">Zoek units</label>
+                <input id="mh-header-mobile-search-input" class="mh-header-search__input" type="search" name="s" placeholder="Zoek units">
                 <button type="submit" class="mh-header-search__submit">Zoeken</button>
             </form>
         </div>
@@ -106,7 +106,7 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
                 <path d="M9 10V8a3 3 0 0 1 6 0v2" />
             </svg>
             <?php if ($quote_count > 0) : ?>
-                <span class="mh-header__quote-badge" aria-label="<?php echo esc_attr($quote_count); ?> producten in offerte"><?php echo esc_html($quote_count); ?></span>
+                <span class="mh-header__quote-badge" aria-label="<?php echo esc_attr($quote_count); ?> items in offerte"><?php echo esc_html($quote_count); ?></span>
             <?php endif; ?>
         </a>
 
@@ -138,7 +138,7 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
             <a href="<?php echo esc_url(home_url('/mijn-offerte/')); ?>" class="mh-btn mh-btn--outline mh-btn--has-badge mh-btn--nav-quote mh-mobile-nav__cta">
                 <span>Mijn offerte</span>
                 <?php if ($quote_count > 0) : ?>
-                    <span class="mh-nav-badge" aria-label="<?php echo esc_attr($quote_count); ?> producten in offerte"><?php echo esc_html($quote_count); ?></span>
+                    <span class="mh-nav-badge" aria-label="<?php echo esc_attr($quote_count); ?> items in offerte"><?php echo esc_html($quote_count); ?></span>
                 <?php endif; ?>
             </a>
             <a href="<?php echo esc_url(home_url('/offerte-aanvragen/')); ?>" class="mh-btn mh-btn--accent mh-btn--nav-contact mh-mobile-nav__cta">Informatie aanvragen</a>

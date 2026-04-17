@@ -18,15 +18,7 @@ require_once MH_UNITS_PATH . 'includes/meta-fields.php';
 
 
 add_action('wp_enqueue_scripts', function () {
-    $style_path  = MH_UNITS_PATH . 'assets/css/units.css';
     $script_path = MH_UNITS_PATH . 'assets/js/units.js';
-
-    wp_enqueue_style(
-        'mh-units',
-        MH_UNITS_URL . 'assets/css/units.css',
-        [],
-        file_exists($style_path) ? filemtime($style_path) : '0.1.0'
-    );
 
     wp_enqueue_script(
         'mh-units',
@@ -70,4 +62,3 @@ add_action('admin_head', function () {
     </script>
     <?php
 });
-
