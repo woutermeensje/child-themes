@@ -32660,3 +32660,36 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 [17-Apr-2026 20:36:03 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
 [17-Apr-2026 20:36:28 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
 [17-Apr-2026 20:36:32 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[19-Apr-2026 18:44:50 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[19-Apr-2026 18:44:51 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[19-Apr-2026 18:44:52 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[19-Apr-2026 18:44:53 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-04-19 18:44:52","event":"ensure_session_wc_missing","host":"localhost:8881","request_uri":"\/","referer":"","session_id":"","has_session":false,"item_count":null}
+[19-Apr-2026 18:45:13 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[19-Apr-2026 18:46:18 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[19-Apr-2026 18:46:18 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[19-Apr-2026 18:46:19 UTC] Automatic updates starting...
+[19-Apr-2026 18:46:19 UTC]   Automatic plugin updates starting...
+[19-Apr-2026 18:46:19 UTC]   Automatic plugin updates complete.
+[19-Apr-2026 18:46:19 UTC] Automatic updates complete.
+[19-Apr-2026 18:46:47 UTC] PHP Notice:  Function register_post_type was called <strong>incorrectly</strong>. Post type names must be between 1 and 20 characters in length. Please see <a href="https://developer.wordpress.org/advanced-administration/debug/debug-wordpress/">Debugging in WordPress</a> for more information. (This message was added in version 4.2.0.) in /var/www/html/wp-includes/functions.php on line 6131
+[19-Apr-2026 18:49:02 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[19-Apr-2026 18:49:02 UTC] 🔍 WPJM POST filterdata: Array
+(
+    [lang] => 
+    [search_keywords] => 
+    [search_location] => 
+    [per_page] => 10
+    [orderby] => featured
+    [featured_first] => false
+    [order] => DESC
+    [page] => 1
+    [show_pagination] => false
+    [form_data] => search_keywords=&search_location=
+)
+
+[19-Apr-2026 18:49:02 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args

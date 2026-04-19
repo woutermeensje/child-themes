@@ -46,7 +46,7 @@ function bedrijfspagina_filter_shortcode() {
             $taxonomies = [
                 'job_company'    => '🏢 Organisatie',
                 'job_sector'     => '🌱 Sector',
-                'certificering'  => '🏅 Certificering',
+                'organisatie_type' => '🏢 Type organisatie',
                 'job_tag'        => '📌 Tags',
             ];
             foreach ($taxonomies as $taxonomy => $label) {
@@ -83,7 +83,7 @@ add_action('wp_ajax_nopriv_filter_bedrijfspaginas', 'filter_bedrijfspaginas_ajax
 
 function filter_bedrijfspaginas_ajax() {
     $search = sanitize_text_field($_POST['search_keywords'] ?? '');
-    $tax_filters = ['job_company', 'job_sector', 'certificering', 'job_tag'];
+    $tax_filters = ['job_company', 'job_sector', 'organisatie_type', 'job_tag'];
     $tax_query = [];
 
     // Altijd filteren op pagina’s met een gekoppelde job_company
@@ -136,7 +136,7 @@ function filter_bedrijfspaginas_ajax() {
             $permalink = get_permalink();
 
             $sectors = wp_get_post_terms(get_the_ID(), 'job_sector', ['fields' => 'names']);
-            $certificeringen = wp_get_post_terms(get_the_ID(), 'certificering', ['fields' => 'names']);
+            $organisatie_types = wp_get_post_terms(get_the_ID(), 'organisatie_type', ['fields' => 'names']);
             $tags = wp_get_post_terms(get_the_ID(), 'job_tag', ['fields' => 'names']);
 
             echo "<a href='{$permalink}' class='bedrijf-item'>";
@@ -146,8 +146,8 @@ function filter_bedrijfspaginas_ajax() {
                 if (!empty($sectors)) {
                     echo "<span class='bedrijf-sector'>" . implode(', ', $sectors) . "</span><br />";
                 }
-                if (!empty($certificeringen)) {
-                    echo "<span class='bedrijf-certificering'>" . implode(', ', $certificeringen) . "</span><br />";
+                if (!empty($organisatie_types)) {
+                    echo "<span class='bedrijf-organisatie-type'>" . implode(', ', $organisatie_types) . "</span><br />";
                 }
                 if (!empty($tags)) {
                     echo "<span class='bedrijf-tags'>" . implode(', ', $tags) . "</span>";

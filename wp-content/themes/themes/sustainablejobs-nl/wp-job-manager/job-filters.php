@@ -12,14 +12,14 @@ $selected = [
   'job_company'   => [],
   'job_sector'    => [],
   'job_types'     => [],
-  'certificering' => [],
+  'organisatie_type' => [],
 ];
 
 $shortcode_atts = shortcode_atts([
   'job_company'      => '',
   'job_sector'       => '',
   'job_listing_type' => '',
-  'certificering'    => '',
+  'organisatie_type' => '',
 ], $atts);
 
 if ( ! function_exists( 'sj_get_req_value' ) ) {
@@ -106,15 +106,15 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
       </select>
     </div>
 
-    <!-- Certificering (MULTI) -->
-    <div class="job_certificering">
-      <select name="filter_certificering[]" id="filter_certificering"
-              class="js-custom-select job_certificering"
-              data-placeholder="Certificering"
+    <!-- Type organisatie (MULTI) -->
+    <div class="job_organisatie_type">
+      <select name="filter_organisatie_type[]" id="filter_organisatie_type"
+              class="js-custom-select job_organisatie_type"
+              data-placeholder="Type organisatie"
               multiple>
-        <?php foreach ( get_terms( [ 'taxonomy' => 'certificering', 'hide_empty' => true ] ) as $term ) : ?>
+        <?php foreach ( get_terms( [ 'taxonomy' => 'organisatie_type', 'hide_empty' => false ] ) as $term ) : ?>
           <option value="<?php echo esc_attr( $term->slug ); ?>"
-            <?php selected( in_array( $term->slug, $selected['certificering'], true ) ); ?>>
+            <?php selected( in_array( $term->slug, $selected['organisatie_type'], true ) ); ?>>
             <?php echo esc_html( $term->name ); ?>
           </option>
         <?php endforeach; ?>
@@ -715,7 +715,7 @@ select.sj-hidden-select {
    ========================= */
 .job_type .sj-select-btn,
 .job_sector .sj-select-btn,
-.job_certificering .sj-select-btn,
+.job_organisatie_type .sj-select-btn,
 .job_company .sj-select-btn {
   padding-left: 38px !important;
   position: relative;
@@ -723,7 +723,7 @@ select.sj-hidden-select {
 
 .job_type .sj-select-btn::before,
 .job_sector .sj-select-btn::before,
-.job_certificering .sj-select-btn::before,
+.job_organisatie_type .sj-select-btn::before,
 .job_company .sj-select-btn::before {
   content: '';
   position: absolute;
@@ -749,7 +749,7 @@ select.sj-hidden-select {
 }
 
 /* Certificering → badge/award */
-.job_certificering .sj-select-btn::before {
+.job_organisatie_type .sj-select-btn::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230a6b8d' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='6'/%3E%3Cpath d='M15.477 12.89L17 22l-5-3-5 3 1.523-9.11'/%3E%3C/svg%3E");
 }
 

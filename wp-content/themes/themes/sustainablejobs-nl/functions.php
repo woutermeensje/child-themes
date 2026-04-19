@@ -246,13 +246,13 @@ add_action('init', function () {
         'rewrite' => ['slug' => 'sector'],
     ]);
 
-    register_taxonomy('certificering', 'job_listing', [
-        'label' => 'Certificeringen',
-        'hierarchical' => true,
-        'show_ui' => true,
+    register_taxonomy('organisatie_type', 'job_listing', [
+        'label'             => 'Type organisatie',
+        'hierarchical'      => true,
+        'show_ui'           => true,
         'show_admin_column' => true,
-        'show_in_rest' => true,
-        'rewrite' => ['slug' => 'certificering'],
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'organisatie-type'],
     ]);
 });
 
@@ -265,7 +265,7 @@ add_action('init', function () {
     register_taxonomy_for_object_type('job_company', 'page');
     register_taxonomy_for_object_type('job_tag', 'page');
     register_taxonomy_for_object_type('job_sector', 'page');
-    register_taxonomy_for_object_type('certificering', 'page');
+    register_taxonomy_for_object_type('organisatie_type', 'page');
 });
 
 
@@ -280,7 +280,7 @@ add_filter('job_manager_get_listings_shortcode_args', function($atts){
         'job_company'       => 'job_company',
         'job_tag'           => 'job_tag',
         'job_sector'        => 'job_sector',
-        'certificering'     => 'certificering',
+        'organisatie_type'  => 'organisatie_type',
         'job_listing_type'  => 'job_listing_type',
     ];
 
@@ -325,7 +325,7 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
         'filter_job_sector'    => 'job_sector',
         'filter_job_company'   => 'job_company',
         'filter_job_types'     => 'job_listing_type',
-        'filter_certificering' => 'certificering',
+        'filter_organisatie_type' => 'organisatie_type',
         'filter_job_listing_category' => 'job_listing_category',
 
     ];
@@ -374,13 +374,27 @@ add_filter('job_manager_output_jobs_defaults', function($defaults) {
     $defaults['job_company'] = '';
     $defaults['job_tag'] = '';
     $defaults['job_sector'] = '';
-    $defaults['certificering'] = '';
+    $defaults['organisatie_type'] = '';
     $defaults['job_listing_type'] = '';
     
     return $defaults;
 });
 
-/** Import functions */ 
+/**
+ * Seed default terms for organisatie_type (runs once).
+ */
+add_action('init', function () {
+    if (get_option('sj_organisatie_type_seeded')) return;
+    $terms = ['Stichting', 'NGO', 'Gemeente', 'Provincie', 'Overheid', 'Semi-Overheid', 'MKB', 'Fonds', 'Non Profit'];
+    foreach ($terms as $term) {
+        if (!term_exists($term, 'organisatie_type')) {
+            wp_insert_term($term, 'organisatie_type');
+        }
+    }
+    update_option('sj_organisatie_type_seeded', true);
+});
+
+/** Import functions */
 
 require_once get_stylesheet_directory() . '/inc/bowers-import.php';
 require_once get_stylesheet_directory() . '/inc/arcadis-import.php';
