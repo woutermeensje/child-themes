@@ -9,6 +9,45 @@
 
 if ( ! defined('ABSPATH') ) exit;
 
+// =========================================================
+// Rewrite rule: /vacatures/{slug}/ → locatie of job type filter
+// =========================================================
+add_action('init', function () {
+    add_rewrite_rule(
+        '^vacatures/([^/]+)/?$',
+        'index.php?pagename=vacatures&vacatures_filter=$matches[1]',
+        'top'
+    );
+});
+
+add_filter('query_vars', function ( $vars ) {
+    $vars[] = 'vacatures_filter';
+    return $vars;
+});
+
+// Zet filter zodat WP Job Manager de initiële query én het formulier vult
+add_action('template_redirect', function () {
+    $slug = get_query_var('vacatures_filter');
+    if ( ! $slug ) return;
+
+    if ( get_term_by('slug', $slug, 'job_listing_type') ) {
+        $_GET['filter_job_types'] = [ $slug ];
+        add_filter('job_manager_output_jobs_defaults', function ( $defaults ) use ( $slug ) {
+            $defaults['selected_job_types'] = [ $slug ];
+            return $defaults;
+        });
+    } elseif ( get_term_by('slug', $slug, 'organization_type') ) {
+        $_GET['filter_organization_type'] = [ $slug ];
+    } else {
+        $location = str_replace('-', ' ', urldecode($slug));
+        $_GET['search_location'] = $location;
+        add_filter('job_manager_output_jobs_defaults', function ( $defaults ) use ( $location ) {
+            $defaults['selected_location'] = $location;
+            return $defaults;
+        });
+    }
+});
+
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-formulier.php';
 require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
 
@@ -816,4 +855,20 @@ add_action('job_manager_update_job_data', function($job_id, $values){
     update_post_meta($job_id, '_contact_last_name',  sanitize_text_field($ln));
     update_post_meta($job_id, '_contact_email',      sanitize_email($em));
 
+}, 10, 2);
+
+// 19) Quill.js laden op single job listing pagina's (voor vraag-formulier)
+add_action('wp_enqueue_scripts', function() {
+    if (!is_singular('job_listing')) return;
+    wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
+    wp_enqueue_script('quill-js', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js', [], null, true);
+});
+
+// 20) Elementor Pro theme builder uitschakelen voor single job listings
+// (content-single-job_listing.php verzorgt de volledige opmaak)
+add_filter('elementor/theme/need_override_location', function($need_override, $location) {
+    if (is_singular('job_listing')) {
+        return false;
+    }
+    return $need_override;
 }, 10, 2);

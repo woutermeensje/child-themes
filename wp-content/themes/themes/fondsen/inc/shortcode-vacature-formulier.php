@@ -1,7 +1,7 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-add_shortcode('sj_vacature_plaatsen', 'fondsen_vacature_plaatsen_shortcode');
+add_shortcode('fondsen_vacature_plaatsen', 'fondsen_vacature_plaatsen_shortcode');
 
 function fondsen_vacature_plaatsen_shortcode(): string {
     $success = isset($_GET['sj_vacature_sent']) && $_GET['sj_vacature_sent'] === '1';
@@ -32,66 +32,103 @@ function fondsen_vacature_plaatsen_shortcode(): string {
         if (!$omschrijving || trim(wp_strip_all_tags($omschrijving)) === '') $errors[] = 'Vul een vacatureomschrijving in.';
 
         if (empty($errors)) {
-            $upload = null;
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+
+            $upload          = null;
+            $upload_featured = null;
 
             if (!empty($_FILES['bedrijfslogo']['tmp_name'])) {
-                require_once ABSPATH . 'wp-admin/includes/file.php';
-                require_once ABSPATH . 'wp-admin/includes/media.php';
-                require_once ABSPATH . 'wp-admin/includes/image.php';
-
                 $upload = media_handle_upload('bedrijfslogo', 0);
             }
 
-            $type_baan_str = implode(', ', $type_baan);
-            $body  = "Nieuwe vacature via het formulier:\n\n";
-            $body .= "Pakket: $pakket\n";
-            $body .= "Naam: $voornaam $achternaam\n";
-            $body .= "Bedrijf: $bedrijfsnaam\n";
-            $body .= "E-mail: $email\n";
-            $body .= "Vacaturetitel: $vacaturetitel\n";
-            $body .= "Locatie: $locatie\n";
-            $body .= "Type baan: $type_baan_str\n";
-            $body .= "Hoe gevonden: $referral\n\n";
-            $body .= "--- Vacature omschrijving ---\n" . wp_strip_all_tags($omschrijving) . "\n\n";
-            $body .= "--- Aanvullende informatie ---\n" . wp_strip_all_tags($extra_info) . "\n";
+            if (!empty($_FILES['uitgelichte_afbeelding']['tmp_name'])) {
+                $upload_featured = media_handle_upload('uitgelichte_afbeelding', 0);
+            }
 
-            $headers     = ['Content-Type: text/plain; charset=UTF-8'];
-            $attachments = [];
+            $type_baan_str   = implode(', ', $type_baan);
+            $html_headers    = ['Content-Type: text/html; charset=UTF-8'];
+            $attachments     = [];
 
-            if (!is_wp_error($upload)) {
+            if (!is_wp_error($upload) && $upload) {
                 $path = get_attached_file($upload);
                 if ($path && file_exists($path)) {
                     $attachments[] = $path;
                 }
             }
 
+            // ── Admin notificatie (HTML) ──────────────────────────────
+            $admin_url  = admin_url('edit.php?post_status=pending&post_type=job_listing');
+            $admin_body = '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">';
+            $admin_body .= '<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:32px 0;"><tr><td align="center">';
+            $admin_body .= '<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);">';
+            $admin_body .= '<tr><td style="background:#0884CC;padding:28px 40px;"><h1 style="margin:0;color:#ffffff;font-size:22px;font-family:Arial,sans-serif;">Fondsen.org</h1><p style="margin:6px 0 0;color:rgba(255,255,255,.85);font-size:14px;">Nieuwe vacature ontvangen</p></td></tr>';
+            $admin_body .= '<tr><td style="padding:32px 40px;">';
+            $admin_body .= '<p style="margin:0 0 20px;font-size:15px;color:#333;">Er is een nieuwe vacature ingediend via het plaatsingsformulier.</p>';
+            $admin_body .= '<table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e0e0e0;border-radius:6px;overflow:hidden;">';
+            foreach ([
+                'Vacaturetitel' => esc_html($vacaturetitel),
+                'Organisatie'   => esc_html($bedrijfsnaam),
+                'Contactpersoon'=> esc_html("$voornaam $achternaam"),
+                'E-mail'        => esc_html($email),
+                'Locatie'       => esc_html($locatie),
+                'Type baan'     => esc_html($type_baan_str),
+                'Pakket'        => esc_html($pakket),
+                'Hoe gevonden'  => esc_html($referral),
+            ] as $label => $value) {
+                $admin_body .= '<tr><td style="padding:10px 16px;background:#f9f9f9;font-size:13px;font-weight:700;color:#555;width:36%;border-bottom:1px solid #e0e0e0;">' . $label . '</td>';
+                $admin_body .= '<td style="padding:10px 16px;font-size:14px;color:#333;border-bottom:1px solid #e0e0e0;">' . ($value ?: '—') . '</td></tr>';
+            }
+            $admin_body .= '</table>';
+            $admin_body .= '<p style="margin:24px 0 0;"><a href="' . esc_url($admin_url) . '" style="display:inline-block;background:#0884CC;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:4px;font-size:14px;font-weight:700;">Bekijk in WordPress</a></p>';
+            $admin_body .= '</td></tr>';
+            $admin_body .= '<tr><td style="background:#f9f9f9;padding:20px 40px;text-align:center;font-size:12px;color:#999;">Fondsen.org &mdash; <a href="mailto:informatie@fondsen.org" style="color:#0884CC;">informatie@fondsen.org</a></td></tr>';
+            $admin_body .= '</table></td></tr></table></body></html>';
+
             wp_mail(
                 'informatie@fondsen.org',
                 "Nieuwe vacature: $vacaturetitel",
-                $body,
-                $headers,
+                $admin_body,
+                array_merge($html_headers, ['Bcc: support@sustainablejobs.nl']),
                 $attachments
             );
 
-            $confirmation_body  = "Beste $voornaam,\n\n";
-            $confirmation_body .= "Bedankt voor het plaatsen van je vacature op Fondsen.org.\n\n";
-            $confirmation_body .= "We hebben je vacature in goede orde ontvangen:\n";
-            $confirmation_body .= "Vacaturetitel: $vacaturetitel\n";
-            $confirmation_body .= "Bedrijf: $bedrijfsnaam\n";
-            $confirmation_body .= "Locatie: $locatie\n";
-            $confirmation_body .= "Pakket: $pakket\n\n";
-            $confirmation_body .= "Ons team bekijkt je inzending en neemt indien nodig contact met je op.\n\n";
-            $confirmation_body .= "Heb je in de tussentijd vragen? Mail gerust naar informatie@fondsen.org.\n\n";
-            $confirmation_body .= "Met vriendelijke groet,\n";
-            $confirmation_body .= "Fondsen.org";
+            // ── Bevestiging aan plaatser (HTML) ───────────────────────
+            $conf_body  = '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">';
+            $conf_body .= '<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:32px 0;"><tr><td align="center">';
+            $conf_body .= '<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);">';
+            $conf_body .= '<tr><td style="background:#0884CC;padding:28px 40px;"><h1 style="margin:0;color:#ffffff;font-size:22px;font-family:Arial,sans-serif;">Fondsen.org</h1><p style="margin:6px 0 0;color:rgba(255,255,255,.85);font-size:14px;">Vacaturesite en impact platform voor non-profits</p></td></tr>';
+            $conf_body .= '<tr><td style="padding:32px 40px;">';
+            $conf_body .= '<p style="margin:0 0 16px;font-size:16px;color:#333;">Beste ' . esc_html($voornaam) . ',</p>';
+            $conf_body .= '<p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.6;">Bedankt voor het plaatsen van je vacature op <strong>Fondsen.org</strong>. We hebben je inzending in goede orde ontvangen en ons team bekijkt deze zo snel mogelijk.</p>';
+            $conf_body .= '<table width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e0e0e0;border-radius:6px;overflow:hidden;margin-bottom:24px;">';
+            $conf_body .= '<tr><td colspan="2" style="background:#0884CC;padding:12px 16px;font-size:13px;font-weight:700;color:#ffffff;">Overzicht van je vacature</td></tr>';
+            foreach ([
+                'Vacaturetitel' => esc_html($vacaturetitel),
+                'Organisatie'   => esc_html($bedrijfsnaam),
+                'Locatie'       => esc_html($locatie),
+                'Type baan'     => esc_html($type_baan_str),
+                'Pakket'        => esc_html($pakket),
+            ] as $label => $value) {
+                $conf_body .= '<tr><td style="padding:10px 16px;background:#f9f9f9;font-size:13px;font-weight:700;color:#555;width:36%;border-bottom:1px solid #e0e0e0;">' . $label . '</td>';
+                $conf_body .= '<td style="padding:10px 16px;font-size:14px;color:#333;border-bottom:1px solid #e0e0e0;">' . ($value ?: '—') . '</td></tr>';
+            }
+            $conf_body .= '</table>';
+            $conf_body .= '<p style="margin:0 0 8px;font-size:15px;color:#333;line-height:1.6;">Heb je in de tussentijd vragen? Neem gerust contact met ons op.</p>';
+            $conf_body .= '<p style="margin:0;font-size:15px;color:#333;">Met vriendelijke groet,<br><strong>Team Fondsen.org</strong></p>';
+            $conf_body .= '</td></tr>';
+            $conf_body .= '<tr><td style="background:#f9f9f9;padding:20px 40px;text-align:center;font-size:12px;color:#999;">Fondsen.org &mdash; <a href="mailto:informatie@fondsen.org" style="color:#0884CC;">informatie@fondsen.org</a><br>Je ontvangt deze e-mail omdat je een vacature hebt geplaatst via fondsen.org.</td></tr>';
+            $conf_body .= '</table></td></tr></table></body></html>';
 
             wp_mail(
                 $email,
                 'Bevestiging van je vacatureplaatsing op Fondsen.org',
-                $confirmation_body,
-                $headers
+                $conf_body,
+                $html_headers
             );
 
+            // ── Posts opslaan ─────────────────────────────────────────
             $post_id = wp_insert_post([
                 'post_title'  => sanitize_text_field($vacaturetitel),
                 'post_status' => 'pending',
@@ -110,9 +147,11 @@ function fondsen_vacature_plaatsen_shortcode(): string {
                 update_post_meta($post_id, '_sj_omschrijving', $omschrijving);
                 update_post_meta($post_id, '_sj_extra_info', $extra_info);
                 update_post_meta($post_id, '_sj_referral', $referral);
-
-                if (!is_wp_error($upload)) {
+                if (!is_wp_error($upload) && $upload) {
                     update_post_meta($post_id, '_sj_logo_id', $upload);
+                }
+                if (!is_wp_error($upload_featured) && $upload_featured) {
+                    update_post_meta($post_id, '_sj_featured_image_id', $upload_featured);
                 }
             }
 
@@ -124,7 +163,7 @@ function fondsen_vacature_plaatsen_shortcode(): string {
             $job_id = wp_insert_post([
                 'post_title'   => sanitize_text_field($vacaturetitel),
                 'post_content' => $content,
-                'post_status'  => 'draft',
+                'post_status'  => 'pending',
                 'post_type'    => 'job_listing',
                 'post_author'  => get_current_user_id() ?: 1,
             ]);
@@ -139,9 +178,13 @@ function fondsen_vacature_plaatsen_shortcode(): string {
                 update_post_meta($job_id, '_job_expires', '');
                 update_post_meta($job_id, '_sj_pakket', $pakket);
 
-                if (!is_wp_error($upload)) {
+                if (!is_wp_error($upload) && $upload) {
                     update_post_meta($job_id, '_company_logo', wp_get_attachment_url($upload));
                     set_post_thumbnail($job_id, $upload);
+                }
+
+                if (!is_wp_error($upload_featured) && $upload_featured) {
+                    update_post_meta($job_id, '_cover_image', wp_get_attachment_url($upload_featured));
                 }
 
                 if (!empty($type_baan)) {
@@ -165,11 +208,11 @@ function fondsen_vacature_plaatsen_shortcode(): string {
 
     $types = ['Fulltime', 'Parttime', 'Project', 'Stage', 'Vrijwilligerswerk'];
     $pakketten = [
-        'Standaard Vacature: €275 excl. btw'         => ['label' => 'Standaard', 'prijs' => '€275,00 excl. btw'],
-        'Spotlight Vacature: €375 excl. btw'         => ['label' => 'Spotlight', 'prijs' => '€375,00 excl. btw'],
-        'Stage & Vrijwilligerswerk: Gratis'          => ['label' => 'Stage & Vrijwilligerswerk', 'prijs' => 'Gratis'],
-        'Wij zijn lid van Fondsen.org: Gratis'       => ['label' => 'Wij zijn lid', 'prijs' => 'Gratis voor leden'],
+        'Standaard Vacature: €200 excl. 21% btw'    => ['label' => 'Standaard Vacature', 'prijs' => '€200,00 excl. 21% btw'],
+        'Marketing Vacature: €375 excl. 21% btw'    => ['label' => 'Marketing Vacature', 'prijs' => '€375,00 excl. 21% btw'],
+        'Wij zijn lid van Fondsen.org'               => ['label' => 'Wij zijn lid', 'prijs' => 'Gratis'],
         'Wij hebben een strippenkaart'               => ['label' => 'Strippenkaart', 'prijs' => 'Via strippenkaart'],
+        'Vrijwilligerswerk/Stage: Gratis'            => ['label' => 'Vrijwilligerswerk/Stage', 'prijs' => 'Gratis'],
     ];
 
     ob_start();
@@ -211,7 +254,7 @@ function fondsen_vacature_plaatsen_shortcode(): string {
                 <div class="sj-vp__section">
                     <p class="sj-vp__section-title">Kies je pakket</p>
                     <div class="sj-vp__grid sj-vp__grid--2">
-                        <?php $selected_pakket = $_POST['pakket'] ?? 'Standaard Vacature: €275 excl. btw'; ?>
+                        <?php $selected_pakket = $_POST['pakket'] ?? 'Standaard Vacature: €200 excl. 21% btw'; ?>
                         <?php foreach ($pakketten as $value => $info) : ?>
                         <label class="sj-vp__pakket<?php echo $selected_pakket === $value ? ' is-selected' : ''; ?>">
                             <input type="radio" name="pakket" value="<?php echo esc_attr($value); ?>" <?php checked($selected_pakket, $value); ?> class="sj-vp__pakket-radio">
@@ -320,6 +363,17 @@ function fondsen_vacature_plaatsen_shortcode(): string {
                             </label>
                             <span class="sj-vp__hint">PNG of JPG, liefst vierkant.</span>
                         </div>
+
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="sj_uitgelichte_afbeelding">Uitgelichte afbeelding <span class="sj-vp__opt">(optioneel)</span></label>
+                            <label class="sj-vp__upload" for="sj_uitgelichte_afbeelding">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,200V172l52-52,44,44a8,8,0,0,0,11.31,0l24.38-24.37L216,184V200Z"/></svg>
+                                <span class="sj-vp__upload-label">Kies afbeelding</span>
+                                <span class="sj-vp__upload-name sj-vp__upload-name--featured">Geen bestand gekozen</span>
+                                <input type="file" name="uitgelichte_afbeelding" id="sj_uitgelichte_afbeelding" accept="image/*" class="sj-vp__upload-input">
+                            </label>
+                            <span class="sj-vp__hint">De achtergrondafbeelding op de vacaturekaart. Liefst 1200×600px, JPG of PNG.</span>
+                        </div>
                     </div>
                 </div>
 
@@ -398,10 +452,18 @@ function fondsen_vacature_plaatsen_shortcode(): string {
         });
 
         var fileInput = document.getElementById('sj_bedrijfslogo');
-        var fileName = document.querySelector('.sj-vp__upload-name');
+        var fileName = document.querySelector('.sj-vp__upload-name:not(.sj-vp__upload-name--featured)');
         if (fileInput && fileName) {
             fileInput.addEventListener('change', function () {
                 fileName.textContent = fileInput.files.length ? fileInput.files[0].name : 'Geen bestand gekozen';
+            });
+        }
+
+        var featuredInput = document.getElementById('sj_uitgelichte_afbeelding');
+        var featuredName = document.querySelector('.sj-vp__upload-name--featured');
+        if (featuredInput && featuredName) {
+            featuredInput.addEventListener('change', function () {
+                featuredName.textContent = featuredInput.files.length ? featuredInput.files[0].name : 'Geen bestand gekozen';
             });
         }
 

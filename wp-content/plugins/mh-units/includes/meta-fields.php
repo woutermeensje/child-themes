@@ -3,9 +3,9 @@ if (!defined('ABSPATH')) exit;
 
 add_action('add_meta_boxes', function () {
     add_meta_box(
-        'mh_unit_price_note',
+        'mh_unit_prices',
         'Prijsindicatie',
-        'mh_unit_price_note_callback',
+        'mh_unit_prices_callback',
         'mh_unit',
         'side',
         'default'
@@ -21,19 +21,36 @@ add_action('add_meta_boxes', function () {
     );
 });
 
-function mh_unit_price_note_callback($post) {
-    $value = get_post_meta($post->ID, '_mh_unit_price_note', true);
+function mh_unit_prices_callback($post) {
+    $price_huren = get_post_meta($post->ID, '_mh_unit_price_huren', true);
+    $price_kopen = get_post_meta($post->ID, '_mh_unit_price_kopen', true);
     wp_nonce_field('mh_unit_meta_fields_save', 'mh_unit_meta_fields_nonce');
     ?>
+    <p style="font-size:12px;font-weight:600;margin:0 0 4px;">Huren</p>
     <input
         type="text"
-        name="mh_unit_price_note"
-        value="<?php echo esc_attr($value); ?>"
-        style="width:100%;"
-        placeholder="Bijv. Prijs op aanvraag"
+        name="mh_unit_price_huren"
+        value="<?php echo esc_attr($price_huren); ?>"
+        style="width:100%;margin-bottom:12px;"
+        placeholder="Bijv. € 450,- p/m of Prijs op aanvraag"
     />
-    <p style="font-size:12px;color:#666;margin-top:6px;">
-        Wordt getoond bij de knop in het overzicht en op de detailpagina.
+    <p style="font-size:12px;font-weight:600;margin:0 0 4px;">Kopen</p>
+    <input
+        type="text"
+        name="mh_unit_price_kopen"
+        value="<?php echo esc_attr($price_kopen); ?>"
+        style="width:100%;margin-bottom:12px;"
+        placeholder="Bijv. € 24.900,- of Prijs op aanvraag"
+    />
+    <p style="font-size:12px;font-weight:600;margin:0 0 4px;">Toelichting</p>
+    <textarea
+        name="mh_unit_price_toelichting"
+        rows="3"
+        style="width:100%;resize:vertical;"
+        placeholder="Bijv. Prijzen zijn exclusief BTW en afhankelijk van configuratie."
+    ><?php echo esc_textarea(get_post_meta($post->ID, '_mh_unit_price_toelichting', true)); ?></textarea>
+    <p style="font-size:12px;color:#666;margin-top:8px;">
+        Laat velden leeg om ze niet te tonen op de detailpagina.
     </p>
     <?php
 }
@@ -165,12 +182,16 @@ add_action('save_post', function ($post_id) {
     if (isset($_POST['post_type']) && 'mh_unit' !== $_POST['post_type']) return;
     if (!current_user_can('edit_post', $post_id)) return;
 
-    if (isset($_POST['mh_unit_price_note'])) {
-        update_post_meta(
-            $post_id,
-            '_mh_unit_price_note',
-            sanitize_text_field(wp_unslash($_POST['mh_unit_price_note']))
-        );
+    if (isset($_POST['mh_unit_price_huren'])) {
+        update_post_meta($post_id, '_mh_unit_price_huren', sanitize_text_field(wp_unslash($_POST['mh_unit_price_huren'])));
+    }
+
+    if (isset($_POST['mh_unit_price_kopen'])) {
+        update_post_meta($post_id, '_mh_unit_price_kopen', sanitize_text_field(wp_unslash($_POST['mh_unit_price_kopen'])));
+    }
+
+    if (isset($_POST['mh_unit_price_toelichting'])) {
+        update_post_meta($post_id, '_mh_unit_price_toelichting', sanitize_textarea_field(wp_unslash($_POST['mh_unit_price_toelichting'])));
     }
 
     if (isset($_POST['mh_unit_gallery_ids'])) {

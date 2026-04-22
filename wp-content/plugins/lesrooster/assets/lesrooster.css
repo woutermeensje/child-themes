@@ -1,3 +1,12 @@
+@font-face {
+  font-family: 'Balgin-Bold';
+  src: url('fonts/Balgin-Bold.woff2') format('woff2'),
+       url('fonts/Balgin-Bold.woff') format('woff');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 .lr-schedule,
 .lr-schedule * {
   box-sizing: border-box;
@@ -95,8 +104,8 @@
 }
 
 .lr-schedule button.lr-schedule__toggle-button {
-  appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   min-height: 42px;
   padding: 0 18px;
   border: 0;
@@ -139,6 +148,7 @@
   background: var(--lr-surface);
   border: 1px solid rgba(255, 255, 255, 0.65);
   box-shadow: 0 10px 30px rgba(20, 32, 61, 0.08);
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 
@@ -243,8 +253,8 @@
 }
 
 .lr-schedule button.lr-lesson__button {
-  appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -368,8 +378,8 @@
 }
 
 .lr-reservation-modal input.lr-reservation-form__input {
-  appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   min-height: 52px;
   padding: 0 16px;
@@ -390,8 +400,8 @@
 }
 
 .lr-reservation-modal button.lr-reservation-form__submit {
-  appearance: none;
   -webkit-appearance: none;
+  appearance: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;

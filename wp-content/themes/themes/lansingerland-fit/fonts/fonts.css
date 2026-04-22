@@ -1,8 +1,9 @@
 @font-face {
-    font-family: 'Balgin Bold';
+    font-family: 'Balgin-Bold';
     src: url('Balgin-Bold.woff2') format('woff2'),
          url('Balgin-Bold.woff') format('woff');
-    font-weight: normal;
+    font-weight: 700;
     font-style: normal;
+    font-display: swap;
 }
 

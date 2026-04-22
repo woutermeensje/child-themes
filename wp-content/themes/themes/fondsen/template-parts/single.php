@@ -9,6 +9,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 while ( have_posts() ) :
     the_post();
 
+    if ( 'post' !== get_post_type() ) : ?>
+<main id="content" <?php post_class( 'site-main' ); ?>>
+    <div class="page-content">
+        <?php the_content(); ?>
+    </div>
+</main>
+<?php
+        continue;
+    endif;
+
     $cats      = get_the_category();
     $cat_lbl   = $cats ? esc_html( $cats[0]->name ) : '';
     $cat_url   = $cats ? esc_url( get_category_link( $cats[0]->term_id ) ) : '';

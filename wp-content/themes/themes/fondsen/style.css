@@ -662,3 +662,23 @@ html, body{
     font-size: 15px;
   }
 }
+
+
+/* Single job listing: verberg WordPress entry-title */
+.single-job_listing h1.entry-title,
+body.single-job_listing .entry-title {
+    display: none !important;
+}
+
+/* Single job listing: verberg Elementor Pro post header (titel, datum, leestijd, thumbnail) */
+.single-job_listing .elementor-post__thumbnail,
+.single-job_listing .elementor-post__thumbnail__link,
+.single-job_listing .post-thumbnail,
+.single-job_listing .entry-thumbnail,
+.single-job_listing .wp-post-image,
+.single-job_listing .elementor-widget-post-info,
+.single-job_listing .elementor-post__meta-data,
+.single-job_listing .entry-meta,
+.single-job_listing .post-meta {
+    display: none !important;
+}

@@ -11,8 +11,10 @@ if (!have_posts()) {
 while (have_posts()) :
     the_post();
 
-    $unit_id      = get_the_ID();
-    $price_note   = get_post_meta($unit_id, '_mh_unit_price_note', true);
+    $unit_id             = get_the_ID();
+    $price_huren         = get_post_meta($unit_id, '_mh_unit_price_huren', true);
+    $price_kopen         = get_post_meta($unit_id, '_mh_unit_price_kopen', true);
+    $price_toelichting   = get_post_meta($unit_id, '_mh_unit_price_toelichting', true);
     $gallery_meta = get_post_meta($unit_id, '_mh_unit_gallery_ids', true);
     $gallery_ids  = array_values(array_filter(array_map('absint', explode(',', (string) $gallery_meta))));
     $image_ids    = array_values(array_filter(array_unique(array_merge(
@@ -353,6 +355,79 @@ while (have_posts()) :
         margin-bottom: 24px;
     }
 
+    .mhu-single-page .mh-price-block {
+        margin-bottom: 24px;
+    }
+
+    .mhu-single-page .mh-price-block__heading {
+        font-family: Inter, sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #111;
+        margin: 0 0 12px;
+    }
+
+    .mhu-single-page .mh-price-block__cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 10px;
+    }
+
+    .mhu-single-page .mh-price-card {
+        background: #F4F8FB;
+        border: 1px solid #D0E4F0;
+        border-radius: 8px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .mhu-single-page .mh-price-card__header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .mhu-single-page .mh-price-card__icon {
+        color: var(--color-secondary, #39749B);
+        flex-shrink: 0;
+    }
+
+    .mhu-single-page .mh-price-card__label {
+        font-family: Inter, sans-serif;
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--color-secondary, #39749B);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .mhu-single-page .mh-price-card__value {
+        font-family: Inter, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: #111;
+        line-height: 1.2;
+    }
+
+    .mhu-single-page .mh-price-block__toelichting {
+        display: flex;
+        align-items: flex-start;
+        gap: 6px;
+        font-size: 13px;
+        color: #888;
+        margin: 10px 0 0;
+        line-height: 1.6;
+        font-style: italic;
+    }
+
+    .mhu-single-page .mh-price-block__toelichting svg {
+        flex-shrink: 0;
+        margin-top: 2px;
+        color: #aaa;
+    }
+
     .mhu-single-page .mh-col-description {
         max-width: 1200px;
         margin: 40px auto 0;
@@ -656,8 +731,36 @@ while (have_posts()) :
                     <div class="mh-intro-text"><?php echo wpautop(esc_html($excerpt)); ?></div>
                 <?php endif; ?>
 
-                <?php if ($price_note) : ?>
-                    <div class="mh-intro-text"><strong>Prijsindicatie:</strong> <?php echo esc_html($price_note); ?></div>
+                <?php if ($price_huren || $price_kopen || $price_toelichting) : ?>
+                    <div class="mh-price-block">
+                        <h3 class="mh-price-block__heading">Prijsindicatie</h3>
+                        <div class="mh-price-block__cards">
+                            <?php if ($price_huren) : ?>
+                                <div class="mh-price-card">
+                                    <div class="mh-price-card__header">
+                                        <svg class="mh-price-card__icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0 3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                                        <span class="mh-price-card__label">Huren</span>
+                                    </div>
+                                    <span class="mh-price-card__value"><?php echo esc_html($price_huren); ?></span>
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($price_kopen) : ?>
+                                <div class="mh-price-card">
+                                    <div class="mh-price-card__header">
+                                        <svg class="mh-price-card__icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                                        <span class="mh-price-card__label">Kopen</span>
+                                    </div>
+                                    <span class="mh-price-card__value"><?php echo esc_html($price_kopen); ?></span>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php if ($price_toelichting) : ?>
+                            <p class="mh-price-block__toelichting">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                                <?php echo esc_html($price_toelichting); ?>
+                            </p>
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
             </div>
         </div>

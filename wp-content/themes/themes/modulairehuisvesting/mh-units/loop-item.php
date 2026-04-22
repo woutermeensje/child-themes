@@ -6,7 +6,6 @@ $aanbod_terms    = get_the_terms($unit_id, 'mh_unit_aanbod');
 $aanbod_label    = (!is_wp_error($aanbod_terms) && !empty($aanbod_terms)) ? $aanbod_terms[0]->name : '';
 $terms_type      = get_the_terms($unit_id, 'mh_unit_type');
 $terms_conditie  = get_the_terms($unit_id, 'mh_unit_conditie');
-$price_note      = get_post_meta($unit_id, '_mh_unit_price_note', true);
 $excerpt         = get_the_excerpt();
 $in_quote        = function_exists('mh_quote_has_product') && mh_quote_has_product($unit_id);
 $quote_url       = function_exists('mh_quote_get_page_url') ? mh_quote_get_page_url() : home_url('/mijn-offerte/');
@@ -94,9 +93,6 @@ if (!$excerpt) {
                 <?php endif; ?>
             </div>
 
-            <?php if ($price_note): ?>
-                <span class="mh-unit-card__price-note"><?php echo esc_html($price_note); ?></span>
-            <?php endif; ?>
         </div>
     </div>
 </article>

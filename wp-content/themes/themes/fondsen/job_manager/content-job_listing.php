@@ -11,6 +11,11 @@ if (!defined('ABSPATH')) {
 
 global $post;
 
+$job_company_terms = get_the_terms($post->ID, 'job_company');
+$job_company_name  = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0]->name : '';
+$job_company_slug  = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0]->slug : '';
+$job_company_url   = $job_company_slug ? home_url('/organisaties/' . $job_company_slug . '/') : '';
+
 $cover_image = get_post_meta($post->ID, '_cover_image', true);
 $background_image = $cover_image ? $cover_image : (function_exists('get_secondary_imageurl') ? get_secondary_imageurl($post->ID) : '');
 ?>
@@ -62,25 +67,70 @@ $background_image = $cover_image ? $cover_image : (function_exists('get_secondar
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
                             </span>
                             <div class="job-card-meta__textgroup">
-                                <p class="job-card-meta__title"><?php the_company_name(); ?></p>
-                                <?php the_company_tagline(); ?>
+                                <?php if ($job_company_url) : ?>
+                                    <a href="<?php echo esc_url($job_company_url); ?>" class="job-card-meta__title job-card-meta__company-link" onclick="event.stopPropagation();"><?php echo esc_html($job_company_name); ?></a>
+                                <?php else : ?>
+                                    <p class="job-card-meta__title"><?php echo esc_html($job_company_name); ?></p>
+                                <?php endif; ?>
                             </div>
                         </li>
 
+                        <?php
+                        $job_location     = get_the_job_location($post->ID);
+                        $job_types        = get_the_terms($post->ID, 'job_listing_type');
+                        $org_types        = get_the_terms($post->ID, 'organization_type');
+
+                        // Locatie: ondersteun komma-gescheiden waarden
+                        if ($job_location) {
+                            $location_parts = array_filter(array_map('trim', explode(',', $job_location)));
+                            $location_links = [];
+                            foreach ($location_parts as $loc) {
+                                $location_links[] = '<a href="' . esc_url(home_url('/vacatures/' . sanitize_title($loc) . '/')) . '" class="job-card-meta__filter-link" onclick="event.stopPropagation();">' . esc_html($loc) . '</a>';
+                            }
+                        }
+
+                        // Job types als array van links
+                        $type_links = [];
+                        if (!empty($job_types) && !is_wp_error($job_types)) {
+                            foreach ($job_types as $type) {
+                                $type_links[] = '<a href="' . esc_url(home_url('/vacatures/' . $type->slug . '/')) . '" class="job-card-meta__filter-link" onclick="event.stopPropagation();">' . esc_html($type->name) . '</a>';
+                            }
+                        }
+
+                        // Organization types als array van links
+                        $org_type_links = [];
+                        if (!empty($org_types) && !is_wp_error($org_types)) {
+                            foreach ($org_types as $ot) {
+                                $org_type_links[] = '<a href="' . esc_url(home_url('/vacatures/' . $ot->slug . '/')) . '" class="job-card-meta__filter-link" onclick="event.stopPropagation();">' . esc_html($ot->name) . '</a>';
+                            }
+                        }
+                        ?>
+
+                        <?php if (!empty($location_links)) : ?>
                         <li class="job-card-meta__item job-card-meta__item--location">
                             <span class="job-card-meta__icon">
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
                             </span>
-                            <p class="job-card-meta__text"><?php the_job_location(false); ?></p>
+                            <p class="job-card-meta__text"><?php echo implode(', ', $location_links); ?></p>
                         </li>
+                        <?php endif; ?>
 
-                        <?php if (function_exists('display_tax_terms') && display_tax_terms('job_listing_type', $post->ID)) : ?>
-                            <li class="job-card-meta__item job-card-meta__item--type">
-                                <span class="job-card-meta__icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-                                </span>
-                                <p class="job-card-meta__text"><?php echo display_tax_terms('job_listing_type', $post->ID); ?></p>
-                            </li>
+                        <?php if (!empty($type_links)) : ?>
+                        <li class="job-card-meta__item job-card-meta__item--type">
+                            <span class="job-card-meta__icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                            </span>
+                            <p class="job-card-meta__text"><?php echo implode(', ', $type_links); ?></p>
+                        </li>
+                        <?php endif; ?>
+
+                        <?php if (!empty($org_type_links)) : ?>
+                        <li class="job-card-meta__item job-card-meta__item--orgtype">
+                            <span class="job-card-meta__icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                            </span>
+                            <p class="job-card-meta__text"><?php echo implode(', ', $org_type_links); ?></p>
+                        </li>
                         <?php endif; ?>
 
                         <li class="job-card-meta__item job-card-meta__item--date">
@@ -106,7 +156,11 @@ $background_image = $cover_image ? $cover_image : (function_exists('get_secondar
                     </div>
 
                     <div class="job-mobile__toptext">
-                        <div class="job-mobile__company"><?php the_company_name(); ?></div>
+                        <?php if ($job_company_url) : ?>
+                        <a href="<?php echo esc_url($job_company_url); ?>" class="job-mobile__company job-card-meta__company-link" onclick="event.stopPropagation();"><?php echo esc_html($job_company_name); ?></a>
+                    <?php else : ?>
+                        <div class="job-mobile__company"><?php echo esc_html($job_company_name); ?></div>
+                    <?php endif; ?>
                         <h2 class="job-mobile__title"><?php wpjm_the_job_title(); ?></h2>
                     </div>
                 </div>
@@ -354,6 +408,37 @@ a.title-link {
     font-weight: 600;
 }
 
+a.job-card-meta__company-link {
+    display: inline;
+    background: transparent !important;
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0;
+    padding: 0 !important;
+}
+
+a.job-card-meta__company-link:hover {
+    text-decoration: underline;
+}
+
+a.job-card-meta__location-link,
+a.job-card-meta__filter-link {
+    display: inline !important;
+    background: transparent !important;
+    color: inherit;
+    text-decoration: none;
+    margin: 0;
+    padding: 0 !important;
+    width: auto !important;
+    float: none !important;
+}
+
+a.job-card-meta__location-link:hover,
+a.job-card-meta__filter-link:hover {
+    text-decoration: underline;
+}
+
 .job-card-meta__textgroup {
     display: flex;
     flex-direction: column;
@@ -489,3 +574,23 @@ input[type='text']::placeholder {
     font-size: 13px;
 }
 </style>
+
+<script>
+(function () {
+    // Capture-fase handler: onderschept klikken op filter-links VOOR
+    // enige card-click handler (inclusief document-niveau en capture-fase handlers)
+    if (window.__jobCardLinkGuard) return;
+    window.__jobCardLinkGuard = true;
+
+    document.addEventListener('click', function (e) {
+        var link = e.target.closest(
+            'a.job-card-meta__filter-link, a.job-card-meta__location-link, a.job-card-meta__company-link'
+        );
+        if (!link) return;
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        // Navigeer zelf zodat we zeker zijn dat de link gevolgd wordt
+        window.location.href = link.href;
+    }, true); // true = capture fase
+}());
+</script>
