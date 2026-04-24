@@ -4,14 +4,14 @@ if (!defined('ABSPATH')) exit;
 $page_id         = get_the_ID();
 $hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
 $intro           = has_excerpt($page_id) ? get_the_excerpt($page_id)              : 'ITproject.nl is dé vacaturesite voor IT-professionals. Ontdek de nieuwste vacatures en opdrachten en zet de volgende stap in jouw carrière.';
-$primary_label   = get_post_meta($page_id, 'landing_primary_button_text', true)   ?: 'Bekijk vacatures';
-$primary_url     = get_post_meta($page_id, 'landing_primary_button_url', true)    ?: home_url('/');
-$secondary_label = get_post_meta($page_id, 'landing_secondary_button_text', true) ?: 'Meer informatie';
-$secondary_url   = get_post_meta($page_id, 'landing_secondary_button_url', true)  ?: home_url('/contact/');
+$primary_label   = get_post_meta($page_id, 'landing_primary_button_text', true)   ?: 'Project bespreken';
+$primary_url     = get_post_meta($page_id, 'landing_primary_button_url', true)    ?: home_url('/informatie-aanvragen/');
+$secondary_label = get_post_meta($page_id, 'landing_secondary_button_text', true) ?: 'Vacatures';
+$secondary_url   = get_post_meta($page_id, 'landing_secondary_button_url', true)  ?: home_url('/werken-bij/');
 $text_link_label = get_post_meta($page_id, 'landing_text_link_text', true);
 $text_link_url   = get_post_meta($page_id, 'landing_text_link_url', true);
 $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
-$contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@itproject.nl';
+$contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'projecten@itproject.nl';
 ?>
 
 <main id="content" <?php post_class('fnd-page'); ?>>

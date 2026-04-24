@@ -10,37 +10,75 @@
 if ( ! defined('ABSPATH') ) exit;
 
 // =========================================================
-// Rewrite rule: /vacatures/{slug}/ → locatie of job type filter
+// Pretty filter URLs: /vacatures/{slug}/
 // =========================================================
-add_action('init', function () {
+if ( ! defined('FONDSEN_REWRITE_VERSION') ) {
+    define('FONDSEN_REWRITE_VERSION', '2026-04-24-listing-filter-links');
+}
+
+function fondsen_register_filter_rewrites() {
     add_rewrite_rule(
         '^vacatures/([^/]+)/?$',
         'index.php?pagename=vacatures&vacatures_filter=$matches[1]',
         'top'
     );
-});
+
+    // Backwards-compatible alias for the old singular company taxonomy base.
+    add_rewrite_rule(
+        '^organisatie/([^/]+)/?$',
+        'index.php?job_company=$matches[1]',
+        'top'
+    );
+}
+add_action('init', 'fondsen_register_filter_rewrites', 9);
 
 add_filter('query_vars', function ( $vars ) {
     $vars[] = 'vacatures_filter';
     return $vars;
 });
 
-// Zet filter zodat WP Job Manager de initiële query én het formulier vult
+add_action('after_switch_theme', function () {
+    fondsen_register_filter_rewrites();
+    flush_rewrite_rules(false);
+});
+
+add_action('init', function () {
+    if ( get_option('fondsen_rewrite_version') === FONDSEN_REWRITE_VERSION ) {
+        return;
+    }
+
+    flush_rewrite_rules(false);
+    update_option('fondsen_rewrite_version', FONDSEN_REWRITE_VERSION, false);
+}, 99);
+
+add_filter('redirect_canonical', function ( $redirect_url ) {
+    return get_query_var('vacatures_filter') ? false : $redirect_url;
+});
+
+// Zet filter zodat WP Job Manager de initiële query én het formulier vult.
 add_action('template_redirect', function () {
     $slug = get_query_var('vacatures_filter');
     if ( ! $slug ) return;
 
+    $slug = sanitize_title($slug);
+
     if ( get_term_by('slug', $slug, 'job_listing_type') ) {
         $_GET['filter_job_types'] = [ $slug ];
+        $_REQUEST['filter_job_types'] = [ $slug ];
         add_filter('job_manager_output_jobs_defaults', function ( $defaults ) use ( $slug ) {
             $defaults['selected_job_types'] = [ $slug ];
             return $defaults;
         });
+    } elseif ( get_term_by('slug', $slug, 'job_company') ) {
+        $_GET['filter_job_company'] = [ $slug ];
+        $_REQUEST['filter_job_company'] = [ $slug ];
     } elseif ( get_term_by('slug', $slug, 'organization_type') ) {
         $_GET['filter_organization_type'] = [ $slug ];
+        $_REQUEST['filter_organization_type'] = [ $slug ];
     } else {
         $location = str_replace('-', ' ', urldecode($slug));
         $_GET['search_location'] = $location;
+        $_REQUEST['search_location'] = $location;
         add_filter('job_manager_output_jobs_defaults', function ( $defaults ) use ( $location ) {
             $defaults['selected_location'] = $location;
             return $defaults;
@@ -304,7 +342,7 @@ add_action('init', function () {
         'show_ui'           => true,
         'show_admin_column' => true,
         'show_in_rest'      => true,
-        'rewrite'           => ['slug' => 'organisatie'],
+        'rewrite'           => ['slug' => 'organisaties'],
     ]);
 
     register_taxonomy('organization_type', 'job_listing', [
@@ -356,6 +394,7 @@ add_filter('job_manager_output_jobs_defaults', function($defaults) {
     $defaults['job_tag']          = '';
     $defaults['job_sector']       = '';
     $defaults['certificering']    = '';
+    $defaults['organization_type'] = '';
     $defaults['job_listing_type'] = '';
     return $defaults;
 });
@@ -373,6 +412,7 @@ add_filter('job_manager_get_listings_shortcode_args', function($atts){
         'job_tag'           => 'job_tag',
         'job_sector'        => 'job_sector',
         'certificering'     => 'certificering',
+        'organization_type' => 'organization_type',
         'job_listing_type'  => 'job_listing_type',
     ];
 
@@ -443,15 +483,24 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
         'filter_job_tag'              => 'job_tag',
         'filter_job_sector'           => 'job_sector',
         'filter_job_company'          => 'job_company',
+        'filter_organization_type'    => 'organization_type',
         'filter_job_types'            => 'job_listing_type',
         'filter_certificering'        => 'certificering',
         'filter_job_listing_category' => 'job_listing_category',
     ];
 
-    // 1) AJAX filters uit POST
+    // 1) Filters uit request. De pretty URLs vullen $_GET; AJAX vult $_POST.
     foreach ($custom_taxonomies as $filter_key => $taxonomy) {
+        $request_terms = [];
+
         if ( ! empty($_POST[$filter_key]) ) {
-            $terms = (array) $_POST[$filter_key];
+            $request_terms = (array) wp_unslash($_POST[$filter_key]);
+        } elseif ( ! empty($_GET[$filter_key]) ) {
+            $request_terms = (array) wp_unslash($_GET[$filter_key]);
+        }
+
+        if ( ! empty($request_terms) ) {
+            $terms = $request_terms;
             $terms = array_map('sanitize_title', $terms);
 
             $query_args['tax_query'][] = [

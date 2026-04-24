@@ -80,14 +80,14 @@
 }
 
 .fnd-hero__btn--primary {
-  background-color: var(--color-primary);
-  border: 2px solid var(--color-primary);
-  color: #ffffff !important;
+  background-color: #ffffff;
+  border: 2px solid #ffffff;
+  color: var(--color-primary) !important;
 }
 
 .fnd-hero__btn--primary:hover {
-  background-color: var(--color-primary-dk);
-  border-color: var(--color-primary-dk);
+  background-color: rgba(255, 255, 255, 0.88);
+  border-color: rgba(255, 255, 255, 0.88);
 }
 
 .fnd-hero__btn--secondary {

@@ -14,9 +14,10 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
     $company_website = get_post_meta($post_id, '_company_website',    true);
 
     $job_company_terms = get_the_terms($post_id, 'job_company');
-    $company_name      = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0]->name : '';
-    $company_slug      = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0]->slug : '';
-    $company_url       = $company_slug ? home_url('/organisaties/' . $company_slug . '/') : '';
+    $company_term      = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0] : null;
+    $company_name      = $company_term ? $company_term->name : '';
+    $company_slug      = $company_term ? $company_term->slug : '';
+    $company_url       = $company_slug ? home_url('/vacatures/' . $company_slug . '/') : '';
 
     /* ── Vraag-formulier verwerking ── */
     $vraag_success = false;

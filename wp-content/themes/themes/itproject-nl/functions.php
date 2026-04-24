@@ -6,20 +6,36 @@ if (!defined('ABSPATH')) exit;
 // 1) Styles en fonts
 // =========================================================
 add_action('wp_enqueue_scripts', function () {
+    $theme_dir     = get_stylesheet_directory();
+    $theme_uri     = get_stylesheet_directory_uri();
+    $theme_version = wp_get_theme()->get('Version');
+    $parent_style  = get_template_directory() . '/style.css';
+    $child_style   = $theme_dir . '/style.css';
+    $fonts_style   = $theme_dir . '/fonts/fonts.css';
+    $header_style  = $theme_dir . '/css/header.css';
+    $landing_style = $theme_dir . '/css/template.css';
+
     $dependencies = ['parent-style'];
     if (did_action('elementor/loaded') && wp_style_is('elementor-frontend', 'registered')) {
         $dependencies[] = 'elementor-frontend';
     }
 
-    wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css');
-    wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, wp_get_theme()->get('Version'));
+    wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css', [], file_exists($parent_style) ? filemtime($parent_style) : $theme_version);
+    wp_enqueue_style('child-style', $theme_uri . '/style.css', $dependencies, file_exists($child_style) ? filemtime($child_style) : $theme_version);
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
-    wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
-    wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
 
-    if (is_page_template('page-landingspagina.php')) {
-        wp_enqueue_style('itp-template', get_stylesheet_directory_uri() . '/css/template.css', ['child-style'], wp_get_theme()->get('Version'));
+    if (file_exists($fonts_style)) {
+        wp_enqueue_style('custom-fonts', $theme_uri . '/fonts/fonts.css', [], filemtime($fonts_style));
+    }
+
+    if (file_exists($header_style)) {
+        wp_enqueue_style('rn-header', $theme_uri . '/css/header.css', ['child-style'], filemtime($header_style));
+    }
+
+    $page_template = is_page() ? basename(get_page_template()) : '';
+    if (file_exists($landing_style) && (is_page_template('page-landingspagina.php') || $page_template === 'page-landingspagina.php')) {
+        wp_enqueue_style('itp-template', $theme_uri . '/css/template.css', ['child-style', 'rn-header'], filemtime($landing_style));
     }
 });
 
