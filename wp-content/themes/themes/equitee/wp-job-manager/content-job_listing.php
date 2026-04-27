@@ -2,7 +2,7 @@
 /**
  * Job listing in the loop.
  *
- * Template override: yourtheme/wp-job-manager/content-job_listing.php
+ * Template override: yourtheme/job_manager/content-job_listing.php
  */
 
 if (!defined('ABSPATH')) {
@@ -11,7 +11,8 @@ if (!defined('ABSPATH')) {
 
 global $post;
 
-$background_image = get_the_post_thumbnail_url($post->ID, 'full') ?: '';
+$cover_image = get_post_meta($post->ID, '_cover_image', true);
+$background_image = $cover_image ? $cover_image : (function_exists('get_secondary_imageurl') ? get_secondary_imageurl($post->ID) : '');
 ?>
 <li <?php job_listing_class(); ?>
     data-longitude="<?php echo esc_attr($post->geolocation_long); ?>"
@@ -23,7 +24,7 @@ $background_image = get_the_post_thumbnail_url($post->ID, 'full') ?: '';
                 <div class="background-wrapper">
                     <div class="company-logo-absolute hide_on_single">
                         <div class="company-logo-wrapper">
-                            <?php the_company_logo(); ?>
+                            <?php the_post_thumbnail(); ?>
                         </div>
                     </div>
 
@@ -101,7 +102,7 @@ $background_image = get_the_post_thumbnail_url($post->ID, 'full') ?: '';
             <a class="job-mobile__link" href="<?php the_job_permalink(); ?>">
                 <div class="job-mobile__top">
                     <div class="job-mobile__logo">
-                        <?php the_company_logo(); ?>
+                        <?php the_post_thumbnail(); ?>
                     </div>
 
                     <div class="job-mobile__toptext">

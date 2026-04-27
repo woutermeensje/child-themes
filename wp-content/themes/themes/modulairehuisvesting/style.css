@@ -13,8 +13,8 @@ Text Domain: modulairehuisvesting
 
 @font-face {
     font-family: 'Balgin-Bold';
-    src: url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff2') format('woff2'),
-         url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff') format('woff');
+    src: url('/wp-content/themes/modulairehuisvesting/fonts/Balgin-Bold.woff2') format('woff2'),
+         url('/wp-content/themes/modulairehuisvesting/fonts/Balgin-Bold.woff') format('woff');
     font-weight: 700;
     font-style: normal;
     font-display: swap;
@@ -52,10 +52,6 @@ Text Domain: modulairehuisvesting
   --color-border-strong:  #8AC697;
   --color-focus-ring:     rgba(85, 158, 163, 0.22);
   --color-shadow:         rgba(37, 71, 107, 0.12);
-}
-
-.body {
-  width: 100vw;
 }
 
 /* ── MH Units: onderdruk underline door globale link-styling ── */

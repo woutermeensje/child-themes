@@ -1,6 +1,6 @@
 <?php
 /**
- * ITproject.nl – Custom header template
+ * Equitee – Custom header template
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
 ?>
@@ -233,22 +233,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 <header id="rn-header" class="rn-header" role="banner">
 
-    <!-- Utility bar -->
-    <div class="rn-topbar">
-        <div class="rn-topbar__inner">
-            <div class="rn-topbar__left">
-                <a href="<?php echo esc_url( home_url( '/vacature-plaatsen/' ) ); ?>">Vacature Plaatsen</a>
-                <span class="rn-topbar__divider">|</span>
-                <a href="<?php echo esc_url( home_url( '/over-ons/' ) ); ?>">Over ITproject.nl</a>
-            </div>
-            <div class="rn-topbar__right">
-                <a href="<?php echo esc_url( home_url( '/tarieven/' ) ); ?>">Tarieven</a>
-                <span class="rn-topbar__divider">|</span>
-                <a href="mailto:projecten@itproject.nl">projecten@itproject.nl</a>
-            </div>
-        </div>
-    </div>
-
     <!-- Main nav -->
     <div class="rn-header__inner">
 
@@ -296,14 +280,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                 'container'      => false,
                 'menu_class'     => 'rn-nav__list',
                 'fallback_cb'    => false,
-                'walker'         => new ITP_Nav_Walker(),
+                'walker'         => new Equitee_Nav_Walker(),
             ]);
             ?>
         </nav>
 
         <!-- CTA knoppen -->
         <div class="rn-header__cta">
-            <a href="https://itproject.nl/informatie-aanvragen/" class="rn-btn rn-btn--accent">
+            <a href="https://equitee.nl/informatie-aanvragen/" class="rn-btn rn-btn--accent">
                 Project bespreken
             </a>
         </div>
@@ -335,7 +319,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="https://itproject.nl/informatie-aanvragen/" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
+            <a href="https://equitee.nl/informatie-aanvragen/" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
                 Project bespreken
             </a>
         </div>

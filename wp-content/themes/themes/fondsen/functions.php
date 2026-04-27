@@ -385,6 +385,186 @@ add_action('init', function () {
     register_taxonomy_for_object_type('certificering', 'page');
 });
 
+// =========================================================
+// 5b) Organisatie term-meta: standaard e-mailadres meldingen
+// =========================================================
+function fondsen_render_job_company_notification_email_add_field() {
+    ?>
+    <div class="form-field term-fondsen-notification-email-wrap">
+        <label for="fondsen_notification_email">Standaard melding e-mailadres</label>
+        <input type="email" name="fondsen_notification_email" id="fondsen_notification_email" value="">
+        <p class="description">Ontvangt de vacaturemeldingen na 30, 60 en 90 dagen. Als dit leeg is, gebruikt Fondsen.org het contactpersoon e-mailadres van de vacature.</p>
+    </div>
+    <?php
+}
+add_action('job_company_add_form_fields', 'fondsen_render_job_company_notification_email_add_field');
+
+function fondsen_render_job_company_notification_email_edit_field($term) {
+    $email = get_term_meta($term->term_id, '_fondsen_notification_email', true);
+    ?>
+    <tr class="form-field term-fondsen-notification-email-wrap">
+        <th scope="row">
+            <label for="fondsen_notification_email">Standaard melding e-mailadres</label>
+        </th>
+        <td>
+            <input type="email" name="fondsen_notification_email" id="fondsen_notification_email" value="<?php echo esc_attr($email); ?>">
+            <p class="description">Ontvangt de vacaturemeldingen na 30, 60 en 90 dagen. Als dit leeg is, gebruikt Fondsen.org het contactpersoon e-mailadres van de vacature.</p>
+        </td>
+    </tr>
+    <?php
+}
+add_action('job_company_edit_form_fields', 'fondsen_render_job_company_notification_email_edit_field');
+
+function fondsen_save_job_company_notification_email($term_id) {
+    if ( ! isset($_POST['fondsen_notification_email']) ) {
+        return;
+    }
+
+    $email = sanitize_email(wp_unslash($_POST['fondsen_notification_email']));
+    if ($email && is_email($email)) {
+        update_term_meta($term_id, '_fondsen_notification_email', $email);
+    } else {
+        delete_term_meta($term_id, '_fondsen_notification_email');
+    }
+}
+add_action('created_job_company', 'fondsen_save_job_company_notification_email');
+add_action('edited_job_company', 'fondsen_save_job_company_notification_email');
+
+function fondsen_get_job_company_notification_email($job_id) {
+    $terms = get_the_terms($job_id, 'job_company');
+    if (is_wp_error($terms) || empty($terms)) {
+        return '';
+    }
+
+    foreach ($terms as $term) {
+        $email = sanitize_email(get_term_meta($term->term_id, '_fondsen_notification_email', true));
+        if ($email && is_email($email)) {
+            return $email;
+        }
+    }
+
+    return '';
+}
+
+function fondsen_get_job_listing_reminder_recipient($job_id) {
+    $recipient = fondsen_get_job_company_notification_email($job_id);
+    if ($recipient) {
+        return $recipient;
+    }
+
+    $contact_email = sanitize_email(get_post_meta($job_id, '_contact_email', true));
+    if ($contact_email && is_email($contact_email)) {
+        return $contact_email;
+    }
+
+    $company_email = sanitize_email(get_post_meta($job_id, '_company_email', true));
+    if ($company_email && is_email($company_email)) {
+        return $company_email;
+    }
+
+    return '';
+}
+
+function fondsen_get_job_listing_reminder_days() {
+    return [30, 60, 90];
+}
+
+function fondsen_schedule_job_listing_reminders($job_id) {
+    if (get_post_type($job_id) !== 'job_listing' || get_post_status($job_id) !== 'publish') {
+        return;
+    }
+
+    $published_at = (int) get_post_time('U', true, $job_id);
+    if ( ! $published_at ) {
+        $published_at = time();
+    }
+
+    foreach (fondsen_get_job_listing_reminder_days() as $days) {
+        $days = (int) $days;
+        $timestamp = $published_at + ($days * DAY_IN_SECONDS);
+        $args = [$job_id, $days];
+
+        if ($timestamp <= time() || get_post_meta($job_id, '_fondsen_reminder_sent_' . $days, true)) {
+            continue;
+        }
+
+        if ( ! wp_next_scheduled('fondsen_job_listing_reminder', $args) ) {
+            wp_schedule_single_event($timestamp, 'fondsen_job_listing_reminder', $args);
+        }
+    }
+}
+
+function fondsen_clear_job_listing_reminders($job_id) {
+    foreach (fondsen_get_job_listing_reminder_days() as $days) {
+        $args = [$job_id, (int) $days];
+        $timestamp = wp_next_scheduled('fondsen_job_listing_reminder', $args);
+        while ($timestamp) {
+            wp_unschedule_event($timestamp, 'fondsen_job_listing_reminder', $args);
+            $timestamp = wp_next_scheduled('fondsen_job_listing_reminder', $args);
+        }
+    }
+}
+
+add_action('transition_post_status', function ($new_status, $old_status, $post) {
+    if ( ! $post || $post->post_type !== 'job_listing' ) {
+        return;
+    }
+
+    if ($new_status === 'publish') {
+        fondsen_schedule_job_listing_reminders((int) $post->ID);
+    } elseif ($old_status === 'publish') {
+        fondsen_clear_job_listing_reminders((int) $post->ID);
+    }
+}, 10, 3);
+
+add_action('before_delete_post', function ($post_id) {
+    if (get_post_type($post_id) === 'job_listing') {
+        fondsen_clear_job_listing_reminders((int) $post_id);
+    }
+});
+
+add_action('fondsen_job_listing_reminder', function ($job_id, $days) {
+    $job_id = (int) $job_id;
+    $days = (int) $days;
+
+    if (get_post_type($job_id) !== 'job_listing' || get_post_status($job_id) !== 'publish') {
+        return;
+    }
+
+    if (get_post_meta($job_id, '_fondsen_reminder_sent_' . $days, true)) {
+        return;
+    }
+
+    $recipient = fondsen_get_job_listing_reminder_recipient($job_id);
+    if ( ! $recipient ) {
+        return;
+    }
+
+    $title = get_the_title($job_id);
+    $url = get_permalink($job_id);
+    $subject = sprintf('Vacaturemelding: "%s" staat %d dagen online', $title, $days);
+
+    $body  = '<!DOCTYPE html><html lang="nl"><head><meta charset="UTF-8"></head><body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,sans-serif;">';
+    $body .= '<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:32px 0;"><tr><td align="center">';
+    $body .= '<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;">';
+    $body .= '<tr><td style="background:#0884CC;padding:28px 40px;"><h1 style="margin:0;color:#ffffff;font-size:22px;">Fondsen.org</h1><p style="margin:6px 0 0;color:rgba(255,255,255,.85);font-size:14px;">Vacaturemelding</p></td></tr>';
+    $body .= '<tr><td style="padding:32px 40px;">';
+    $body .= '<p style="margin:0 0 16px;font-size:15px;color:#333;line-height:1.6;">Je vacature <strong>' . esc_html($title) . '</strong> staat inmiddels ' . esc_html((string) $days) . ' dagen online op Fondsen.org.</p>';
+    $body .= '<p style="margin:0 0 24px;font-size:15px;color:#333;line-height:1.6;">Controleer of de vacature nog actueel is. Wil je de vacature aanpassen, verlengen of sluiten? Neem dan contact met ons op.</p>';
+    if ($url) {
+        $body .= '<p style="margin:0 0 24px;"><a href="' . esc_url($url) . '" style="display:inline-block;background:#0884CC;color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:4px;font-size:14px;font-weight:700;">Bekijk vacature</a></p>';
+    }
+    $body .= '<p style="margin:0;font-size:15px;color:#333;line-height:1.6;">Met vriendelijke groet,<br><strong>Team Fondsen.org</strong></p>';
+    $body .= '</td></tr>';
+    $body .= '<tr><td style="background:#f9f9f9;padding:20px 40px;text-align:center;font-size:12px;color:#999;">Fondsen.org &mdash; <a href="mailto:informatie@fondsen.org" style="color:#0884CC;">informatie@fondsen.org</a></td></tr>';
+    $body .= '</table></td></tr></table></body></html>';
+
+    $sent = wp_mail($recipient, $subject, $body, ['Content-Type: text/html; charset=UTF-8']);
+    if ($sent) {
+        update_post_meta($job_id, '_fondsen_reminder_sent_' . $days, current_time('mysql'));
+    }
+}, 10, 2);
+
 
 // =========================================================
 // 6) WPJM shortcode defaults uitbreiden (zodat args netjes bestaan)

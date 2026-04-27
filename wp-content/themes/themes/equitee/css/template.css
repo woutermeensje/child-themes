@@ -151,7 +151,6 @@
   color: var(--color-primary);
   flex-shrink: 0;
 }
-
 .fnd-hero__contact-item:hover { color: var(--color-primary) !important; }
 
 .fnd-page__builder-content {

@@ -95,6 +95,24 @@ add_action('wp_enqueue_scripts', function () {
 });
 
 /**
+ * WP Job Manager: load templates from wp-job-manager/ folder
+ */
+add_filter('job_manager_locate_template', function ($template, $template_name) {
+    $custom_templates = [
+        'content-job_listing.php',
+        'content-single-job_listing.php',
+        'job-filters.php',
+        'job-filter-job-types.php',
+        'job-listings-start.php',
+        'job-listings-end.php',
+    ];
+    $custom_path = get_stylesheet_directory() . '/wp-job-manager/' . $template_name;
+    return ( in_array($template_name, $custom_templates, true) && file_exists($custom_path) )
+        ? $custom_path
+        : $template;
+}, 10, 2);
+
+/**
  * Nav walker met dropdown-ondersteuning
  */
 if (!class_exists('MH_Nav_Walker')) :
@@ -148,6 +166,7 @@ add_action('after_setup_theme', function () {
     ]);
     add_theme_support('custom-logo');
     add_post_type_support('page', 'excerpt');
+    add_post_type_support('job_listing', 'thumbnail');
 });
 
 add_shortcode('mh_units_grid', function ($atts = []) {
