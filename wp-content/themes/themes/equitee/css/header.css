@@ -26,8 +26,7 @@
 
 /* ---- Utility bar ---- */
 .rn-topbar {
-  background: var(--rn-primary);
-  width: 100%;
+  display: none !important;
 }
 
 .rn-topbar__inner {

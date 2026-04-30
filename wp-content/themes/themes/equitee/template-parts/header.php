@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 }
 
 /* ---- Utility bar ---- */
-#rn-header .rn-topbar { background: var(--color-primary) !important; width: 100% !important; }
+#rn-header .rn-topbar { display: none !important; }
 #rn-header .rn-topbar__inner {
   max-width: 1200px; margin: 0 auto; padding: 0 24px;
   height: 36px; display: flex; align-items: center; justify-content: space-between;
@@ -287,8 +287,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
         <!-- CTA knoppen -->
         <div class="rn-header__cta">
-            <a href="https://equitee.nl/informatie-aanvragen/" class="rn-btn rn-btn--accent">
-                Project bespreken
+            <a href="/verkopen/" class="rn-btn rn-btn--accent">
+                Ik wil verkopen
             </a>
         </div>
 
@@ -319,8 +319,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="https://equitee.nl/informatie-aanvragen/" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
-                Project bespreken
+            <a href="/verkopen/" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
+                Ik wil verkopen
             </a>
         </div>
     </div>

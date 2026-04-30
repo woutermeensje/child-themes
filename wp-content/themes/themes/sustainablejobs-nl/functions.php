@@ -2,6 +2,10 @@
 if (!defined('ABSPATH')) exit;
 
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-formulier.php';
+require_once get_stylesheet_directory() . '/inc/activecampaign.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-job-alerts.php';
+require_once get_stylesheet_directory() . '/inc/job-alerts-cron.php';
+require_once get_stylesheet_directory() . '/inc/job-alerts-admin.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 require_once get_stylesheet_directory() . '/includes/blog-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';

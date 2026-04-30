@@ -1,0 +1,371 @@
+<?php
+if (!defined('ABSPATH')) exit;
+
+/**
+ * Maak de database-tabel aan voor job alert inschrijvingen.
+ */
+function sj_job_alerts_create_table(): void {
+    global $wpdb;
+    $table   = $wpdb->prefix . 'sj_job_alerts';
+    $charset = $wpdb->get_charset_collate();
+
+    $sql = "CREATE TABLE $table (
+        id bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        voornaam varchar(100) NOT NULL DEFAULT '',
+        email varchar(200) NOT NULL DEFAULT '',
+        sectors longtext NOT NULL DEFAULT '',
+        created_at datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        active tinyint(1) NOT NULL DEFAULT 1,
+        PRIMARY KEY (id),
+        UNIQUE KEY email (email)
+    ) $charset;";
+
+    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+    dbDelta($sql);
+}
+
+add_action('init', function () {
+    if (!get_option('sj_job_alerts_table_v1')) {
+        sj_job_alerts_create_table();
+        update_option('sj_job_alerts_table_v1', true);
+    }
+});
+
+/**
+ * Shortcode: [job-alerts]
+ */
+add_shortcode('job-alerts', 'sj_job_alerts_shortcode');
+
+function sj_job_alerts_shortcode(): string {
+    global $wpdb;
+    $table   = $wpdb->prefix . 'sj_job_alerts';
+    $errors  = [];
+    $success = false;
+
+    if (
+        $_SERVER['REQUEST_METHOD'] === 'POST' &&
+        isset($_POST['sj_ja_nonce']) &&
+        wp_verify_nonce($_POST['sj_ja_nonce'], 'sj_job_alerts')
+    ) {
+        $voornaam = sanitize_text_field($_POST['voornaam'] ?? '');
+        $email    = sanitize_email($_POST['email']    ?? '');
+        $sectors  = array_map('sanitize_title', (array) ($_POST['sectors'] ?? []));
+
+        if (!$voornaam)        $errors[] = 'Vul je voornaam in.';
+        if (!is_email($email)) $errors[] = 'Vul een geldig e-mailadres in.';
+        if (empty($sectors))   $errors[] = 'Kies minimaal één categorie.';
+
+        if (empty($errors)) {
+            $existing = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM {$table} WHERE email = %s",
+                $email
+            ));
+
+            if ($existing) {
+                $wpdb->update(
+                    $table,
+                    ['voornaam' => $voornaam, 'sectors' => wp_json_encode($sectors), 'active' => 1],
+                    ['email'    => $email],
+                    ['%s', '%s', '%d'],
+                    ['%s']
+                );
+            } else {
+                $wpdb->insert(
+                    $table,
+                    ['voornaam' => $voornaam, 'email' => $email, 'sectors' => wp_json_encode($sectors), 'active' => 1],
+                    ['%s', '%s', '%s', '%d']
+                );
+            }
+
+            // ActiveCampaign: contact aanmaken + tags koppelen
+            sj_ac_subscribe_job_alert($voornaam, $email, $sectors);
+
+            $sector_names = [];
+            foreach ($sectors as $slug) {
+                $term = get_term_by('slug', $slug, 'job_sector');
+                if ($term) $sector_names[] = $term->name;
+            }
+
+            $body  = "Hoi {$voornaam},\n\n";
+            $body .= "Je bent aangemeld voor job alerts op Sustainablejobs.nl!\n\n";
+            $body .= "Je ontvangt wekelijks de nieuwste vacatures in:\n";
+            foreach ($sector_names as $name) {
+                $body .= "- {$name}\n";
+            }
+            $body .= "\nWil je je voorkeuren wijzigen of je afmelden? Stuur een mail naar support@sustainablejobs.nl.\n\n";
+            $body .= "Met vriendelijke groet,\nSustainablejobs.nl";
+
+            wp_mail($email, 'Je job alert is aangemeld!', $body);
+            $success = true;
+        }
+    }
+
+    $sector_terms = get_terms(['taxonomy' => 'job_sector', 'hide_empty' => false, 'orderby' => 'name']);
+    if (is_wp_error($sector_terms)) {
+        $sector_terms = [];
+    }
+
+    ob_start();
+
+    if ($success): ?>
+
+    <div class="sj-ja-notice sj-ja-notice--success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
+        <div>
+            <strong>Je bent aangemeld!</strong>
+            <p>Je ontvangt wekelijks een overzicht van nieuwe vacatures in jouw gekozen categorieën. Check ook je spammap.</p>
+        </div>
+    </div>
+
+    <?php else: ?>
+
+    <?php if (!empty($errors)): ?>
+    <div class="sj-ja-notice sj-ja-notice--error">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M236.8,188.09,149.35,36.22a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/></svg>
+        <div>
+            <strong>Controleer de volgende velden:</strong>
+            <ul>
+                <?php foreach ($errors as $e): ?>
+                    <li><?php echo esc_html($e); ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+    <?php endif; ?>
+
+    <div class="sj-ja">
+        <div class="sj-ja__block">
+
+            <header class="sj-ja__header">
+                <h2 class="sj-ja__title">Job alerts instellen</h2>
+                <p class="sj-ja__subtitle">Ontvang wekelijks de nieuwste vacatures in jouw vakgebied direct in je inbox.</p>
+            </header>
+
+            <form method="post" class="sj-ja__form" novalidate>
+                <?php wp_nonce_field('sj_job_alerts', 'sj_ja_nonce'); ?>
+
+                <div class="sj-ja__fields">
+
+                    <div class="sj-ja__field">
+                        <label class="sj-ja__label" for="sj_ja_voornaam">Voornaam <span class="sj-ja__req">*</span></label>
+                        <div class="sj-ja__input-wrap">
+                            <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0a6b8d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <input type="text" name="voornaam" id="sj_ja_voornaam" class="sj-ja__input"
+                                   value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>"
+                                   placeholder="Voornaam" required>
+                        </div>
+                    </div>
+
+                    <div class="sj-ja__field">
+                        <label class="sj-ja__label" for="sj_ja_email">E-mailadres <span class="sj-ja__req">*</span></label>
+                        <div class="sj-ja__input-wrap">
+                            <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0a6b8d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            <input type="email" name="email" id="sj_ja_email" class="sj-ja__input"
+                                   value="<?php echo esc_attr($_POST['email'] ?? ''); ?>"
+                                   placeholder="E-mailadres" required>
+                        </div>
+                    </div>
+
+                    <?php
+                    $selected_sectors = array_map('sanitize_title', (array) ($_POST['sectors'] ?? []));
+                    ?>
+                    <div class="sj-ja__field sj-ja__field--full">
+                        <label class="sj-ja__label" for="sj_ja_sectors">Categorieën <span class="sj-ja__req">*</span></label>
+                        <select name="sectors[]" id="sj_ja_sectors"
+                                class="js-custom-select"
+                                data-placeholder="Categorieën"
+                                multiple>
+                            <?php foreach ($sector_terms as $term): ?>
+                            <option value="<?php echo esc_attr($term->slug); ?>"
+                                <?php selected(in_array($term->slug, $selected_sectors)); ?>>
+                                <?php echo esc_html($term->name); ?>
+                            </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="sj-ja-active-filters" id="sj_ja_active_filters" aria-live="polite"></div>
+
+                <footer class="sj-ja__footer">
+                    <button type="submit" class="sj-ja__submit">Alert instellen</button>
+                </footer>
+
+            </form>
+        </div>
+    </div>
+
+    <script>
+    (function () {
+        var closeAll = function () {
+            document.querySelectorAll('.sj-select.active').forEach(function (el) {
+                el.classList.remove('active');
+                var searchInput = el.querySelector('.sj-search-input');
+                if (searchInput) {
+                    searchInput.value = '';
+                    el.querySelectorAll('.sj-option').forEach(function (o) { o.style.display = ''; });
+                }
+            });
+        };
+
+        var buildSelect = function (select) {
+            if (select.classList.contains('sj-hidden-select')) return; // al geïnitialiseerd
+
+            var placeholder = select.dataset.placeholder || 'Selecteer';
+
+            var wrap = document.createElement('div');
+            wrap.className = 'sj-select-wrap';
+            select.parentNode.insertBefore(wrap, select);
+            wrap.appendChild(select);
+            select.classList.add('sj-hidden-select');
+
+            var root = document.createElement('div');
+            root.className = 'sj-select';
+            root.dataset.type = 'multi';
+
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'sj-select-btn';
+            btn.innerHTML = '<span class="sj-btn-content"><span class="sj-placeholder">' + placeholder + '</span><span class="sj-tags" aria-hidden="true"></span></span><span class="sj-actions"><button type="button" class="sj-clear" aria-label="Wis selectie" title="Wis selectie">×</button><span class="sj-chev" aria-hidden="true"></span></span>';
+
+            var clearBtn = btn.querySelector('.sj-clear');
+            clearBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                e.preventDefault();
+                Array.from(select.options).forEach(function (o) { o.selected = false; });
+                renderState();
+            });
+
+            var list = document.createElement('div');
+            list.className = 'sj-options';
+            list.setAttribute('role', 'listbox');
+            list.setAttribute('aria-multiselectable', 'true');
+
+            var searchWrap = document.createElement('div');
+            searchWrap.className = 'sj-search';
+            searchWrap.innerHTML = '<input type="text" class="sj-search-input" placeholder="Zoek in ' + placeholder.toLowerCase() + '">';
+            var searchInput = searchWrap.querySelector('.sj-search-input');
+            list.appendChild(searchWrap);
+
+            var optionRows = [];
+            Array.from(select.options).forEach(function (opt) {
+                var row = document.createElement('div');
+                row.className = 'sj-option';
+                row.dataset.value = opt.value;
+                row.setAttribute('role', 'option');
+                row.setAttribute('aria-selected', opt.selected ? 'true' : 'false');
+                row.innerHTML = '<span class="sj-option-text"></span>';
+                row.querySelector('.sj-option-text').textContent = opt.textContent.trim();
+
+                var syncSelected = function () {
+                    row.classList.toggle('is-selected', opt.selected);
+                    row.setAttribute('aria-selected', opt.selected ? 'true' : 'false');
+                };
+                syncSelected();
+
+                row.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    opt.selected = !opt.selected;
+                    renderState();
+                });
+
+                optionRows.push({ opt: opt, row: row, syncSelected: syncSelected });
+                list.appendChild(row);
+            });
+
+            searchInput.addEventListener('input', function () {
+                var term = searchInput.value.trim().toLowerCase();
+                optionRows.forEach(function (item) {
+                    item.row.style.display = item.opt.textContent.toLowerCase().includes(term) ? '' : 'none';
+                });
+            });
+            searchInput.addEventListener('click', function (e) { e.stopPropagation(); });
+            searchInput.addEventListener('keydown', function (e) { e.stopPropagation(); });
+
+            var placeholderEl = btn.querySelector('.sj-placeholder');
+
+            var renderChips = function () {
+                var container = document.getElementById('sj_ja_active_filters');
+                if (!container) return;
+                container.innerHTML = '';
+                var selected = Array.from(select.options).filter(function (o) { return o.selected; });
+                container.classList.toggle('has-items', selected.length > 0);
+                selected.forEach(function (opt) {
+                    var chip = document.createElement('span');
+                    chip.className = 'sj-ja-chip';
+                    var text = document.createElement('span');
+                    text.textContent = opt.textContent.trim();
+                    var rm = document.createElement('button');
+                    rm.type = 'button';
+                    rm.className = 'sj-ja-chip__remove';
+                    rm.setAttribute('aria-label', 'Verwijder ' + opt.textContent.trim());
+                    rm.textContent = '×';
+                    rm.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        opt.selected = false;
+                        renderState();
+                    });
+                    chip.appendChild(text);
+                    chip.appendChild(rm);
+                    container.appendChild(chip);
+                });
+            };
+
+            var renderState = function () {
+                optionRows.forEach(function (item) { item.syncSelected(); });
+                var selected = Array.from(select.options).filter(function (o) { return o.selected; });
+                if (selected.length === 0) {
+                    placeholderEl.style.display = 'inline';
+                    clearBtn.style.display = 'none';
+                } else {
+                    placeholderEl.style.display = 'inline';
+                    clearBtn.style.display = 'inline-flex';
+                }
+                renderChips();
+            };
+
+            renderState();
+
+            btn.addEventListener('click', function (e) {
+                if (e.target.closest('.sj-clear')) return;
+                e.preventDefault();
+                var wasOpen = root.classList.contains('active');
+                closeAll();
+                if (!wasOpen) {
+                    root.classList.add('active');
+                    searchInput.value = '';
+                    optionRows.forEach(function (item) { item.row.style.display = ''; });
+                    window.setTimeout(function () { searchInput.focus(); }, 10);
+                }
+            });
+
+            root.appendChild(btn);
+            root.appendChild(list);
+            wrap.appendChild(root);
+        };
+
+        var init = function () {
+            var select = document.getElementById('sj_ja_sectors');
+            if (select) buildSelect(select);
+
+            document.addEventListener('click', function (e) {
+                if (!e.target.closest('.sj-select')) closeAll();
+            });
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') closeAll();
+            });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+
+    <?php endif;
+
+    return ob_get_clean();
+}
