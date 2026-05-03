@@ -88,6 +88,7 @@ add_action('template_redirect', function () {
 
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-formulier.php';
 require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
+require_once get_stylesheet_directory() . '/inc/locations.php';
 
 add_filter('wp_mail_from', function () {
     return 'informatie@fondsen.org';
@@ -1086,11 +1087,121 @@ add_action('job_manager_update_job_data', function($job_id, $values){
 
 }, 10, 2);
 
-// 19) Quill.js laden op single job listing pagina's (voor vraag-formulier)
+// 19) Quill.js + MapLibre GL JS laden op single job listing pagina's
 add_action('wp_enqueue_scripts', function() {
     if (!is_singular('job_listing')) return;
+
     wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
     wp_enqueue_script('quill-js', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js', [], null, true);
+
+    wp_enqueue_style('maplibre-gl', 'https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.css', [], '4');
+    wp_enqueue_script('maplibre-gl', 'https://unpkg.com/maplibre-gl@4/dist/maplibre-gl.js', [], '4', true);
+});
+
+// 21) Geocode locatietekst via Nominatim + cache in post meta
+function fondsen_get_job_location_coords($post_id, $location) {
+    $lat = get_post_meta($post_id, '_job_location_lat', true);
+    $lng = get_post_meta($post_id, '_job_location_lng', true);
+
+    if ($lat !== '' && $lng !== '') {
+        return ['lat' => (float) $lat, 'lng' => (float) $lng];
+    }
+
+    if (empty($location)) return null;
+
+    $response = wp_remote_get(
+        'https://nominatim.openstreetmap.org/search?' . http_build_query([
+            'q'      => $location . ', Nederland',
+            'format' => 'json',
+            'limit'  => 1,
+        ]),
+        [
+            'timeout' => 5,
+            'headers' => ['User-Agent' => 'fondsen.org/1.0 (informatie@fondsen.org)'],
+        ]
+    );
+
+    if (is_wp_error($response)) return null;
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+    if (empty($body[0]['lat'])) return null;
+
+    $lat = (float) $body[0]['lat'];
+    $lng = (float) $body[0]['lon'];
+
+    update_post_meta($post_id, '_job_location_lat', $lat);
+    update_post_meta($post_id, '_job_location_lng', $lng);
+
+    return ['lat' => $lat, 'lng' => $lng];
+}
+
+// 22) Admin: Photon locatie-autocomplete op job_listing edit scherm
+add_action('admin_enqueue_scripts', function ($hook) {
+    global $post;
+    if (!in_array($hook, ['post.php', 'post-new.php'], true)) return;
+    if (!$post || $post->post_type !== 'job_listing') return;
+
+    wp_enqueue_style(
+        'fondsen-admin-location',
+        get_stylesheet_directory_uri() . '/assets/admin-location.css',
+        [],
+        filemtime(get_stylesheet_directory() . '/assets/admin-location.css')
+    );
+
+    wp_enqueue_script(
+        'fondsen-admin-location',
+        get_stylesheet_directory_uri() . '/assets/admin-location.js',
+        [],
+        filemtime(get_stylesheet_directory() . '/assets/admin-location.js'),
+        true
+    );
+});
+
+// Hidden geo-velden + nonce in het job_listing edit scherm
+add_action('add_meta_boxes', function () {
+    add_meta_box(
+        'fondsen_geo_coords',
+        'Geocoördinaten (Photon)',
+        function ($post) {
+            wp_nonce_field('fondsen_geo_save_' . $post->ID, 'fondsen_geo_nonce');
+            $lat = get_post_meta($post->ID, '_job_location_lat', true);
+            $lng = get_post_meta($post->ID, '_job_location_lng', true);
+            echo '<p style="color:#666;font-size:12px;margin:0 0 8px;">Worden automatisch ingevuld via de locatie-autocomplete.</p>';
+            echo '<label style="display:block;margin-bottom:4px;font-size:12px;">Latitude</label>';
+            echo '<input type="text" id="fn-geo-lat" name="fn_geo_lat" value="' . esc_attr($lat) . '" style="width:100%;margin-bottom:8px;" readonly>';
+            echo '<label style="display:block;margin-bottom:4px;font-size:12px;">Longitude</label>';
+            echo '<input type="text" id="fn-geo-lng" name="fn_geo_lng" value="' . esc_attr($lng) . '" style="width:100%;" readonly>';
+        },
+        'job_listing',
+        'side',
+        'default'
+    );
+});
+
+// Sla geocoördinaten op na admin-save
+add_action('save_post_job_listing', function ($post_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', $post_id)) return;
+    if (!isset($_POST['fondsen_geo_nonce'])) return;
+    if (!wp_verify_nonce($_POST['fondsen_geo_nonce'], 'fondsen_geo_save_' . $post_id)) return;
+
+    $lat_input = isset($_POST['fn_geo_lat']) ? trim($_POST['fn_geo_lat']) : '';
+    $lng_input = isset($_POST['fn_geo_lng']) ? trim($_POST['fn_geo_lng']) : '';
+
+    if ($lat_input !== '' && $lng_input !== '') {
+        $lat = (float) $lat_input;
+        $lng = (float) $lng_input;
+        if ($lat && $lng) {
+            update_post_meta($post_id, '_job_location_lat', $lat);
+            update_post_meta($post_id, '_job_location_lng', $lng);
+            update_post_meta($post_id, '_job_geolocation_lat', $lat);
+            update_post_meta($post_id, '_job_geolocation_long', $lng);
+        }
+    } else {
+        // Locatie handmatig getypt zonder autocomplete: cached coords wissen
+        delete_post_meta($post_id, '_job_location_lat');
+        delete_post_meta($post_id, '_job_location_lng');
+    }
 });
 
 // 20) Elementor Pro theme builder uitschakelen voor single job listings

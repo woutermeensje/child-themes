@@ -13,6 +13,10 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
     $location        = get_post_meta($post_id, '_job_location',       true);
     $company_website = get_post_meta($post_id, '_company_website',    true);
 
+    $location_coords = ($location && function_exists('fondsen_get_job_location_coords'))
+        ? fondsen_get_job_location_coords($post_id, $location)
+        : null;
+
     $job_company_terms = get_the_terms($post_id, 'job_company');
     $company_term      = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0] : null;
     $company_name      = $company_term ? $company_term->name : '';
@@ -286,6 +290,19 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
 
             </div>
         </div>
+
+        <?php if ($location && $location_coords) : ?>
+        <!-- Locatiekaart -->
+        <div class="fn-sidebar-block fn-map-block">
+            <p class="fn-sidebar__block-title">Locatie</p>
+            <div id="fn-job-map"
+                 class="fn-job-map"
+                 data-lat="<?php echo esc_attr($location_coords['lat']); ?>"
+                 data-lng="<?php echo esc_attr($location_coords['lng']); ?>"
+                 data-label="<?php echo esc_attr($location); ?>">
+            </div>
+        </div>
+        <?php endif; ?>
 
         <?php if ($con_first || $con_last || $con_email) : ?>
         <!-- Contactpersoon -->
@@ -977,6 +994,16 @@ h3.fn-recent-jobtitle {
     overflow: hidden;
 }
 
+/* ── Locatiekaart ── */
+.fn-map-block { padding: 20px; }
+
+.fn-job-map {
+    width: 100%;
+    height: 220px;
+    border-radius: var(--fn-radius);
+    overflow: hidden;
+}
+
 /* ── entry-title verbergen ── */
 .single-job_listing h1.entry-title,
 body.single-job_listing .entry-title {
@@ -1023,6 +1050,33 @@ body.single-job_listing .entry-title {
 </style>
 
 <script>
+(function () {
+    function initJobMap() {
+        if (typeof maplibregl === 'undefined') { setTimeout(initJobMap, 100); return; }
+        var el = document.getElementById('fn-job-map');
+        if (!el) return;
+
+        var lat = parseFloat(el.dataset.lat);
+        var lng = parseFloat(el.dataset.lng);
+        var label = el.dataset.label || '';
+
+        var map = new maplibregl.Map({
+            container: 'fn-job-map',
+            style: 'https://tiles.openfreemap.org/styles/liberty',
+            center: [lng, lat],
+            zoom: 11,
+            attributionControl: true,
+            scrollZoom: false,
+        });
+
+        new maplibregl.Marker({ color: '#0884CC' })
+            .setLngLat([lng, lat])
+            .setPopup(new maplibregl.Popup({ offset: 25 }).setText(label))
+            .addTo(map);
+    }
+    initJobMap();
+})();
+
 (function () {
     function initVraagQuill() {
         if (typeof Quill === 'undefined') { setTimeout(initVraagQuill, 80); return; }
