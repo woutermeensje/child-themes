@@ -360,13 +360,13 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 .sj-sidebar__chip {
     display: inline-block;
     padding: 3px 10px;
-    background: #EEF3F0;
-    border: 1px solid #c8ddd4;
+    background: #F3F7E4;
+    border: 1px solid #DDE8C5;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
     font-family: 'Poppins', sans-serif;
-    color: #0A6B8D;
+    color: #168AAD;
     margin-right: 4px;
 }
 
@@ -383,7 +383,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     font-family: 'Poppins', sans-serif;
     font-size: 13px;
     font-weight: 400;
-    color: #0A6B8D;
+    color: #168AAD;
     text-decoration: none;
 }
 
@@ -414,7 +414,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     box-sizing: border-box;
 }
 
-.sj-sidebar__input:focus { border-color: #0A6B8D; }
+.sj-sidebar__input:focus { border-color: #168AAD; }
 
 .sj-sidebar__input::placeholder {
     color: #9ca3af;
@@ -432,9 +432,9 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     justify-content: center;
     font-family: 'Balgin-Bold', serif;
     font-size: 14px;
-    background-color: #92E9AB;
-    border: 2px solid #92E9AB;
-    color: #0A6B8D;
+    background-color: #C5D77F;
+    border: 2px solid #C5D77F;
+    color: #168AAD;
     padding: 9px 20px;
     border-radius: 4px;
     cursor: pointer;
@@ -443,8 +443,8 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 }
 
 .sj-sidebar__submit:hover {
-    background-color: #b9d1b3;
-    border-color: #b9d1b3;
+    background-color: #8FC689;
+    border-color: #8FC689;
 }
 
 .sj-sidebar__vraag-success {
@@ -500,20 +500,20 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 }
 
 .update-link {
-    color: #0A6B8D !important;
-    background: #E0D0E1;
+    color: #168AAD !important;
+    background: #A9CF82;
     font-family: Poppins;
     font-weight: 700;
     padding: 8px;
-    border: 1px solid #0A6B8D !important;
+    border: 1px solid #168AAD !important;
     border-radius: 5px;
     text-decoration: none !important;
     white-space: nowrap;
 }
 
 .update-link:hover {
-    background: #0A6B8D !important;
-    color: #B9D1B3 !important;
+    background: #168AAD !important;
+    color: #C5D77F !important;
 }
 
 /* ── Meta pills ──────────────────────────────────────────── */
@@ -771,7 +771,7 @@ h1.entry-title { display: none; }
     line-height: 1.4;
 }
 
-.sj-vraag-req { color: var(--color-primary, #0A6B8D); margin-left: 2px; }
+.sj-vraag-req { color: var(--color-primary, #168AAD); margin-left: 2px; }
 
 .sj-vraag-blok__input {
     width: 100% !important;
@@ -792,8 +792,8 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__input:focus {
-    border-color: var(--color-primary, #0A6B8D) !important;
-    box-shadow: 0 0 0 3px rgba(10,107,141,.15) !important;
+    border-color: var(--color-primary, #168AAD) !important;
+    box-shadow: 0 0 0 3px rgba(22,138,173,.15) !important;
 }
 
 .sj-vraag-blok__input::placeholder {
@@ -813,14 +813,14 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__quill-wrap:focus-within {
-    border-color: var(--color-primary, #0A6B8D);
-    box-shadow: 0 0 0 3px rgba(10,107,141,.15);
+    border-color: var(--color-primary, #168AAD);
+    box-shadow: 0 0 0 3px rgba(22,138,173,.15);
 }
 
 .sj-vraag-blok__quill-wrap .ql-toolbar {
     border: none !important;
     border-bottom: 1px solid #DEDEDE !important;
-    background: var(--color-bg-filter, #EEF3F0);
+    background: var(--color-bg-filter, #F3F7E4);
     padding: 8px 12px !important;
 }
 
@@ -843,11 +843,11 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__quill-wrap .ql-toolbar button:hover,
-.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active { color: var(--color-primary, #0A6B8D) !important; }
+.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active { color: var(--color-primary, #168AAD) !important; }
 .sj-vraag-blok__quill-wrap .ql-toolbar button:hover .ql-stroke,
-.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-stroke { stroke: var(--color-primary, #0A6B8D) !important; }
+.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-stroke { stroke: var(--color-primary, #168AAD) !important; }
 .sj-vraag-blok__quill-wrap .ql-toolbar button:hover .ql-fill,
-.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-fill { fill: var(--color-primary, #0A6B8D) !important; }
+.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-fill { fill: var(--color-primary, #168AAD) !important; }
 
 /* CV Upload */
 .sj-vraag-blok__upload {
@@ -859,8 +859,8 @@ h1.entry-title { display: none; }
     width: 100%;
     min-height: 110px;
     padding: 24px 20px;
-    background: #f0f7fb;
-    border: 2px dashed var(--color-primary, #0A6B8D);
+    background: var(--color-bg-filter, #F3F7E4);
+    border: 2px dashed var(--color-primary, #168AAD);
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
@@ -870,12 +870,12 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__upload:hover {
-    border-color: var(--color-secondary, #92E9AB);
-    background: #e4f0f5;
+    border-color: var(--color-secondary, #C5D77F);
+    background: var(--color-bg-light, #F7FAEF);
 }
 
 .sj-vraag-blok__upload svg {
-    color: var(--color-primary, #0A6B8D);
+    color: var(--color-primary, #168AAD);
     flex-shrink: 0;
 }
 
@@ -883,7 +883,7 @@ h1.entry-title { display: none; }
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-primary, #0A6B8D);
+    color: var(--color-primary, #168AAD);
 }
 
 .sj-vraag-blok__upload-name {
@@ -919,9 +919,9 @@ h1.entry-title { display: none; }
     font-family: 'Balgin-Bold', serif;
     font-size: 15px;
     font-weight: 600;
-    background-color: var(--color-secondary, #92E9AB);
-    border: 2px solid var(--color-secondary, #92E9AB);
-    color: var(--color-primary, #0A6B8D) !important;
+    background-color: var(--color-secondary, #C5D77F);
+    border: 2px solid var(--color-secondary, #C5D77F);
+    color: var(--color-primary, #168AAD) !important;
     padding: 10px 28px;
     border-radius: 4px;
     cursor: pointer;
@@ -930,8 +930,8 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__submit:hover {
-    background-color: var(--color-accent, #b9d1b3);
-    border-color: var(--color-accent, #b9d1b3);
+    background-color: var(--color-accent, #8FC689);
+    border-color: var(--color-accent, #8FC689);
 }
 
 @media (max-width: 640px) {

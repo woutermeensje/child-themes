@@ -79,7 +79,7 @@ add_action('manage_sj_vacature_posts_custom_column', function ($column, $post_id
         case 'sj_status':
             $status = get_post_status($post_id);
             $labels = [
-                'pending' => ['Nieuw',        '#92E9AB', '#0A6B8D'],
+                'pending' => ['Nieuw',        '#C5D77F', '#168AAD'],
                 'publish' => ['Gepubliceerd', '#d1fae5', '#065f46'],
                 'draft'   => ['Concept',      '#e5e7eb', '#374151'],
                 'trash'   => ['Verwijderd',   '#fee2e2', '#991b1b'],
@@ -144,8 +144,8 @@ function sj_vacature_details_meta_box($post) {
     .sj-meta-table { width: 100%; border-collapse: collapse; font-family: -apple-system, sans-serif; }
     .sj-meta-table th { width: 160px; padding: 10px 12px; background: #f9fafb; border: 1px solid #e5e7eb; font-weight: 600; font-size: 13px; color: #374151; text-align: left; vertical-align: top; }
     .sj-meta-table td { padding: 10px 12px; border: 1px solid #e5e7eb; font-size: 13px; color: #111827; vertical-align: top; }
-    .sj-meta-table td a { color: #0A6B8D; }
-    .sj-meta-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #92E9AB; color: #0A6B8D; font-size: 12px; font-weight: 700; }
+    .sj-meta-table td a { color: #168AAD; }
+    .sj-meta-badge { display: inline-block; padding: 3px 10px; border-radius: 999px; background: #C5D77F; color: #168AAD; font-size: 12px; font-weight: 700; }
     </style>
     <table class="sj-meta-table">
         <?php foreach ($fields as $label => $value):
@@ -198,7 +198,7 @@ function sj_vacature_logo_meta_box($post) {
         $logo_url = wp_get_attachment_image_url($logo_id, 'medium');
         if ($logo_url) {
             echo '<img src="' . esc_url($logo_url) . '" style="max-width:100%;border-radius:5px;border:1px solid #e5e7eb;">';
-            echo '<p style="margin:8px 0 0;"><a href="' . esc_url(get_edit_post_link($logo_id)) . '" target="_blank" style="font-size:12px;color:#0A6B8D;">Bekijk in mediabibliotheek</a></p>';
+            echo '<p style="margin:8px 0 0;"><a href="' . esc_url(get_edit_post_link($logo_id)) . '" target="_blank" style="font-size:12px;color:#168AAD;">Bekijk in mediabibliotheek</a></p>';
         }
     } else {
         echo '<p style="color:#9ca3af;font-size:13px;margin:0;">Geen logo meegestuurd.</p>';

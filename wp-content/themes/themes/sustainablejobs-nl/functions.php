@@ -29,6 +29,83 @@ add_filter('wp_mail_from_name', function ($from_name) {
 add_filter('job_manager_multi_job_type', '__return_true');
 
 /**
+ * Pretty filter URLs: /vacatures/{slug}/
+ */
+if (!defined('SJ_REWRITE_VERSION')) {
+    define('SJ_REWRITE_VERSION', '2026-05-03-listing-filter-links');
+}
+
+function sj_register_filter_rewrites() {
+    add_rewrite_rule(
+        '^vacatures/([^/]+)/?$',
+        'index.php?pagename=vacatures&vacatures_filter=$matches[1]',
+        'top'
+    );
+}
+add_action('init', 'sj_register_filter_rewrites', 9);
+
+add_filter('query_vars', function ($vars) {
+    $vars[] = 'vacatures_filter';
+    return $vars;
+});
+
+add_action('after_switch_theme', function () {
+    sj_register_filter_rewrites();
+    flush_rewrite_rules(false);
+});
+
+add_action('init', function () {
+    if (get_option('sj_rewrite_version') === SJ_REWRITE_VERSION) {
+        return;
+    }
+
+    flush_rewrite_rules(false);
+    update_option('sj_rewrite_version', SJ_REWRITE_VERSION, false);
+}, 99);
+
+add_filter('redirect_canonical', function ($redirect_url) {
+    return get_query_var('vacatures_filter') ? false : $redirect_url;
+});
+
+add_action('template_redirect', function () {
+    $slug = get_query_var('vacatures_filter');
+    if (!$slug) {
+        return;
+    }
+
+    $slug = sanitize_title($slug);
+
+    if (get_term_by('slug', $slug, 'job_listing_type')) {
+        $_GET['filter_job_types'] = [$slug];
+        $_REQUEST['filter_job_types'] = [$slug];
+        add_filter('job_manager_output_jobs_defaults', function ($defaults) use ($slug) {
+            $defaults['selected_job_types'] = [$slug];
+            return $defaults;
+        });
+    } elseif (get_term_by('slug', $slug, 'job_company')) {
+        $_GET['filter_job_company'] = [$slug];
+        $_REQUEST['filter_job_company'] = [$slug];
+    } elseif (get_term_by('slug', $slug, 'job_sector')) {
+        $_GET['filter_job_sector'] = [$slug];
+        $_REQUEST['filter_job_sector'] = [$slug];
+    } elseif (get_term_by('slug', $slug, 'job_tag')) {
+        $_GET['filter_job_tag'] = [$slug];
+        $_REQUEST['filter_job_tag'] = [$slug];
+    } elseif (get_term_by('slug', $slug, 'organisatie_type')) {
+        $_GET['filter_organisatie_type'] = [$slug];
+        $_REQUEST['filter_organisatie_type'] = [$slug];
+    } else {
+        $location = str_replace('-', ' ', urldecode($slug));
+        $_GET['search_location'] = $location;
+        $_REQUEST['search_location'] = $location;
+        add_filter('job_manager_output_jobs_defaults', function ($defaults) use ($location) {
+            $defaults['selected_location'] = $location;
+            return $defaults;
+        });
+    }
+});
+
+/**
  * ✅ ENQUEUE STYLES (with Elementor check + cache busting)
  */
 add_action('wp_enqueue_scripts', function () {
@@ -314,15 +391,29 @@ add_filter('job_manager_get_listings_shortcode_args', function($atts){
 add_filter('get_job_listings_query_args', function ($query_args, $args) {
     global $sj_job_shortcode_atts;
 
-    if (isset($_POST['form_data'])) {
-        parse_str($_POST['form_data'], $parsed);
-        foreach ($parsed as $key => $value) {
-            $_POST[$key] = $value;
-        }
-        error_log('🧩 Parsed form_data: ' . print_r($parsed, true));
+    if (wp_doing_ajax() && isset($_REQUEST['action']) && $_REQUEST['action'] === 'elementor_ajax') {
+        return $query_args;
     }
 
-    error_log('🔍 WPJM POST filterdata: ' . print_r($_POST, true));
+    if (wp_doing_ajax()) {
+        $ajax_action = $_REQUEST['action'] ?? '';
+        if ($ajax_action && $ajax_action !== 'job_manager_get_listings') {
+            return $query_args;
+        }
+    }
+
+    if (!isset($query_args['tax_query']) || !is_array($query_args['tax_query'])) {
+        $query_args['tax_query'] = [];
+    }
+
+    if (isset($_POST['form_data'])) {
+        parse_str($_POST['form_data'], $parsed);
+        if (is_array($parsed)) {
+            foreach ($parsed as $key => $value) {
+                $_POST[$key] = $value;
+            }
+        }
+    }
 
     $custom_taxonomies = [
         'filter_job_tag'       => 'job_tag',
@@ -335,9 +426,16 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
     ];
 
     foreach ($custom_taxonomies as $filter_key => $taxonomy) {
+        $request_terms = [];
+
         if (!empty($_POST[$filter_key])) {
-            $terms = (array) $_POST[$filter_key];
-            $terms = array_map('sanitize_title', $terms);
+            $request_terms = (array) wp_unslash($_POST[$filter_key]);
+        } elseif (!empty($_GET[$filter_key])) {
+            $request_terms = (array) wp_unslash($_GET[$filter_key]);
+        }
+
+        if (!empty($request_terms)) {
+            $terms = array_map('sanitize_title', $request_terms);
 
             $query_args['tax_query'][] = [
                 'taxonomy' => $taxonomy,
@@ -353,6 +451,7 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
             $key = str_replace('filter_', '', $filter_key);
             if (!empty($sj_job_shortcode_atts[$key])) {
                 $terms = explode(',', sanitize_text_field($sj_job_shortcode_atts[$key]));
+                $terms = array_map('sanitize_title', $terms);
                 $query_args['tax_query'][] = [
                     'taxonomy' => $taxonomy,
                     'field'    => 'slug',
@@ -361,12 +460,6 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
                 ];
             }
         }
-    }
-
-    if (!empty($query_args['tax_query'])) {
-        error_log('📦 TAX_QUERY in get_job_listings_query_args: ' . print_r($query_args['tax_query'], true));
-    } else {
-        error_log('📭 Geen tax_query aanwezig in get_job_listings_query_args');
     }
 
     return $query_args;

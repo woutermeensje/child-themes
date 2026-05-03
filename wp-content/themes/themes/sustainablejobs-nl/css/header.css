@@ -1,13 +1,13 @@
 :root {
-  --rn-primary: var(--color-primary, #0A6B8D);
-  --rn-primary-dk: #085875;
-  --rn-accent: var(--color-secondary, #92E9AB);
-  --rn-accent-dk: #6dd494;
+  --rn-primary: var(--color-primary, #168AAD);
+  --rn-primary-dk: var(--color-primary-hover, #2B6E8F);
+  --rn-accent: var(--color-secondary, #C5D77F);
+  --rn-accent-dk: var(--color-secondary-hover, #A9CF82);
   --rn-text: var(--color-text, #333333);
   --rn-bg: var(--color-bg, #ffffff);
   --rn-border: var(--color-border, #e8ecf0);
   --rn-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
-  --rn-dropdown-shadow: 0 22px 44px rgba(10, 107, 141, 0.16);
+  --rn-dropdown-shadow: 0 22px 44px rgba(22, 138, 173, 0.16);
   --rn-header-h: 68px;
   --rn-topbar-h: 36px;
 }
@@ -262,7 +262,7 @@
   background: var(--rn-primary);
   color: #fff !important;
   border: 2px solid var(--rn-primary);
-  box-shadow: 0 2px 8px rgba(10, 107, 141, 0.22);
+  box-shadow: 0 2px 8px rgba(22, 138, 173, 0.22);
 }
 
 .rn-btn--accent:hover {

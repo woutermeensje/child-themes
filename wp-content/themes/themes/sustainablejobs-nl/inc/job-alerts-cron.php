@@ -154,10 +154,10 @@ function sj_build_job_alert_email(string $voornaam, array $vacatures, string $un
         $vacature_rows .= "
         <tr>
           <td style=\"padding:18px 0;border-bottom:1px solid #e4ede9;\">
-            <a href=\"{$link}\" style=\"font-size:16px;font-weight:700;color:#0A6B8D;text-decoration:none;font-family:Arial,sans-serif;\">{$title}</a>
+            <a href=\"{$link}\" style=\"font-size:16px;font-weight:700;color:#168AAD;text-decoration:none;font-family:Arial,sans-serif;\">{$title}</a>
             {$meta_html}
             <div style=\"margin-top:12px;\">
-              <a href=\"{$link}\" style=\"display:inline-block;padding:8px 18px;background:#0A6B8D;color:#ffffff;font-size:13px;font-weight:600;border-radius:4px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk vacature &rarr;</a>
+              <a href=\"{$link}\" style=\"display:inline-block;padding:8px 18px;background:#168AAD;color:#ffffff;font-size:13px;font-weight:600;border-radius:4px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk vacature &rarr;</a>
             </div>
           </td>
         </tr>";
@@ -178,7 +178,7 @@ function sj_build_job_alert_email(string $voornaam, array $vacatures, string $un
 
         <!-- Header -->
         <tr>
-          <td style=\"background:#0A6B8D;padding:24px 32px;\">
+          <td style=\"background:#168AAD;padding:24px 32px;\">
             <span style=\"font-family:Arial,sans-serif;font-size:20px;font-weight:700;color:#ffffff;letter-spacing:-0.3px;\">Sustainablejobs.nl</span>
           </td>
         </tr>
@@ -186,7 +186,7 @@ function sj_build_job_alert_email(string $voornaam, array $vacatures, string $un
         <!-- Intro -->
         <tr>
           <td style=\"padding:28px 32px 8px;\">
-            <p style=\"margin:0 0 10px;font-size:20px;font-weight:700;color:#0A6B8D;font-family:Arial,sans-serif;\">Hoi {$voornaam}!</p>
+            <p style=\"margin:0 0 10px;font-size:20px;font-weight:700;color:#168AAD;font-family:Arial,sans-serif;\">Hoi {$voornaam}!</p>
             <p style=\"margin:0;font-size:15px;color:#444444;line-height:1.65;font-family:Arial,sans-serif;\">Er staan nieuwe duurzame vacatures klaar in jouw vakgebied. Bekijk ze hieronder en reageer snel &mdash; de beste vacatures gaan snel!</p>
           </td>
         </tr>
@@ -203,7 +203,7 @@ function sj_build_job_alert_email(string $voornaam, array $vacatures, string $un
         <!-- CTA -->
         <tr>
           <td style=\"padding:0 32px 32px;text-align:center;\">
-            <a href=\"{$alle_vacatures}\" style=\"display:inline-block;padding:13px 28px;background:#0A6B8D;color:#ffffff;font-size:15px;font-weight:700;border-radius:6px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk alle vacatures</a>
+            <a href=\"{$alle_vacatures}\" style=\"display:inline-block;padding:13px 28px;background:#168AAD;color:#ffffff;font-size:15px;font-weight:700;border-radius:6px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk alle vacatures</a>
           </td>
         </tr>
 
@@ -217,7 +217,7 @@ function sj_build_job_alert_email(string $voornaam, array $vacatures, string $un
           <td style=\"padding:20px 32px;text-align:center;\">
             <p style=\"margin:0 0 6px;font-size:12px;color:#999999;font-family:Arial,sans-serif;\">Je ontvangt deze mail omdat je een job alert hebt ingesteld op Sustainablejobs.nl.</p>
             <p style=\"margin:0;font-size:12px;font-family:Arial,sans-serif;\">
-              <a href=\"{$unsubscribe_url}\" style=\"color:#0A6B8D;\">Afmelden voor job alerts</a>
+              <a href=\"{$unsubscribe_url}\" style=\"color:#168AAD;\">Afmelden voor job alerts</a>
             </p>
           </td>
         </tr>
@@ -254,7 +254,7 @@ add_action('init', function () {
     wp_die(
         '<div style="font-family:Arial,sans-serif;max-width:480px;margin:80px auto;text-align:center;">'
         . '<p style="font-size:16px;color:#333;">' . esc_html($message) . '</p>'
-        . '<a href="' . esc_url(home_url('/')) . '" style="color:#0A6B8D;font-size:14px;">Terug naar de homepage</a>'
+        . '<a href="' . esc_url(home_url('/')) . '" style="color:#168AAD;font-size:14px;">Terug naar de homepage</a>'
         . '</div>',
         'Afmelden job alerts',
         ['response' => 200]
