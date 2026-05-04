@@ -19,11 +19,12 @@ $job_company_name  = $job_company_term ? $job_company_term->name : get_the_compa
 $job_company_slug  = $job_company_term ? $job_company_term->slug : '';
 $job_company_url   = $job_company_slug ? home_url('/vacatures/' . $job_company_slug . '/') : '';
 
-$cover_image        = get_post_meta($post_id, '_cover_image', true);
+$cover_image        = function_exists('sj_get_image_url')
+    ? sj_get_image_url(get_post_meta($post_id, '_cover_image', true), 'large')
+    : get_post_meta($post_id, '_cover_image', true);
 $secondary_image_id = get_post_meta($post_id, '_uncode_secondary_thumbnail_id', true);
 $secondary_image    = $secondary_image_id ? wp_get_attachment_image_url($secondary_image_id, 'large') : '';
-$featured_image     = get_the_post_thumbnail_url($post_id, 'large');
-$background_image   = $cover_image ?: ($secondary_image ?: $featured_image);
+$background_image   = $cover_image ?: $secondary_image;
 $background_style   = $background_image
     ? "background-image: url('" . esc_url($background_image) . "');"
     : "background-image: linear-gradient(135deg, rgba(22, 138, 173, 0.92), rgba(37, 79, 110, 0.92));";
@@ -69,7 +70,7 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
                 <div class="background-wrapper">
                     <div class="company-logo-absolute hide_on_single">
                         <div class="company-logo-wrapper">
-                            <?php the_company_logo('thumbnail', '', $post); ?>
+                            <?php sj_the_company_logo($post_id, 'thumbnail'); ?>
                         </div>
                     </div>
 
@@ -163,7 +164,7 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
             <div class="job-mobile__link">
                 <div class="job-mobile__top">
                     <div class="job-mobile__logo">
-                        <?php the_company_logo('thumbnail', '', $post); ?>
+                        <?php sj_the_company_logo($post_id, 'thumbnail'); ?>
                     </div>
 
                     <div class="job-mobile__toptext">

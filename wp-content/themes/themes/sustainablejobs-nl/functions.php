@@ -6,6 +6,8 @@ require_once get_stylesheet_directory() . '/inc/activecampaign.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-job-alerts.php';
 require_once get_stylesheet_directory() . '/inc/job-alerts-cron.php';
 require_once get_stylesheet_directory() . '/inc/job-alerts-admin.php';
+require_once get_stylesheet_directory() . '/inc/newsletter-cron.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-newsletter.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 require_once get_stylesheet_directory() . '/includes/blog-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
@@ -295,6 +297,112 @@ add_filter('job_manager_locate_template', function ($template, $template_name) {
     $custom_path = get_stylesheet_directory() . '/wp-job-manager/' . $template_name;
     return (in_array($template_name, $custom_templates) && file_exists($custom_path)) ? $custom_path : $template;
 }, 10, 2);
+
+/**
+ * WP Job Manager gebruikt de post thumbnail standaard als bedrijfslogo.
+ * Voor de Fondsen-style vacaturekaart houden we logo en cover expliciet gescheiden.
+ */
+if (!function_exists('sj_get_image_url')) {
+    function sj_get_image_url($image, $size = 'full') {
+        if (empty($image)) {
+            return '';
+        }
+
+        if (is_array($image)) {
+            if (!empty($image['url'])) {
+                return esc_url_raw($image['url']);
+            }
+
+            foreach ($image as $candidate) {
+                $url = sj_get_image_url($candidate, $size);
+                if ($url) {
+                    return $url;
+                }
+            }
+
+            return '';
+        }
+
+        if (is_numeric($image)) {
+            return wp_get_attachment_image_url((int) $image, $size) ?: '';
+        }
+
+        if (is_string($image)) {
+            return esc_url_raw(trim($image));
+        }
+
+        return '';
+    }
+}
+
+if (!function_exists('sj_get_company_logo_url')) {
+    function sj_get_company_logo_url($post_id = null, $size = 'thumbnail') {
+        $post_id = $post_id ?: get_the_ID();
+
+        if (!$post_id) {
+            return '';
+        }
+
+        $logo_url = sj_get_image_url(get_post_meta($post_id, '_company_logo', true), $size);
+
+        if (!$logo_url && !sj_get_image_url(get_post_meta($post_id, '_cover_image', true), 'full')) {
+            $logo_url = get_the_post_thumbnail_url($post_id, $size) ?: '';
+        }
+
+        if (!$logo_url && defined('JOB_MANAGER_PLUGIN_URL')) {
+            $logo_url = apply_filters(
+                'job_manager_default_company_logo',
+                JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png'
+            );
+        }
+
+        return $logo_url;
+    }
+}
+
+if (!function_exists('sj_the_company_logo')) {
+    function sj_the_company_logo($post_id = null, $size = 'thumbnail') {
+        $post_id  = $post_id ?: get_the_ID();
+        $logo_url = sj_get_company_logo_url($post_id, $size);
+
+        if (!$logo_url) {
+            return;
+        }
+
+        $company_name = function_exists('get_the_company_name')
+            ? get_the_company_name($post_id)
+            : get_the_title($post_id);
+
+        printf(
+            '<img class="company_logo" src="%s" alt="%s" />',
+            esc_url($logo_url),
+            esc_attr($company_name)
+        );
+    }
+}
+
+add_filter('submit_job_form_fields', function ($fields) {
+    $fields['job']['cover_image'] = [
+        'label'       => __('Uitgelichte afbeelding / cover', 'job_manager'),
+        'type'        => 'file',
+        'accept'      => 'image/png, image/jpeg, image/webp',
+        'required'    => false,
+        'priority'    => 7,
+        'description' => __('Gebruik dit veld voor de grote afbeelding op de vacaturekaart. Het bedrijfslogo blijft apart.', 'job_manager'),
+    ];
+
+    return $fields;
+});
+
+add_filter('job_manager_job_listing_data_fields', function ($fields) {
+    $fields['_cover_image'] = [
+        'label'       => __('Uitgelichte afbeelding / cover', 'job_manager'),
+        'type'        => 'file',
+        'description' => __('Gebruik dit veld voor de grote afbeelding op de vacaturekaart. Het bedrijfslogo blijft apart.', 'job_manager'),
+    ];
+
+    return $fields;
+});
 
 /**
  * ✅ REGISTER CUSTOM TAXONOMIES

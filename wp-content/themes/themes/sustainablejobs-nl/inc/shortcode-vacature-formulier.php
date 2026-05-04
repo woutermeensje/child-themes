@@ -39,19 +39,30 @@ function sj_vacature_plaatsen_shortcode(): string {
 
         if (empty($errors)) {
             $attachments = [];
+            $upload = null;
+            $upload_featured = null;
 
-            if (!empty($_FILES['bedrijfslogo']['tmp_name'])) {
+            if (
+                !empty($_FILES['bedrijfslogo']['tmp_name']) ||
+                !empty($_FILES['uitgelichte_afbeelding']['tmp_name'])
+            ) {
                 require_once ABSPATH . 'wp-admin/includes/file.php';
                 require_once ABSPATH . 'wp-admin/includes/media.php';
                 require_once ABSPATH . 'wp-admin/includes/image.php';
+            }
 
+            if (!empty($_FILES['bedrijfslogo']['tmp_name'])) {
                 $upload = media_handle_upload('bedrijfslogo', 0);
                 if (!is_wp_error($upload)) {
                     $path = get_attached_file($upload);
-                    if (file_exists($path)) {
+                    if ($path && file_exists($path)) {
                         $attachments[] = $path;
                     }
                 }
+            }
+
+            if (!empty($_FILES['uitgelichte_afbeelding']['tmp_name'])) {
+                $upload_featured = media_handle_upload('uitgelichte_afbeelding', 0);
             }
 
             $type_baan_str = implode(', ', $type_baan);
@@ -119,6 +130,10 @@ function sj_vacature_plaatsen_shortcode(): string {
                 if (!empty($upload) && !is_wp_error($upload)) {
                     update_post_meta($post_id, '_sj_logo_id', $upload);
                 }
+
+                if (!empty($upload_featured) && !is_wp_error($upload_featured)) {
+                    update_post_meta($post_id, '_sj_featured_image_id', $upload_featured);
+                }
             }
 
             /* ── Maak concept job_listing aan in WP Job Manager ── */
@@ -147,7 +162,11 @@ function sj_vacature_plaatsen_shortcode(): string {
                 // Koppel bedrijfslogo
                 if (!empty($upload) && !is_wp_error($upload)) {
                     update_post_meta($job_id, '_company_logo', wp_get_attachment_url($upload));
-                    set_post_thumbnail($job_id, $upload);
+                }
+
+                // Koppel uitgelichte afbeelding los van het bedrijfslogo.
+                if (!empty($upload_featured) && !is_wp_error($upload_featured)) {
+                    update_post_meta($job_id, '_cover_image', wp_get_attachment_url($upload_featured));
                 }
 
                 // Koppel job types (taxonomie)
