@@ -69,7 +69,7 @@ function sj_nieuwsbrief_shortcode(): string {
 
     if ($success): ?>
 
-    <div class="sj-nl-notice sj-nl-notice--success">
+    <div class="sj-ja-notice sj-ja-notice--success">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
         <div>
             <strong>Je bent aangemeld!</strong>
@@ -80,7 +80,7 @@ function sj_nieuwsbrief_shortcode(): string {
     <?php else: ?>
 
     <?php if (!empty($errors)): ?>
-    <div class="sj-nl-notice sj-nl-notice--error">
+    <div class="sj-ja-notice sj-ja-notice--error">
         <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M236.8,188.09,149.35,36.22a24.76,24.76,0,0,0-42.7,0L19.2,188.09a23.51,23.51,0,0,0,0,23.72A24.35,24.35,0,0,0,40.55,224h174.9a24.35,24.35,0,0,0,21.33-12.19A23.51,23.51,0,0,0,236.8,188.09ZM120,104a8,8,0,0,1,16,0v40a8,8,0,0,1-16,0Zm8,88a12,12,0,1,1,12-12A12,12,0,0,1,128,192Z"/></svg>
         <div>
             <strong>Controleer de volgende velden:</strong>
@@ -93,19 +93,19 @@ function sj_nieuwsbrief_shortcode(): string {
     </div>
     <?php endif; ?>
 
-    <div class="sj-nl">
-        <div class="sj-nl__block">
-            <header class="sj-nl__header">
-                <h2 class="sj-nl__title">Wekelijkse vacaturenieuwsbrief</h2>
-                <p class="sj-nl__subtitle">Ontvang elke week de nieuwste duurzame vacatures direct in je inbox.</p>
+    <div class="sj-ja">
+        <div class="sj-ja__block">
+            <header class="sj-ja__header">
+                <h2 class="sj-ja__title">Wekelijkse vacaturenieuwsbrief</h2>
+                <p class="sj-ja__subtitle">Ontvang elke week de nieuwste duurzame vacatures direct in je inbox.</p>
             </header>
 
-            <form method="post" class="sj-nl__form" novalidate>
+            <form method="post" class="sj-ja__form" novalidate>
                 <?php wp_nonce_field('sj_nieuwsbrief', 'sj_nl_nonce'); ?>
 
-                <div class="sj-nl__fields">
-                    <div class="sj-nl__field">
-                        <label class="sj-nl__label" for="sj_nl_voornaam">Voornaam <span class="sj-nl__req">*</span></label>
+                <div class="sj-ja__fields">
+                    <div class="sj-ja__field">
+                        <label class="sj-ja__label" for="sj_nl_voornaam">Voornaam <span class="sj-ja__req">*</span></label>
                         <div class="sj-ja__input-wrap">
                             <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#168AAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <input type="text" name="voornaam" id="sj_nl_voornaam" class="sj-ja__input"
@@ -114,8 +114,8 @@ function sj_nieuwsbrief_shortcode(): string {
                         </div>
                     </div>
 
-                    <div class="sj-nl__field">
-                        <label class="sj-nl__label" for="sj_nl_email">E-mailadres <span class="sj-nl__req">*</span></label>
+                    <div class="sj-ja__field">
+                        <label class="sj-ja__label" for="sj_nl_email">E-mailadres <span class="sj-ja__req">*</span></label>
                         <div class="sj-ja__input-wrap">
                             <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#168AAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                             <input type="email" name="email" id="sj_nl_email" class="sj-ja__input"
@@ -125,7 +125,7 @@ function sj_nieuwsbrief_shortcode(): string {
                     </div>
                 </div>
 
-                <footer class="sj-nl__footer">
+                <footer class="sj-ja__footer">
                     <button type="submit" class="sj-ja__submit">Aanmelden</button>
                 </footer>
             </form>

@@ -24,6 +24,29 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     $con_last  = get_post_meta($post_id, '_job_contact_lastname', true);
     $con_email = get_post_meta($post_id, '_job_contact_email', true);
 
+    $job_company_terms  = get_the_terms($post_id, 'job_company');
+    $job_company_term   = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0] : null;
+    $job_company_slug   = $job_company_term ? $job_company_term->slug : '';
+    $job_company_url    = $job_company_slug ? home_url('/vacatures/' . $job_company_slug . '/') : '';
+    $company_logo       = has_post_thumbnail($post_id) ? get_the_post_thumbnail($post_id, 'thumbnail') : '';
+
+    $vacancy_count = 0;
+    if ($job_company_term) {
+        $vacancy_q     = new WP_Query([
+            'post_type'      => 'job_listing',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'tax_query'      => [[
+                'taxonomy' => 'job_company',
+                'field'    => 'term_id',
+                'terms'    => $job_company_term->term_id,
+            ]],
+        ]);
+        $vacancy_count = $vacancy_q->found_posts;
+        wp_reset_postdata();
+    }
+
     /* ── Vraag-formulier verwerking ── */
     $vraag_success = false;
     $vraag_error   = '';
@@ -75,8 +98,40 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
             <div class="single_job_listing">
                 <?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
 
-                    <div class="job-manager-info">
-                        <?php _e( 'This listing has expired.', 'wp-job-manager' ); ?>
+                    <div class="sj-expired">
+                        <div class="sj-expired__notice">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            Deze vacature is verlopen
+                        </div>
+
+                        <h1 class="sj-expired__title"><?php echo esc_html(get_the_title($post_id)); ?></h1>
+
+                        <?php if ($company || $location): ?>
+                        <p class="sj-expired__meta">
+                            <?php echo implode(' &nbsp;·&nbsp; ', array_filter([esc_html($company), esc_html($location)])); ?>
+                        </p>
+                        <?php endif; ?>
+
+                        <p class="sj-expired__intro">Helaas is deze vacature niet meer beschikbaar. Stel een job alert in en ontvang vergelijkbare vacatures direct in je inbox zodra ze worden geplaatst.</p>
+
+                        <div class="sj-expired__alert">
+                            <?php echo do_shortcode('[job-alerts]'); ?>
+                        </div>
+
+                        <div class="sj-expired__all-link">
+                            <a href="<?php echo esc_url(home_url('/vacatures/')); ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                                Bekijk alle openstaande vacatures
+                            </a>
+                        </div>
+                    </div>
+
+                <?php elseif ('expired' === $post->post_status): ?>
+
+                    <div class="sj-expired-banner">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Let op: deze vacature is verlopen en staat mogelijk niet meer open.
+                        <a href="<?php echo esc_url(home_url('/vacatures/')); ?>">Bekijk actuele vacatures →</a>
                     </div>
 
                 <?php else : ?>
@@ -111,7 +166,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                 <?php endif; ?>
             </div>
             <!-- Stel een vraag blok -->
-            <div class="sj-vraag-blok">
+            <div class="sj-vraag-blok" id="sj-vraag">
                 <h3 class="sj-vraag-blok__title">Stel een vraag aan de contactpersoon van deze vacature.</h3>
 
                 <?php if ($vraag_success): ?>
@@ -158,7 +213,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                         </div>
 
                         <div class="sj-vraag-blok__field">
-                            <label class="sj-vraag-blok__label">Je vraag of motivatie <span class="sj-vraag-req">*</span></label>
+                            <label class="sj-vraag-blok__label">E-mail contactpersoon <span class="sj-vraag-req">*</span></label>
                             <div class="sj-vraag-blok__quill-wrap">
                                 <div id="sj_vraag_quill" style="min-height:160px;"></div>
                             </div>
@@ -187,6 +242,31 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
         <!-- Rechter kolom: sidebar -->
         <aside class="sj-single-layout__sidebar">
 
+            <?php if ($company || $company_logo): ?>
+            <!-- Blok 0: Bedrijf -->
+            <div class="sj-single-sidebar">
+                <p class="sj-sidebar__block-title">Over het bedrijf</p>
+                <div class="sj-company-blok">
+                    <?php if ($company_logo): ?>
+                    <div class="sj-company-blok__logo">
+                        <?php echo $company_logo; ?>
+                    </div>
+                    <?php endif; ?>
+                    <div class="sj-company-blok__info">
+                        <?php if ($job_company_url && $company): ?>
+                            <a href="<?php echo esc_url($job_company_url); ?>" class="sj-company-blok__name"><?php echo esc_html($company); ?></a>
+                        <?php elseif ($company): ?>
+                            <span class="sj-company-blok__name"><?php echo esc_html($company); ?></span>
+                        <?php endif; ?>
+                        <?php if ($vacancy_count > 0): ?>
+                            <a href="<?php echo esc_url($job_company_url); ?>" class="sj-company-blok__count">
+                                <?php echo $vacancy_count; ?> openstaande <?php echo $vacancy_count === 1 ? 'vacature' : 'vacatures'; ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
 
             <!-- Blok 1: Vacature details -->
             <div class="sj-single-sidebar">
@@ -294,7 +374,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 .single_job_listing {
     background: #fff;
     border-radius: 5px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     border: 1px solid #DEDEDE;
     padding: 24px;
 }
@@ -313,7 +393,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 .sj-single-sidebar {
     background: #fff;
     border-radius: 5px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     border: 1px solid #DEDEDE;
     padding: 20px;
 }
@@ -326,6 +406,64 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     margin: 0 0 14px;
     padding-bottom: 10px;
     border-bottom: 1px solid #DEDEDE;
+}
+
+/* ── Blok 0: bedrijf ─────────────────────────────────────── */
+.sj-company-blok {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.sj-company-blok__logo {
+    flex: 0 0 auto;
+}
+
+.sj-company-blok__logo img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid var(--color-border-light);
+    padding: 5px;
+    background: #fff;
+    display: block;
+}
+
+.sj-company-blok__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.sj-company-blok__name {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-midnight-blue);
+    text-decoration: none;
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+a.sj-company-blok__name:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.sj-company-blok__count {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-primary);
+    text-decoration: none;
+    display: block;
+}
+
+.sj-company-blok__count:hover {
+    text-decoration: underline;
+    color: var(--color-primary-hover);
 }
 
 /* ── Blok 1: details ─────────────────────────────────────── */
@@ -483,7 +621,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     margin: 24px 0;
     border: 1px solid #DEDEDE;
     border-radius: 5px;
-    box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     background-color: #ffffff;
     display: flex;
     justify-content: space-between;
@@ -500,20 +638,26 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 }
 
 .update-link {
-    color: #168AAD !important;
-    background: #A9CF82;
-    font-family: Poppins;
-    font-weight: 700;
-    padding: 8px;
-    border: 1px solid #168AAD !important;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #ffffff !important;
+    background: var(--color-primary);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none !important;
     border-radius: 5px;
     text-decoration: none !important;
     white-space: nowrap;
+    transition: background .18s ease, transform .18s ease;
 }
 
 .update-link:hover {
-    background: #168AAD !important;
-    color: #C5D77F !important;
+    background: var(--color-primary-hover) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
 }
 
 /* ── Meta pills ──────────────────────────────────────────── */
@@ -534,7 +678,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     border-radius: 999px;
     padding: 10px 14px;
     margin: 0;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.07);
+    box-shadow: none;
     display: inline-block;
     width: auto;
 }
@@ -606,7 +750,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     border: 1px solid var(--color-bg);
     background-color: var(--color-bg);
     border-radius: 5px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     transition: all 0.2s ease-in-out;
 }
 
@@ -628,7 +772,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     object-fit: contain;
     border-radius: 5px;
     padding: 6px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     border: 1px solid var(--color-border);
     transition: all 0.2s ease-in-out;
     background-color: var(--color-bg);
@@ -726,11 +870,12 @@ h1.entry-title { display: none; }
 
 /* ── Stel een vraag blok ─────────────────────────────────── */
 .sj-vraag-blok {
+    scroll-margin-top: 100px;
     margin-top: 20px;
     background: #fff;
     border: 1px solid #DEDEDE;
     border-radius: 5px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     padding: 28px;
 }
 
@@ -937,6 +1082,124 @@ h1.entry-title { display: none; }
 @media (max-width: 640px) {
     .sj-vraag-blok__row { grid-template-columns: 1fr; }
     .sj-vraag-blok__submit { width: 100%; align-self: stretch; }
+}
+
+/* ── Verlopen vacature ───────────────────────────────────── */
+.sj-expired {
+    padding: 32px 28px 28px;
+}
+
+.sj-expired__notice {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 999px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #C2410C;
+    margin-bottom: 24px;
+}
+
+.sj-expired__notice svg {
+    flex-shrink: 0;
+    color: #C2410C;
+}
+
+.sj-expired__title {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-midnight-blue, #254F6E);
+    margin: 0 0 10px;
+    line-height: 1.3;
+}
+
+.sj-expired__meta {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #6b7280;
+    margin: 0 0 20px;
+}
+
+.sj-expired__intro {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #374151;
+    line-height: 1.65;
+    margin: 0 0 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #DEDEDE;
+}
+
+.sj-expired__alert {
+    margin-bottom: 24px;
+}
+
+.sj-expired__all-link {
+    margin-top: 8px;
+}
+
+.sj-expired__all-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-primary, #2C8FAF);
+    text-decoration: none;
+    transition: color .18s ease;
+}
+
+.sj-expired__all-link a:hover {
+    color: var(--color-primary-hover, #2B6E8F);
+    text-decoration: underline;
+}
+
+.sj-expired__all-link a svg {
+    flex-shrink: 0;
+    color: currentColor;
+}
+
+/* ── Verlopen banner (content zichtbaar) ─────────────────── */
+.sj-expired-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #92400E;
+    flex-wrap: wrap;
+}
+
+.sj-expired-banner svg {
+    flex-shrink: 0;
+    color: #C2410C;
+}
+
+.sj-expired-banner a {
+    margin-left: auto;
+    font-weight: 600;
+    color: var(--color-primary, #2C8FAF);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sj-expired-banner a:hover {
+    text-decoration: underline;
+    color: var(--color-primary-hover, #2B6E8F);
 }
 
 /* ── Responsive ──────────────────────────────────────────── */

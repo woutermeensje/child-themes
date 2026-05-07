@@ -45,6 +45,7 @@ Text Domain: lansingerland-fit
   --color-highlight-soft: var(--color-lime-light);
 
   --color-text: #25476B;
+  --color-paragraph: #333;
   --color-text-muted: #39749B;
   --color-heading: #25476B;
   --color-surface: #FFFFFF;
@@ -78,10 +79,10 @@ body {
 }
 
 p {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif;
     font-size: 15px;
     font-weight: 400;
-    color: var(--color-text);
+    color: var(--color-paragraph);
     line-height: 1.7;
 }
 

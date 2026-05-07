@@ -24,60 +24,56 @@ Text Domain: sustainablejobs-nl
 
 :root {
   /* Sustainablejobs brand palette */
-  --color-lime-mist: #C5D77F;
-  --color-soft-leaf: #A9CF82;
-  --color-fresh-green: #8FC689;
-  --color-mint-grove: #73BA8F;
-  --color-ocean-mint: #57AE94;
-  --color-teal-breeze: #409FA0;
-  --color-aqua-deep: #2C8FAF;
-  --color-blue-teal: #2A7FA0;
-  --color-ocean-blue: #2B6E8F;
-  --color-deep-sea: #2B5E7F;
+  --color-fresh-leaf:    #9BCB86;
+  --color-ocean-mint:    #57AE94;
+  --color-teal-breeze:   #409FA0;
+  --color-aqua-deep:     #2C8FAF;
+  --color-ocean-blue:    #2B6E8F;
   --color-midnight-blue: #254F6E;
-  --color-brand-main: #168AAD;
 
   /* Semantic brand colors */
-  --color-primary: var(--color-brand-main);
-  --color-primary-hover: var(--color-ocean-blue);
-  --color-primary-dk: var(--color-deep-sea);
-  --color-primary-soft: #E4F1F4;
-  --color-primary-border: #A9D1DB;
-  --color-secondary: var(--color-lime-mist);
-  --color-secondary-hover: var(--color-soft-leaf);
-  --color-secondary-soft: #F1F6DE;
-  --color-secondary-border: #C5D77F;
-  --color-tertiary: var(--color-soft-leaf);
-  --color-accent: var(--color-fresh-green);
-  --color-accent-hover: var(--color-mint-grove);
-  --color-accent-soft: var(--color-lime-mist);
-  --color-highlight: var(--color-mint-grove);
+  --color-primary:        var(--color-aqua-deep);
+  --color-primary-hover:  var(--color-ocean-blue);
+  --color-primary-dk:     var(--color-midnight-blue);
+  --color-primary-soft:   #E4F0F6;
+  --color-primary-border: #A3C9D8;
+
+  --color-secondary:        var(--color-fresh-leaf);
+  --color-secondary-hover:  var(--color-ocean-mint);
+  --color-secondary-soft:   #EEF7E9;
+  --color-secondary-border: #9BCB86;
+
+  --color-tertiary:      var(--color-ocean-mint);
+  --color-accent:        var(--color-teal-breeze);
+  --color-accent-hover:  var(--color-ocean-mint);
+  --color-accent-soft:   #EAF4F2;
+  --color-highlight:     var(--color-teal-breeze);
 
   /* Chip roles */
-  --color-chip-company-bg: #F1F6DE;
-  --color-chip-company-border: #B8D06F;
-  --color-chip-company-text: #254F6E;
-  --color-chip-location-bg: #ffffff;
-  --color-chip-location-border: #A9D1DB;
-  --color-chip-location-text: #2B5E7F;
-  --color-chip-type-bg: #254F6E;
-  --color-chip-type-bg-hover: #2B6E8F;
-  --color-chip-type-border: #254F6E;
-  --color-chip-type-text: #ffffff;
-  --color-chip-shadow: rgba(37, 79, 110, 0.08);
+  --color-chip-company-bg:      #EEF7E9;
+  --color-chip-company-border:  #9BCB86;
+  --color-chip-company-text:    #254F6E;
+  --color-chip-location-bg:     #ffffff;
+  --color-chip-location-border: #A3C9D8;
+  --color-chip-location-text:   #2B6E8F;
+  --color-chip-type-bg:         #254F6E;
+  --color-chip-type-bg-hover:   #2B6E8F;
+  --color-chip-type-border:     #254F6E;
+  --color-chip-type-text:       #ffffff;
+  --color-chip-shadow:          rgba(37, 79, 110, 0.08);
 
   /* Legacy aliases used by existing templates */
-  --color-lavender: var(--color-soft-leaf);
-  --color-bg-filter: #F3F7E4;
+  --color-lavender:   var(--color-fresh-leaf);
+  --color-bg-filter:  #EEF6F4;
 
   /* Base UI colors */
-  --color-text: #333333;
-  --color-text-muted: #777777;
-  --color-bg: #ffffff;
-  --color-bg-light: #F7FAEF;
-  --color-border: #DDE8C5;
-  --color-border-light: #E8F0D6;
-  --color-success: #28a745;
+  --color-text:         #333333;
+  --color-text-muted:   #777777;
+  --color-bg:           #ffffff;
+  --color-bg-light:     #F2F8F6;
+  --color-border:       #C0D8D4;
+  --color-border-light: #D8EBEA;
+  --color-success:      #28a745;
   --color-success-hover: #155724;
 }
 
@@ -843,4 +839,40 @@ font-family: Poppins, sans-serif;
     .sj-tarieven__price {
         font-size: 42px;
     }
+}
+
+/* ==============================================
+   Load more jobs knop (WP Job Manager)
+   ============================================== */
+a.load_more_jobs {
+    display: block;
+    width: fit-content;
+    margin: 32px auto 0;
+    padding: 12px 36px;
+    background: transparent;
+    color: var(--color-primary) !important;
+    border: 1.5px solid var(--color-primary);
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    text-decoration: none !important;
+    text-align: center;
+    transition: background .18s ease, color .18s ease, transform .18s ease;
+    cursor: pointer;
+}
+
+a.load_more_jobs:hover {
+    background: var(--color-primary) !important;
+    color: #ffffff !important;
+    transform: translateY(-1px);
+}
+
+a.load_more_jobs.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+a.load_more_jobs strong {
+    font-weight: inherit;
 }

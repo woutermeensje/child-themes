@@ -197,9 +197,11 @@ document.addEventListener("DOMContentLoaded", () => {
       selectedOptions.forEach((opt) => {
         const chip = document.createElement("span");
         chip.className = "active-filter";
-        chip.innerHTML = `<span class="active-filter-text"></span><button type="button" class="active-filter-x" aria-label="Verwijder filter">×</button>`;
+        chip.setAttribute("role", "button");
+        chip.setAttribute("title", "Verwijder filter");
+        chip.innerHTML = `<span class="active-filter-text"></span><span class="active-filter-x" aria-hidden="true">×</span>`;
         chip.querySelector(".active-filter-text").textContent = opt.textContent;
-        chip.querySelector(".active-filter-x").addEventListener("click", (e) => {
+        chip.addEventListener("click", (e) => {
           e.preventDefault();
           opt.selected = false;
           select.dispatchEvent(new Event("change", { bubbles: true }));
@@ -379,6 +381,38 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeAll();
   });
 });
+
+// WP Job Manager scrolt automatisch naar ul.job_listings na AJAX-load.
+// Op taxonomy-pagina's (/vacatures/bedrijf/) scroll je daardoor voorbij de filter.
+// Fix: zodra de listings updaten bij initial load, scroll terug naar de filter.
+(function () {
+  var parts = window.location.pathname.replace(/\/+$/, "").split("/").filter(Boolean);
+  if (parts.length < 2) return; // alleen op /vacatures/[slug]/ pagina's
+
+  var corrected = false;
+  var listingsEl = document.querySelector(".job_listings");
+  if (!listingsEl) return;
+
+  var scrollToFilter = function () {
+    if (corrected) return;
+    corrected = true;
+    observer.disconnect();
+    requestAnimationFrame(function () {
+      var filter = document.querySelector("form.job_filters");
+      if (!filter) return;
+      var filterTop = filter.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: Math.max(0, filterTop - 100), behavior: "smooth" });
+    });
+  };
+
+  var observer = new MutationObserver(scrollToFilter);
+  observer.observe(listingsEl, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+
+  // Fallback: als WP JM snel klaar is, dan na 1 seconde toch corrigeren
+  window.addEventListener("load", function () {
+    setTimeout(scrollToFilter, 1000);
+  });
+}());
 </script>
 
 
@@ -397,10 +431,12 @@ document.addEventListener("DOMContentLoaded", () => {
   margin-bottom: 0;
   min-height: 300px;
   padding: 56px 0;
-  background: var(--color-deep-sea);
-  border-bottom: 1px solid var(--color-midnight-blue);
+  background: var(--color-bg-filter);
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
   box-sizing: border-box;
   margin-bottom: 40px !important;
+  scroll-margin-top: 90px;
 }
 
 .filter-header,
@@ -425,25 +461,25 @@ document.addEventListener("DOMContentLoaded", () => {
   font-size: 24px;
   line-height: 1.1;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--color-midnight-blue);
 }
 
 .filter-header p {
   margin: 10px 0 0;
   font-family: 'Poppins', sans-serif;
   font-size: 15px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-muted);
 }
 
 body .filter-header a.unstyled-newsletter-link {
-  color: var(--color-lime-mist);
+  color: var(--color-primary);
   font-weight: 400;
   text-decoration: underline;
   font-family: 'Poppins', sans-serif;
 }
 
 body .filter-header a.unstyled-newsletter-link:hover {
-  color: var(--color-soft-leaf) !important;
+  color: var(--color-primary-hover) !important;
   text-decoration: underline;
 }
 
@@ -696,7 +732,7 @@ select.sj-hidden-select {
 }
 
 .sj-option:hover {
-  background: #F3F7E4;
+  background: var(--color-bg-filter);
 }
 
 .sj-option.is-selected .sj-option-text {
@@ -772,7 +808,7 @@ span.active-filter {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--color-chip-company-bg);
+  background: #ffffff;
   border: 1px solid var(--color-chip-company-border);
   border-radius: 999px;
   box-shadow: 0 10px 24px -18px rgba(37, 79, 110, 0.38);
@@ -785,7 +821,7 @@ span.active-filter {
 }
 
 .active-filter:hover {
-  background: #E7F0C4;
+  background: var(--color-secondary-soft);
   border-color: var(--color-secondary-hover);
   transform: translateY(-1px);
   box-shadow: 0 14px 26px -18px rgba(37, 79, 110, 0.42);
@@ -795,21 +831,13 @@ span.active-filter {
   color: inherit;
 }
 
-button.active-filter-x {
+.active-filter-x {
   color: var(--color-chip-company-text);
   font-weight: 700;
-  font-size: 20px;
+  font-size: 18px;
   line-height: 1;
-  margin-left: 6px;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-button.active-filter-x:hover {
-  color: var(--color-primary);
-  background: none;
+  margin-left: 4px;
+  pointer-events: none;
 }
 
 /* =========================

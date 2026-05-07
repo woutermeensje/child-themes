@@ -324,7 +324,9 @@ if (!function_exists('sj_get_image_url')) {
         }
 
         if (is_numeric($image)) {
-            return wp_get_attachment_image_url((int) $image, $size) ?: '';
+            return wp_get_attachment_image_url((int) $image, $size)
+                ?: wp_get_attachment_image_url((int) $image, 'full')
+                ?: '';
         }
 
         if (is_string($image)) {
@@ -347,13 +349,6 @@ if (!function_exists('sj_get_company_logo_url')) {
 
         if (!$logo_url && !sj_get_image_url(get_post_meta($post_id, '_cover_image', true), 'full')) {
             $logo_url = get_the_post_thumbnail_url($post_id, $size) ?: '';
-        }
-
-        if (!$logo_url && defined('JOB_MANAGER_PLUGIN_URL')) {
-            $logo_url = apply_filters(
-                'job_manager_default_company_logo',
-                JOB_MANAGER_PLUGIN_URL . '/assets/images/company.png'
-            );
         }
 
         return $logo_url;

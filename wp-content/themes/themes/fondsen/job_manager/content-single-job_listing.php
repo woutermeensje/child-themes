@@ -35,8 +35,9 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
         $v_ach   = sanitize_text_field($_POST['vraag_achternaam'] ?? '');
         $v_email = sanitize_email($_POST['vraag_email']           ?? '');
         $v_tel   = sanitize_text_field($_POST['vraag_telefoon']   ?? '');
-        $v_vraag = sanitize_textarea_field($_POST['vraag_tekst']  ?? '');
-        $to      = $con_email ?: 'info@fondsen.org';
+        $v_vraag  = sanitize_textarea_field($_POST['vraag_tekst']  ?? '');
+        $admin_cc = 'informatie@fondsen.org';
+        $to       = $con_email ?: $admin_cc;
 
         $attachments = [];
         if (!empty($_FILES['vraag_cv']['tmp_name'])) {
@@ -55,11 +56,16 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
             $body    = "Vraag via de vacaturepagina:\n\nVan: $v_naam $v_ach <$v_email>";
             if ($v_tel) $body .= "\nTelefoon: $v_tel";
             $body   .= "\n\n$v_vraag";
-            wp_mail($to, $subject, $body, [
+            $headers = [
                 'Content-Type: text/plain; charset=UTF-8',
                 "Reply-To: $v_naam $v_ach <$v_email>",
-                'Bcc: info@fondsen.org',
-            ], $attachments);
+            ];
+
+            if (strtolower($to) !== strtolower($admin_cc)) {
+                $headers[] = 'Cc: ' . $admin_cc;
+            }
+
+            wp_mail($to, $subject, $body, $headers, $attachments);
             $vraag_success = true;
         } else {
             $vraag_error = 'Vul alle verplichte velden in.';
@@ -118,7 +124,7 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
         </div>
 
         <!-- Stel een vraag blok -->
-        <div class="fn-vraag-blok">
+        <div class="fn-vraag-blok" id="fn-vraag">
             <h3 class="fn-vraag-blok__title">Stel een vraag aan de contactpersoon van deze vacature.</h3>
 
             <?php if ($vraag_success) : ?>
@@ -683,6 +689,7 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
     border-radius: var(--fn-radius);
     box-shadow: none;
     padding: 28px;
+    scroll-margin-top: 100px;
 }
 
 .fn-vraag-blok__title {

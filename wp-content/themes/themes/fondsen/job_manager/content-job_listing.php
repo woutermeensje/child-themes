@@ -144,6 +144,7 @@ $background_image = $cover_image ? $cover_image : (function_exists('get_secondar
 
                     <div class="jobs_buttons">
                         <a href="<?php the_job_permalink(); ?>">Vacature bekijken</a>
+                        <a href="<?php echo esc_url(get_permalink($post->ID) . '#fn-vraag'); ?>" class="jobs_buttons__contact" onclick="event.stopPropagation();">Contact opnemen</a>
                     </div>
                 </div>
             </div>
@@ -220,7 +221,7 @@ ul.job_listings li.job_listing {
 .job-card {
     background: #ffffff;
     border-radius: 6px;
-    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
+    box-shadow: none;
     padding: 0;
     border: 1px solid #E0E0E0;
     margin-top: 4px;
@@ -319,6 +320,9 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
 
 .jobs_buttons {
     margin-top: 24px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .jobs_buttons a {
@@ -326,22 +330,34 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
     background: var(--color-secondary) !important;
     color: white !important;
     border: 1px solid var(--color-secondary) !important;
-    padding: 0 30px !important;
+    padding: 0 24px !important;
     height: 48px !important;
     line-height: 48px !important;
     border-radius: 0px !important;
     text-decoration: none !important;
     font-family: Balgin-Bold !important;
     font-size: 15px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
-    transition: all .2s ease;
-    max-width: 50%;
+    box-shadow: none;
+    transition: background .18s ease, border-color .18s ease, color .18s ease;
     text-align: center;
+    white-space: nowrap;
 }
 
 .jobs_buttons a:hover {
     background: var(--color-tertiary) !important;
     border-color: var(--color-tertiary) !important;
+}
+
+.jobs_buttons a.jobs_buttons__contact {
+    background: transparent !important;
+    color: var(--color-secondary) !important;
+    border: 1.5px solid var(--color-secondary) !important;
+}
+
+.jobs_buttons a.jobs_buttons__contact:hover {
+    background: var(--color-secondary) !important;
+    color: #ffffff !important;
+    border-color: var(--color-secondary) !important;
 }
 
 a.title-link {

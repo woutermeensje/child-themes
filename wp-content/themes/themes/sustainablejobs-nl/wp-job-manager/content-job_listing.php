@@ -70,7 +70,13 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
                 <div class="background-wrapper">
                     <div class="company-logo-absolute hide_on_single">
                         <div class="company-logo-wrapper">
-                            <?php sj_the_company_logo($post_id, 'thumbnail'); ?>
+                            <?php if (has_post_thumbnail($post_id)) : ?>
+                                <?php echo get_the_post_thumbnail($post_id, 'thumbnail'); ?>
+                            <?php else : ?>
+                                <div class="company-logo-placeholder">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                                </div>
+                            <?php endif; ?>
                         </div>
                     </div>
 
@@ -155,6 +161,7 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
 
                     <div class="jobs_buttons">
                         <a href="<?php the_job_permalink(); ?>">Vacature bekijken</a>
+                        <a href="<?php echo esc_url(get_permalink($post_id) . '#sj-vraag'); ?>" class="jobs_buttons__contact" onclick="event.stopPropagation();">Contact opnemen</a>
                     </div>
                 </div>
             </div>
@@ -164,7 +171,7 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
             <div class="job-mobile__link">
                 <div class="job-mobile__top">
                     <div class="job-mobile__logo">
-                        <?php sj_the_company_logo($post_id, 'thumbnail'); ?>
+                        <?php echo get_the_post_thumbnail($post_id, 'thumbnail'); ?>
                     </div>
 
                     <div class="job-mobile__toptext">
@@ -289,9 +296,11 @@ a.title-link {
 ul.job_listings li.job_listing .company-logo-wrapper,
 .single_job_listing .company-logo-wrapper,
 .company-logo-wrapper {
-    height: 100px;
-    width: 100px;
-    text-align: left;
+    height: 80px;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 ul.job_listings li.job_listing .company-logo-wrapper img,
@@ -308,13 +317,23 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
 
 .company-logo-absolute {
     position: absolute;
-    border-radius: 50%;
     width: 80px;
     height: 80px;
-    background: white;
     z-index: 9;
     left: 30px;
     bottom: 30px;
+}
+
+.company-logo-placeholder {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--color-border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #bbb;
 }
 
 .job_listing .job_listing_content {
@@ -347,6 +366,9 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
 
 .jobs_buttons {
     margin-top: 24px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .jobs_buttons a {
@@ -354,7 +376,7 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
     background: var(--color-primary) !important;
     color: #ffffff !important;
     border: 1px solid var(--color-primary) !important;
-    padding: 0 30px !important;
+    padding: 0 24px !important;
     height: 48px !important;
     line-height: 48px !important;
     border-radius: 0 !important;
@@ -362,14 +384,26 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
     font-family: Balgin-Bold, serif !important;
     font-size: 15px;
     box-shadow: none;
-    transition: all .2s ease;
-    max-width: 50%;
+    transition: background .18s ease, border-color .18s ease, color .18s ease;
     text-align: center;
+    white-space: nowrap;
 }
 
 .jobs_buttons a:hover {
     background: var(--color-primary-dk) !important;
     border-color: var(--color-primary-dk) !important;
+}
+
+.jobs_buttons a.jobs_buttons__contact {
+    background: transparent !important;
+    color: var(--color-primary) !important;
+    border: 1.5px solid var(--color-primary) !important;
+}
+
+.jobs_buttons a.jobs_buttons__contact:hover {
+    background: var(--color-primary) !important;
+    color: #ffffff !important;
+    border-color: var(--color-primary) !important;
 }
 
 a.title-link {
@@ -420,9 +454,10 @@ a.title-link:hover h2 {
 
 .job-card-meta__item {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
-    margin-bottom: 6px;
+    margin-bottom: 4px !important;
+    margin-top: 0 !important;
     flex-direction: row !important;
 }
 
@@ -435,7 +470,7 @@ a.title-link:hover h2 {
 
 .job-card-meta__text,
 .job-card-meta__title {
-    margin: 0;
+    margin: 0 !important;
     font-family: Poppins, sans-serif;
     font-size: 14px;
     line-height: 1.45;

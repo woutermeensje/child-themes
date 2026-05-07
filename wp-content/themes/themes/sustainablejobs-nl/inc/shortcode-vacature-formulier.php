@@ -375,6 +375,17 @@ function sj_vacature_plaatsen_shortcode(): string {
                             <span class="sj-vp__hint">PNG of JPG, liefst vierkant. Max. 2 MB.</span>
                         </div>
 
+                        <div class="sj-vp__field">
+                            <label class="sj-vp__label" for="sj_uitgelichte_afbeelding">Uitgelichte afbeelding <span class="sj-vp__opt">(optioneel)</span></label>
+                            <label class="sj-vp__upload" for="sj_uitgelichte_afbeelding">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,200V172l52-52,44,44a8,8,0,0,0,11.31,0l24.38-24.37L216,184V200Z"/></svg>
+                                <span class="sj-vp__upload-label">Kies afbeelding</span>
+                                <span class="sj-vp__upload-name">Geen bestand gekozen</span>
+                                <input type="file" name="uitgelichte_afbeelding" id="sj_uitgelichte_afbeelding" accept="image/*" class="sj-vp__upload-input">
+                            </label>
+                            <span class="sj-vp__hint">De grote afbeelding op de vacaturekaart. Liefst liggend, JPG of PNG.</span>
+                        </div>
+
                     </div>
                 </div>
 
@@ -482,13 +493,14 @@ function sj_vacature_plaatsen_shortcode(): string {
         });
 
         /* ── Bestandsnaam tonen bij upload ── */
-        var fileInput = document.getElementById('sj_bedrijfslogo');
-        var fileName  = document.querySelector('.sj-vp__upload-name');
-        if (fileInput && fileName) {
+        document.querySelectorAll('.sj-vp__upload-input').forEach(function (fileInput) {
+            var fileName = fileInput.closest('.sj-vp__upload').querySelector('.sj-vp__upload-name');
+            if (!fileName) return;
+
             fileInput.addEventListener('change', function () {
                 fileName.textContent = fileInput.files.length ? fileInput.files[0].name : 'Geen bestand gekozen';
             });
-        }
+        });
 
         /* ── Multiselect: type baan ── */
         var ms        = document.getElementById('sj_type_baan_ms');
