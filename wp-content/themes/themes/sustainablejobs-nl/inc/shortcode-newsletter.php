@@ -61,6 +61,13 @@ function sj_nieuwsbrief_shortcode(): string {
                 }
             }
 
+            // Admin-notificatie
+            $admin_email = get_option('admin_email');
+            $admin_body  = "Nieuwe nieuwsbrief aanmelding op Sustainablejobs.nl\n\n";
+            $admin_body .= "Naam:   {$voornaam}\n";
+            $admin_body .= "E-mail: {$email}\n";
+            wp_mail($admin_email, 'Nieuwe nieuwsbrief aanmelding', $admin_body);
+
             $success = true;
         }
     }

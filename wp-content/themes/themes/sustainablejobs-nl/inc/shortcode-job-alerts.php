@@ -96,6 +96,18 @@ function sj_job_alerts_shortcode(): string {
             $body .= "Met vriendelijke groet,\nSustainablejobs.nl";
 
             wp_mail($email, 'Je job alert is aangemeld!', $body);
+
+            // Admin-notificatie
+            $admin_email = get_option('admin_email');
+            $admin_body  = "Nieuwe job alert aanmelding op Sustainablejobs.nl\n\n";
+            $admin_body .= "Naam:  {$voornaam}\n";
+            $admin_body .= "E-mail: {$email}\n";
+            $admin_body .= "Categorieën:\n";
+            foreach ($sector_names as $name) {
+                $admin_body .= "- {$name}\n";
+            }
+            wp_mail($admin_email, 'Nieuwe job alert aanmelding', $admin_body);
+
             $success = true;
         }
     }
