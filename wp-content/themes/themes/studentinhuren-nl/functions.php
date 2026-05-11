@@ -2,6 +2,29 @@
 // Exit if accessed directly
 if (!defined('ABSPATH')) exit;
 
+if (!function_exists('si_rich_text_has_content')) {
+    function si_rich_text_has_content($value): bool {
+        $text = html_entity_decode(wp_strip_all_tags((string) $value), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        $text = preg_replace('/[\s\x{00A0}]+/u', '', $text);
+        return is_string($text) && $text !== '';
+    }
+}
+
+if (!function_exists('si_redirect_or_fallback')) {
+    function si_redirect_or_fallback(string $url): void {
+        $url = wp_validate_redirect($url, home_url('/'));
+
+        if (!headers_sent()) {
+            wp_safe_redirect($url);
+            exit;
+        }
+
+        echo '<script>window.location.href=' . wp_json_encode($url) . ';</script>';
+        echo '<noscript><meta http-equiv="refresh" content="0;url=' . esc_url($url) . '"></noscript>';
+        exit;
+    }
+}
+
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen-compact.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-latest-opdrachten.php';

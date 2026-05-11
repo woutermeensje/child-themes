@@ -132,6 +132,10 @@ function si_informatie_aanvragen_shortcode(): string {
         $telefoon   = sanitize_text_field($_POST['telefoon']   ?? '');
         $bericht    = wp_kses_post($_POST['bericht']           ?? '');
 
+        if (!si_rich_text_has_content($bericht)) {
+            $bericht = '';
+        }
+
         if (!$voornaam)        $errors[] = 'Vul je voornaam in.';
         if (!$achternaam)      $errors[] = 'Vul je achternaam in.';
         if (!is_email($email)) $errors[] = 'Vul een geldig e-mailadres in.';
@@ -160,7 +164,7 @@ function si_informatie_aanvragen_shortcode(): string {
             $body .= "Naam: $voornaam $achternaam\n";
             $body .= "E-mail: $email\n";
             $body .= "Telefoon: $telefoon\n\n";
-            $body .= "--- Bericht ---\n" . strip_tags($bericht) . "\n";
+            $body .= "--- Bericht ---\n" . wp_strip_all_tags($bericht) . "\n";
 
             wp_mail(
                 get_option('admin_email'),
@@ -172,8 +176,7 @@ function si_informatie_aanvragen_shortcode(): string {
                 ]
             );
 
-            wp_redirect(home_url('/bedankt-informatie-aanvraag/'));
-            exit;
+            si_redirect_or_fallback(home_url('/bedankt-informatie-aanvraag/'));
         }
     }
 
@@ -208,12 +211,12 @@ function si_informatie_aanvragen_shortcode(): string {
                     <div class="si-ia__field">
                         <label class="si-ia__label" for="si_voornaam">Voornaam <span class="si-ia__req">*</span></label>
                         <input type="text" name="voornaam" id="si_voornaam" class="si-ia__input"
-                               value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" placeholder="Jan" required>
+                               value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" required>
                     </div>
                     <div class="si-ia__field">
                         <label class="si-ia__label" for="si_achternaam">Achternaam <span class="si-ia__req">*</span></label>
                         <input type="text" name="achternaam" id="si_achternaam" class="si-ia__input"
-                               value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" placeholder="de Vries" required>
+                               value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" required>
                     </div>
                 </div>
 
@@ -221,12 +224,12 @@ function si_informatie_aanvragen_shortcode(): string {
                     <div class="si-ia__field">
                         <label class="si-ia__label" for="si_email">E-mailadres <span class="si-ia__req">*</span></label>
                         <input type="email" name="email" id="si_email" class="si-ia__input"
-                               value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" placeholder="jan@bedrijf.nl" required>
+                               value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" required>
                     </div>
                     <div class="si-ia__field">
                         <label class="si-ia__label" for="si_telefoon">Telefoonnummer</label>
                         <input type="tel" name="telefoon" id="si_telefoon" class="si-ia__input"
-                               value="<?php echo esc_attr($_POST['telefoon'] ?? ''); ?>" placeholder="+31 6 00000000">
+                               value="<?php echo esc_attr($_POST['telefoon'] ?? ''); ?>">
                     </div>
                 </div>
 
@@ -264,8 +267,7 @@ function si_informatie_aanvragen_shortcode(): string {
             var berichtHidden = document.getElementById('si_bericht_hidden');
             var quillBericht  = new Quill('#si_quill_bericht', {
                 theme: 'snow',
-                modules: { toolbar: toolbarOptions },
-                placeholder: 'Schrijf hier je bericht...'
+                modules: { toolbar: toolbarOptions }
             });
 
             if (berichtHidden && berichtHidden.value) {
@@ -276,7 +278,7 @@ function si_informatie_aanvragen_shortcode(): string {
                 if (berichtHidden) berichtHidden.value = quillBericht.root.innerHTML;
             });
 
-            var form = document.querySelector('.si-ia__form');
+            var form = berichtHidden ? berichtHidden.closest('form') : null;
             if (form) {
                 form.addEventListener('submit', function () {
                     if (berichtHidden) berichtHidden.value = quillBericht.root.innerHTML;

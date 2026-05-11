@@ -23,6 +23,10 @@ function si_informatie_aanvragen_compact_shortcode(): string {
         $telefoon   = sanitize_text_field($_POST['iac_telefoon']   ?? '');
         $bericht    = wp_kses_post($_POST['iac_bericht']           ?? '');
 
+        if (!si_rich_text_has_content($bericht)) {
+            $bericht = '';
+        }
+
         if (!$voornaam)        $errors[] = 'Vul je voornaam in.';
         if (!$achternaam)      $errors[] = 'Vul je achternaam in.';
         if (!is_email($email)) $errors[] = 'Vul een geldig e-mailadres in.';
@@ -51,7 +55,7 @@ function si_informatie_aanvragen_compact_shortcode(): string {
             $body .= "E-mail: $email\n";
             $body .= "Telefoon: $telefoon\n";
             if ($bericht) {
-                $body .= "\n--- Bericht ---\n" . strip_tags($bericht) . "\n";
+                $body .= "\n--- Bericht ---\n" . wp_strip_all_tags($bericht) . "\n";
             }
 
             wp_mail(
@@ -64,8 +68,7 @@ function si_informatie_aanvragen_compact_shortcode(): string {
                 ]
             );
 
-            wp_redirect(home_url('/bedankt-informatie-aanvraag/'));
-            exit;
+            si_redirect_or_fallback(home_url('/bedankt-informatie-aanvraag/'));
         }
     }
 
@@ -91,25 +94,25 @@ function si_informatie_aanvragen_compact_shortcode(): string {
             <div class="si-iac__field">
                 <label class="si-iac__label" for="iac_voornaam">Voornaam <span class="si-iac__req">*</span></label>
                 <input type="text" name="iac_voornaam" id="iac_voornaam" class="si-iac__input"
-                       value="<?php echo esc_attr($_POST['iac_voornaam'] ?? ''); ?>" placeholder="Jan" required>
+                       value="<?php echo esc_attr($_POST['iac_voornaam'] ?? ''); ?>" required>
             </div>
 
             <div class="si-iac__field">
                 <label class="si-iac__label" for="iac_achternaam">Achternaam <span class="si-iac__req">*</span></label>
                 <input type="text" name="iac_achternaam" id="iac_achternaam" class="si-iac__input"
-                       value="<?php echo esc_attr($_POST['iac_achternaam'] ?? ''); ?>" placeholder="de Vries" required>
+                       value="<?php echo esc_attr($_POST['iac_achternaam'] ?? ''); ?>" required>
             </div>
 
             <div class="si-iac__field">
                 <label class="si-iac__label" for="iac_email">E-mailadres <span class="si-iac__req">*</span></label>
                 <input type="email" name="iac_email" id="iac_email" class="si-iac__input"
-                       value="<?php echo esc_attr($_POST['iac_email'] ?? ''); ?>" placeholder="jan@bedrijf.nl" required>
+                       value="<?php echo esc_attr($_POST['iac_email'] ?? ''); ?>" required>
             </div>
 
             <div class="si-iac__field">
                 <label class="si-iac__label" for="iac_telefoon">Telefoonnummer</label>
                 <input type="tel" name="iac_telefoon" id="iac_telefoon" class="si-iac__input"
-                       value="<?php echo esc_attr($_POST['iac_telefoon'] ?? ''); ?>" placeholder="+31 6 00000000">
+                       value="<?php echo esc_attr($_POST['iac_telefoon'] ?? ''); ?>">
             </div>
 
             <div class="si-iac__field">
@@ -134,7 +137,7 @@ function si_informatie_aanvragen_compact_shortcode(): string {
 
             var target = document.getElementById('si_iac_quill_bericht');
             var berichtHidden = document.getElementById('iac_bericht_hidden');
-            var form = document.querySelector('.si-iac__form');
+            var form = berichtHidden ? berichtHidden.closest('form') : null;
 
             if (!target || !berichtHidden || !form || target.dataset.quillReady === '1') {
                 return;
@@ -151,8 +154,7 @@ function si_informatie_aanvragen_compact_shortcode(): string {
 
             var quillBericht = new Quill(target, {
                 theme: 'snow',
-                modules: { toolbar: toolbarOptions },
-                placeholder: 'Schrijf hier eventueel extra toelichting...'
+                modules: { toolbar: toolbarOptions }
             });
 
             if (berichtHidden.value) {

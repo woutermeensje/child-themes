@@ -140,6 +140,10 @@ function si_opdracht_plaatsen_shortcode(): string {
         $website      = esc_url_raw($_POST['website']             ?? '');
         $beschrijving = wp_kses_post($_POST['beschrijving']        ?? '');
 
+        if (!si_rich_text_has_content($beschrijving)) {
+            $beschrijving = '';
+        }
+
         if (!$voornaam)           $errors[] = 'Vul je voornaam in.';
         if (!$achternaam)         $errors[] = 'Vul je achternaam in.';
         if (!is_email($email))    $errors[] = 'Vul een geldig e-mailadres in.';
@@ -170,7 +174,7 @@ function si_opdracht_plaatsen_shortcode(): string {
             $body .= "E-mail: $email\n";
             $body .= "Telefoon: $telefoon\n";
             $body .= "Website: $website\n\n";
-            $body .= "--- Opdrachtbeschrijving ---\n" . strip_tags($beschrijving) . "\n";
+            $body .= "--- Opdrachtbeschrijving ---\n" . wp_strip_all_tags($beschrijving) . "\n";
 
             wp_mail(
                 get_option('admin_email'),
@@ -182,8 +186,7 @@ function si_opdracht_plaatsen_shortcode(): string {
                 ]
             );
 
-            wp_redirect(home_url('/bedankt-opdracht-plaatsen/'));
-            exit;
+            si_redirect_or_fallback(home_url('/bedankt-opdracht-plaatsen/'));
         }
     }
 
@@ -221,22 +224,22 @@ function si_opdracht_plaatsen_shortcode(): string {
                     <div class="sj-vp__field">
                         <label class="sj-vp__label" for="si_op_voornaam">Voornaam <span class="sj-vp__req">*</span></label>
                         <input type="text" name="voornaam" id="si_op_voornaam" class="sj-vp__input"
-                               value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" placeholder="Jan" required>
+                               value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" required>
                     </div>
                     <div class="sj-vp__field">
                         <label class="sj-vp__label" for="si_op_achternaam">Achternaam <span class="sj-vp__req">*</span></label>
                         <input type="text" name="achternaam" id="si_op_achternaam" class="sj-vp__input"
-                               value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" placeholder="de Vries" required>
+                               value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" required>
                     </div>
                     <div class="sj-vp__field">
                         <label class="sj-vp__label" for="si_op_email">E-mailadres <span class="sj-vp__req">*</span></label>
                         <input type="email" name="email" id="si_op_email" class="sj-vp__input"
-                               value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" placeholder="jan@bedrijf.nl" required>
+                               value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" required>
                     </div>
                     <div class="sj-vp__field">
                         <label class="sj-vp__label" for="si_op_telefoon">Telefoonnummer</label>
                         <input type="tel" name="telefoon" id="si_op_telefoon" class="sj-vp__input"
-                               value="<?php echo esc_attr($_POST['telefoon'] ?? ''); ?>" placeholder="+31 6 00000000">
+                               value="<?php echo esc_attr($_POST['telefoon'] ?? ''); ?>">
                     </div>
                     </div>
                 </div>
@@ -247,7 +250,7 @@ function si_opdracht_plaatsen_shortcode(): string {
                     <div class="sj-vp__field">
                         <label class="sj-vp__label" for="si_op_website">Link naar website <span class="sj-vp__opt">(optioneel)</span></label>
                         <input type="url" name="website" id="si_op_website" class="sj-vp__input"
-                               value="<?php echo esc_attr($_POST['website'] ?? ''); ?>" placeholder="https://www.bedrijf.nl">
+                               value="<?php echo esc_attr($_POST['website'] ?? ''); ?>">
                     </div>
                     <div class="sj-vp__field">
                         <label class="sj-vp__label" for="si_op_beschrijving_hidden">Opdrachtbeschrijving <span class="sj-vp__req">*</span></label>
@@ -285,8 +288,7 @@ function si_opdracht_plaatsen_shortcode(): string {
             var beschrijvingHidden = document.getElementById('si_op_beschrijving_hidden');
             var quillOpdracht      = new Quill('#si_quill_opdracht', {
                 theme: 'snow',
-                modules: { toolbar: toolbarOptions },
-                placeholder: 'Beschrijf hier de opdracht...'
+                modules: { toolbar: toolbarOptions }
             });
 
             if (beschrijvingHidden && beschrijvingHidden.value) {
@@ -297,7 +299,7 @@ function si_opdracht_plaatsen_shortcode(): string {
                 if (beschrijvingHidden) beschrijvingHidden.value = quillOpdracht.root.innerHTML;
             });
 
-            var form = document.querySelector('.si-op__form');
+            var form = beschrijvingHidden ? beschrijvingHidden.closest('form') : null;
             if (form) {
                 form.addEventListener('submit', function () {
                     if (beschrijvingHidden) beschrijvingHidden.value = quillOpdracht.root.innerHTML;

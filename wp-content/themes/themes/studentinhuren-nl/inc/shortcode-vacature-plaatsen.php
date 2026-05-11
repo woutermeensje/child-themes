@@ -151,6 +151,13 @@ function si_vacature_plaatsen_shortcode(): string
         $extra_info    = wp_kses_post($_POST['extra_info'] ?? '');
         $referral      = sanitize_text_field($_POST['referral'] ?? '');
 
+        if (!si_rich_text_has_content($omschrijving)) {
+            $omschrijving = '';
+        }
+        if (!si_rich_text_has_content($extra_info)) {
+            $extra_info = '';
+        }
+
         if (!$voornaam)         $errors[] = 'Vul je voornaam in.';
         if (!$achternaam)       $errors[] = 'Vul je achternaam in.';
         if (!$bedrijfsnaam)     $errors[] = 'Vul je bedrijfsnaam in.';
@@ -267,8 +274,7 @@ function si_vacature_plaatsen_shortcode(): string
                 }
             }
 
-            wp_safe_redirect(add_query_arg('vacature_verstuurd', '1', get_permalink()));
-            exit;
+            si_redirect_or_fallback(add_query_arg('vacature_verstuurd', '1', get_permalink()));
         }
     }
 
@@ -340,19 +346,19 @@ function si_vacature_plaatsen_shortcode(): string
                     <div class="sj-vp__grid sj-vp__grid--2">
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_voornaam">Voornaam <span class="sj-vp__req">*</span></label>
-                            <input type="text" name="voornaam" id="sj_voornaam" class="sj-vp__input" value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" placeholder="Jan" required>
+                            <input type="text" name="voornaam" id="sj_voornaam" class="sj-vp__input" value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" required>
                         </div>
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_achternaam">Achternaam <span class="sj-vp__req">*</span></label>
-                            <input type="text" name="achternaam" id="sj_achternaam" class="sj-vp__input" value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" placeholder="de Vries" required>
+                            <input type="text" name="achternaam" id="sj_achternaam" class="sj-vp__input" value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" required>
                         </div>
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_bedrijfsnaam">Bedrijfsnaam <span class="sj-vp__req">*</span></label>
-                            <input type="text" name="bedrijfsnaam" id="sj_bedrijfsnaam" class="sj-vp__input" value="<?php echo esc_attr($_POST['bedrijfsnaam'] ?? ''); ?>" placeholder="Jouw organisatie" required>
+                            <input type="text" name="bedrijfsnaam" id="sj_bedrijfsnaam" class="sj-vp__input" value="<?php echo esc_attr($_POST['bedrijfsnaam'] ?? ''); ?>" required>
                         </div>
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_email">E-mailadres <span class="sj-vp__req">*</span></label>
-                            <input type="email" name="email" id="sj_email" class="sj-vp__input" value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" placeholder="jan@bedrijf.nl" required>
+                            <input type="email" name="email" id="sj_email" class="sj-vp__input" value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" required>
                         </div>
                     </div>
                 </div>
@@ -362,12 +368,12 @@ function si_vacature_plaatsen_shortcode(): string
                     <div class="sj-vp__grid sj-vp__grid--1">
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_vacaturetitel">Vacaturetitel <span class="sj-vp__req">*</span></label>
-                            <input type="text" name="vacaturetitel" id="sj_vacaturetitel" class="sj-vp__input" value="<?php echo esc_attr($_POST['vacaturetitel'] ?? ''); ?>" placeholder="Bijv. Werkstudent Marketing" required>
+                            <input type="text" name="vacaturetitel" id="sj_vacaturetitel" class="sj-vp__input" value="<?php echo esc_attr($_POST['vacaturetitel'] ?? ''); ?>" required>
                         </div>
 
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_locatie">Locatie</label>
-                            <input type="text" name="locatie" id="sj_locatie" class="sj-vp__input" value="<?php echo esc_attr($_POST['locatie'] ?? ''); ?>" placeholder="Amsterdam, Hybrid, Remote...">
+                            <input type="text" name="locatie" id="sj_locatie" class="sj-vp__input" value="<?php echo esc_attr($_POST['locatie'] ?? ''); ?>">
                         </div>
 
                         <div class="sj-vp__field">
@@ -383,7 +389,7 @@ function si_vacature_plaatsen_shortcode(): string
                             </div>
                             <div class="sj-vp__ms" id="sj_type_baan_ms" aria-labelledby="sj_type_baan_label" role="group">
                                 <div class="sj-vp__ms-trigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
-                                    <span class="sj-vp__ms-placeholder">Selecteer type(s)...</span>
+                                    <span class="sj-vp__ms-placeholder"></span>
                                     <span class="sj-vp__ms-tags"></span>
                                     <svg class="sj-vp__ms-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
                                 </div>
@@ -431,7 +437,7 @@ function si_vacature_plaatsen_shortcode(): string
 
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_referral">Hoe heb je ons gevonden?</label>
-                            <input type="text" name="referral" id="sj_referral" class="sj-vp__input" value="<?php echo esc_attr($_POST['referral'] ?? ''); ?>" placeholder="Via Google, LinkedIn, via-via...">
+                            <input type="text" name="referral" id="sj_referral" class="sj-vp__input" value="<?php echo esc_attr($_POST['referral'] ?? ''); ?>">
                         </div>
                     </div>
                 </div>
@@ -463,13 +469,11 @@ function si_vacature_plaatsen_shortcode(): string
             var extraInfoHidden = document.getElementById('sj_extra_info_hidden');
             var quillOmschrijving = new Quill('#sj_quill_omschrijving', {
                 theme: 'snow',
-                modules: { toolbar: toolbarOptions },
-                placeholder: 'Beschrijf de functie, taken, vereisten en wat je organisatie biedt...'
+                modules: { toolbar: toolbarOptions }
             });
             var quillExtraInfo = new Quill('#sj_quill_extra_info', {
                 theme: 'snow',
-                modules: { toolbar: toolbarOptions },
-                placeholder: 'Secundaire arbeidsvoorwaarden, cultuur, of andere relevante informatie...'
+                modules: { toolbar: toolbarOptions }
             });
 
             if (omschrijvingHidden && omschrijvingHidden.value) {
@@ -486,7 +490,7 @@ function si_vacature_plaatsen_shortcode(): string
                 if (extraInfoHidden) extraInfoHidden.value = quillExtraInfo.root.innerHTML;
             });
 
-            var form = document.querySelector('.sj-vp__form');
+            var form = omschrijvingHidden ? omschrijvingHidden.closest('form') : null;
             if (form) {
                 form.addEventListener('submit', function () {
                     if (omschrijvingHidden) omschrijvingHidden.value = quillOmschrijving.root.innerHTML;
