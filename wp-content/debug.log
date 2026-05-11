@@ -33486,3 +33486,8 @@ Stack trace:
 [07-May-2026 08:26:44 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
 [07-May-2026 08:26:44 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 627
 [07-May-2026 08:26:57 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
+[11-May-2026 15:58:21 UTC] Automatic updates starting...
+[11-May-2026 15:58:22 UTC]   Automatic plugin updates starting...
+[11-May-2026 15:58:22 UTC]   Automatic plugin updates complete.
+[11-May-2026 15:58:23 UTC] Automatic updates complete.
+[11-May-2026 15:58:25 UTC] [BOWERS IMPORT] XML kon niet worden geladen.
