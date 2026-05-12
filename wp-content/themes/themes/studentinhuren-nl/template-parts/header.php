@@ -46,7 +46,16 @@ if (!defined('ABSPATH')) {
         <div class="rn-header__divider"></div>
 
         <div class="rn-header__cta">
-            <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--outline" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Informatie aanvragen</a>
+            <div class="rn-info-menu">
+                <button type="button" class="rn-btn rn-btn--outline rn-info-menu__toggle" aria-expanded="false" aria-controls="rn-info-menu-desktop" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
+                    Informatie aanvragen
+                </button>
+                <div id="rn-info-menu-desktop" class="rn-info-menu__menu" aria-hidden="true">
+                    <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-info-menu__item">Via formulier</a>
+                    <a href="<?php echo esc_url(home_url('/contact/')); ?>" class="rn-info-menu__item">Per e-mail</a>
+                    <a href="tel:0852392040" class="rn-info-menu__item">Telefonisch: 085 2392040</a>
+                </div>
+            </div>
             <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Aanmelden</a>
         </div>
 
@@ -74,7 +83,16 @@ if (!defined('ABSPATH')) {
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
             <a href="https://platform.student-inhuren.nl/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Inloggen</a>
-            <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--outline rn-mobile-nav__cta" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Informatie aanvragen</a>
+            <div class="rn-info-menu rn-info-menu--mobile">
+                <button type="button" class="rn-btn rn-btn--outline rn-mobile-nav__cta rn-info-menu__toggle" aria-expanded="false" aria-controls="rn-info-menu-mobile" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
+                    Informatie aanvragen
+                </button>
+                <div id="rn-info-menu-mobile" class="rn-info-menu__menu" aria-hidden="true">
+                    <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-info-menu__item">Via formulier</a>
+                    <a href="<?php echo esc_url(home_url('/contact/')); ?>" class="rn-info-menu__item">Per e-mail</a>
+                    <a href="tel:0852392040" class="rn-info-menu__item">Telefonisch: 085 2392040</a>
+                </div>
+            </div>
             <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent rn-mobile-nav__cta" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Aanmelden</a>
         </div>
     </div>
@@ -85,6 +103,40 @@ if (!defined('ABSPATH')) {
   const hamburger = document.querySelector('.rn-header__hamburger');
   const mobileNav = document.getElementById('rn-mobile-nav');
   const closeBtn  = document.querySelector('.rn-mobile-nav__close');
+  const infoMenus = document.querySelectorAll('.rn-info-menu');
+
+  const closeInfoMenus = (exceptMenu = null) => {
+    infoMenus.forEach((menu) => {
+      if (menu === exceptMenu) return;
+      const toggle = menu.querySelector('.rn-info-menu__toggle');
+      const panel = menu.querySelector('.rn-info-menu__menu');
+
+      menu.classList.remove('is-open');
+      if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      if (panel) panel.setAttribute('aria-hidden', 'true');
+    });
+  };
+
+  infoMenus.forEach((menu) => {
+    const toggle = menu.querySelector('.rn-info-menu__toggle');
+    const panel = menu.querySelector('.rn-info-menu__menu');
+
+    if (!toggle || !panel) return;
+
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const shouldOpen = !menu.classList.contains('is-open');
+
+      closeInfoMenus(menu);
+      menu.classList.toggle('is-open', shouldOpen);
+      toggle.setAttribute('aria-expanded', shouldOpen ? 'true' : 'false');
+      panel.setAttribute('aria-hidden', shouldOpen ? 'false' : 'true');
+    });
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.rn-info-menu')) closeInfoMenus();
+  });
 
   if (!hamburger || !mobileNav) return;
 
@@ -93,6 +145,7 @@ if (!defined('ABSPATH')) {
     hamburger.classList.remove('is-open');
     hamburger.setAttribute('aria-expanded', 'false');
     mobileNav.setAttribute('aria-hidden', 'true');
+    closeInfoMenus();
     document.body.style.overflow = '';
   };
 
@@ -116,8 +169,16 @@ if (!defined('ABSPATH')) {
 
   mobileNav.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
 
-  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeMenu(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeInfoMenus();
+      closeMenu();
+    }
+  });
 
-  window.addEventListener('resize', () => { if (window.innerWidth > 960) closeMenu(); });
+  window.addEventListener('resize', () => {
+    closeInfoMenus();
+    if (window.innerWidth > 960) closeMenu();
+  });
 })();
 </script>

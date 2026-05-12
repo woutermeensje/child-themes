@@ -33491,3 +33491,52 @@ Stack trace:
 [11-May-2026 15:58:22 UTC]   Automatic plugin updates complete.
 [11-May-2026 15:58:23 UTC] Automatic updates complete.
 [11-May-2026 15:58:25 UTC] [BOWERS IMPORT] XML kon niet worden geladen.
+[11-May-2026 17:31:20 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[11-May-2026 17:31:20 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[11-May-2026 17:31:23 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[11-May-2026 17:31:23 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[11-May-2026 17:31:33 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[11-May-2026 17:31:33 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[11-May-2026 17:32:36 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[11-May-2026 17:32:36 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[11-May-2026 17:34:59 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[11-May-2026 17:34:59 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[11-May-2026 17:35:05 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[11-May-2026 17:35:05 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[11-May-2026 17:35:12 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[11-May-2026 17:35:12 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
