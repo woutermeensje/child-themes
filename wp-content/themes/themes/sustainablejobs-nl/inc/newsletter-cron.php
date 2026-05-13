@@ -33,60 +33,39 @@ add_action('init', function () {
 });
 
 /**
- * Plan de wekelijkse nieuwsbrief-cron (maandag 08:00).
+ * Plan de wekelijkse nieuwsbrief-cron (donderdag 14:00).
+ * Migratie: verwijder de oude maandag-planning en plan opnieuw op donderdag.
  */
 add_action('init', function () {
-    if (!wp_next_scheduled('sj_newsletter_weekly')) {
-        wp_schedule_event(strtotime('next monday 08:00:00'), 'weekly', 'sj_newsletter_weekly');
+    if (!get_option('sj_newsletter_thursday_schedule_v1')) {
+        wp_clear_scheduled_hook('sj_newsletter_weekly');
+        wp_schedule_event(strtotime('next thursday 14:00:00'), 'weekly', 'sj_newsletter_weekly');
+        update_option('sj_newsletter_thursday_schedule_v1', true);
+    } elseif (!wp_next_scheduled('sj_newsletter_weekly')) {
+        wp_schedule_event(strtotime('next thursday 14:00:00'), 'weekly', 'sj_newsletter_weekly');
     }
 });
 
 add_action('after_switch_theme', function () {
     if (!wp_next_scheduled('sj_newsletter_weekly')) {
-        wp_schedule_event(strtotime('next monday 08:00:00'), 'weekly', 'sj_newsletter_weekly');
+        wp_schedule_event(strtotime('next thursday 14:00:00'), 'weekly', 'sj_newsletter_weekly');
     }
 });
 
 add_action('sj_newsletter_weekly', 'sj_send_weekly_newsletter');
 
 /**
- * Verstuur de wekelijkse nieuwsbrief naar alle actieve abonnees.
+ * Verstuur de wekelijkse nieuwsbrief via een ActiveCampaign campaign naar lijst 10.
  */
 function sj_send_weekly_newsletter(): void {
-    global $wpdb;
-    $table       = $wpdb->prefix . 'sj_newsletter';
-    $subscribers = $wpdb->get_results("SELECT * FROM {$table} WHERE active = 1", ARRAY_A);
-
-    if (empty($subscribers)) return;
-
     $vacatures = sj_get_all_new_vacatures();
-    if (empty($vacatures)) return;
 
-    foreach ($subscribers as $subscriber) {
-        $token = $subscriber['unsubscribe_token'] ?: wp_generate_password(32, false, false);
-
-        $headers = [
-            'Content-Type: text/html; charset=UTF-8',
-            'From: Sustainablejobs.nl <support@sustainablejobs.nl>',
-        ];
-
-        $sent = wp_mail(
-            $subscriber['email'],
-            'De nieuwste duurzame vacatures van deze week — Sustainablejobs.nl',
-            sj_build_newsletter_email($subscriber['voornaam'], $vacatures, $token),
-            $headers
-        );
-
-        if ($sent) {
-            $wpdb->update(
-                $table,
-                ['last_sent' => current_time('mysql'), 'unsubscribe_token' => $token],
-                ['id'        => (int) $subscriber['id']],
-                ['%s', '%s'],
-                ['%d']
-            );
-        }
+    if (empty($vacatures)) {
+        error_log('[Newsletter] Geen nieuwe vacatures deze week, verzending overgeslagen.');
+        return;
     }
+
+    sj_ac_send_newsletter_campaign($vacatures);
 }
 
 /**

@@ -147,3 +147,164 @@ function sj_ac_subscribe_job_alert(string $voornaam, string $email, array $secto
 
     return true;
 }
+
+/**
+ * Maak een AC-message + campaign aan en verstuur deze naar de nieuwsbrief-lijst.
+ */
+function sj_ac_send_newsletter_campaign(array $vacatures): bool {
+    if (defined('ACTIVECAMPAIGN_ENABLED') && !ACTIVECAMPAIGN_ENABLED) return false;
+
+    $list_id = defined('ACTIVECAMPAIGN_NEWSLETTER_LIST_ID') ? (int) ACTIVECAMPAIGN_NEWSLETTER_LIST_ID : 10;
+    $week_nr = date('W');
+    $jaar    = date('Y');
+    $subject = "De nieuwste duurzame vacatures van week {$week_nr} — Sustainablejobs.nl";
+    $html    = sj_build_newsletter_email_ac($vacatures);
+
+    // 1. Message aanmaken
+    $msg = sj_ac_request('POST', 'messages', [
+        'message' => [
+            'fromname'       => 'Sustainablejobs.nl',
+            'fromemail'      => 'support@sustainablejobs.nl',
+            'reply2'         => 'support@sustainablejobs.nl',
+            'subject'        => $subject,
+            'preheader_text' => 'Bekijk de nieuwste duurzame vacatures van deze week.',
+            'html'           => $html,
+            'text'           => wp_strip_all_tags($html),
+            'userid'         => '1',
+        ],
+    ]);
+
+    if (empty($msg['message']['id'])) {
+        error_log('[AC Newsletter] Message aanmaken mislukt.');
+        return false;
+    }
+
+    $message_id = (int) $msg['message']['id'];
+
+    // 2. Campaign aanmaken en direct versturen (senddate = nu)
+    $campaign = sj_ac_request('POST', 'campaigns', [
+        'campaign' => [
+            'type'       => 'single',
+            'status'     => 1,
+            'public'     => 0,
+            'name'       => "Vacaturenieuwsbrief week {$week_nr}, {$jaar}",
+            'senddate'   => gmdate('Y-m-d H:i:s'),
+            'htmlunsub'  => 0,
+            'listid'     => (string) $list_id,
+            'messageid'  => (string) $message_id,
+            'segmentid'  => 0,
+            'tracklinks' => 'all',
+            'trackreads' => 1,
+        ],
+    ]);
+
+    if (empty($campaign['campaign']['id'])) {
+        error_log('[AC Newsletter] Campaign aanmaken mislukt.');
+        return false;
+    }
+
+    error_log('[AC Newsletter] Campaign ' . $campaign['campaign']['id'] . ' aangemaakt voor week ' . $week_nr . '/' . $jaar);
+    return true;
+}
+
+/**
+ * Bouw de HTML nieuwsbrief-e-mail op met ActiveCampaign merge tags.
+ */
+function sj_build_newsletter_email_ac(array $vacatures): string {
+    $alle_vacatures = esc_url(home_url('/vacatures/'));
+    $week_nr        = date('W');
+    $jaar           = date('Y');
+
+    $vacature_rows = '';
+    foreach ($vacatures as $post) {
+        $title      = esc_html(get_the_title($post));
+        $link       = esc_url(get_permalink($post));
+        $company    = esc_html(get_post_meta($post->ID, '_company_name', true));
+        $location   = esc_html(get_post_meta($post->ID, '_job_location', true));
+        $terms      = wp_get_post_terms($post->ID, 'job_sector', ['fields' => 'names']);
+        $sector_str = !empty($terms) && !is_wp_error($terms) ? esc_html(implode(', ', $terms)) : '';
+
+        $meta      = array_filter([$company, $location, $sector_str]);
+        $meta_html = $meta
+            ? '<div style="margin-top:4px;font-size:13px;color:#666;">' . implode(' &nbsp;·&nbsp; ', $meta) . '</div>'
+            : '';
+
+        $vacature_rows .= "
+        <tr>
+          <td style=\"padding:18px 0;border-bottom:1px solid #e4ede9;\">
+            <a href=\"{$link}\" style=\"font-size:16px;font-weight:700;color:#168AAD;text-decoration:none;font-family:Arial,sans-serif;\">{$title}</a>
+            {$meta_html}
+            <div style=\"margin-top:12px;\">
+              <a href=\"{$link}\" style=\"display:inline-block;padding:8px 18px;background:#168AAD;color:#ffffff;font-size:13px;font-weight:600;border-radius:4px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk vacature &rarr;</a>
+            </div>
+          </td>
+        </tr>";
+    }
+
+    return "<!DOCTYPE html>
+<html lang=\"nl\">
+<head>
+  <meta charset=\"UTF-8\">
+  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\">
+  <title>Vacaturenieuwsbrief week {$week_nr} — Sustainablejobs.nl</title>
+</head>
+<body style=\"margin:0;padding:0;background:#f2f6f4;font-family:Arial,sans-serif;\">
+<table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"background:#f2f6f4;padding:32px 16px;\">
+  <tr>
+    <td align=\"center\">
+      <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:600px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #dceae4;\">
+
+        <!-- Header -->
+        <tr>
+          <td style=\"background:#168AAD;padding:24px 32px;\">
+            <span style=\"font-family:Arial,sans-serif;font-size:20px;font-weight:700;color:#ffffff;\">Sustainablejobs.nl</span>
+            <span style=\"display:block;font-family:Arial,sans-serif;font-size:13px;color:rgba(255,255,255,0.75);margin-top:4px;\">Vacaturenieuwsbrief &mdash; week {$week_nr}, {$jaar}</span>
+          </td>
+        </tr>
+
+        <!-- Intro -->
+        <tr>
+          <td style=\"padding:28px 32px 8px;\">
+            <p style=\"margin:0 0 10px;font-size:20px;font-weight:700;color:#168AAD;font-family:Arial,sans-serif;\">Hoi %FIRSTNAME%!</p>
+            <p style=\"margin:0;font-size:15px;color:#444444;line-height:1.65;font-family:Arial,sans-serif;\">Dit zijn de nieuwste duurzame vacatures van deze week. Ontdek waar jij het verschil kunt maken.</p>
+          </td>
+        </tr>
+
+        <!-- Vacatures -->
+        <tr>
+          <td style=\"padding:8px 32px 24px;\">
+            <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">
+              {$vacature_rows}
+            </table>
+          </td>
+        </tr>
+
+        <!-- CTA -->
+        <tr>
+          <td style=\"padding:0 32px 32px;text-align:center;\">
+            <a href=\"{$alle_vacatures}\" style=\"display:inline-block;padding:13px 28px;background:#168AAD;color:#ffffff;font-size:15px;font-weight:700;border-radius:6px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk alle vacatures</a>
+          </td>
+        </tr>
+
+        <!-- Divider -->
+        <tr>
+          <td style=\"padding:0 32px;\"><hr style=\"border:none;border-top:1px solid #e4ede9;margin:0;\"></td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+          <td style=\"background:#f2f6f4;padding:20px 32px;text-align:center;\">
+            <p style=\"margin:0 0 6px;font-size:12px;color:#999999;font-family:Arial,sans-serif;\">Je ontvangt deze nieuwsbrief omdat je je hebt aangemeld op Sustainablejobs.nl.</p>
+            <p style=\"margin:0;font-size:12px;font-family:Arial,sans-serif;\">
+              <a href=\"%UNSUBSCRIBELINK%\" style=\"color:#168AAD;\">Afmelden voor de nieuwsbrief</a>
+            </p>
+          </td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+</body>
+</html>";
+}
