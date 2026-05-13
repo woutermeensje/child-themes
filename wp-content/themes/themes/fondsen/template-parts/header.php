@@ -16,9 +16,9 @@ $logo_url = get_stylesheet_directory_uri() . '/site-logo/Logo-fondsen.png';
                 <a href="https://platform.fondsen.org/registreren">Account aanmaken</a>
             </div>
             <div class="rn-topbar__right">
-                <a href="mailto:informatie@fondsen.org">informatie@fondsen.org</a>
+                <a href="https://teammate.nl/recruitment-non-profit/">teammate.nl</a>
                 <span class="rn-topbar__divider">|</span>
-                <a href="<?php echo esc_url(home_url('/nieuwsbrief/')); ?>">Nieuwsbrief</a>
+                <a href="https://subsidiegezocht.nl/">subsidiegezocht.nl</a>
             </div>
         </div>
     </div>
