@@ -69,4 +69,6 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@su
         </div>
 
     </section>
+
+    <?php the_content(); ?>
 </main>

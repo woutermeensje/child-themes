@@ -173,23 +173,25 @@ html, body {
 .fnd-hero__btn--primary {
   background-color: var(--color-secondary);
   border: 2px solid var(--color-secondary);
-  color: var(--color-primary) !important;
+  color: var(--color-midnight-blue) !important;
 }
 
 .fnd-hero__btn--primary:hover {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
+  background-color: #b5da9e;
+  border-color: #b5da9e;
+  color: var(--color-midnight-blue) !important;
 }
 
 .fnd-hero__btn--secondary {
-  background-color: var(--color-lavender);
-  border: 2px solid var(--color-lavender);
-  color: var(--color-primary) !important;
+  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  color: #ffffff !important;
 }
 
 .fnd-hero__btn--secondary:hover {
-  background-color: #8FC689;
-  border-color: #8FC689;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #ffffff;
+  color: #ffffff !important;
 }
 
 .fnd-hero__text-link {

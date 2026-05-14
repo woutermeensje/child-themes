@@ -8,6 +8,7 @@ require_once get_stylesheet_directory() . '/inc/job-alerts-cron.php';
 require_once get_stylesheet_directory() . '/inc/job-alerts-admin.php';
 require_once get_stylesheet_directory() . '/inc/newsletter-cron.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-newsletter.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-info-aanvraag.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 require_once get_stylesheet_directory() . '/includes/blog-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
@@ -30,82 +31,15 @@ add_filter('wp_mail_from_name', function ($from_name) {
  */
 add_filter('job_manager_multi_job_type', '__return_true');
 
-/**
- * Pretty filter URLs: /vacatures/{slug}/
- */
-if (!defined('SJ_REWRITE_VERSION')) {
-    define('SJ_REWRITE_VERSION', '2026-05-03-listing-filter-links');
-}
-
-function sj_register_filter_rewrites() {
-    add_rewrite_rule(
-        '^vacatures/([^/]+)/?$',
-        'index.php?pagename=vacatures&vacatures_filter=$matches[1]',
-        'top'
-    );
-}
-add_action('init', 'sj_register_filter_rewrites', 9);
-
-add_filter('query_vars', function ($vars) {
-    $vars[] = 'vacatures_filter';
-    return $vars;
-});
-
-add_action('after_switch_theme', function () {
-    sj_register_filter_rewrites();
-    flush_rewrite_rules(false);
-});
-
+// Automatische filter-URL's (/vacatures/{slug}/) zijn uitgeschakeld.
+// Rewrite rules worden geflushed zodat de oude regel verdwijnt.
 add_action('init', function () {
-    if (get_option('sj_rewrite_version') === SJ_REWRITE_VERSION) {
+    if (get_option('sj_rewrite_disabled_flush') === '2026-05-14') {
         return;
     }
-
     flush_rewrite_rules(false);
-    update_option('sj_rewrite_version', SJ_REWRITE_VERSION, false);
+    update_option('sj_rewrite_disabled_flush', '2026-05-14', false);
 }, 99);
-
-add_filter('redirect_canonical', function ($redirect_url) {
-    return get_query_var('vacatures_filter') ? false : $redirect_url;
-});
-
-add_action('template_redirect', function () {
-    $slug = get_query_var('vacatures_filter');
-    if (!$slug) {
-        return;
-    }
-
-    $slug = sanitize_title($slug);
-
-    if (get_term_by('slug', $slug, 'job_listing_type')) {
-        $_GET['filter_job_types'] = [$slug];
-        $_REQUEST['filter_job_types'] = [$slug];
-        add_filter('job_manager_output_jobs_defaults', function ($defaults) use ($slug) {
-            $defaults['selected_job_types'] = [$slug];
-            return $defaults;
-        });
-    } elseif (get_term_by('slug', $slug, 'job_company')) {
-        $_GET['filter_job_company'] = [$slug];
-        $_REQUEST['filter_job_company'] = [$slug];
-    } elseif (get_term_by('slug', $slug, 'job_sector')) {
-        $_GET['filter_job_sector'] = [$slug];
-        $_REQUEST['filter_job_sector'] = [$slug];
-    } elseif (get_term_by('slug', $slug, 'job_tag')) {
-        $_GET['filter_job_tag'] = [$slug];
-        $_REQUEST['filter_job_tag'] = [$slug];
-    } elseif (get_term_by('slug', $slug, 'organisatie_type')) {
-        $_GET['filter_organisatie_type'] = [$slug];
-        $_REQUEST['filter_organisatie_type'] = [$slug];
-    } else {
-        $location = str_replace('-', ' ', urldecode($slug));
-        $_GET['search_location'] = $location;
-        $_REQUEST['search_location'] = $location;
-        add_filter('job_manager_output_jobs_defaults', function ($defaults) use ($location) {
-            $defaults['selected_location'] = $location;
-            return $defaults;
-        });
-    }
-});
 
 /**
  * ✅ ENQUEUE STYLES (with Elementor check + cache busting)
@@ -594,6 +528,14 @@ add_action('init', function () {
     update_option('sj_organisatie_type_seeded', true);
 });
 
+// Rename WP JM "Load more listings" button to Dutch.
+add_filter('gettext', function ($translated, $text, $domain) {
+    if ($domain === 'wp-job-manager' && $text === 'Load more listings') {
+        return 'Toon meer vacatures';
+    }
+    return $translated;
+}, 10, 3);
+
 /** Import functions */
 
 require_once get_stylesheet_directory() . '/inc/bowers-import.php';
@@ -602,3 +544,4 @@ require_once get_stylesheet_directory() . '/inc/jackling-import.php';
 
 
 require_once get_stylesheet_directory() . '/inc/bedrijfspagina-filters.php';
+
