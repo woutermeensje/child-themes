@@ -183,8 +183,9 @@ function sj_info_aanvraag_shortcode(): string {
     }
 
     .sj-ia__label {
-        font-size: 14px;
-        font-weight: 500;
+        font-family: 'Poppins', sans-serif;
+        font-size: 15px;
+        font-weight: 300;
         color: #333;
         line-height: 1.4;
     }
@@ -196,13 +197,13 @@ function sj_info_aanvraag_shortcode(): string {
 
     .sj-ia__input {
         width: 100% !important;
-        padding: 10px 12px !important;
+        padding: 8px 12px !important;
         font-family: 'Poppins', sans-serif !important;
-        font-size: 14px !important;
+        font-size: 15px !important;
         font-weight: 400 !important;
         color: #333 !important;
         background: #fff !important;
-        border: 1px solid #DEDEDE !important;
+        border: 1px solid rgba(44, 143, 175, 0.45) !important;
         border-radius: 5px !important;
         outline: none !important;
         box-shadow: none !important;

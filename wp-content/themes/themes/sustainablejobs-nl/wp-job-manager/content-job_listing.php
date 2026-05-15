@@ -633,6 +633,8 @@ a.job-card-meta__filter-link:hover {
 
     .job-card {
         padding: 18px;
+        margin-left: 12px;
+        margin-right: 12px;
     }
 
     .job-card__desktop {

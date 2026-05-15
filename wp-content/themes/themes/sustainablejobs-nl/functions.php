@@ -9,6 +9,7 @@ require_once get_stylesheet_directory() . '/inc/job-alerts-admin.php';
 require_once get_stylesheet_directory() . '/inc/newsletter-cron.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-newsletter.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-info-aanvraag.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-uitgelichte-werkgevers.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 require_once get_stylesheet_directory() . '/includes/blog-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
