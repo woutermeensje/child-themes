@@ -139,8 +139,9 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                     <div class="content-part-job-description">
                         <div class="top-div">
 
-                            <div class="job-title">
+                            <div class="job-title sj-single-title-row">
                                 <h1><?php wpjm_the_job_title(); ?></h1>
+                                <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'single']); ?>
                             </div>
 
                             <div class="job_description">

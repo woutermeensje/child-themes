@@ -99,6 +99,9 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
             </div>
 
             <div class="job-card__content">
+                <div class="job-card__favorite">
+                    <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'card']); ?>
+                </div>
                 <div class="job_listing_content">
                     <a href="<?php echo esc_url(get_permalink($post_id)); ?>" class="title-link">
                         <h2><?php wpjm_the_job_title(); ?></h2>
@@ -183,6 +186,10 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
                         <a class="job-mobile__title-link" href="<?php the_job_permalink(); ?>">
                             <h2 class="job-mobile__title"><?php wpjm_the_job_title(); ?></h2>
                         </a>
+                    </div>
+
+                    <div class="job-mobile__favorite">
+                        <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'card']); ?>
                     </div>
                 </div>
 

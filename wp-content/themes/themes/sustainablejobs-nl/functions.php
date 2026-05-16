@@ -15,6 +15,7 @@ require_once get_stylesheet_directory() . '/includes/blog-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
 require_once get_stylesheet_directory() . '/inc/job-listing-meta.php';
+require_once get_stylesheet_directory() . '/inc/job-favorites.php';
 
 /**
  * Centrale afzender voor uitgaande mails vanuit het thema.
@@ -104,6 +105,15 @@ add_action('wp_enqueue_scripts', function () {
         );
     }
 
+    if (file_exists(get_stylesheet_directory() . '/css/job-favorites.css')) {
+        wp_enqueue_style(
+            'sj-job-favorites',
+            get_stylesheet_directory_uri() . '/css/job-favorites.css',
+            ['sj-header'],
+            filemtime(get_stylesheet_directory() . '/css/job-favorites.css')
+        );
+    }
+
     // Elementor Forms styling
     wp_enqueue_style(
         'sj-elementor-forms',
@@ -142,6 +152,19 @@ add_action('wp_enqueue_scripts', function () {
         filemtime(get_stylesheet_directory() . '/js/elementor-forms.js'),
         true
     );
+
+    if (file_exists(get_stylesheet_directory() . '/js/job-favorites.js')) {
+        wp_enqueue_script(
+            'sj-job-favorites',
+            get_stylesheet_directory_uri() . '/js/job-favorites.js',
+            [],
+            filemtime(get_stylesheet_directory() . '/js/job-favorites.js'),
+            true
+        );
+        wp_localize_script('sj-job-favorites', 'SJJobFavoritesConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+        ]);
+    }
 });
 
 /**
@@ -545,4 +568,3 @@ require_once get_stylesheet_directory() . '/inc/jackling-import.php';
 
 
 require_once get_stylesheet_directory() . '/inc/bedrijfspagina-filters.php';
-
