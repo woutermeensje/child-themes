@@ -489,9 +489,9 @@
     font-family: 'Balgin-Bold', serif;
     font-size: 15px;
     font-weight: 600;
-    background-color: var(--color-secondary, #C5D77F);
-    border: 2px solid var(--color-secondary, #C5D77F);
-    color: var(--color-primary, #168AAD) !important;
+    background-color: var(--color-primary-dk, #254F6E);
+    border: 2px solid var(--color-primary-dk, #254F6E);
+    color: #ffffff !important;
     padding: 10px 28px;
     border-radius: 4px;
     cursor: pointer;
@@ -500,8 +500,9 @@
     transition: background-color .15s ease, border-color .15s ease;
 }
 .sj-vp .sj-vp__submit:hover {
-    background-color: var(--color-accent, #8FC689);
-    border-color: var(--color-accent, #8FC689);
+    background-color: var(--color-primary-hover, #2B6E8F);
+    border-color: var(--color-primary-hover, #2B6E8F);
+    color: #ffffff !important;
 }
 .sj-vp .sj-vp__footer-note {
     font-family: 'Poppins', sans-serif;

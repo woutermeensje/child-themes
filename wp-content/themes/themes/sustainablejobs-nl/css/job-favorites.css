@@ -5,7 +5,7 @@
   justify-content: center;
   width: 42px;
   height: 42px;
-  color: var(--rn-text, #333333) !important;
+  color: #168AAD !important;
   text-decoration: none !important;
   border-radius: 999px;
   transition: color .18s ease, background .18s ease;
@@ -13,7 +13,7 @@
 
 .sj-favorites-nav:hover,
 .sj-favorites-nav.has-favorites {
-  color: var(--rn-primary, #168AAD) !important;
+  color: #168AAD !important;
   background: var(--rn-bg-light, #F7FAEF);
 }
 
@@ -219,7 +219,6 @@ ul.job_listings li.job_listing .job-card__content .job_listing_content {
 }
 
 .sj-favorites-page {
-  background: #fff;
   min-height: 60vh;
 }
 

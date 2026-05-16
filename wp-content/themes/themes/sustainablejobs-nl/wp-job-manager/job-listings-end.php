@@ -34,12 +34,12 @@ $banner_html = '
     <div class="sj-banner__overlay"></div>
     <div class="sj-banner__content">
         <div class="sj-banner__text">
-            <span class="sj-banner__eyebrow">Uitgelichte werkgevers</span>
-            <h2 class="sj-banner__title">Werk bij organisaties<br>die het verschil maken.</h2>
-            <p class="sj-banner__desc">Ontdek vacatures van de meest duurzame en maatschappelijk betrokken werkgevers van Nederland. Organisaties die vooroplopen in de transitie naar een betere wereld.</p>
+            <span class="sj-banner__eyebrow">Sustainablejobs community</span>
+            <h2 class="sj-banner__title">Maak een account aan<br>op ons platform.</h2>
+            <p class="sj-banner__desc">De plek waar bedrijven, professionals en werkzoekenden binnen duurzaamheid, energietransitie en de impactwereld elkaar vinden.</p>
         </div>
-        <a href="/uitgelichte-werkgevers/" class="sj-banner__btn">
-            Bekijk werkgevers
+        <a href="https://platform.sustainablejobs.nl/aanmelden" class="sj-banner__btn">
+            Account aanmaken
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
     </div>
