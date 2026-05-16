@@ -83,7 +83,7 @@ if (!$rn_mobile_logo_url) {
 <div id="rn-mobile-nav" class="rn-mobile-nav" aria-hidden="true">
     <div class="rn-mobile-nav__panel">
         <button class="rn-mobile-nav__close" aria-label="Menu sluiten">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" width="36" height="36" aria-hidden="true"><line x1="19" y1="5" x2="5" y2="19"/><line x1="5" y1="5" x2="19" y2="19"/></svg>
         </button>
         <?php
         wp_nav_menu([

@@ -97,7 +97,6 @@
         const currentJobs = jobs || readJobs();
         updateButtons(currentJobs);
         updateCounts(currentJobs);
-        updateEmailForm(currentJobs);
         renderFavoritesPage(currentJobs);
     }
 
@@ -184,44 +183,48 @@
 
             const title = document.createElement('h2');
             title.className = 'sj-favorites-page__card-title';
-
             const titleLink = document.createElement('a');
             titleLink.href = job.url || '#';
             titleLink.textContent = job.title || 'Vacature';
             title.appendChild(titleLink);
-
             body.appendChild(title);
+
+            if (job.company || job.location) {
+                const meta = document.createElement('p');
+                meta.className = 'sj-favorites-page__card-meta';
+                meta.textContent = [job.company, job.location].filter(Boolean).join(' · ');
+                body.appendChild(meta);
+            }
+
+            if (job.excerpt) {
+                const excerpt = document.createElement('p');
+                excerpt.className = 'sj-favorites-page__card-excerpt';
+                excerpt.textContent = job.excerpt;
+                body.appendChild(excerpt);
+            }
+
+            const actions = document.createElement('div');
+            actions.className = 'sj-favorites-page__card-actions';
+
+            const viewLink = document.createElement('a');
+            viewLink.href = job.url || '#';
+            viewLink.className = 'sj-favorites-page__view';
+            viewLink.textContent = 'Bekijk vacature';
+            actions.appendChild(viewLink);
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'sj-favorites-page__remove';
+            removeBtn.setAttribute('data-sj-favorite-remove', job.id);
+            removeBtn.textContent = 'Verwijderen';
+            actions.appendChild(removeBtn);
+
+            body.appendChild(actions);
             article.appendChild(body);
             list.appendChild(article);
         });
 
         fetchPageJobs(jobs);
-    }
-
-    function updateEmailForm(jobs) {
-        const card = document.querySelector('[data-sj-favorites-email-card]');
-        if (!card) return;
-
-        const idsInput = card.querySelector('[data-sj-favorites-email-ids]');
-        const submit = card.querySelector('[data-sj-favorites-email-submit]');
-        const hint = card.querySelector('[data-sj-favorites-email-hint]');
-        const count = jobs.length;
-
-        card.hidden = count === 0;
-
-        if (idsInput) {
-            idsInput.value = jobs.map((job) => job.id).join(',');
-        }
-
-        if (submit) {
-            submit.disabled = count === 0;
-        }
-
-        if (hint) {
-            hint.textContent = count === 1
-                ? 'Er wordt 1 opgeslagen vacature meegestuurd.'
-                : `Er worden ${count} opgeslagen vacatures meegestuurd.`;
-        }
     }
 
     document.addEventListener('click', function (event) {

@@ -11,6 +11,7 @@ require_once get_stylesheet_directory() . '/inc/shortcode-newsletter.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-info-aanvraag.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-uitgelichte-werkgevers.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-vacature-directory.php';
 require_once get_stylesheet_directory() . '/includes/blog-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
@@ -129,6 +130,25 @@ add_action('wp_enqueue_scripts', function () {
             get_stylesheet_directory_uri() . '/css/forms.css',
             ['child-style'],
             filemtime(get_stylesheet_directory() . '/css/forms.css')
+        );
+    }
+
+    if (file_exists(get_stylesheet_directory() . '/css/vacature-directory.css')) {
+        wp_enqueue_style(
+            'sj-vacature-directory',
+            get_stylesheet_directory_uri() . '/css/vacature-directory.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/vacature-directory.css')
+        );
+    }
+
+    if (file_exists(get_stylesheet_directory() . '/js/vacature-directory.js')) {
+        wp_enqueue_script(
+            'sj-vacature-directory',
+            get_stylesheet_directory_uri() . '/js/vacature-directory.js',
+            [],
+            filemtime(get_stylesheet_directory() . '/js/vacature-directory.js'),
+            true
         );
     }
 
