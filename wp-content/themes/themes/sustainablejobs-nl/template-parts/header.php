@@ -52,6 +52,9 @@ if (!$rn_mobile_logo_url) {
 
         <div class="rn-header__cta">
             <?php if (function_exists('sj_the_job_favorites_nav_link')) sj_the_job_favorites_nav_link('rn-header__favorite-link'); ?>
+            <a class="rn-mobile-icon-link rn-mobile-icon-link--account" href="https://platform.sustainablejobs.nl/inloggen/" target="_blank" rel="noopener noreferrer" aria-label="Naar mijn account">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.76-3.58-5-8-5Z"/></svg>
+            </a>
             <a href="<?php echo esc_url(home_url('/vacature-plaatsen/')); ?>" class="rn-btn rn-btn--accent">Vacature Plaatsen</a>
         </div>
 

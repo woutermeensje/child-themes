@@ -101,7 +101,10 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
                     <?php endif; ?>
                 </div>
 
-                <h1 class="fn-single-title fondsen-job-title"><?php wpjm_the_job_title(); ?></h1>
+                <div class="fn-single-title-row">
+                    <h1 class="fn-single-title fondsen-job-title"><?php wpjm_the_job_title(); ?></h1>
+                    <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'single']); ?>
+                </div>
                 <?php if ($company_name) : ?>
                     <p class="fn-single-subtitle"><?php echo esc_html($company_name); ?></p>
                 <?php endif; ?>

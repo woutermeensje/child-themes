@@ -5,23 +5,6 @@ if (!defined('ABSPATH')) {
 ?>
 
 <header id="rn-header" class="rn-header" role="banner">
-
-    <!-- Blauwe topbalk -->
-    <div class="rn-topbar">
-        <div class="rn-topbar__inner">
-            <div class="rn-topbar__left">
-                <a href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>">Opdracht Plaatsen</a>
-                <span class="rn-topbar__divider">|</span>
-                <a href="tel:0852392040">085 239 2040</a>
-            </div>
-            <div class="rn-topbar__right">
-                <a href="<?php echo esc_url(home_url('/tarieven/')); ?>">Tarieven</a>
-                <span class="rn-topbar__divider">|</span>
-                <a href="https://platform.student-inhuren.nl/inloggen">Inloggen</a>
-            </div>
-        </div>
-    </div>
-
     <div class="rn-header__inner">
         <div class="rn-header__brand">
             <?php if (has_custom_logo()) : ?>
@@ -46,8 +29,11 @@ if (!defined('ABSPATH')) {
         <div class="rn-header__divider"></div>
 
         <div class="rn-header__cta">
+            <a class="rn-account-link" href="https://platform.student-inhuren.nl/inloggen" target="_blank" rel="noopener noreferrer" aria-label="Naar mijn account">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.76-3.58-5-8-5Z"/></svg>
+            </a>
             <div class="rn-info-menu">
-                <button type="button" class="rn-btn rn-btn--outline rn-info-menu__toggle" aria-expanded="false" aria-controls="rn-info-menu-desktop" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
+                <button type="button" class="rn-btn rn-btn--outline rn-info-menu__toggle" aria-expanded="false" aria-controls="rn-info-menu-desktop">
                     Informatie aanvragen
                 </button>
                 <div id="rn-info-menu-desktop" class="rn-info-menu__menu" aria-hidden="true">
@@ -56,7 +42,7 @@ if (!defined('ABSPATH')) {
                     <a href="tel:0852392040" class="rn-info-menu__item">Telefonisch: 085 2392040</a>
                 </div>
             </div>
-            <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Aanmelden</a>
+            <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent" target="_blank" rel="noopener noreferrer">Aanmelden</a>
         </div>
 
         <button class="rn-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="rn-mobile-nav">
@@ -82,9 +68,12 @@ if (!defined('ABSPATH')) {
 
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="https://platform.student-inhuren.nl/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Inloggen</a>
+            <a href="https://platform.student-inhuren.nl/inloggen" class="rn-account-link rn-account-link--mobile" target="_blank" rel="noopener noreferrer" aria-label="Naar mijn account">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.76-3.58-5-8-5Z"/></svg>
+                <span>Inloggen</span>
+            </a>
             <div class="rn-info-menu rn-info-menu--mobile">
-                <button type="button" class="rn-btn rn-btn--outline rn-mobile-nav__cta rn-info-menu__toggle" aria-expanded="false" aria-controls="rn-info-menu-mobile" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
+                <button type="button" class="rn-btn rn-btn--outline rn-mobile-nav__cta rn-info-menu__toggle" aria-expanded="false" aria-controls="rn-info-menu-mobile">
                     Informatie aanvragen
                 </button>
                 <div id="rn-info-menu-mobile" class="rn-info-menu__menu" aria-hidden="true">
@@ -93,7 +82,7 @@ if (!defined('ABSPATH')) {
                     <a href="tel:0852392040" class="rn-info-menu__item">Telefonisch: 085 2392040</a>
                 </div>
             </div>
-            <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent rn-mobile-nav__cta" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Aanmelden</a>
+            <a href="https://platform.student-inhuren.nl/aanmelden" class="rn-btn rn-btn--accent rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">Aanmelden</a>
         </div>
     </div>
 </div>
@@ -178,7 +167,7 @@ if (!defined('ABSPATH')) {
 
   window.addEventListener('resize', () => {
     closeInfoMenus();
-    if (window.innerWidth > 960) closeMenu();
+    if (window.innerWidth > 1180) closeMenu();
   });
 })();
 </script>

@@ -79,6 +79,7 @@ add_action('wp_enqueue_scripts', function () {
     // Google Fonts
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
+    wp_enqueue_style('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap', [], null);
 
     // Custom fonts
     wp_enqueue_style(

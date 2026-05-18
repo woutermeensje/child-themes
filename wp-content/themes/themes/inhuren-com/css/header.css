@@ -39,9 +39,8 @@
 
 .rn-topbar__inner,
 .rn-header__inner {
-  max-width: 1200px;
+  width: min(100% - 96px, 1840px);
   margin: 0 auto;
-  padding: 0 24px;
 }
 
 .rn-topbar__inner {
@@ -431,6 +430,10 @@
 
 /* ── Responsive ── */
 @media (max-width: 960px) {
+  .rn-header__inner {
+    width: calc(100% - 48px);
+  }
+
   .rn-header__nav,
   .rn-header__cta,
   .rn-header__divider {
@@ -456,7 +459,7 @@
 @media (max-width: 480px) {
   .rn-topbar__inner,
   .rn-header__inner {
-    padding: 0 16px;
+    width: calc(100% - 32px);
   }
 }
 

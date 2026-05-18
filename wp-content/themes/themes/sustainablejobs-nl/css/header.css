@@ -37,9 +37,8 @@
 
 .rn-topbar__inner,
 .rn-header__inner {
-  max-width: 1200px;
+  width: min(100% - 96px, 1840px);
   margin: 0 auto;
-  padding: 0 24px;
 }
 
 .rn-topbar__inner {
@@ -64,9 +63,9 @@
 }
 
 .rn-topbar a {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 300;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
   color: rgba(255, 255, 255, 0.92) !important;
   text-decoration: none !important;
 }
@@ -145,9 +144,9 @@
   align-items: center;
   gap: 5px;
   padding: 8px 14px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 300;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
   color: var(--rn-text) !important;
   text-decoration: none !important;
   border-radius: 999px;
@@ -163,7 +162,7 @@
 }
 
 .rn-nav__link.is-active {
-  font-weight: 600;
+  font-weight: 500;
   box-shadow: none;
 }
 
@@ -219,8 +218,8 @@
   height: auto;
   border-radius: 5px;
   padding: 11px 14px;
-  font-size: 16px;
-  font-weight: 300;
+  font-size: 15px;
+  font-weight: 500;
   width: 100%;
   box-shadow: none !important;
   line-height: 1.35;
@@ -256,10 +255,10 @@
   align-items: center;
   justify-content: center;
   text-decoration: none !important;
-  font-family: 'Balgin-Bold', serif;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 9px 20px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  padding: 8px 16px;
   border-radius: 5px;
   transition: background .15s ease, color .15s ease, transform .15s ease;
   white-space: nowrap;
@@ -479,9 +478,9 @@
 
 .rn-mobile-nav__list a {
   display: block !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 16px !important;
-  font-weight: 400 !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
   color: var(--rn-text) !important;
   padding: 14px 4px !important;
   text-decoration: none !important;
@@ -510,7 +509,7 @@
 }
 
 .rn-mobile-nav__list ul a {
-  font-size: 14px !important;
+  font-size: 15px !important;
   padding: 8px 4px !important;
   color: var(--rn-text-muted) !important;
 }
@@ -538,6 +537,7 @@
 
 @media (max-width: 960px) {
   .rn-header__inner {
+    width: calc(100% - 48px);
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     gap: 0;
@@ -594,10 +594,10 @@
 
 @media (max-width: 480px) {
   .rn-header__inner {
-    padding: 0 14px !important;
+    width: calc(100% - 32px);
   }
 
   .rn-topbar__inner {
-    padding: 0 16px !important;
+    width: calc(100% - 32px);
   }
 }

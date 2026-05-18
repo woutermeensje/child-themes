@@ -9,6 +9,8 @@
 
 if ( ! defined('ABSPATH') ) exit;
 
+require_once get_stylesheet_directory() . '/inc/job-favorites.php';
+
 // =========================================================
 // Pretty filter URLs: /vacatures/{slug}/
 // =========================================================
@@ -148,6 +150,12 @@ function fondsen_enqueue_styles() {
         [],
         null
     );
+    wp_enqueue_style(
+        'roboto-font',
+        'https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap',
+        [],
+        null
+    );
 
     if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
         wp_enqueue_style(
@@ -156,6 +164,28 @@ function fondsen_enqueue_styles() {
             ['child-style'],
             filemtime(get_stylesheet_directory() . '/css/header.css')
         );
+    }
+
+    if (file_exists(get_stylesheet_directory() . '/css/job-favorites.css')) {
+        wp_enqueue_style(
+            'fondsen-job-favorites',
+            get_stylesheet_directory_uri() . '/css/job-favorites.css',
+            ['fondsen-header'],
+            filemtime(get_stylesheet_directory() . '/css/job-favorites.css')
+        );
+    }
+
+    if (file_exists(get_stylesheet_directory() . '/js/job-favorites.js')) {
+        wp_enqueue_script(
+            'fondsen-job-favorites',
+            get_stylesheet_directory_uri() . '/js/job-favorites.js',
+            [],
+            filemtime(get_stylesheet_directory() . '/js/job-favorites.js'),
+            true
+        );
+        wp_localize_script('fondsen-job-favorites', 'SJJobFavoritesConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+        ]);
     }
 
     // Blog CSS (overzicht én single posts)

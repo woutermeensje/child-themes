@@ -53,6 +53,9 @@ $background_image = $cover_image ? $cover_image : (function_exists('get_secondar
             </div>
 
             <div class="job-card__content">
+                <div class="job-card__favorite">
+                    <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post->ID, ['context' => 'card']); ?>
+                </div>
                 <div class="job_listing_content">
                     <a href="<?php echo esc_url(get_permalink($post->ID)); ?>" class="title-link">
                         <h2><?php wpjm_the_job_title(); ?></h2>
@@ -157,7 +160,10 @@ $background_image = $cover_image ? $cover_image : (function_exists('get_secondar
                         <?php the_post_thumbnail(); ?>
                     </div>
 
-                    <div class="job-mobile__toptext">
+                    <div class="job-mobile__favorite">
+                    <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post->ID, ['context' => 'card']); ?>
+                </div>
+                <div class="job-mobile__toptext">
                         <?php if ($job_company_url) : ?>
                         <a href="<?php echo esc_url($job_company_url); ?>" class="job-mobile__company job-card-meta__company-link" onclick="event.stopPropagation();"><?php echo esc_html($job_company_name); ?></a>
                     <?php else : ?>

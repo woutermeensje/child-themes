@@ -1,6 +1,6 @@
 /* ================================================
    Studentinhuren.nl — Header & Navigation
-   Hardcoded kleuren: primair #3A89FF, accent #FF8200, groen #80D424
+   Hardcoded kleuren: primair #3A89FF, secundair #FF8200
    ================================================ */
 
 .rn-header,
@@ -17,65 +17,27 @@
   width: 100%;
   background: #ffffff;
   border-bottom: 1px solid #DEDEDE;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  box-shadow: none;
 }
 
-/* ── Topbar ── */
-.rn-topbar {
-  width: 100%;
-  background: #3A89FF;
-}
-
-.rn-topbar__inner,
 .rn-header__inner {
-  max-width: 1200px;
+  width: min(100% - 96px, 1840px);
   margin: 0 auto;
-  padding: 0 24px;
 }
 
-.rn-topbar__inner {
-  min-height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.rn-topbar__left,
-.rn-topbar__right,
 .rn-header__brand,
 .rn-header__cta {
   display: flex;
   align-items: center;
 }
 
-.rn-topbar__left,
-.rn-topbar__right,
 .rn-header__cta {
   gap: 10px;
 }
 
-.rn-topbar a {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.90) !important;
-  text-decoration: none !important;
-}
-
-.rn-topbar a:hover {
-  color: #fff !important;
-  text-decoration: underline !important;
-}
-
-.rn-topbar__divider {
-  color: rgba(255, 255, 255, 0.4);
-  font-size: 13px;
-}
-
 /* ── Main header bar ── */
 .rn-header__inner {
-  min-height: 68px;
+  min-height: 80px;
   display: flex;
   align-items: center;
   gap: 24px;
@@ -148,7 +110,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  min-height: 68px;
+  min-height: 80px;
   padding: 8px 12px;
   border-radius: 5px;
   font-family: 'Poppins', sans-serif;
@@ -231,45 +193,89 @@
   flex-shrink: 0;
 }
 
+.rn-account-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  color: #3A89FF !important;
+  background: transparent;
+  border: 1px solid transparent;
+  text-decoration: none !important;
+  flex: 0 0 auto;
+  transition: background .15s ease, border-color .15s ease, color .15s ease;
+}
+
+.rn-account-link:hover,
+.rn-account-link:focus {
+  color: #1a6fe0 !important;
+  background: rgba(58, 137, 255, 0.08);
+  border-color: rgba(58, 137, 255, 0.16);
+}
+
+.rn-account-link svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+  flex: 0 0 auto;
+}
+
+.rn-account-link span {
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
 /* ── CTA Buttons ── */
 .rn-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 20px;
+  gap: 8px;
+  min-height: 40px;
+  padding: 10px 16px;
   border-radius: 5px;
-  border: 1.5px solid transparent;
+  border: 1px solid transparent;
   font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.5;
+  font-size: 16px;
+  font-weight: 600 !important;
+  line-height: 1;
   text-decoration: none !important;
   white-space: nowrap;
   cursor: pointer;
-  transition: background .15s ease, color .15s ease, border-color .15s ease;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .15s ease, color .15s ease;
 }
 
 .rn-btn--outline {
   color: #3A89FF !important;
-  border-color: #3A89FF;
-  background: transparent;
+  border-color: #D9DEE7;
+  background: #ffffff;
+  box-shadow: none;
 }
 
 .rn-btn--outline:hover {
-  color: #fff !important;
-  background: #3A89FF;
+  color: #3A89FF !important;
+  border-color: #3A89FF;
+  background: #ffffff;
+  box-shadow: none;
 }
 
 .rn-btn--accent {
   color: #fff !important;
-  border-color: #80D424;
-  background: #80D424;
+  border-color: #FF8200;
+  background: #FF8200;
+  box-shadow: none;
 }
 
 .rn-btn--accent:hover {
   color: #fff !important;
-  background: #6db81e;
-  border-color: #6db81e;
+  background: #e87300;
+  border-color: #e87300;
+  box-shadow: none;
+  transform: translateY(-1px);
 }
 
 /* ── CTA dropdown ── */
@@ -288,19 +294,19 @@
   align-items: center !important;
   justify-content: center !important;
   gap: 8px !important;
-  min-height: 0 !important;
+  min-height: 40px !important;
   width: auto !important;
-  padding: 8px 20px !important;
-  border: 1.5px solid #3A89FF !important;
+  padding: 10px 16px !important;
+  border: 1px solid #D9DEE7 !important;
   border-radius: 5px !important;
   background: #ffffff !important;
   color: #3A89FF !important;
   box-shadow: none !important;
   text-shadow: none !important;
   font-family: 'Inter', sans-serif !important;
-  font-size: 15px !important;
-  font-weight: 700 !important;
-  line-height: 1.5 !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
   letter-spacing: 0 !important;
   text-align: center !important;
   text-decoration: none !important;
@@ -318,7 +324,32 @@
 .rn-mobile-nav .rn-info-menu--mobile > .rn-info-menu__toggle.rn-btn:focus,
 .rn-mobile-nav .rn-info-menu--mobile.is-open > .rn-info-menu__toggle.rn-btn {
   border-color: #3A89FF !important;
-  background: #3A89FF !important;
+  background: #ffffff !important;
+  color: #3A89FF !important;
+  box-shadow: none !important;
+}
+
+#rn-header .rn-header__cta > .rn-btn--accent,
+.rn-mobile-nav .rn-btn--accent.rn-mobile-nav__cta {
+  min-height: 40px !important;
+  padding: 10px 16px !important;
+  border: 1px solid #FF8200 !important;
+  border-radius: 5px !important;
+  background: #FF8200 !important;
+  color: #ffffff !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  line-height: 1 !important;
+  box-shadow: none !important;
+}
+
+#rn-header .rn-header__cta > .rn-btn--accent:hover,
+#rn-header .rn-header__cta > .rn-btn--accent:focus,
+.rn-mobile-nav .rn-btn--accent.rn-mobile-nav__cta:hover,
+.rn-mobile-nav .rn-btn--accent.rn-mobile-nav__cta:focus {
+  border-color: #e87300 !important;
+  background: #e87300 !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -557,6 +588,28 @@
   justify-content: center;
 }
 
+.rn-account-link--mobile {
+  width: 100%;
+  height: 48px;
+  gap: 8px;
+  border: 1.5px solid #D9DEE7;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.08);
+}
+
+.rn-account-link--mobile:hover,
+.rn-account-link--mobile:focus {
+  border-color: #3A89FF;
+  background: #ffffff;
+  box-shadow: 0 6px 16px rgba(58, 137, 255, 0.14);
+}
+
+.rn-account-link--mobile svg {
+  width: 22px;
+  height: 22px;
+}
+
 .rn-info-menu--mobile {
   width: 100%;
 }
@@ -575,7 +628,11 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 960px) {
+@media (max-width: 1180px) {
+  .rn-header__inner {
+    width: calc(100% - 48px);
+  }
+
   .rn-header__nav,
   .rn-header__cta,
   .rn-header__divider {
@@ -587,21 +644,17 @@
     display: block;
   }
 
-  .rn-topbar {
-    display: none !important;
-  }
 }
 
-@media (min-width: 961px) {
+@media (min-width: 1181px) {
   .rn-mobile-nav {
     display: none !important;
   }
 }
 
 @media (max-width: 480px) {
-  .rn-topbar__inner,
   .rn-header__inner {
-    padding: 0 16px;
+    width: calc(100% - 32px);
   }
 }
 
