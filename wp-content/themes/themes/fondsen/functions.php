@@ -10,6 +10,7 @@
 if ( ! defined('ABSPATH') ) exit;
 
 require_once get_stylesheet_directory() . '/inc/job-favorites.php';
+require_once get_stylesheet_directory() . '/inc/job-expiry.php';
 
 // =========================================================
 // Pretty filter URLs: /vacatures/{slug}/

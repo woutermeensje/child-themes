@@ -46,6 +46,69 @@ unset( $value );
 
 $keywords = isset( $keywords ) ? $keywords : ( $_GET['search_keywords'] ?? '' );
 $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
+
+if ( ! function_exists( 'sj_get_open_job_filter_counts' ) ) {
+  function sj_get_open_job_filter_counts( $taxonomy ) {
+    static $counts_by_taxonomy = [];
+
+    $taxonomy = sanitize_key( $taxonomy );
+    if ( isset( $counts_by_taxonomy[ $taxonomy ] ) ) {
+      return $counts_by_taxonomy[ $taxonomy ];
+    }
+
+    if ( ! taxonomy_exists( $taxonomy ) ) {
+      $counts_by_taxonomy[ $taxonomy ] = [];
+      return $counts_by_taxonomy[ $taxonomy ];
+    }
+
+    global $wpdb;
+
+    $sql = $wpdb->prepare(
+      "SELECT tt.term_id, COUNT(DISTINCT p.ID) AS open_jobs
+       FROM {$wpdb->term_relationships} tr
+       INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+       INNER JOIN {$wpdb->posts} p ON p.ID = tr.object_id
+       LEFT JOIN {$wpdb->postmeta} filled ON filled.post_id = p.ID AND filled.meta_key = '_filled' AND filled.meta_value = '1'
+       LEFT JOIN {$wpdb->postmeta} expires ON expires.post_id = p.ID AND expires.meta_key = '_job_expires'
+       WHERE tt.taxonomy = %s
+         AND p.post_type = 'job_listing'
+         AND p.post_status = 'publish'
+         AND filled.meta_id IS NULL
+         AND (expires.meta_id IS NULL OR expires.meta_value = '' OR expires.meta_value >= %s)
+       GROUP BY tt.term_id",
+      $taxonomy,
+      current_time( 'Y-m-d' )
+    );
+
+    $counts = [];
+    foreach ( (array) $wpdb->get_results( $sql ) as $row ) {
+      $counts[ (int) $row->term_id ] = (int) $row->open_jobs;
+    }
+
+    $counts_by_taxonomy[ $taxonomy ] = $counts;
+    return $counts_by_taxonomy[ $taxonomy ];
+  }
+}
+
+if ( ! function_exists( 'sj_render_filter_option_with_count' ) ) {
+  function sj_render_filter_option_with_count( $term, $selected_values, $counts ) {
+    $count           = $counts[ (int) $term->term_id ] ?? 0;
+    $formatted_count = number_format_i18n( $count );
+    ?>
+    <option value="<?php echo esc_attr( $term->slug ); ?>"
+      data-label="<?php echo esc_attr( $term->name ); ?>"
+      data-count="<?php echo esc_attr( $formatted_count ); ?>"
+      <?php selected( in_array( $term->slug, $selected_values, true ) ); ?>>
+      <?php echo esc_html( $term->name . ' (' . $formatted_count . ')' ); ?>
+    </option>
+    <?php
+  }
+}
+
+$job_type_counts         = sj_get_open_job_filter_counts( 'job_listing_type' );
+$job_sector_counts       = sj_get_open_job_filter_counts( 'job_sector' );
+$organisatie_type_counts = sj_get_open_job_filter_counts( 'organisatie_type' );
+$job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
 ?>
 
 <form class="job_filters">
@@ -83,10 +146,7 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
               data-placeholder="Dienstverband"
               multiple>
         <?php foreach ( get_job_listing_types() as $type ) : ?>
-          <option value="<?php echo esc_attr( $type->slug ); ?>"
-            <?php selected( in_array( $type->slug, $selected['job_types'], true ) ); ?>>
-            <?php echo esc_html( $type->name ); ?>
-          </option>
+          <?php sj_render_filter_option_with_count( $type, $selected['job_types'], $job_type_counts ); ?>
         <?php endforeach; ?>
       </select>
     </div>
@@ -98,10 +158,7 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
               data-placeholder="Sector"
               multiple>
         <?php foreach ( get_terms( [ 'taxonomy' => 'job_sector', 'hide_empty' => true ] ) as $term ) : ?>
-          <option value="<?php echo esc_attr( $term->slug ); ?>"
-            <?php selected( in_array( $term->slug, $selected['job_sector'], true ) ); ?>>
-            <?php echo esc_html( $term->name ); ?>
-          </option>
+          <?php sj_render_filter_option_with_count( $term, $selected['job_sector'], $job_sector_counts ); ?>
         <?php endforeach; ?>
       </select>
     </div>
@@ -113,10 +170,7 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
               data-placeholder="Type organisatie"
               multiple>
         <?php foreach ( get_terms( [ 'taxonomy' => 'organisatie_type', 'hide_empty' => false ] ) as $term ) : ?>
-          <option value="<?php echo esc_attr( $term->slug ); ?>"
-            <?php selected( in_array( $term->slug, $selected['organisatie_type'], true ) ); ?>>
-            <?php echo esc_html( $term->name ); ?>
-          </option>
+          <?php sj_render_filter_option_with_count( $term, $selected['organisatie_type'], $organisatie_type_counts ); ?>
         <?php endforeach; ?>
       </select>
     </div>
@@ -128,10 +182,7 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
               data-placeholder="Organisatie"
               multiple>
         <?php foreach ( get_terms( [ 'taxonomy' => 'job_company', 'hide_empty' => true ] ) as $term ) : ?>
-          <option value="<?php echo esc_attr( $term->slug ); ?>"
-            <?php selected( in_array( $term->slug, $selected['job_company'], true ) ); ?>>
-            <?php echo esc_html( $term->name ); ?>
-          </option>
+          <?php sj_render_filter_option_with_count( $term, $selected['job_company'], $job_company_counts ); ?>
         <?php endforeach; ?>
       </select>
     </div>
@@ -200,7 +251,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chip.setAttribute("role", "button");
         chip.setAttribute("title", "Verwijder filter");
         chip.innerHTML = `<span class="active-filter-text"></span><span class="active-filter-x" aria-hidden="true">×</span>`;
-        chip.querySelector(".active-filter-text").textContent = opt.textContent;
+        chip.querySelector(".active-filter-text").textContent = opt.dataset.label || opt.textContent;
         chip.addEventListener("click", (e) => {
           e.preventDefault();
           opt.selected = false;
@@ -272,8 +323,12 @@ document.addEventListener("DOMContentLoaded", () => {
       row.dataset.value = opt.value;
       row.setAttribute("role", "option");
       row.setAttribute("aria-selected", opt.selected ? "true" : "false");
-      row.innerHTML = `<span class="sj-option-text"></span>`;
-      row.querySelector(".sj-option-text").textContent = opt.textContent;
+      const optionLabel = opt.dataset.label || opt.textContent.trim();
+      const optionCount = opt.dataset.count;
+      row.innerHTML = `<span class="sj-option-text"></span>${optionCount !== undefined ? '<span class="sj-option-count"></span>' : ''}`;
+      row.querySelector(".sj-option-text").textContent = optionLabel;
+      const countEl = row.querySelector(".sj-option-count");
+      if (countEl) countEl.textContent = optionCount;
 
       const syncSelected = () => {
         row.classList.toggle("is-selected", opt.selected);
@@ -311,7 +366,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!searchInput) return;
       const term = searchInput.value.trim().toLowerCase();
       optionRows.forEach(({ row, opt }) => {
-        row.style.display = opt.textContent.toLowerCase().includes(term) ? "" : "none";
+        const optionLabel = opt.dataset.label || opt.textContent;
+        row.style.display = optionLabel.toLowerCase().includes(term) ? "" : "none";
       });
     };
 
@@ -725,7 +781,9 @@ select.sj-hidden-select {
 .sj-option {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
+  min-width: 240px;
   padding: 10px 12px;
   border-radius: 8px;
   cursor: pointer;
@@ -741,9 +799,24 @@ select.sj-hidden-select {
 }
 
 .sj-option-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-family: 'Poppins', sans-serif;
   font-weight: 600;
   color: var(--color-text);
+}
+
+.sj-option-count {
+  flex: 0 0 auto;
+  margin-left: 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.sj-option.is-selected .sj-option-count {
+  color: var(--color-primary);
 }
 
 /* =========================

@@ -17,6 +17,7 @@ require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
 require_once get_stylesheet_directory() . '/inc/job-listing-meta.php';
 require_once get_stylesheet_directory() . '/inc/job-favorites.php';
+require_once get_stylesheet_directory() . '/inc/job-expiry.php';
 
 /**
  * Centrale afzender voor uitgaande mails vanuit het thema.
