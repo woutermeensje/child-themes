@@ -105,6 +105,28 @@ if ( ! function_exists( 'sj_render_filter_option_with_count' ) ) {
   }
 }
 
+if ( ! function_exists( 'sj_sort_terms_by_open_job_count' ) ) {
+  function sj_sort_terms_by_open_job_count( $terms, $counts ) {
+    if ( empty( $terms ) || is_wp_error( $terms ) ) {
+      return [];
+    }
+
+    $terms = array_values( (array) $terms );
+    usort( $terms, function ( $a, $b ) use ( $counts ) {
+      $count_a = $counts[ (int) $a->term_id ] ?? 0;
+      $count_b = $counts[ (int) $b->term_id ] ?? 0;
+
+      if ( $count_a === $count_b ) {
+        return strcasecmp( $a->name, $b->name );
+      }
+
+      return $count_b <=> $count_a;
+    } );
+
+    return $terms;
+  }
+}
+
 $job_type_counts         = sj_get_open_job_filter_counts( 'job_listing_type' );
 $job_sector_counts       = sj_get_open_job_filter_counts( 'job_sector' );
 $organisatie_type_counts = sj_get_open_job_filter_counts( 'organisatie_type' );
@@ -145,7 +167,7 @@ $job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
               class="js-custom-select job_types"
               data-placeholder="Dienstverband"
               multiple>
-        <?php foreach ( get_job_listing_types() as $type ) : ?>
+        <?php foreach ( sj_sort_terms_by_open_job_count( get_job_listing_types(), $job_type_counts ) as $type ) : ?>
           <?php sj_render_filter_option_with_count( $type, $selected['job_types'], $job_type_counts ); ?>
         <?php endforeach; ?>
       </select>
@@ -157,7 +179,7 @@ $job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
               class="js-custom-select job_sector"
               data-placeholder="Sector"
               multiple>
-        <?php foreach ( get_terms( [ 'taxonomy' => 'job_sector', 'hide_empty' => true ] ) as $term ) : ?>
+        <?php foreach ( sj_sort_terms_by_open_job_count( get_terms( [ 'taxonomy' => 'job_sector', 'hide_empty' => true ] ), $job_sector_counts ) as $term ) : ?>
           <?php sj_render_filter_option_with_count( $term, $selected['job_sector'], $job_sector_counts ); ?>
         <?php endforeach; ?>
       </select>
@@ -169,7 +191,7 @@ $job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
               class="js-custom-select job_organisatie_type"
               data-placeholder="Type organisatie"
               multiple>
-        <?php foreach ( get_terms( [ 'taxonomy' => 'organisatie_type', 'hide_empty' => false ] ) as $term ) : ?>
+        <?php foreach ( sj_sort_terms_by_open_job_count( get_terms( [ 'taxonomy' => 'organisatie_type', 'hide_empty' => false ] ), $organisatie_type_counts ) as $term ) : ?>
           <?php sj_render_filter_option_with_count( $term, $selected['organisatie_type'], $organisatie_type_counts ); ?>
         <?php endforeach; ?>
       </select>
@@ -181,7 +203,7 @@ $job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
               class="js-custom-select job_company"
               data-placeholder="Organisatie"
               multiple>
-        <?php foreach ( get_terms( [ 'taxonomy' => 'job_company', 'hide_empty' => true ] ) as $term ) : ?>
+        <?php foreach ( sj_sort_terms_by_open_job_count( get_terms( [ 'taxonomy' => 'job_company', 'hide_empty' => true ] ), $job_company_counts ) as $term ) : ?>
           <?php sj_render_filter_option_with_count( $term, $selected['job_company'], $job_company_counts ); ?>
         <?php endforeach; ?>
       </select>

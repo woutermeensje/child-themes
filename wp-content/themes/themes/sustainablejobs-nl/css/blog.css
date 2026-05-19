@@ -508,6 +508,93 @@ body:not([class*=elementor-page-]) .sj-single-page {
 }
 
 /* --------------------------------------------------------------------------
+   Zoekformulier
+   -------------------------------------------------------------------------- */
+
+.sj-blog__search {
+    margin-bottom: 28px;
+}
+
+.sj-blog__search-wrap {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border: 1.5px solid #DEDEDE;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.sj-blog__search-wrap:focus-within {
+    border-color: #168AAD;
+    box-shadow: 0 0 0 3px rgba(22, 138, 173, 0.09);
+}
+
+.sj-blog__search-icon {
+    flex-shrink: 0;
+    width: 18px;
+    height: 18px;
+    color: #8a9a9a;
+    margin: 0 12px 0 14px;
+}
+
+.sj-blog__search-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 13px 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    color: #333;
+    background: transparent;
+    min-width: 0;
+    -webkit-appearance: none;
+}
+
+.sj-blog__search-input::placeholder {
+    color: #aab4b4;
+}
+
+.sj-blog__search-clear {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    color: #8a9a9a;
+    text-decoration: none;
+    border-radius: 50%;
+    margin-right: 4px;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.sj-blog__search-clear:hover {
+    background: #f0f0f0;
+    color: #333;
+}
+
+.sj-blog__search-btn {
+    flex-shrink: 0;
+    border: none;
+    border-left: 1.5px solid #DEDEDE;
+    background: #168AAD;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 0 20px;
+    height: 48px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    white-space: nowrap;
+}
+
+.sj-blog__search-btn:hover {
+    background: #2B6E8F;
+}
+
+/* --------------------------------------------------------------------------
    Geen berichten
    -------------------------------------------------------------------------- */
 

@@ -582,6 +582,19 @@ add_filter('gettext', function ($translated, $text, $domain) {
     return $translated;
 }, 10, 3);
 
+/**
+ * Blog zoekfunctie: filter de main query op de nieuwspagina wanneer ?sj_s= is meegegeven.
+ */
+add_action( 'pre_get_posts', function ( WP_Query $q ) {
+    if ( ! $q->is_main_query() || ! is_home() ) {
+        return;
+    }
+    $term = isset( $_GET['sj_s'] ) ? sanitize_text_field( wp_unslash( $_GET['sj_s'] ) ) : '';
+    if ( $term !== '' ) {
+        $q->set( 's', $term );
+    }
+} );
+
 /** Import functions */
 
 require_once get_stylesheet_directory() . '/inc/bowers-import.php';

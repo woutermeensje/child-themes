@@ -12,22 +12,33 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $img_icon = '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#168AAD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 9 4-4 4 4 4-4 4 4"/><circle cx="8.5" cy="14.5" r="1.5"/><path d="m21 15-5-5-5 5"/></svg>';
 
+$zoekterm     = isset( $_GET['sj_s'] ) ? sanitize_text_field( wp_unslash( $_GET['sj_s'] ) ) : '';
+$blog_page_id = get_option( 'page_for_posts' );
+$blog_url     = $blog_page_id ? get_permalink( $blog_page_id ) : home_url( '/' );
+
 $posts_all = [];
 while ( have_posts() ) {
     the_post();
     $posts_all[] = get_post();
 }
+
+// Bij actieve zoekopdracht: geen hero-blokken, alle resultaten als lijstrijen.
+if ( $zoekterm !== '' ) {
+    $top_posts = [];
+    $list_rows = $posts_all;
+} else {
+    $top_posts = array_slice( $posts_all, 0, 3 );
+    $list_rows = array_slice( $posts_all, 3 );
+}
 ?>
 
 <main id="content" class="site-main sj-blog-page">
 
-    <?php if ( empty( $posts_all ) ) : ?>
+    <?php if ( empty( $posts_all ) && $zoekterm === '' ) : ?>
         <p class="sj-blog__empty">Er zijn nog geen artikelen gepubliceerd.</p>
     <?php else : ?>
 
         <?php
-        $top_posts = array_slice( $posts_all, 0, 3 );
-        $list_rows = array_slice( $posts_all, 3 );
 
         // --------------------------------------------------------------------
         // 1. TWEE HERO-BLOKKEN — volledige breedte, sluiten aan op header
@@ -120,8 +131,37 @@ while ( have_posts() ) {
 
             <div class="sj-blog__main">
 
-                <?php if ( ! empty( $list_rows ) ) : ?>
-                <h2 class="sj-blog__list-title">Alle artikelen</h2>
+                <form class="sj-blog__search" role="search" method="get" action="<?php echo esc_url( $blog_url ); ?>">
+                    <div class="sj-blog__search-wrap">
+                        <svg class="sj-blog__search-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                        <input
+                            class="sj-blog__search-input"
+                            type="search"
+                            name="sj_s"
+                            placeholder="Zoek in artikelen…"
+                            value="<?php echo esc_attr( $zoekterm ); ?>"
+                            autocomplete="off"
+                            aria-label="Zoek in artikelen"
+                        >
+                        <?php if ( $zoekterm ) : ?>
+                        <a href="<?php echo esc_url( $blog_url ); ?>" class="sj-blog__search-clear" aria-label="Zoekopdracht wissen" title="Wis zoekopdracht">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                        </a>
+                        <?php endif; ?>
+                        <button type="submit" class="sj-blog__search-btn">Zoeken</button>
+                    </div>
+                </form>
+
+                <?php if ( $zoekterm !== '' && empty( $list_rows ) ) : ?>
+                    <p class="sj-blog__empty">Geen artikelen gevonden voor <strong><?php echo esc_html( $zoekterm ); ?></strong>.</p>
+                <?php elseif ( ! empty( $list_rows ) ) : ?>
+                <?php
+                    $n = count( $list_rows );
+                    $list_title = $zoekterm !== ''
+                        ? $n . ' ' . ( $n === 1 ? 'resultaat' : 'resultaten' ) . " voor '" . esc_html( $zoekterm ) . "'"
+                        : 'Alle artikelen';
+                ?>
+                <h2 class="sj-blog__list-title"><?php echo $list_title; ?></h2>
                 <div class="sj-blog__list">
                     <?php foreach ( $list_rows as $post ) :
                         $link    = get_permalink( $post );
