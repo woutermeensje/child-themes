@@ -232,6 +232,10 @@
   border-color: #e07300;
 }
 
+#rn-header .rn-header__cta .rn-btn {
+  font-weight: 600 !important;
+}
+
 /* ── Info menu dropdown ── */
 .rn-info-menu {
   position: relative;
