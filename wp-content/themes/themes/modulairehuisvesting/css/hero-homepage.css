@@ -117,7 +117,7 @@
   margin-right: -96px;
   width: calc(100% + clamp(20px, 4vw, 72px) + 96px);
   padding: 16px calc(clamp(20px, 4vw, 72px) + 96px) 20px clamp(20px, 4vw, 72px);
-  background: #F1F8EE;
+  background: #ffffff;
   border-top: 1px solid #BFE396;
   border-bottom: 1px solid #BFE396;
   box-shadow: 0 10px 24px rgba(37, 71, 107, 0.08);
