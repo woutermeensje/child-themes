@@ -438,6 +438,157 @@ function inhuren_info_form_handler() {
 
 
 /**
+ * ✅ SHORTCODE: [inhuren_opdrachten] — kaartenoverzicht van subpagina's
+ * Gebruik: [inhuren_opdrachten parent="opdrachten" columns="4" limit="-1"]
+ */
+add_shortcode('inhuren_opdrachten', function ($atts) {
+    $atts = shortcode_atts([
+        'parent'  => 'opdrachten',
+        'columns' => 4,
+        'limit'   => -1,
+    ], $atts, 'inhuren_opdrachten');
+
+    $parent_page = get_page_by_path(sanitize_text_field($atts['parent']));
+    if (!$parent_page) return '<p>Pagina &ldquo;' . esc_html($atts['parent']) . '&rdquo; niet gevonden.</p>';
+
+    $pages = get_posts([
+        'post_type'      => 'page',
+        'post_parent'    => $parent_page->ID,
+        'posts_per_page' => intval($atts['limit']),
+        'post_status'    => 'publish',
+        'orderby'        => 'menu_order title',
+        'order'          => 'ASC',
+    ]);
+
+    if (empty($pages)) return '';
+
+    $columns = max(1, min(6, intval($atts['columns'])));
+
+    ob_start();
+    ?>
+    <div class="iop-grid iop-cols-<?php echo esc_attr($columns); ?>">
+        <?php foreach ($pages as $page) :
+            $img_url = get_the_post_thumbnail_url($page->ID, 'large');
+            $link    = get_permalink($page->ID);
+            $title   = get_the_title($page->ID);
+            $excerpt = get_the_excerpt($page->ID);
+            $style   = $img_url
+                ? 'style="background-image: url(\'' . esc_url($img_url) . '\')"'
+                : '';
+        ?>
+        <a href="<?php echo esc_url($link); ?>" class="iop-card<?php echo $img_url ? '' : ' iop-card--no-image'; ?>" <?php echo $style; ?>>
+            <div class="iop-card__overlay"></div>
+            <div class="iop-card__body">
+                <h3 class="iop-card__title"><?php echo esc_html($title); ?></h3>
+                <?php if ($excerpt) : ?>
+                    <p class="iop-card__excerpt"><?php echo esc_html($excerpt); ?></p>
+                <?php endif; ?>
+            </div>
+        </a>
+        <?php endforeach; ?>
+    </div>
+
+    <style>
+    .iop-grid {
+        display: grid;
+        gap: 16px;
+        width: 100%;
+    }
+    .iop-cols-1 { grid-template-columns: repeat(1, 1fr); }
+    .iop-cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .iop-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .iop-cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .iop-cols-5 { grid-template-columns: repeat(5, 1fr); }
+    .iop-cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+    .iop-card {
+        position: relative;
+        display: block;
+        aspect-ratio: 4 / 3;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: #0458ab;
+        background-size: cover;
+        background-position: center;
+        text-decoration: none !important;
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .iop-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .iop-card:hover .iop-card__overlay {
+        opacity: 0.85;
+    }
+
+    .iop-card__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0.02) 0%,
+            rgba(0, 0, 0, 0.18) 40%,
+            rgba(0, 0, 0, 0.72) 100%
+        );
+        opacity: 0.75;
+        transition: opacity .25s ease;
+    }
+
+    .iop-card--no-image .iop-card__overlay {
+        background: linear-gradient(135deg, rgba(4, 88, 171, 0.85), rgba(3, 74, 146, 0.95));
+    }
+
+    .iop-card__body {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px 20px 22px;
+        z-index: 1;
+    }
+
+    .iop-card__title {
+        margin: 0 0 4px !important;
+        font-family: 'Roboto', sans-serif !important;
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        line-height: 1.25 !important;
+        color: #ffffff !important;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    .iop-card__excerpt {
+        margin: 0 !important;
+        font-family: 'Roboto', sans-serif !important;
+        font-size: 13px !important;
+        font-weight: 400 !important;
+        line-height: 1.4 !important;
+        color: rgba(255, 255, 255, 0.82) !important;
+        display: -webkit-box !important;
+        -webkit-line-clamp: 2 !important;
+        -webkit-box-orient: vertical !important;
+        overflow: hidden !important;
+    }
+
+    @media (max-width: 960px) {
+        .iop-cols-4,
+        .iop-cols-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 540px) {
+        .iop-cols-4,
+        .iop-cols-3,
+        .iop-cols-2 { grid-template-columns: repeat(1, 1fr); }
+        .iop-card { aspect-ratio: 16 / 9; }
+    }
+    </style>
+    <?php
+    return ob_get_clean();
+});
+
+/**
  * ✅ WPJM HELPER FUNCTIES
  */
 if ( ! function_exists('srmb_get_req_value') ) {
