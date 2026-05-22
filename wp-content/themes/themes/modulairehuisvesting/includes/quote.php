@@ -7,12 +7,7 @@
 defined( 'ABSPATH' ) || exit;
 
 function mh_quote_get_browse_units_url(): string {
-	$archive_url = get_post_type_archive_link( 'mh_unit' );
-	if ( is_string( $archive_url ) && '' !== $archive_url ) {
-		return $archive_url;
-	}
-
-	return home_url( '/units/' );
+	return 'https://modulairehuisvesting.nl/aanbod/';
 }
 
 add_action( 'init', 'mh_register_quote_request_post_type' );

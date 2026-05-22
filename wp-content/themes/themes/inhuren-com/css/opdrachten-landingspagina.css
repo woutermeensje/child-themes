@@ -1,0 +1,50 @@
+.opdrachten-landing {
+    background: var(--color-bg, #FBFAF8);
+}
+
+.opdrachten-landing__hero {
+    width: 100%;
+    height: 400px;
+    background-color: var(--color-primary, #0458AB);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.opdrachten-landing__content-wrap {
+    position: relative;
+    z-index: 1;
+    width: min(900px, calc(100% - 40px));
+    margin: -100px auto 80px;
+}
+
+.opdrachten-landing__content {
+    min-height: 220px;
+    padding: 40px;
+    background: #ffffff;
+}
+
+.opdrachten-landing__content > :first-child {
+    margin-top: 0;
+}
+
+.opdrachten-landing__content > :last-child {
+    margin-bottom: 0;
+}
+
+@media (max-width: 767px) {
+    .opdrachten-landing__hero {
+        height: 320px;
+    }
+
+    .opdrachten-landing__content-wrap {
+        width: min(100% - 24px, 900px);
+        margin-top: -72px;
+        margin-bottom: 48px;
+    }
+
+    .opdrachten-landing__content {
+        min-height: 180px;
+        padding: 24px;
+    }
+}

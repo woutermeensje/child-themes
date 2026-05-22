@@ -33,6 +33,9 @@ add_action('wp_enqueue_scripts', function () {
     if (file_exists(get_stylesheet_directory() . '/css/elementor-forms.css')) {
         wp_enqueue_style('inhuren-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
     }
+    if (is_page_template('opdrachten-landingspagina.php') && file_exists(get_stylesheet_directory() . '/css/opdrachten-landingspagina.css')) {
+        wp_enqueue_style('inhuren-opdrachten-landingspagina', get_stylesheet_directory_uri() . '/css/opdrachten-landingspagina.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/opdrachten-landingspagina.css'));
+    }
 });
 
 if (!class_exists('RN_Nav_Walker')) :

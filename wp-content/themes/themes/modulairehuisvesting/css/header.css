@@ -45,9 +45,8 @@
 
 .mh-topbar__inner,
 .mh-header__inner {
-  max-width: 1200px;
+  width: min(100% - 96px, 1840px);
   margin: 0 auto;
-  padding: 0 24px;
 }
 
 .mh-topbar__inner {
@@ -731,7 +730,12 @@
   }
 
   .mh-header__inner {
+    width: calc(100% - 48px);
     gap: 12px;
+  }
+
+  .mh-topbar__inner {
+    width: calc(100% - 48px);
   }
 
   .mh-header__quote-icon {
@@ -799,7 +803,7 @@
 @media (max-width: 480px) {
   .mh-topbar__inner,
   .mh-header__inner {
-    padding: 0 16px;
+    width: calc(100% - 32px);
   }
 
   .mh-header__mobile-search-form {

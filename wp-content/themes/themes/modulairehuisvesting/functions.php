@@ -360,3 +360,144 @@ add_shortcode('mh_werkwijze', function (): string {
 
     return (string) ob_get_clean();
 });
+
+/**
+ * Gedeelde render-functie voor de units-kaartgrids.
+ */
+function mh_render_units_grid(string $parent_slug, int $columns): string {
+    $parent_page = get_page_by_path($parent_slug);
+    if (!$parent_page) return '<p>Pagina &ldquo;' . esc_html($parent_slug) . '&rdquo; niet gevonden.</p>';
+
+    $pages = get_posts([
+        'post_type'      => 'page',
+        'post_parent'    => $parent_page->ID,
+        'posts_per_page' => -1,
+        'post_status'    => 'publish',
+        'orderby'        => 'menu_order title',
+        'order'          => 'ASC',
+    ]);
+
+    if (empty($pages)) return '';
+
+    ob_start();
+    ?>
+    <div class="muo-grid muo-cols-<?php echo esc_attr($columns); ?>">
+        <?php foreach ($pages as $page) :
+            $img_url = get_the_post_thumbnail_url($page->ID, 'large');
+            $link    = get_permalink($page->ID);
+            $title   = get_the_title($page->ID);
+            $style   = $img_url
+                ? 'style="background-image: url(\'' . esc_url($img_url) . '\')"'
+                : '';
+        ?>
+        <a href="<?php echo esc_url($link); ?>" class="muo-card<?php echo $img_url ? '' : ' muo-card--no-image'; ?>" <?php echo $style; ?>>
+            <div class="muo-card__overlay"></div>
+            <div class="muo-card__body">
+                <h3 class="muo-card__title"><?php echo esc_html($title); ?></h3>
+            </div>
+        </a>
+        <?php endforeach; ?>
+    </div>
+
+    <style>
+    .muo-grid {
+        display: grid;
+        gap: 16px;
+        width: 100%;
+    }
+    .muo-cols-1 { grid-template-columns: repeat(1, 1fr); }
+    .muo-cols-2 { grid-template-columns: repeat(2, 1fr); }
+    .muo-cols-3 { grid-template-columns: repeat(3, 1fr); }
+    .muo-cols-4 { grid-template-columns: repeat(4, 1fr); }
+    .muo-cols-5 { grid-template-columns: repeat(5, 1fr); }
+    .muo-cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+    .muo-card {
+        position: relative;
+        display: block;
+        aspect-ratio: 4 / 3;
+        border-radius: 12px;
+        overflow: hidden;
+        background-color: #25476B;
+        background-size: cover;
+        background-position: center;
+        text-decoration: none !important;
+        transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .muo-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 16px 40px rgba(37, 71, 107, 0.28);
+    }
+
+    .muo-card:hover .muo-card__overlay {
+        opacity: 0.85;
+    }
+
+    .muo-card__overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(37, 71, 107, 0.02) 0%,
+            rgba(37, 71, 107, 0.18) 40%,
+            rgba(37, 71, 107, 0.80) 100%
+        );
+        opacity: 0.75;
+        transition: opacity .25s ease;
+    }
+
+    .muo-card--no-image .muo-card__overlay {
+        background: linear-gradient(135deg, rgba(57, 116, 155, 0.90), rgba(37, 71, 107, 0.98));
+    }
+
+    .muo-card__body {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 20px 20px 22px;
+        z-index: 1;
+    }
+
+    .muo-card__title {
+        margin: 0 !important;
+        font-family: 'Poppins', sans-serif !important;
+        font-size: 18px !important;
+        font-weight: 700 !important;
+        line-height: 1.25 !important;
+        color: #ffffff !important;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+    }
+
+    @media (max-width: 960px) {
+        .muo-cols-4,
+        .muo-cols-3 { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 540px) {
+        .muo-cols-4,
+        .muo-cols-3,
+        .muo-cols-2 { grid-template-columns: repeat(1, 1fr); }
+        .muo-card { aspect-ratio: 16 / 9; }
+    }
+    </style>
+    <?php
+    return (string) ob_get_clean();
+}
+
+/**
+ * ✅ SHORTCODE: [modulaire_units_kopen_overzicht]
+ */
+add_shortcode('modulaire_units_kopen_overzicht', function ($atts) {
+    $atts = shortcode_atts(['columns' => 3], $atts, 'modulaire_units_kopen_overzicht');
+    return mh_render_units_grid('kopen', max(1, min(6, intval($atts['columns']))));
+});
+
+/**
+ * ✅ SHORTCODE: [modulaire_units_huren_overzicht]
+ */
+add_shortcode('modulaire_units_huren_overzicht', function ($atts) {
+    $atts = shortcode_atts(['columns' => 3], $atts, 'modulaire_units_huren_overzicht');
+    return mh_render_units_grid('huren', max(1, min(6, intval($atts['columns']))));
+});
