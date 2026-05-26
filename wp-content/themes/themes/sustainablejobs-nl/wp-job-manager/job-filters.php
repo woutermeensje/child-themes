@@ -904,7 +904,7 @@ span.active-filter {
   align-items: center;
   gap: 6px;
   background: #ffffff;
-  border: 1px solid var(--color-chip-company-border);
+  border: 1px solid var(--color-chip-company-text);
   border-radius: 999px;
   box-shadow: 0 10px 24px -18px rgba(37, 79, 110, 0.38);
   padding: 8px 12px;
@@ -917,13 +917,15 @@ span.active-filter {
 
 .active-filter:hover {
   background: var(--color-secondary-soft);
-  border-color: var(--color-secondary-hover);
+  border-color: var(--color-chip-company-text);
+  color: var(--color-chip-company-text);
   transform: translateY(-1px);
   box-shadow: 0 14px 26px -18px rgba(37, 79, 110, 0.42);
 }
 
 .active-filter-text {
   color: inherit;
+  font-weight: 700;
 }
 
 .active-filter-x {
