@@ -164,7 +164,7 @@ function sj_job_alerts_shortcode(): string {
                             <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#168AAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <input type="text" name="voornaam" id="sj_ja_voornaam" class="sj-ja__input"
                                    value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>"
-                                   placeholder="Voornaam" required>
+                                   required>
                         </div>
                     </div>
 
@@ -174,7 +174,7 @@ function sj_job_alerts_shortcode(): string {
                             <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#168AAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                             <input type="email" name="email" id="sj_ja_email" class="sj-ja__input"
                                    value="<?php echo esc_attr($_POST['email'] ?? ''); ?>"
-                                   placeholder="E-mailadres" required>
+                                   required>
                         </div>
                     </div>
 

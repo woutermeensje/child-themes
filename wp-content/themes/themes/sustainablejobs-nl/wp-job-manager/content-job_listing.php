@@ -12,6 +12,7 @@ if (!defined('ABSPATH')) {
 global $post;
 
 $post_id = $post ? (int) $post->ID : get_the_ID();
+$has_company_logo = has_post_thumbnail($post_id);
 
 $job_company_terms = get_the_terms($post_id, 'job_company');
 $job_company_term  = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0] : null;
@@ -68,18 +69,6 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
         <div class="job-card__desktop">
             <div class="job-card__media">
                 <div class="background-wrapper">
-                    <div class="company-logo-absolute hide_on_single">
-                        <div class="company-logo-wrapper">
-                            <?php if (has_post_thumbnail($post_id)) : ?>
-                                <?php echo get_the_post_thumbnail($post_id, 'thumbnail'); ?>
-                            <?php else : ?>
-                                <div class="company-logo-placeholder">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="32" height="32" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-                                </div>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-
                     <div
                         class="background-inner"
                         style="
@@ -95,6 +84,12 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
                     ></div>
 
                     <div class="block-bg-overlay" style="opacity: 0.5; height: 100%;"></div>
+
+                    <?php if ($has_company_logo) : ?>
+                    <div class="job-card__desktop-logo">
+                        <?php echo get_the_post_thumbnail($post_id, 'thumbnail'); ?>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -104,11 +99,11 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
                 </div>
                 <div class="job_listing_content">
                     <a href="<?php echo esc_url(get_permalink($post_id)); ?>" class="title-link">
-                        <h2><?php wpjm_the_job_title(); ?></h2>
+                        <h2 class="job-card__title"><?php wpjm_the_job_title(); ?></h2>
                     </a>
 
                     <div class="job_text">
-                        <p><?php echo esc_html(wp_trim_words(get_the_excerpt(), 15, '...')); ?></p>
+                        <p><?php echo esc_html(wp_trim_words(get_the_excerpt(), 8, '.....')); ?></p>
                     </div>
 
                     <ul class="job-card-meta">
@@ -154,75 +149,64 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
                         </li>
                         <?php endif; ?>
 
-                        <li class="job-card-meta__item job-card-meta__item--date">
-                            <span class="job-card-meta__icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            </span>
-                            <p class="job-card-meta__text"><?php the_job_publish_date(); ?></p>
-                        </li>
                     </ul>
 
-                    <div class="jobs_buttons">
-                        <a href="<?php the_job_permalink(); ?>">Vacature bekijken</a>
-                        <a href="<?php echo esc_url(get_permalink($post_id) . '#sj-vraag'); ?>" class="jobs_buttons__contact" onclick="event.stopPropagation();">Contact opnemen</a>
+                    <div class="jobs_buttons_wrap">
+                        <div class="jobs_buttons">
+                            <a href="<?php the_job_permalink(); ?>">Vacature bekijken</a>
+                            <a href="<?php echo esc_url(get_permalink($post_id) . '#sj-vraag'); ?>" class="jobs_buttons__contact" onclick="event.stopPropagation();">Contact opnemen</a>
+                        </div>
                     </div>
+                    </div>
+                    <span class="job-card__date"><?php echo esc_html(get_the_date('j F Y', $post_id)); ?></span>
                 </div>
             </div>
-        </div>
 
         <div class="job-card__mobile">
             <div class="job-mobile__link">
                 <div class="job-mobile__top">
-                    <div class="job-mobile__logo">
-                        <?php echo get_the_post_thumbnail($post_id, 'thumbnail'); ?>
-                    </div>
-
-                    <div class="job-mobile__toptext">
-                        <?php if ($job_company_name && $job_company_url) : ?>
-                            <a href="<?php echo esc_url($job_company_url); ?>" class="job-mobile__company job-card-meta__company-link" onclick="event.stopPropagation();"><?php echo esc_html($job_company_name); ?></a>
-                        <?php elseif ($job_company_name) : ?>
-                            <div class="job-mobile__company"><?php echo esc_html($job_company_name); ?></div>
-                        <?php endif; ?>
-                        <a class="job-mobile__title-link" href="<?php the_job_permalink(); ?>">
-                            <h2 class="job-mobile__title"><?php wpjm_the_job_title(); ?></h2>
-                        </a>
-                    </div>
-
+                    <a class="job-mobile__title-link" href="<?php the_job_permalink(); ?>">
+                        <h2 class="job-mobile__title"><?php wpjm_the_job_title(); ?></h2>
+                    </a>
                     <div class="job-mobile__favorite">
                         <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'card']); ?>
                     </div>
                 </div>
 
-                <div class="job-mobile__excerpt">
-                    <?php echo esc_html(wp_trim_words(get_the_excerpt(), 8, '...')); ?>
+                <div class="job-mobile__body<?php echo $has_company_logo ? '' : ' job-mobile__body--no-logo'; ?>">
+                    <?php if ($has_company_logo) : ?>
+                    <div class="job-mobile__logo">
+                        <?php echo get_the_post_thumbnail($post_id, 'thumbnail'); ?>
+                    </div>
+                    <?php endif; ?>
+
+                    <div class="job-mobile__info">
+                        <?php if ($job_company_name && $job_company_url) : ?>
+                            <a href="<?php echo esc_url($job_company_url); ?>" class="job-mobile__info-org job-card-meta__company-link" onclick="event.stopPropagation();"><?php echo esc_html($job_company_name); ?></a>
+                        <?php elseif ($job_company_name) : ?>
+                            <span class="job-mobile__info-org"><?php echo esc_html($job_company_name); ?></span>
+                        <?php endif; ?>
+
+                        <?php if ($job_location) : ?>
+                            <span class="job-mobile__info-location"><?php echo esc_html($job_location); ?></span>
+                        <?php endif; ?>
+
+                        <?php if ((!empty($org_types) && !is_wp_error($org_types)) || (!empty($job_types) && !is_wp_error($job_types))) : ?>
+                        <div class="job-mobile__chips">
+                            <?php if (!empty($org_types) && !is_wp_error($org_types)) : ?>
+                                <?php foreach ($org_types as $ot) : ?>
+                                    <a href="<?php echo esc_url(home_url('/vacatures/' . $ot->slug . '/')); ?>" class="job-mobile__chip" onclick="event.stopPropagation();"><?php echo esc_html($ot->name); ?></a>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                            <?php if (!empty($job_types) && !is_wp_error($job_types)) : ?>
+                                <?php foreach ($job_types as $type) : ?>
+                                    <a href="<?php echo esc_url(home_url('/vacatures/' . $type->slug . '/')); ?>" class="job-mobile__chip" onclick="event.stopPropagation();"><?php echo esc_html($type->name); ?></a>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
-
-                <ul class="job-mobile__meta">
-                    <?php if ($job_location) : ?>
-                    <li class="job-mobile__meta-item">
-                        <span class="job-mobile__icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-                        </span>
-                        <span class="job-mobile__text"><?php echo esc_html($job_location); ?></span>
-                    </li>
-                    <?php endif; ?>
-
-                    <?php if (!empty($type_names)) : ?>
-                    <li class="job-mobile__meta-item">
-                        <span class="job-mobile__icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-                        </span>
-                        <span class="job-mobile__text"><?php echo esc_html(implode(', ', $type_names)); ?></span>
-                    </li>
-                    <?php endif; ?>
-
-                    <li class="job-mobile__meta-item">
-                        <span class="job-mobile__icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                        </span>
-                        <span class="job-mobile__text"><?php the_job_publish_date(); ?></span>
-                    </li>
-                </ul>
 
                 <div class="job-mobile__cta">Vacature bekijken</div>
             </div>
@@ -272,6 +256,7 @@ a.title-link {
 .job-card,
 .job-card * {
     max-width: 100%;
+    box-sizing: border-box;
 }
 
 .job-card__desktop,
@@ -282,6 +267,7 @@ a.title-link {
 .job-card__desktop {
     display: flex;
     flex-wrap: nowrap;
+    position: relative;
 }
 
 .job-card__media {
@@ -298,6 +284,7 @@ a.title-link {
     align-items: center;
     min-width: 0;
     padding: 24px 0;
+    position: relative;
 }
 
 ul.job_listings li.job_listing .company-logo-wrapper,
@@ -348,17 +335,20 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
     min-width: 0;
 }
 
-.job_listing .job_listing_content h2 {
-    margin: 0 0 5px 0;
-    font-family: "Balgin-Bold", Sans-serif;
-    font-size: 20px;
-    color: var(--color-text);
+h2.job-card__title {
+    margin: 0 !important;
+    padding: 0 !important;
+    font-family: 'Inter', sans-serif !important;
+    font-weight: 700 !important;
+    font-size: 22px !important;
+    color: var(--color-text) !important;
     overflow-wrap: anywhere;
     word-break: break-word;
+    line-height: 1.25 !important;
 }
 
 .job_listing .job_listing_content .job_text {
-    margin: 20px 0;
+    margin: 10px 0 20px;
 }
 
 .job_listing .job_listing_content .job_text p {
@@ -371,11 +361,51 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
     font-weight: 300;
 }
 
-.jobs_buttons {
+.jobs_buttons_wrap {
     margin-top: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.job-card__date {
+    position: absolute;
+    bottom: 24px;
+    right: 40px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 300;
+    color: #333;
+    white-space: nowrap;
+}
+
+.jobs_buttons {
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+}
+
+.job-card__desktop-logo {
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 82px;
+    height: 82px;
+    border-radius: 5px;
+    border: 1px solid #dedede;
+    background: #fff;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    z-index: 10;
+}
+
+.job-card__desktop-logo img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+    border-radius: 0;
 }
 
 .jobs_buttons a {
@@ -526,6 +556,7 @@ a.job-card-meta__filter-link:hover {
     gap: 2px;
 }
 
+/* ── Mobiele kaart — globale stijlen (altijd geladen) ──────── */
 .job-card__mobile {
     display: none;
 }
@@ -536,110 +567,183 @@ a.job-card-meta__filter-link:hover {
     color: inherit;
 }
 
+ul.job_listings li.job_listing .job-card__mobile a {
+    background: transparent !important;
+    border: 0 !important;
+    display: inline-flex;
+    float: none !important;
+    line-height: inherit;
+    margin: 0;
+    overflow: visible;
+    padding: 0 !important;
+    position: static;
+    text-decoration: none !important;
+    width: auto !important;
+}
+
+ul.job_listings li.job_listing .job-card__mobile a:hover,
+ul.job_listings li.job_listing .job-card__mobile a:focus {
+    background: transparent !important;
+}
+
 .job-mobile__top {
     display: flex;
-    gap: 14px;
-    align-items: center;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
     min-width: 0;
+    margin-top: 4px;
 }
 
-.job-mobile__logo {
-    flex: 0 0 auto;
-    width: 56px;
-    height: 56px;
-    border-radius: 999px;
-    background: #fff;
-    border: 1px solid var(--color-border-light);
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-}
-
-.job-mobile__logo img {
-    width: 42px;
-    height: 42px;
-    object-fit: contain;
-    border-radius: 999px;
-}
-
-.job-mobile__toptext {
+.job-mobile__top .job-mobile__title-link {
+    display: block !important;
+    flex: 1 1 auto;
     min-width: 0;
+    width: auto !important;
 }
 
-.job-mobile__title-link {
+.job-mobile__top .job-mobile__favorite {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.job-card__mobile .job-mobile__title,
+.job-card__mobile .job-mobile__title-link .job-mobile__title {
+    margin: 0 !important;
+    padding: 0 !important;
+    text-indent: 0 !important;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.3;
+    color: var(--color-text);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.job-card__mobile .job-mobile__title-link {
+    display: block;
+    margin: 0 !important;
+    padding: 0 !important;
     color: inherit;
     text-decoration: none !important;
 }
 
-.job-mobile__company {
-    font-family: Poppins, system-ui, sans-serif;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--color-primary);
-    line-height: 1.2;
-}
-
-.job-mobile__title {
-    margin: 4px 0 0 0;
-    font-family: Poppins, system-ui, sans-serif;
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 1.25;
-    color: var(--color-text);
-    overflow-wrap: anywhere;
-    word-break: break-word;
-}
-
-.job-mobile__excerpt {
-    margin-top: 12px;
-    font-family: Poppins, system-ui, sans-serif;
-    font-size: 14px;
-    line-height: 1.6;
-    color: var(--color-text);
-}
-
-.job-mobile__meta {
-    list-style: none;
-    padding: 0;
-    margin: 14px 0 0 0;
+.job-mobile__body {
     display: grid;
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) 88px;
+    gap: 14px;
+    align-items: flex-start;
+    margin-top: 8px;
 }
 
-.job-mobile__meta-item {
-    display: flex;
-    gap: 10px;
-    align-items: center;
+.job-mobile__body--no-logo {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.job-mobile__logo {
+    grid-column: 2;
+    grid-row: 1;
+    width: 88px;
+    height: 88px;
+    border-radius: 5px;
+    background: #fff;
+    border: 1px solid #DEDEDE;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.job-mobile__logo img {
+    width: 74px;
+    height: 74px;
+    object-fit: contain;
+    border-radius: 0;
+}
+
+.job-mobile__info {
+    grid-column: 1;
+    grid-row: 1;
+    flex: 1 1 auto;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
 }
 
-.job-mobile__icon {
-    display: flex;
-    align-items: center;
-    flex: 0 0 auto;
+.job-mobile__info-org {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--color-text);
+    text-decoration: none !important;
+    line-height: 1.3;
+}
+
+a.job-mobile__info-org:hover {
     color: var(--color-primary);
 }
 
-.job-mobile__text {
-    font-family: Poppins, system-ui, sans-serif;
-    font-size: 14px;
-    color: var(--color-text);
+.job-mobile__info-location {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: var(--color-text-muted, #777);
+    line-height: 1.3;
+}
+
+.job-mobile__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-top: 12px;
     min-width: 0;
-    overflow-wrap: anywhere;
-    word-break: break-word;
+}
+
+ul.job_listings li.job_listing .job-card__mobile a.job-mobile__chip,
+.job-mobile__chip {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    min-height: 28px;
+    padding: 5px 12px !important;
+    border-radius: 999px;
+    background: #ffffff !important;
+    border: 1px solid #DEDEDE !important;
+    box-shadow: none !important;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.15;
+    color: var(--color-text) !important;
+    text-decoration: none !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+ul.job_listings li.job_listing .job-card__mobile a.job-mobile__chip:hover,
+ul.job_listings li.job_listing .job-card__mobile a.job-mobile__chip:focus {
+    background: rgba(22, 138, 173, 0.06) !important;
+    border-color: rgba(22, 138, 173, 0.32) !important;
+    color: var(--color-primary) !important;
 }
 
 .job-mobile__cta {
     display: none;
 }
 
+/* ── Mobiele toggle ──────────────────────────────────────── */
 @media (max-width: 960px) {
     ul.job_listings li.job_listing {
-        padding: 12px;
+        padding: 0 !important;
     }
 
     .job-card {
-        padding: 18px;
+        padding: 16px;
         margin-left: 12px;
         margin-right: 12px;
     }
@@ -655,6 +759,71 @@ a.job-card-meta__filter-link:hover {
     .job_listing,
     .job_listing_content {
         padding: 0 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    ul.job_listings {
+        margin: 20px auto !important;
+    }
+
+    .job-card {
+        padding: 14px;
+    }
+
+    .job-mobile__top {
+        gap: 8px;
+    }
+
+    .job-mobile__body {
+        grid-template-columns: minmax(0, 1fr) 72px;
+        gap: 12px;
+        margin-top: 6px;
+    }
+
+    .job-mobile__body--no-logo {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .job-mobile__logo {
+        width: 72px;
+        height: 72px;
+    }
+
+    .job-mobile__logo img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .job-mobile__favorite .sj-favorite-button {
+        width: 36px;
+        height: 36px;
+    }
+
+    .job-card__mobile .job-mobile__title,
+    .job-card__mobile .job-mobile__title-link .job-mobile__title {
+        font-size: 18px;
+        line-height: 1.28;
+    }
+
+    .job-mobile__info-org {
+        font-size: 12px;
+    }
+
+    .job-mobile__info-location {
+        font-size: 11px;
+    }
+
+    .job-mobile__chips {
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    ul.job_listings li.job_listing .job-card__mobile a.job-mobile__chip,
+    .job-mobile__chip {
+        min-height: 26px;
+        padding: 4px 10px !important;
+        font-size: 11px;
     }
 }
 

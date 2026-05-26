@@ -44,6 +44,7 @@ $banner_html = '
         </a>
     </div>
 </div>';
+
 ?>
 </ul>
 
@@ -61,12 +62,20 @@ var sjBannerHtml = <?php echo wp_json_encode($banner_html); ?>;
     function insertMarketingBlocks(list) {
         list.querySelectorAll('.sj-marketing-block').forEach(function (b) { b.remove(); });
         var items = Array.from(list.querySelectorAll('li.job_listing:not(.sj-marketing-block)'));
-        for (var i = 2; i < items.length; i += 10) {
+        if (items.length === 0) return;
+
+        function makeBlock() {
             var block = document.createElement('li');
             block.className = 'sj-marketing-block';
             block.innerHTML = sjBannerHtml;
-            items[i].insertAdjacentElement('afterend', block);
+            return block;
         }
+
+        // Eerste blok na 3 vacatures, daarna om de 7 vacatures
+        for (var i = 2; i < items.length; i += 7) {
+            items[i].insertAdjacentElement('afterend', makeBlock());
+        }
+
         requestAnimationFrame(function () {
             list.querySelectorAll('.sj-marketing-block').forEach(function (block) {
                 var prev = block.previousElementSibling;
@@ -132,7 +141,7 @@ var sjBannerHtml = <?php echo wp_json_encode($banner_html); ?>;
 <style>
 /* ── Marketing block ─────────────────────────────────────── */
 li.sj-marketing-block {
-    margin: 0 30px;
+    margin: 15px 30px;
     border-radius: 6px;
     list-style: none;
     padding: 0;
@@ -241,6 +250,7 @@ li.sj-marketing-block {
 @media (max-width: 960px) {
     li.sj-marketing-block {
         margin: 0 12px;
+        height: auto !important;
     }
 
     .sj-banner__content {
@@ -267,6 +277,7 @@ li.sj-marketing-block {
 @media (max-width: 480px) {
     li.sj-marketing-block {
         margin: 0 12px;
+        height: auto !important;
     }
 
     .sj-banner__content {
@@ -324,5 +335,11 @@ a.load_more_jobs strong {
     max-width: 1140px;
     margin: 32px auto 0;
     padding: 0 30px;
+}
+
+@media (max-width: 960px) {
+    .sj-below-listings {
+        padding: 0 12px;
+    }
 }
 </style>

@@ -753,20 +753,25 @@
     font-size: 15px !important;
     color: var(--color-text, #333333) !important;
     background: #fff !important;
-    border: 1px solid rgba(44, 143, 175, 0.45) !important;
+    border: 1px solid #DEDEDE !important;
     border-radius: 5px !important;
-    padding: 8px 14px 8px 40px !important;
+    padding: 10px 14px 10px 40px !important;
     outline: none !important;
     box-shadow: none !important;
     transition: border-color .2s ease, box-shadow .2s ease;
     width: 100% !important;
     box-sizing: border-box !important;
+    height: auto !important;
 }
 .sj-ja__input:focus {
     border-color: var(--color-primary, #168AAD) !important;
     box-shadow: 0 0 0 3px rgba(22, 138, 173, 0.15) !important;
 }
-.sj-ja__input::placeholder { color: #7c7c7c !important; font-style: italic; }
+.sj-ja__input::placeholder {
+    color: #9ca3af !important;
+    font-style: normal !important;
+    font-weight: 400 !important;
+}
 
 /* ── sj-select component (gedeeld met job-filters) ───────── */
 select.sj-hidden-select {
@@ -920,6 +925,22 @@ select.sj-hidden-select {
 .sj-ja .sj-select,
 .sj-ja .sj-select-btn { width: 100% !important; display: flex !important; }
 .sj-ja .sj-options { width: 100% !important; min-width: 0 !important; right: 0 !important; }
+
+/* Select gelijkstellen aan input-stijl */
+.sj-ja .sj-select-btn {
+    border: 1px solid #DEDEDE !important;
+    border-radius: 5px !important;
+    padding: 10px 14px !important;
+    min-height: 0 !important;
+    font-weight: 400 !important;
+    font-size: 15px !important;
+}
+.sj-ja .sj-placeholder {
+    font-weight: 400 !important;
+    font-size: 15px !important;
+    color: #9ca3af !important;
+    font-style: normal !important;
+}
 
 /* ── Geselecteerde chips ─────────────────────────────────── */
 .sj-ja-active-filters {
@@ -1077,6 +1098,7 @@ select.sj-hidden-select {
 .sj-below-listings .sj-ja__form {
     display: flex;
     align-items: flex-end;
+    flex-wrap: wrap;
     gap: 14px;
 }
 
@@ -1093,7 +1115,10 @@ select.sj-hidden-select {
 }
 
 .sj-below-listings .sj-ja-active-filters {
-    display: none !important;
+    flex-basis: 100%;
+    order: 10;
+    margin-top: 4px;
+    margin-bottom: 0;
 }
 
 .sj-below-listings .sj-ja__footer {

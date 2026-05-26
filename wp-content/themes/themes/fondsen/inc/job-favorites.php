@@ -111,13 +111,42 @@ if (!function_exists('sj_the_job_favorites_nav_link')) {
     }
 }
 
+if (!function_exists('fondsen_is_job_favorites_path')) {
+    function fondsen_is_job_favorites_path(): bool {
+        $request_uri = $_SERVER['REQUEST_URI'] ?? '';
+        if (!$request_uri) {
+            return false;
+        }
+
+        $path = wp_parse_url($request_uri, PHP_URL_PATH);
+        if (!is_string($path)) {
+            return false;
+        }
+
+        $path      = trim(rawurldecode($path), '/');
+        $home_path = trim((string) wp_parse_url(home_url('/'), PHP_URL_PATH), '/');
+
+        if ($home_path && ($path === $home_path || strpos($path, $home_path . '/') === 0)) {
+            $path = trim(substr($path, strlen($home_path)), '/');
+        }
+
+        return $path === 'mijn-vacatures';
+    }
+}
+
+if (!function_exists('fondsen_is_job_favorites_route')) {
+    function fondsen_is_job_favorites_route(): bool {
+        return (int) get_query_var('sj_mijn_vacatures') === 1 || fondsen_is_job_favorites_path();
+    }
+}
+
 add_action('init', function () {
-    add_rewrite_tag('%sj_mijn_vacatures%', '1');
+    add_rewrite_tag('%sj_mijn_vacatures%', '([^&]+)');
     add_rewrite_rule('^mijn-vacatures/?$', 'index.php?sj_mijn_vacatures=1', 'top');
 
-    if (get_option('fondsen_favorites_rewrite_flushed') !== '2026-05-17') {
+    if (get_option('fondsen_favorites_rewrite_flushed') !== '2026-05-26-route-fallback') {
         flush_rewrite_rules(false);
-        update_option('fondsen_favorites_rewrite_flushed', '2026-05-17', false);
+        update_option('fondsen_favorites_rewrite_flushed', '2026-05-26-route-fallback', false);
     }
 }, 20);
 
@@ -126,8 +155,16 @@ add_filter('query_vars', function ($vars) {
     return $vars;
 });
 
+add_filter('request', function ($query_vars) {
+    if (fondsen_is_job_favorites_path()) {
+        return ['sj_mijn_vacatures' => '1'];
+    }
+
+    return $query_vars;
+});
+
 add_filter('template_include', function ($template) {
-    if ((int) get_query_var('sj_mijn_vacatures') !== 1) {
+    if (!fondsen_is_job_favorites_route()) {
         return $template;
     }
 
@@ -135,8 +172,23 @@ add_filter('template_include', function ($template) {
     return file_exists($favorites_template) ? $favorites_template : $template;
 });
 
+add_filter('pre_handle_404', function ($preempt, $wp_query) {
+    if (!fondsen_is_job_favorites_route()) {
+        return $preempt;
+    }
+
+    $wp_query->is_404 = false;
+    status_header(200);
+
+    return true;
+}, 10, 2);
+
+add_filter('redirect_canonical', function ($redirect_url) {
+    return fondsen_is_job_favorites_path() ? false : $redirect_url;
+});
+
 add_filter('document_title_parts', function ($title) {
-    if ((int) get_query_var('sj_mijn_vacatures') === 1) {
+    if (fondsen_is_job_favorites_route()) {
         $title['title'] = 'Mijn vacatures';
     }
 
@@ -144,7 +196,7 @@ add_filter('document_title_parts', function ($title) {
 });
 
 add_filter('body_class', function ($classes) {
-    if ((int) get_query_var('sj_mijn_vacatures') === 1) {
+    if (fondsen_is_job_favorites_route()) {
         $classes[] = 'sj-mijn-vacatures-route';
     }
 

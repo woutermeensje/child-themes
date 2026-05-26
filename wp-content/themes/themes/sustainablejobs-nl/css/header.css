@@ -331,8 +331,8 @@
 
 .rn-header__mobile-logo {
   display: block;
-  width: 42px;
-  height: 42px;
+  width: 53px;
+  height: 53px;
   border-radius: 999px;
   object-fit: cover;
 }
@@ -574,7 +574,8 @@
 
   .rn-header__hamburger {
     display: flex !important;
-    margin-left: 0;
+    margin: 0 !important;
+    align-self: center;
   }
 
   .rn-mobile-nav {
