@@ -525,8 +525,8 @@ select.sj-hidden-select {
   min-height: 44px;
   cursor: pointer;
   user-select: none;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
   font-size: 16px;
   color: #111111 !important;
 }
@@ -543,8 +543,8 @@ select.sj-hidden-select {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
   color: var(--color-text);
   font-size: 15px;
 }

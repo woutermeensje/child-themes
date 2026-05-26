@@ -1,0 +1,184 @@
+/* ================================================================
+   Sectoren Carousel
+   Shortcode: [mh_sectoren_carousel]
+================================================================ */
+
+.mh-sectoren-carousel {
+    position: relative;
+}
+
+.mh-sectoren-carousel__track-wrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+.mh-sectoren-carousel__track-wrapper::before,
+.mh-sectoren-carousel__track-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 32px;
+    z-index: 2;
+    pointer-events: none;
+}
+
+.mh-sectoren-carousel__track-wrapper::before {
+    left: 0;
+    background: linear-gradient(to right, rgba(247, 251, 247, 0.9), transparent);
+}
+
+.mh-sectoren-carousel__track-wrapper::after {
+    right: 0;
+    background: linear-gradient(to left, rgba(247, 251, 247, 0.9), transparent);
+}
+
+.mh-sectoren-carousel__track {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    padding: 10px 4px 14px;
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.mh-sectoren-carousel__track::-webkit-scrollbar {
+    display: none;
+}
+
+.mh-sectoren-carousel__track.is-dragging {
+    cursor: grabbing;
+    scroll-behavior: auto;
+}
+
+.mh-sectoren-carousel__item {
+    /* Breedte wordt dynamisch gezet via JS (4 per rij) */
+    flex: 0 0 220px;
+    min-width: 0;
+    background: var(--color-surface, #ffffff);
+    border: 1px solid #dedede;
+    border-radius: 5px;
+    padding: 24px 16px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    text-align: center;
+    transition: border-color 0.22s ease, transform 0.22s ease;
+    box-shadow: none;
+    text-decoration: none !important;
+}
+
+.mh-sectoren-carousel__item:hover {
+    box-shadow: none;
+    transform: translateY(-3px);
+    border-color: var(--color-ocean, #4188aa);
+}
+
+/* Icon circle */
+.mh-sectoren-carousel__icon-wrap {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.22s ease;
+}
+
+.mh-sectoren-carousel__item:hover .mh-sectoren-carousel__icon-wrap {
+    background: transparent;
+}
+
+.mh-sectoren-carousel__icon-wrap svg {
+    width: 52px;
+    height: 52px;
+    color: var(--color-navy-dark, #25476b);
+    transition: color 0.22s ease;
+}
+
+.mh-sectoren-carousel__item:hover .mh-sectoren-carousel__icon-wrap svg {
+    color: #ffffff;
+}
+
+/* Label */
+.mh-sectoren-carousel__label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-navy-dark, #25476b);
+    line-height: 1.35;
+}
+
+/* Navigation buttons – !important om Elementor-stijlen te overridden */
+.mh-sectoren-carousel__nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.mh-sectoren-carousel__btn,
+.mh-sectoren-carousel__btn:visited {
+    width: 44px !important;
+    height: 44px !important;
+    border-radius: 10px !important;
+    border: 2px solid var(--color-navy-dark, #25476b) !important;
+    background: transparent !important;
+    background-color: transparent !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: var(--color-navy-dark, #25476b) !important;
+    fill: var(--color-navy-dark, #25476b) !important;
+    transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    line-height: 1 !important;
+    text-decoration: none !important;
+    outline: none !important;
+}
+
+.mh-sectoren-carousel__btn:hover,
+.mh-sectoren-carousel__btn:focus {
+    background: var(--color-navy-dark, #25476b) !important;
+    background-color: var(--color-navy-dark, #25476b) !important;
+    color: #ffffff !important;
+    fill: #ffffff !important;
+    box-shadow: 0 4px 12px rgba(37, 71, 107, 0.25) !important;
+}
+
+.mh-sectoren-carousel__btn:disabled {
+    opacity: 0.35 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+}
+
+.mh-sectoren-carousel__btn svg {
+    pointer-events: none;
+}
+
+/* Responsive – item-breedte wordt ook via JS bijgesteld */
+@media (max-width: 768px) {
+    .mh-sectoren-carousel__icon-wrap {
+        width: 52px;
+        height: 52px;
+    }
+
+    .mh-sectoren-carousel__icon-wrap svg {
+        width: 44px;
+        height: 44px;
+    }
+
+    .mh-sectoren-carousel__label {
+        font-size: 12px;
+    }
+}

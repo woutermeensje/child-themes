@@ -26,24 +26,54 @@ get_header();
 
 .landing-left h1 {
     font-size: 2.2rem;
-    margin-bottom: 1rem;
+    line-height: 1.1;
+    margin-bottom: 1.4rem;
 }
 
 .landing-left p {
     font-size: 1.1rem;
-    line-height: 1.5;
-    margin-bottom: 1.5rem;
+    line-height: 1.65;
+    margin-bottom: 2rem;
     max-width: 90%;
 }
 
 .landing-left a {
-    background-color: #80D424;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #6db81e;
     color: white;
-    padding: 10px 20px;
+    border: 2px solid #6db81e;
+    padding: 8px 20px !important;
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 700 !important;
     text-decoration: none;
-    font-weight: bold;
-    border-radius: 4px;
+    border-radius: 7px;
     max-width: fit-content;
+    line-height: var(--button-line-height, 1.5);
+    transition: background-color .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.landing-left a * {
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 700 !important;
+}
+
+.landing-left a:hover {
+    background-color: #80D424;
+    border-color: #80D424;
+    transform: translateY(-1px);
+}
+
+.landing-left a + a {
+    margin-left: 16px;
+    background-color: #FF8200;
+    border-color: #FF8200;
+}
+
+.landing-left a + a:hover {
+    background-color: #D96F00;
+    border-color: #D96F00;
 }
 
 .landing-right {

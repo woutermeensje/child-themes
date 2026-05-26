@@ -21,6 +21,7 @@ add_action('wp_enqueue_scripts', function () {
 
     wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css', [], filemtime(get_template_directory() . '/style.css'));
     wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, filemtime(get_stylesheet_directory() . '/style.css'));
+    wp_enqueue_style('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap', [], null);
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css', [], filemtime(get_stylesheet_directory() . '/fonts/fonts.css'));
@@ -32,6 +33,11 @@ add_action('wp_enqueue_scripts', function () {
     }
     if (file_exists(get_stylesheet_directory() . '/css/elementor-forms.css')) {
         wp_enqueue_style('inhuren-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
+    }
+    wp_enqueue_style('quill-css', 'https://cdn.quilljs.com/1.3.7/quill.snow.css', [], '1.3.7');
+    wp_enqueue_script('quill-js', 'https://cdn.quilljs.com/1.3.7/quill.min.js', [], '1.3.7', true);
+    if (file_exists(get_stylesheet_directory() . '/css/informatie-aanvragen.css')) {
+        wp_enqueue_style('inhuren-info-form', get_stylesheet_directory_uri() . '/css/informatie-aanvragen.css', ['child-style', 'quill-css'], filemtime(get_stylesheet_directory() . '/css/informatie-aanvragen.css'));
     }
     if (is_page_template('opdrachten-landingspagina.php') && file_exists(get_stylesheet_directory() . '/css/opdrachten-landingspagina.css')) {
         wp_enqueue_style('inhuren-opdrachten-landingspagina', get_stylesheet_directory_uri() . '/css/opdrachten-landingspagina.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/opdrachten-landingspagina.css'));
@@ -104,257 +110,131 @@ add_shortcode('rn_header', function () {
 // Informatie aanvragen formulier
 // =========================================================
 
-add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_script('quill-js', 'https://cdn.quilljs.com/1.3.7/quill.min.js', [], null, true);
-    wp_enqueue_style('quill-css', 'https://cdn.quilljs.com/1.3.7/quill.snow.css', [], null);
-});
+add_shortcode('inhuren_info_form', function ($atts) {
+    $atts = shortcode_atts([
+        'title'  => '',
+        'intro'  => '',
+        'button' => 'Informatie aanvragen',
+    ], $atts, 'inhuren_info_form');
 
-add_shortcode('inhuren_info_form', function () {
+    $script_path = get_stylesheet_directory() . '/js/informatie-aanvragen.js';
+    if (file_exists($script_path)) {
+        wp_enqueue_script(
+            'inhuren-info-form',
+            get_stylesheet_directory_uri() . '/js/informatie-aanvragen.js',
+            ['quill-js'],
+            filemtime($script_path),
+            true
+        );
+
+        static $script_config_added = false;
+        if (!$script_config_added) {
+            wp_add_inline_script(
+                'inhuren-info-form',
+                'window.InhurenInfoFormConfig = ' . wp_json_encode([
+                    'ajaxUrl' => admin_url('admin-ajax.php'),
+                ]) . ';',
+                'before'
+            );
+            $script_config_added = true;
+        }
+    }
+
+    $form_id = 'iif-' . wp_generate_uuid4();
+    $current_url = is_singular() ? get_permalink() : home_url(add_query_arg([], $GLOBALS['wp']->request ?? ''));
+    $button_style = implode('; ', [
+        'align-self: flex-start !important',
+        'appearance: none !important',
+        '-webkit-appearance: none !important',
+        'display: inline-flex !important',
+        'align-items: center !important',
+        'justify-content: center !important',
+        'min-height: 42px !important',
+        'padding: 8px 20px !important',
+        'border: 1.5px solid #0458AB !important',
+        'border-radius: 8px !important',
+        'background: #0458AB !important',
+        'background-color: #0458AB !important',
+        'color: #ffffff !important',
+        'font-family: Roboto, sans-serif !important',
+        'font-size: 15px !important',
+        'font-weight: 700 !important',
+        'line-height: 1.5 !important',
+        'letter-spacing: 0 !important',
+        'text-align: center !important',
+        'text-decoration: none !important',
+        'text-transform: none !important',
+        'white-space: nowrap !important',
+        'box-shadow: none !important',
+        'cursor: pointer !important',
+    ]) . ';';
+    $button_text_style = 'font-family: Roboto, sans-serif !important; font-weight: 700 !important;';
+
     ob_start();
-    $nonce = wp_create_nonce('inhuren_info_form');
     ?>
-    <div class="iif-wrap">
+    <section class="iif-wrap" <?php echo $atts['title'] ? 'aria-labelledby="' . esc_attr($form_id) . '-title"' : 'aria-label="Informatie aanvragen"'; ?>>
+        <div class="iif-card">
+            <?php if ($atts['title']) : ?>
+                <h2 class="iif-title" id="<?php echo esc_attr($form_id); ?>-title"><?php echo esc_html($atts['title']); ?></h2>
+            <?php endif; ?>
 
-        <h2 class="iif-title">Informatie aanvragen</h2>
+            <?php if ($atts['intro']) : ?>
+                <p class="iif-intro"><?php echo esc_html($atts['intro']); ?></p>
+            <?php endif; ?>
 
-        <div class="iif-success" style="display:none;">
-            <p>Bedankt voor uw aanvraag! We nemen zo snel mogelijk contact met u op.</p>
+            <div class="iif-success" data-iif-success hidden tabindex="-1">
+                <strong>Bedankt voor je aanvraag.</strong>
+                <span>We hebben je bericht ontvangen en nemen zo snel mogelijk contact met je op.</span>
+            </div>
+
+            <form class="iif-form" data-iif-form novalidate>
+                <input type="hidden" name="action" value="inhuren_info_form_submit">
+                <input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('inhuren_info_form')); ?>">
+                <input type="hidden" name="page_url" value="<?php echo esc_url($current_url); ?>">
+
+                <div class="iif-honeypot" aria-hidden="true">
+                    <label for="<?php echo esc_attr($form_id); ?>-website">Website</label>
+                    <input type="text" id="<?php echo esc_attr($form_id); ?>-website" name="website" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div class="iif-row">
+                    <div class="iif-field">
+                        <label for="<?php echo esc_attr($form_id); ?>-voornaam">Voornaam <span>*</span></label>
+                        <input type="text" id="<?php echo esc_attr($form_id); ?>-voornaam" name="voornaam" required autocomplete="given-name">
+                    </div>
+                    <div class="iif-field">
+                        <label for="<?php echo esc_attr($form_id); ?>-achternaam">Achternaam <span>*</span></label>
+                        <input type="text" id="<?php echo esc_attr($form_id); ?>-achternaam" name="achternaam" required autocomplete="family-name">
+                    </div>
+                </div>
+
+                <div class="iif-row">
+                    <div class="iif-field">
+                        <label for="<?php echo esc_attr($form_id); ?>-email">E-mailadres <span>*</span></label>
+                        <input type="email" id="<?php echo esc_attr($form_id); ?>-email" name="email" required autocomplete="email">
+                    </div>
+                    <div class="iif-field">
+                        <label for="<?php echo esc_attr($form_id); ?>-telefoon">Telefoonnummer</label>
+                        <input type="tel" id="<?php echo esc_attr($form_id); ?>-telefoon" name="telefoon" autocomplete="tel">
+                    </div>
+                </div>
+
+                <div class="iif-field">
+                    <label id="<?php echo esc_attr($form_id); ?>-bericht-label" for="<?php echo esc_attr($form_id); ?>-bericht-fallback">Bericht <span>*</span></label>
+                    <div class="iif-richtext" id="<?php echo esc_attr($form_id); ?>-bericht-editor" data-iif-editor aria-labelledby="<?php echo esc_attr($form_id); ?>-bericht-label"></div>
+                    <textarea class="iif-message-fallback" id="<?php echo esc_attr($form_id); ?>-bericht-fallback" name="bericht_plain" rows="7" required placeholder="Omschrijf kort je vraag of aanvraag."></textarea>
+                    <input type="hidden" name="bericht" data-iif-message>
+                </div>
+
+                <div class="iif-error" data-iif-error hidden></div>
+
+                <button type="submit" class="iif-submit" style="<?php echo esc_attr($button_style); ?>">
+                    <span data-iif-submit-label style="<?php echo esc_attr($button_text_style); ?>"><?php echo esc_html($atts['button']); ?></span>
+                    <span data-iif-submit-loading style="<?php echo esc_attr($button_text_style); ?>" hidden>Verzenden...</span>
+                </button>
+            </form>
         </div>
-
-        <form class="iif-form" id="inhuren-info-form">
-            <input type="hidden" name="action" value="inhuren_info_form_submit">
-            <input type="hidden" name="nonce" value="<?php echo esc_attr($nonce); ?>">
-
-            <div class="iif-row">
-                <div class="iif-field">
-                    <label for="iif_voornaam">Voornaam <span>*</span></label>
-                    <input type="text" id="iif_voornaam" name="voornaam" required placeholder="Bijv. Jan">
-                </div>
-                <div class="iif-field">
-                    <label for="iif_achternaam">Achternaam</label>
-                    <input type="text" id="iif_achternaam" name="achternaam" placeholder="Bijv. de Vries">
-                </div>
-            </div>
-
-            <div class="iif-row">
-                <div class="iif-field">
-                    <label for="iif_telefoon">Telefoonnummer</label>
-                    <input type="tel" id="iif_telefoon" name="telefoon" placeholder="Bijv. 06 12345678">
-                </div>
-                <div class="iif-field">
-                    <label for="iif_email">E-mailadres <span>*</span></label>
-                    <input type="email" id="iif_email" name="email" required placeholder="Bijv. jan@bedrijf.nl">
-                </div>
-            </div>
-
-            <div class="iif-field">
-                <label>Bericht <span>*</span></label>
-                <div id="iif-quill-editor"></div>
-                <input type="hidden" id="iif_bericht" name="bericht">
-            </div>
-
-            <div class="iif-error" style="display:none;"></div>
-
-            <button type="submit" class="iif-submit">
-                <span class="iif-submit__label">Informatie aanvragen</span>
-                <span class="iif-submit__loading" style="display:none;">Verzenden...</span>
-            </button>
-        </form>
-
-    </div>
-
-    <style>
-    .iif-wrap {
-        max-width: 720px;
-        margin: 0 auto;
-        font-family: 'Roboto', sans-serif;
-        border: 1px solid #dedede;
-        border-radius: 5px;
-        padding: 32px;
-        background: #ffffff;
-    }
-
-    .iif-title {
-        font-family: 'Poppins', sans-serif !important;
-        font-size: 22px !important;
-        font-weight: 600 !important;
-        color: #111827 !important;
-        margin: 0 0 24px !important;
-        line-height: 1.3 !important;
-    }
-
-    .iif-success {
-        background: #f0fdf4;
-        border: 1px solid #bbf7d0;
-        border-radius: 5px;
-        padding: 20px 24px;
-        color: #166534;
-        font-size: 15px;
-    }
-
-    .iif-form { display: flex; flex-direction: column; gap: 20px; }
-
-    .iif-row {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 20px;
-    }
-
-    .iif-field { display: flex; flex-direction: column; gap: 6px; }
-
-    .iif-field label {
-        font-family: 'Poppins', sans-serif;
-        font-size: 14px;
-        font-weight: 300;
-        color: #374151;
-    }
-
-    .iif-field label span { color: var(--color-primary, #0458AB); }
-
-    .iif-field input {
-        height: 44px;
-        padding: 0 14px;
-        border: 1px solid #dedede;
-        border-radius: 5px;
-        font-family: 'Roboto', sans-serif;
-        font-size: 14px;
-        color: #111827;
-        background: #fff;
-        transition: border-color .15s ease;
-        outline: none;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    .iif-field input:focus { border-color: var(--color-primary, #0458AB); }
-
-    #iif-quill-editor {
-        border: 1px solid #dedede;
-        border-top: none;
-        border-radius: 0 0 5px 5px;
-        min-height: 180px;
-        font-family: 'Poppins', sans-serif;
-        font-size: 14px;
-        background: #ffffff;
-    }
-
-    .ql-toolbar.ql-snow {
-        border: 1px solid #dedede !important;
-        border-bottom: 1px solid #eeeeee !important;
-        border-radius: 5px 5px 0 0 !important;
-        background: #fafafa !important;
-    }
-
-    .ql-container.ql-snow {
-        border: none !important;
-        font-size: 14px !important;
-        font-family: 'Poppins', sans-serif !important;
-    }
-
-    .ql-editor {
-        min-height: 160px !important;
-        padding: 14px 16px !important;
-        line-height: 1.7 !important;
-        color: #374151 !important;
-    }
-
-    .ql-editor.ql-blank::before {
-        color: #9ca3af !important;
-        font-style: normal !important;
-        font-family: 'Poppins', sans-serif !important;
-    }
-
-    .iif-error {
-        padding: 12px 16px;
-        background: #fef2f2;
-        border: 1px solid #fecaca;
-        border-radius: 5px;
-        color: #b91c1c;
-        font-size: 14px;
-    }
-
-    .iif-submit {
-        align-self: flex-start;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 12px 28px;
-        background: var(--color-primary, #0458AB);
-        color: #fff !important;
-        border: none;
-        border-radius: 5px;
-        font-family: 'Roboto', sans-serif;
-        font-size: 15px;
-        font-weight: 700;
-        cursor: pointer;
-        transition: background .15s ease;
-    }
-
-    .iif-submit:hover { background: var(--color-primary-dk, #034085); }
-
-    @media (max-width: 600px) {
-        .iif-row { grid-template-columns: 1fr; }
-        .iif-submit { width: 100%; }
-    }
-    </style>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var quill = new Quill('#iif-quill-editor', {
-            theme: 'snow',
-            placeholder: 'Omschrijf uw vraag of aanvraag...',
-            modules: {
-                toolbar: [
-                    ['bold', 'italic', 'underline'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['clean']
-                ]
-            }
-        });
-
-        var form  = document.getElementById('inhuren-info-form');
-        var wrap  = form.closest('.iif-wrap');
-
-        form.addEventListener('submit', function (e) {
-            e.preventDefault();
-
-            document.getElementById('iif_bericht').value = quill.root.innerHTML;
-
-            var errorEl  = form.querySelector('.iif-error');
-            var label    = form.querySelector('.iif-submit__label');
-            var loading  = form.querySelector('.iif-submit__loading');
-
-            errorEl.style.display  = 'none';
-            label.style.display    = 'none';
-            loading.style.display  = '';
-
-            var data = new FormData(form);
-
-            fetch('<?php echo esc_url(admin_url('admin-ajax.php')); ?>', {
-                method: 'POST',
-                body: data
-            })
-            .then(function (r) { return r.json(); })
-            .then(function (res) {
-                if (res.success) {
-                    form.style.display = 'none';
-                    wrap.querySelector('.iif-success').style.display = '';
-                } else {
-                    errorEl.textContent = res.data || 'Er is iets misgegaan. Probeer het opnieuw.';
-                    errorEl.style.display = '';
-                    label.style.display   = '';
-                    loading.style.display = 'none';
-                }
-            })
-            .catch(function () {
-                errorEl.textContent = 'Er is een verbindingsfout opgetreden.';
-                errorEl.style.display = '';
-                label.style.display   = '';
-                loading.style.display = 'none';
-            });
-        });
-    });
-    </script>
+    </section>
     <?php
     return ob_get_clean();
 });
@@ -387,56 +267,158 @@ add_action('init', function () {
 add_action('wp_ajax_inhuren_info_form_submit', 'inhuren_info_form_handler');
 add_action('wp_ajax_nopriv_inhuren_info_form_submit', 'inhuren_info_form_handler');
 
+add_action('add_meta_boxes', function () {
+    add_meta_box(
+        'inhuren_aanvraag_details',
+        'Aanvraaggegevens',
+        'inhuren_aanvraag_details_metabox',
+        'inhuren_aanvraag',
+        'normal',
+        'high'
+    );
+});
+
+function inhuren_aanvraag_details_metabox($post) {
+    $fields = [
+        'Voornaam'         => get_post_meta($post->ID, '_aanvraag_voornaam', true),
+        'Achternaam'       => get_post_meta($post->ID, '_aanvraag_achternaam', true),
+        'E-mail'           => get_post_meta($post->ID, '_aanvraag_email', true),
+        'Telefoon'         => get_post_meta($post->ID, '_aanvraag_telefoon', true),
+        'Pagina'           => get_post_meta($post->ID, '_aanvraag_page_url', true),
+    ];
+    ?>
+    <table class="widefat striped">
+        <tbody>
+            <?php foreach ($fields as $label => $value) : ?>
+                <tr>
+                    <th scope="row" style="width:180px;"><?php echo esc_html($label); ?></th>
+                    <td>
+                        <?php if ($label === 'Pagina' && $value) : ?>
+                            <a href="<?php echo esc_url($value); ?>" target="_blank" rel="noopener noreferrer"><?php echo esc_html($value); ?></a>
+                        <?php else : ?>
+                            <?php echo esc_html($value ?: '-'); ?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    <?php
+}
+
+add_filter('manage_inhuren_aanvraag_posts_columns', function ($columns) {
+    return [
+        'cb'        => $columns['cb'] ?? '<input type="checkbox" />',
+        'title'     => 'Aanvraag',
+        'email'     => 'E-mail',
+        'phone'     => 'Telefoon',
+        'date'      => $columns['date'] ?? 'Datum',
+    ];
+});
+
+add_action('manage_inhuren_aanvraag_posts_custom_column', function ($column, $post_id) {
+    if ($column === 'email') {
+        $email = get_post_meta($post_id, '_aanvraag_email', true);
+        echo $email ? '<a href="mailto:' . esc_attr($email) . '">' . esc_html($email) . '</a>' : '-';
+    }
+
+    if ($column === 'phone') {
+        echo esc_html(get_post_meta($post_id, '_aanvraag_telefoon', true) ?: '-');
+    }
+}, 10, 2);
+
 function inhuren_info_form_handler() {
-    if ( ! isset($_POST['nonce']) || ! wp_verify_nonce($_POST['nonce'], 'inhuren_info_form') ) {
+    $post_value = static function ($key, $default = '') {
+        if (!isset($_POST[$key]) || is_array($_POST[$key])) {
+            return $default;
+        }
+
+        return wp_unslash($_POST[$key]);
+    };
+
+    if (!wp_verify_nonce(sanitize_text_field($post_value('nonce')), 'inhuren_info_form')) {
         wp_send_json_error('Ongeldige beveiligingstoken.');
     }
 
-    $voornaam   = sanitize_text_field($_POST['voornaam']   ?? '');
-    $achternaam = sanitize_text_field($_POST['achternaam'] ?? '');
-    $telefoon   = sanitize_text_field($_POST['telefoon']   ?? '');
-    $email      = sanitize_email($_POST['email']           ?? '');
-    $bericht    = wp_kses_post($_POST['bericht']           ?? '');
+    $honeypot = sanitize_text_field($post_value('website'));
+    if ($honeypot !== '') {
+        wp_send_json_success();
+    }
 
-    if ( ! $voornaam || ! is_email($email) || ! $bericht ) {
+    $voornaam   = sanitize_text_field($post_value('voornaam'));
+    $achternaam = sanitize_text_field($post_value('achternaam'));
+    $telefoon   = sanitize_text_field($post_value('telefoon'));
+    $email      = sanitize_email($post_value('email'));
+    $bericht    = wp_kses_post($post_value('bericht'));
+    $bericht_plain = sanitize_textarea_field($post_value('bericht_plain'));
+    $page_url   = esc_url_raw($post_value('page_url'));
+
+    if (!$bericht && $bericht_plain) {
+        $bericht = esc_html($bericht_plain);
+    }
+
+    if (!$voornaam || !$achternaam || !is_email($email) || !trim(wp_strip_all_tags($bericht))) {
         wp_send_json_error('Vul alle verplichte velden in.');
     }
 
-    // Opslaan in database
+    $message_html = wpautop(wp_kses_post($bericht));
+    $post_content = sprintf(
+        '<p><strong>Naam:</strong> %s</p>
+        <p><strong>E-mail:</strong> %s</p>
+        <p><strong>Telefoon:</strong> %s</p>
+        <p><strong>Pagina:</strong> %s</p>
+        <hr>
+        <p><strong>Bericht:</strong></p>%s',
+        esc_html(trim($voornaam . ' ' . $achternaam)),
+        esc_html($email),
+        esc_html($telefoon ?: '-'),
+        $page_url ? '<a href="' . esc_url($page_url) . '">' . esc_html($page_url) . '</a>' : '-',
+        $message_html
+    );
+
     $post_id = wp_insert_post([
         'post_type'    => 'inhuren_aanvraag',
-        'post_title'   => $voornaam . ' ' . $achternaam . ' — ' . date('d-m-Y H:i'),
-        'post_content' => $bericht,
+        'post_title'   => sprintf('%s %s - %s', $voornaam, $achternaam, current_time('d-m-Y H:i')),
+        'post_content' => $post_content,
         'post_status'  => 'publish',
-    ]);
+    ], true);
 
-    if ( $post_id ) {
-        update_post_meta($post_id, '_aanvraag_voornaam',   $voornaam);
-        update_post_meta($post_id, '_aanvraag_achternaam', $achternaam);
-        update_post_meta($post_id, '_aanvraag_telefoon',   $telefoon);
-        update_post_meta($post_id, '_aanvraag_email',      $email);
+    if (is_wp_error($post_id)) {
+        wp_send_json_error('De aanvraag kon niet worden opgeslagen. Probeer het opnieuw.');
     }
 
-    // E-mail versturen
-    $to      = get_option('admin_email');
-    $subject = 'Nieuwe informatie aanvraag van ' . $voornaam . ' ' . $achternaam;
-    $body    = "
-        <p><strong>Naam:</strong> {$voornaam} {$achternaam}</p>
-        <p><strong>Telefoon:</strong> {$telefoon}</p>
-        <p><strong>E-mail:</strong> {$email}</p>
+    update_post_meta($post_id, '_aanvraag_voornaam', $voornaam);
+    update_post_meta($post_id, '_aanvraag_achternaam', $achternaam);
+    update_post_meta($post_id, '_aanvraag_telefoon', $telefoon);
+    update_post_meta($post_id, '_aanvraag_email', $email);
+    update_post_meta($post_id, '_aanvraag_page_url', $page_url);
+
+    $to = apply_filters('inhuren_info_form_recipient', get_option('admin_email'), $post_id);
+    $subject = sprintf('Nieuwe informatie aanvraag van %s %s', $voornaam, $achternaam);
+    $body = sprintf(
+        '<p><strong>Naam:</strong> %s</p>
+        <p><strong>E-mail:</strong> %s</p>
+        <p><strong>Telefoon:</strong> %s</p>
+        <p><strong>Pagina:</strong> %s</p>
         <hr>
-        <p><strong>Bericht:</strong></p>
-        {$bericht}
-    ";
+        <p><strong>Bericht:</strong></p>%s',
+        esc_html(trim($voornaam . ' ' . $achternaam)),
+        esc_html($email),
+        esc_html($telefoon ?: '-'),
+        $page_url ? '<a href="' . esc_url($page_url) . '">' . esc_html($page_url) . '</a>' : '-',
+        $message_html
+    );
 
     $headers = [
         'Content-Type: text/html; charset=UTF-8',
-        'Reply-To: ' . $voornaam . ' ' . $achternaam . ' <' . $email . '>',
+        'Reply-To: ' . sanitize_text_field(trim($voornaam . ' ' . $achternaam)) . ' <' . $email . '>',
     ];
 
     wp_mail($to, $subject, $body, $headers);
 
-    wp_send_json_success();
+    wp_send_json_success([
+        'message' => 'Bedankt voor je aanvraag. We nemen zo snel mogelijk contact met je op.',
+    ]);
 }
 
 

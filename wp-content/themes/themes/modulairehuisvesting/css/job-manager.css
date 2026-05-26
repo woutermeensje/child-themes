@@ -20,12 +20,19 @@ ul.job_listings li.job_listing {
 .job-card {
     background: var(--color-surface);
     border-radius: 6px;
-    box-shadow: 0 10px 40px -5px var(--color-shadow);
+    box-shadow: none;
     padding: 0;
-    border: 1px solid var(--color-border);
+    border: 1px solid #dedede;
     margin-top: 4px;
     margin-bottom: 4px;
     overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-2px);
+    border-color: #c0c0c0;
 }
 
 a.title-link {
@@ -77,7 +84,7 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
     border-radius: 50%;
     width: 80px;
     height: 80px;
-    border: 1px solid var(--color-border);
+    border: 1px solid #dedede;
     padding: 5px;
     object-fit: contain;
     background: var(--color-surface);
@@ -241,7 +248,7 @@ a.title-link {
     height: 56px;
     border-radius: 999px;
     background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    border: 1px solid #dedede;
     display: grid;
     place-items: center;
     overflow: hidden;
@@ -354,15 +361,15 @@ input[type='text']::placeholder {
 .sj-wrap { max-width: 900px; width: 100%; margin: 20px auto; padding: 0 16px; display: grid; gap: 16px; }
 .job_description, .sj-content { overflow-wrap: anywhere; word-break: break-word !important; }
 
-.sj-card { padding: 24px; background: var(--color-surface); border: 1px solid var(--color-border); box-shadow: 0 10px 40px -5px var(--color-shadow); border-radius: 5px; }
+.sj-card { padding: 24px; background: var(--color-surface); border: 1px solid #dedede; box-shadow: none; border-radius: 5px; }
 
 .single_job_listing { padding: 22px; }
-.job-manager-info { padding: 14px 16px; border: 1px solid var(--color-border); border-radius: 5px; background: var(--color-surface); font-family: Poppins, system-ui, sans-serif; color: var(--color-text); }
+.job-manager-info { padding: 14px 16px; border: 1px solid #dedede; border-radius: 5px; background: var(--color-surface); font-family: Poppins, system-ui, sans-serif; color: var(--color-text); }
 
 .sj-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
-.sj-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 999px; border: 1px solid var(--color-border); background: var(--color-surface-alt); color: var(--color-text); font-family: Poppins, system-ui, sans-serif; font-weight: 700; font-size: 14px; box-shadow: 0 10px 40px -5px var(--color-shadow); }
+.sj-chip { display: inline-flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 999px; border: 1px solid #dedede; background: var(--color-surface-alt); color: var(--color-text); font-family: Poppins, system-ui, sans-serif; font-weight: 700; font-size: 14px; box-shadow: none; }
 
-.sj-header { padding-bottom: 14px; border-bottom: 1px solid var(--color-border); margin-bottom: 16px; margin-top: 24px; }
+.sj-header { padding-bottom: 14px; border-bottom: 1px solid #dedede; margin-bottom: 16px; margin-top: 24px; }
 .sj-title { margin: 0; font-family: 'Balgin-Bold', 'Balgin Bold', serif; font-size: 26px; line-height: 1.15; font-weight: 800; color: var(--color-text); max-width: 100%; white-space: normal !important; overflow-wrap: anywhere; word-break: break-word; hyphens: auto; }
 .sj-subtitle { margin: 8px 0 0 0; font-family: Poppins, system-ui, sans-serif; font-size: 14px; font-weight: 600; color: var(--color-secondary); }
 
@@ -370,7 +377,7 @@ input[type='text']::placeholder {
 .sj-content p { margin: 0 0 14px 0; }
 
 .sj-actions { margin-top: 18px; display: flex; }
-.sj-btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 5px; background: var(--color-secondary); color: #ffffff !important; text-decoration: none !important; border: 1px solid var(--color-secondary); font-family: 'Balgin-Bold', 'Balgin Bold', serif; font-weight: 700; font-size: 15px; box-shadow: 0 10px 40px -5px var(--color-shadow); transition: background .15s ease, transform .15s ease; }
+.sj-btn { display: inline-flex; align-items: center; justify-content: center; padding: 12px 20px; border-radius: 5px; background: var(--color-secondary); color: #ffffff !important; text-decoration: none !important; border: 1px solid var(--color-secondary); font-family: 'Balgin-Bold', 'Balgin Bold', serif; font-weight: 700; font-size: 15px; box-shadow: none; transition: background .15s ease, transform .15s ease; }
 .sj-btn:hover { background: var(--color-primary); border-color: var(--color-primary); transform: translateY(-1px); }
 
 .single-job_listing h1.entry-title { display: none; }
@@ -389,8 +396,8 @@ h2.sj-contact-title { font-family: 'Balgin-Bold', 'Balgin Bold', serif; font-wei
 .sj-recent-title { margin: 0; font-family: 'Balgin-Bold', 'Balgin Bold', serif; font-weight: 700; font-size: 20px; color: var(--color-text); }
 .sj-recent-sub { margin: 6px 0 0 0; font-family: Poppins, system-ui, sans-serif; font-size: 14px; color: var(--color-text-soft); }
 .sj-recent-grid { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-.sj-recent-item { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 5px; overflow: hidden; box-shadow: 0 10px 40px -5px var(--color-shadow); transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease; }
-.sj-recent-item:hover { transform: translateY(-3px); border-color: var(--color-border-strong); box-shadow: 0 18px 44px var(--color-shadow); }
+.sj-recent-item { background: var(--color-surface); border: 1px solid #dedede; border-radius: 5px; overflow: hidden; box-shadow: none; transition: transform .18s ease, border-color .18s ease; }
+.sj-recent-item:hover { transform: translateY(-3px); border-color: #c0c0c0; }
 .sj-recent-link { display: flex; flex-direction: column; gap: 14px; padding: 18px; text-decoration: none !important; color: inherit; align-items: flex-start; }
 .sj-recent-logo { display: block; padding: 0; border: 0; background: transparent; box-shadow: none; }
 .sj-recent-logo img, .sj-recent-logo .company_logo { display: block; margin: 0 !important; }
@@ -425,7 +432,7 @@ h3.sj-recent-jobtitle { margin: 0; font-family: 'Balgin-Bold', 'Balgin Bold', se
     min-height: 300px;
     padding: 56px 0;
     background: var(--color-surface-alt);
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid #dedede;
     box-sizing: border-box;
 }
 
@@ -477,7 +484,7 @@ h3.sj-recent-jobtitle { margin: 0; font-family: 'Balgin-Bold', 'Balgin Bold', se
     width: 100%;
     padding: 13px 14px 13px 40px;
     font-size: 15px;
-    border: 1px solid var(--color-border-strong);
+    border: 1px solid #c8c8c8;
     border-radius: 8px;
     background-color: var(--color-surface);
     color: var(--color-text);
@@ -556,12 +563,11 @@ select.sj-hidden-select {
     justify-content: space-between;
     white-space: nowrap;
     border-radius: 999px;
-    border: 1px solid var(--color-border-strong) !important;
+    border: 1px solid #c8c8c8 !important;
     background-color: var(--color-surface) !important;
     padding: 12px;
     min-height: 44px;
     cursor: pointer;
-    user-select: none;
     font-family: 'Poppins', sans-serif;
     font-weight: 700;
     font-size: 15px;
@@ -640,9 +646,9 @@ select.sj-hidden-select {
     min-width: 100%;
     margin-top: 10px;
     background: var(--color-surface);
-    border: 1px solid var(--color-border-strong);
+    border: 1px solid #c8c8c8;
     border-radius: 8px;
-    box-shadow: 0 10px 40px -5px var(--color-shadow);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
     padding: 8px;
     max-height: 280px;
     overflow: auto;
@@ -664,7 +670,7 @@ select.sj-hidden-select {
 .sj-search-input {
     width: 100%;
     min-width: 220px;
-    border: 1px solid var(--color-border-strong);
+    border: 1px solid #c8c8c8;
     border-radius: 8px;
     padding: 11px 12px;
     font-family: 'Poppins', sans-serif;
@@ -687,7 +693,9 @@ select.sj-hidden-select {
 .sj-option {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 10px;
+    min-width: 220px;
     padding: 10px 12px;
     border-radius: 8px;
     cursor: pointer;
@@ -703,9 +711,24 @@ select.sj-hidden-select {
 }
 
 .sj-option-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
     font-family: 'Poppins', sans-serif;
     font-weight: 600;
     color: var(--color-text);
+}
+
+.sj-option-count {
+    flex: 0 0 auto;
+    margin-left: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--color-text-soft);
+}
+
+.sj-option.is-selected .sj-option-count {
+    color: var(--color-primary);
 }
 
 .job_type .sj-select-btn {
@@ -739,7 +762,7 @@ span.active-filter {
     align-items: center;
     gap: 6px;
     background: var(--color-surface);
-    border: 1px solid var(--color-border);
+    border: 1px solid #dedede;
     border-radius: 999px;
     box-shadow: 0 4px 12px var(--color-shadow);
     padding: 8px 12px;
@@ -757,21 +780,13 @@ span.active-filter {
     color: var(--color-text);
 }
 
-button.active-filter-x {
+.active-filter-x {
     color: var(--color-primary);
     font-weight: 700;
-    font-size: 20px;
+    font-size: 18px;
     line-height: 1;
-    margin-left: 6px;
-    padding: 0;
-    background: none;
-    border: none;
-    cursor: pointer;
-}
-
-button.active-filter-x:hover {
-    color: var(--color-primary-hover);
-    background: none;
+    margin-left: 4px;
+    pointer-events: none;
 }
 
 @media (max-width: 960px) {

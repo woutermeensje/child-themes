@@ -249,14 +249,14 @@ html, body{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 14px;
+  padding: 8px 20px !important;
   border-radius: 8px;
   background: rgba(8, 132, 204, 0.15);
   color: var(--color-secondary) !important;
   border: 1px solid var(--color-secondary);
   text-decoration: none !important;
-  font-family: Poppins, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-weight: 600;
+  font-family: Roboto, system-ui, -apple-system, Segoe UI, Arial, sans-serif !important;
+  font-weight: 700 !important;
   font-size: 14px;
   transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
 }
@@ -309,8 +309,8 @@ html, body{
   border: 1px solid #DEDEDE;
   background: #fff;
   color: #333;
-  font-family: Poppins, system-ui, sans-serif;
-  font-weight: 700;
+  font-family: Roboto, system-ui, sans-serif !important;
+  font-weight: 700 !important;
   font-size: 14px;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 }
@@ -367,17 +367,24 @@ html, body{
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 10px 14px;
+  padding: 8px 20px !important;
   border-radius: 10px;
   background: rgba(8, 132, 204, 0.15);
   color: var(--sj-blue) !important;
   text-decoration: none !important;
   border: 1px solid var(--sj-blue);
-  font-family: Poppins, system-ui, sans-serif;
-  font-weight: 700;
+  font-family: Roboto, system-ui, sans-serif !important;
+  font-weight: 700 !important;
   font-size: 14px;
+  line-height: var(--button-line-height, 1.5);
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+}
+
+.top-section-link *,
+.sj-btn * {
+  font-family: Roboto, system-ui, sans-serif !important;
+  font-weight: 700 !important;
 }
 .sj-btn:hover{
   transform: translateY(-1px);

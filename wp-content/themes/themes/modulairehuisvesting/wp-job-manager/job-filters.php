@@ -14,26 +14,61 @@ $shortcode_atts = shortcode_atts([
 
 foreach ( $selected as $key => &$value ) {
   $shortcode_key = ( $key === 'job_types' ) ? 'job_listing_type' : $key;
-  $filter_key = 'filter_' . $key;
+  $filter_key    = 'filter_' . $key;
 
-  if ( ! empty( $_GET[$key] ) )         $value = (array) $_GET[$key];
-  elseif ( ! empty( $_GET[$filter_key] ) )  $value = (array) $_GET[$filter_key];
-  elseif ( ! empty( $_POST[$filter_key] ) ) $value = (array) $_POST[$filter_key];
-  elseif ( ! empty( $_POST[$key] ) )        $value = (array) $_POST[$key];
-  elseif ( ! empty( $shortcode_atts[ $shortcode_key ] ) ) {
-    $value = array_filter( array_map( 'trim', explode( ',', sanitize_text_field( $shortcode_atts[ $shortcode_key ] ) ) ) );
+  if      ( ! empty( $_GET[$key] ) )             $value = (array) $_GET[$key];
+  elseif  ( ! empty( $_GET[$filter_key] ) )      $value = (array) $_GET[$filter_key];
+  elseif  ( ! empty( $_POST[$filter_key] ) )     $value = (array) $_POST[$filter_key];
+  elseif  ( ! empty( $_POST[$key] ) )            $value = (array) $_POST[$key];
+  elseif  ( ! empty( $shortcode_atts[$shortcode_key] ) ) {
+    $value = array_filter( array_map( 'trim', explode( ',', sanitize_text_field( $shortcode_atts[$shortcode_key] ) ) ) );
   }
 }
 unset( $value );
 
 $keywords = isset( $keywords ) ? $keywords : ( $_GET['search_keywords'] ?? '' );
 $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
+
+if ( ! function_exists( 'mh_get_open_job_filter_counts' ) ) {
+  function mh_get_open_job_filter_counts( $taxonomy ) {
+    static $cache = [];
+    $taxonomy = sanitize_key( $taxonomy );
+    if ( isset( $cache[$taxonomy] ) ) return $cache[$taxonomy];
+    if ( ! taxonomy_exists( $taxonomy ) ) { $cache[$taxonomy] = []; return []; }
+
+    global $wpdb;
+    $sql = $wpdb->prepare(
+      "SELECT tt.term_id, COUNT(DISTINCT p.ID) AS open_jobs
+       FROM {$wpdb->term_relationships} tr
+       INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+       INNER JOIN {$wpdb->posts} p ON p.ID = tr.object_id
+       LEFT JOIN {$wpdb->postmeta} filled ON filled.post_id = p.ID AND filled.meta_key = '_filled' AND filled.meta_value = '1'
+       LEFT JOIN {$wpdb->postmeta} expires ON expires.post_id = p.ID AND expires.meta_key = '_job_expires'
+       WHERE tt.taxonomy = %s
+         AND p.post_type = 'job_listing'
+         AND p.post_status = 'publish'
+         AND filled.meta_id IS NULL
+         AND (expires.meta_id IS NULL OR expires.meta_value = '' OR expires.meta_value >= %s)
+       GROUP BY tt.term_id",
+      $taxonomy,
+      current_time( 'Y-m-d' )
+    );
+    $counts = [];
+    foreach ( (array) $wpdb->get_results( $sql ) as $row ) {
+      $counts[ (int) $row->term_id ] = (int) $row->open_jobs;
+    }
+    $cache[$taxonomy] = $counts;
+    return $counts;
+  }
+}
+
+$job_type_counts = mh_get_open_job_filter_counts( 'job_listing_type' );
 ?>
 
 <form class="job_filters">
   <?php do_action( 'job_manager_job_filters_start', $atts ); ?>
 
-  <div class="filter-header" style="padding: 0 24px 18px;">
+  <div class="filter-header">
     <h2>Werken bij Modulairehuisvesting</h2>
     <p>Bekijk onze openstaande vacatures en word onderdeel van ons team.</p>
   </div>
@@ -64,10 +99,14 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
               class="js-custom-select job_types"
               data-placeholder="Dienstverband"
               multiple>
-        <?php foreach ( get_job_listing_types() as $type ) : ?>
+        <?php foreach ( get_job_listing_types() as $type ) :
+          $count = $job_type_counts[ (int) $type->term_id ] ?? 0;
+        ?>
           <option value="<?php echo esc_attr( $type->slug ); ?>"
+            data-label="<?php echo esc_attr( $type->name ); ?>"
+            data-count="<?php echo esc_attr( $count ); ?>"
             <?php selected( in_array( $type->slug, $selected['job_types'], true ) ); ?>>
-            <?php echo esc_html( $type->name ); ?>
+            <?php echo esc_html( $type->name . ' (' . $count . ')' ); ?>
           </option>
         <?php endforeach; ?>
       </select>
@@ -81,425 +120,6 @@ $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
 </form>
 
 <?php do_action( 'job_manager_job_filters_after', $atts ); ?>
-
-<style>
-.job_filters {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  margin-top: 0;
-  margin-bottom: 0;
-  min-height: 300px;
-  padding: 56px 0;
-  background: var(--color-surface-alt);
-  border-bottom: 1px solid var(--color-border);
-  box-sizing: border-box;
-  margin-bottom: 40px !important;
-}
-
-.filter-header,
-.search-basic,
-.filter-box,
-.active-filters {
-  max-width: 1200px;
-  margin-left: auto !important;
-  margin-right: auto !important;
-}
-
-.filter-header {
-  padding: 0 24px 18px !important;
-}
-
-.filter-header h2 {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  font-size: 24px;
-  line-height: 1.1;
-  font-weight: 700;
-  color: var(--color-text);
-}
-
-.filter-header p {
-  margin: 10px 0 0;
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  color: var(--color-text);
-}
-
-.search-basic {
-  display: flex;
-  gap: 16px;
-  padding: 0 24px;
-}
-
-.search_location,
-.search_keywords {
-  flex-basis: 50%;
-  max-width: 50%;
-  display: flex;
-  align-items: center;
-  position: relative;
-}
-
-.search-basic input[type="text"] {
-  width: 100%;
-  padding: 13px 14px 13px 40px;
-  font-size: 15px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  background-color: #ffffff;
-  color: var(--color-text);
-  box-shadow: none;
-  transition: border-color .2s ease, box-shadow .2s ease;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-}
-
-.search-basic input[type="text"]:focus {
-  outline: none;
-  border-color: var(--color-secondary);
-  box-shadow: 0 0 0 3px var(--color-focus-ring);
-}
-
-.search_keywords input::placeholder,
-.search_location input::placeholder {
-  color: #7c7c7c;
-  font-size: 15px !important;
-  font-style: italic;
-}
-
-.search_keywords::before,
-.search_location::before {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  background-repeat: no-repeat;
-  background-size: contain;
-  pointer-events: none;
-}
-
-.search_keywords::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2339749B' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-}
-
-.search_location::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2339749B' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
-}
-
-.filter-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px 24px 0;
-}
-
-.filter-box > div {
-  flex: 0 0 auto !important;
-  min-width: 0 !important;
-}
-
-select.sj-hidden-select {
-  position: absolute !important;
-  left: -9999px !important;
-  width: 1px !important;
-  height: 1px !important;
-  opacity: 0 !important;
-}
-
-.sj-select-wrap,
-.sj-select {
-  position: relative;
-  width: auto;
-  display: inline-block;
-}
-
-.sj-select-btn {
-  width: auto;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  white-space: nowrap;
-  border-radius: 999px;
-  border: 1px solid var(--color-border) !important;
-  background-color: #ffffff !important;
-  padding: 12px;
-  min-height: 44px;
-  cursor: pointer;
-  user-select: none;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--color-text) !important;
-}
-
-.sj-select-btn:focus {
-  outline: none;
-  border-color: var(--color-secondary) !important;
-  box-shadow: 0 0 0 2px var(--color-focus-ring);
-}
-
-.sj-select-btn,
-.sj-select-btn:hover,
-.sj-select.active .sj-select-btn,
-.sj-select-btn:focus {
-  background: #ffffff !important;
-  color: var(--color-text) !important;
-}
-
-.sj-btn-content {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-  min-width: 0;
-}
-
-.sj-placeholder {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 700;
-  color: var(--color-text);
-  font-size: 15px;
-}
-
-.sj-tags {
-  display: none;
-  gap: 6px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-
-.sj-select__actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 0 !important;
-  margin-left: 10px;
-}
-
-.sj-clear {
-  display: none !important;
-}
-
-.sj-chev {
-  width: 10px;
-  height: 10px;
-  border-right: 2px solid var(--color-text);
-  border-bottom: 2px solid var(--color-text);
-  transform: rotate(45deg);
-  transition: transform .2s ease;
-}
-
-.sj-select.active .sj-chev {
-  transform: rotate(-135deg);
-}
-
-.sj-options {
-  display: none;
-  position: absolute;
-  left: 0;
-  right: auto;
-  width: max-content;
-  min-width: 100%;
-  margin-top: 10px;
-  background: #fff;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.12);
-  padding: 8px;
-  max-height: 280px;
-  overflow: auto;
-  z-index: 9999;
-}
-
-.sj-select.active .sj-options {
-  display: block;
-}
-
-.sj-search {
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  background: #ffffff;
-  padding: 4px 4px 10px;
-}
-
-.sj-search-input {
-  width: 100%;
-  min-width: 220px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  padding: 11px 12px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  color: var(--color-text);
-  background: #ffffff;
-  box-sizing: border-box;
-}
-
-.sj-search-input::placeholder {
-  color: #7c7c7c;
-}
-
-.sj-search-input:focus {
-  outline: none;
-  border-color: var(--color-secondary);
-  box-shadow: 0 0 0 2px var(--color-focus-ring);
-}
-
-.sj-option {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.sj-option:hover {
-  background: var(--color-surface-alt);
-}
-
-.sj-option.is-selected .sj-option-text {
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-.sj-option-text {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  color: var(--color-text);
-}
-
-/* Filter button icon – Dienstverband → briefcase */
-.job_type .sj-select-btn {
-  padding-left: 38px !important;
-  position: relative;
-}
-
-.job_type .sj-select-btn::before {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  background-repeat: no-repeat;
-  background-size: contain;
-  pointer-events: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2339749B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3C/svg%3E");
-}
-
-/* Active filters chips */
-.active-filters {
-  display: none;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 14px 24px 0 !important;
-}
-
-span.active-filter {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 999px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  padding: 8px 12px;
-  font-size: 14px;
-  color: #111;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.active-filter:hover {
-  border-color: var(--color-secondary);
-}
-
-.active-filter-text {
-  color: var(--color-text);
-}
-
-button.active-filter-x {
-  color: var(--color-secondary);
-  font-weight: 700;
-  font-size: 20px;
-  line-height: 1;
-  margin-left: 6px;
-  padding: 0;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-button.active-filter-x:hover {
-  color: var(--color-primary);
-  background: none;
-}
-
-/* Responsive */
-@media (max-width: 960px) {
-  form.job_filters {
-    width: 100% !important;
-    position: relative !important;
-    left: 0 !important;
-    right: auto !important;
-    margin: 0 !important;
-    padding: 24px 0 !important;
-  }
-
-  .filter-header {
-    padding: 0 16px 12px !important;
-  }
-
-  .search-basic {
-    flex-direction: column;
-    gap: 10px;
-    padding: 0 16px !important;
-  }
-
-  .search_location,
-  .search_keywords {
-    max-width: 100%;
-    flex-basis: 100%;
-    width: 100%;
-  }
-
-  .filter-box {
-    flex-direction: column;
-    padding: 12px 16px 0 !important;
-    gap: 10px;
-  }
-
-  .filter-box > div,
-  .sj-select-wrap,
-  .sj-select,
-  .sj-select-btn {
-    width: 100% !important;
-  }
-
-  .sj-options {
-    width: 100% !important;
-    min-width: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-  }
-
-  .active-filters {
-    margin: 12px 16px 0 !important;
-  }
-}
-</style>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
@@ -535,9 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const searchInput = el.querySelector(".sj-search-input");
       if (searchInput) {
         searchInput.value = "";
-        el.querySelectorAll(".sj-option").forEach((option) => {
-          option.style.display = "";
-        });
+        el.querySelectorAll(".sj-option").forEach((opt) => { opt.style.display = ""; });
       }
     });
   };
@@ -547,14 +165,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const renderActiveFilters = () => {
     if (!activeFiltersEl) return;
     activeFiltersEl.innerHTML = "";
+
     document.querySelectorAll("select.js-custom-select").forEach((select) => {
-      const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
-      selectedOptions.forEach((opt) => {
+      [...select.options].filter(o => o.selected && o.value !== "").forEach((opt) => {
         const chip = document.createElement("span");
         chip.className = "active-filter";
-        chip.innerHTML = `<span class="active-filter-text"></span><button type="button" class="active-filter-x" aria-label="Verwijder filter">×</button>`;
-        chip.querySelector(".active-filter-text").textContent = opt.textContent;
-        chip.querySelector(".active-filter-x").addEventListener("click", (e) => {
+        chip.setAttribute("role", "button");
+        chip.setAttribute("title", "Verwijder filter");
+        chip.innerHTML = `<span class="active-filter-text"></span><span class="active-filter-x" aria-hidden="true">×</span>`;
+        chip.querySelector(".active-filter-text").textContent = opt.dataset.label || opt.textContent;
+        chip.addEventListener("click", (e) => {
           e.preventDefault();
           opt.selected = false;
           select.dispatchEvent(new Event("change", { bubbles: true }));
@@ -562,6 +182,7 @@ document.addEventListener("DOMContentLoaded", () => {
         activeFiltersEl.appendChild(chip);
       });
     });
+
     activeFiltersEl.style.display = activeFiltersEl.children.length ? "flex" : "none";
   };
 
@@ -624,8 +245,12 @@ document.addEventListener("DOMContentLoaded", () => {
       row.dataset.value = opt.value;
       row.setAttribute("role", "option");
       row.setAttribute("aria-selected", opt.selected ? "true" : "false");
-      row.innerHTML = `<span class="sj-option-text"></span>`;
-      row.querySelector(".sj-option-text").textContent = opt.textContent;
+      const optionLabel = opt.dataset.label || opt.textContent.trim();
+      const optionCount = opt.dataset.count;
+      row.innerHTML = `<span class="sj-option-text"></span>${optionCount !== undefined ? '<span class="sj-option-count"></span>' : ''}`;
+      row.querySelector(".sj-option-text").textContent = optionLabel;
+      const countEl = row.querySelector(".sj-option-count");
+      if (countEl) countEl.textContent = optionCount;
 
       const syncSelected = () => {
         row.classList.toggle("is-selected", opt.selected);
@@ -663,7 +288,8 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!searchInput) return;
       const term = searchInput.value.trim().toLowerCase();
       optionRows.forEach(({ row, opt }) => {
-        row.style.display = opt.textContent.toLowerCase().includes(term) ? "" : "none";
+        const label = opt.dataset.label || opt.textContent;
+        row.style.display = label.toLowerCase().includes(term) ? "" : "none";
       });
     };
 

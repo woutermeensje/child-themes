@@ -26,7 +26,8 @@ Text Domain: Inhuren.com
   --color-primary-dk: #034085;
   --color-secondary: #80D424;
   --color-primary-mid: #80D424;
-  --color-tertiary: #FF8200A1;
+  --color-tertiary: #FF8200;
+  --color-tertiary-dk: #D96F00;
   --color-accent: #0456AB66;
 
   /* 🧱 Vaste kleuren voor tekst en contrast */
@@ -42,11 +43,18 @@ Text Domain: Inhuren.com
   /* ✅ Speciale semantische kleuren */
   --color-success: #28a745;
   --color-success-hover: #155724;
+
+  --button-line-height: 1.5;
 }
 
 body {
     color: var(--color-text);
     background-color: #FBFAF8;
+}
+
+.fnd-page,
+.fnd-page__elementor-content {
+    background: transparent;
 }
 
 html, body {
@@ -62,19 +70,87 @@ p {
     color: var(--color-text);
 }
 
-li {
-    font-family: Poppins;
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(ul, ol),
+:where(ul, ol).wp-block-list,
+:where(ul, ol):not([class]) {
+    margin: 0 0 1em;
+    padding-left: 1.35em;
+    font-family: 'Poppins', sans-serif;
     font-size: 15px;
-    font-weight: 400; 
+    font-weight: 400;
+    line-height: 1.65;
     color: var(--color-text);
-    margin: 0 5px;
-    padding: 0;
-    list-style-type: disc;
 }
 
-ul {
-    margin-top: 15px; 
-    margin-bottom: 15px;
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(ul),
+ul.wp-block-list,
+ul:not([class]) {
+    list-style: disc outside;
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(ol),
+ol.wp-block-list,
+ol:not([class]) {
+    list-style: decimal outside;
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(li),
+:where(ul, ol).wp-block-list li,
+:where(ul, ol):not([class]) li {
+    margin: 0;
+    padding-left: 0.25em;
+    color: var(--color-text);
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(li + li),
+:where(ul, ol).wp-block-list li + li,
+:where(ul, ol):not([class]) li + li {
+    margin-top: 0.25em;
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(li)::marker,
+:where(ul, ol).wp-block-list li::marker,
+:where(ul, ol):not([class]) li::marker {
+    color: #333;
+    font-weight: 400;
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(li > ul, li > ol),
+:where(ul, ol).wp-block-list li > :where(ul, ol),
+:where(ul, ol):not([class]) li > :where(ul, ol) {
+    margin-top: 0.35em;
+    margin-bottom: 0;
+    padding-left: 1.25em;
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(p + ul, p + ol),
+p + :where(ul, ol).wp-block-list,
+p + :where(ul, ol):not([class]) {
+    margin-top: -0.35em;
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(ul ul),
+ul.wp-block-list ul,
+ul:not([class]) ul {
+    list-style-type: circle;
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(ul ul ul),
+ul.wp-block-list ul ul,
+ul:not([class]) ul ul {
+    list-style-type: square;
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(ol ol),
+ol.wp-block-list ol,
+ol:not([class]) ol {
+    list-style-type: lower-alpha;
+}
+
+:where(.entry-content, .page-content, .elementor-widget-text-editor, .opdrachten-landing__content, .sj-content) :where(ol ol ol),
+ol.wp-block-list ol ol,
+ol:not([class]) ol ol {
+    list-style-type: lower-roman;
 }
 
 h1, h2, h3, h4, h5 {
@@ -107,24 +183,44 @@ a:hover {
 }
 
 .elementor-button,
+.button,
+.wp-block-button__link,
 button,
-input[type="submit"] {
+input[type="submit"],
+input[type="button"],
+input[type="reset"] {
     border-radius: 8px;
     background-color: #0458AB;
     color: #ffffff;
     border: 1.5px solid #0458AB;
-    padding: 8px 20px;
-    font-family: 'Poppins', sans-serif;
+    padding: 8px 20px !important;
+    font-family: 'Roboto', sans-serif !important;
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 700 !important;
+    line-height: var(--button-line-height);
     cursor: pointer;
     text-decoration: none;
     transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
+.elementor-button *,
+.button *,
+.wp-block-button__link *,
+button *,
+input[type="submit"] *,
+input[type="button"] *,
+input[type="reset"] * {
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 700 !important;
+}
+
 .elementor-button:hover,
+.button:hover,
+.wp-block-button__link:hover,
 button:hover,
-input[type="submit"]:hover {
+input[type="submit"]:hover,
+input[type="button"]:hover,
+input[type="reset"]:hover {
     transform: translateY(-1px);
     background-color: #034085;
     border-color: #034085;
@@ -216,7 +312,7 @@ input[type="submit"]:hover {
   justify-content: center;
 }
 
-.fnd-hero__breadcrumbs { margin-bottom: 12px; }
+.fnd-hero__breadcrumbs { margin-bottom: clamp(14px, 1.6vw, 20px); }
 
 .fnd-hero__breadcrumb-nav,
 .fnd-hero__breadcrumb-nav span,
@@ -234,61 +330,73 @@ input[type="submit"]:hover {
   font-size: 24px;
   line-height: 1.05;
   color: #ffffff;
-  margin: 0 0 16px;
+  margin: 0 0 clamp(18px, 2.2vw, 26px);
 }
 
 .fnd-hero__intro {
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: clamp(15px, 1.05vw, 17px);
   font-weight: 300;
-  line-height: 1.6;
+  line-height: 1.75;
   color: rgba(255, 255, 255, 0.9);
-  margin: 0 0 28px;
-  max-width: 90%;
+  margin: 0;
+  max-width: min(90%, 720px);
 }
 
 .fnd-hero__actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 18px;
+  align-items: center;
+  gap: 16px 20px;
+  margin-top: clamp(24px, 2.5vw, 34px);
+  margin-bottom: 0;
 }
 
 .fnd-hero__btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 18px;
-  border-radius: 5px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 8px 20px !important;
+  border: 2px solid transparent;
+  border-radius: 7px;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px;
+  font-weight: 700 !important;
+  line-height: var(--button-line-height);
+  white-space: nowrap;
+  box-sizing: border-box;
   text-decoration: none !important;
   transition: background .15s ease, border-color .15s ease, transform .15s ease;
 }
 
+.fnd-hero__btn * {
+  font-family: 'Roboto', sans-serif !important;
+  font-weight: 700 !important;
+}
+
 .fnd-hero__btn--primary {
-  background-color: #80D424;
-  border: 2px solid #80D424;
+  background-color: #6db81e !important;
+  border: 2px solid #6db81e !important;
   color: #ffffff !important;
 }
 
 .fnd-hero__btn--primary:hover {
-  background-color: #6db81e;
-  border-color: #6db81e;
+  background-color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
   transform: translateY(-1px);
 }
 
 .fnd-hero__btn--secondary {
-  background-color: transparent;
-  border: none;
+  background-color: var(--color-tertiary);
+  border-color: var(--color-tertiary);
   color: #ffffff !important;
   text-decoration: none !important;
 }
 
 .fnd-hero__btn--secondary:hover {
-  background-color: transparent;
-  opacity: 0.8;
+  background-color: var(--color-tertiary-dk);
+  border-color: var(--color-tertiary-dk);
+  transform: translateY(-1px);
 }
 
 .fnd-hero__contact {
@@ -350,10 +458,15 @@ input[type="submit"]:hover {
 
   .fnd-hero__left-main { padding: 36px 20px !important; }
   .fnd-hero__intro { max-width: 100% !important; }
-  .fnd-hero__actions { flex-direction: column !important; }
+  .fnd-hero__actions {
+    flex-direction: column !important;
+    gap: 12px !important;
+    margin-top: 24px !important;
+  }
 
   .fnd-hero__btn {
     width: 100% !important;
+    min-height: 50px !important;
     justify-content: center !important;
   }
 

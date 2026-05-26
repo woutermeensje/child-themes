@@ -92,6 +92,43 @@ add_action('wp_enqueue_scripts', function () {
             true
         );
     }
+
+    if (file_exists(get_stylesheet_directory() . '/css/sectoren-carousel.css')) {
+        wp_enqueue_style(
+            'mh-sectoren-carousel',
+            get_stylesheet_directory_uri() . '/css/sectoren-carousel.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/sectoren-carousel.css')
+        );
+    }
+
+    if (file_exists(get_stylesheet_directory() . '/css/intro-blok.css')) {
+        wp_enqueue_style(
+            'mh-intro-blok',
+            get_stylesheet_directory_uri() . '/css/intro-blok.css',
+            ['child-style', 'mh-buttons'],
+            filemtime(get_stylesheet_directory() . '/css/intro-blok.css')
+        );
+    }
+
+    if (file_exists(get_stylesheet_directory() . '/css/job-manager.css')) {
+        wp_enqueue_style(
+            'mh-job-manager',
+            get_stylesheet_directory_uri() . '/css/job-manager.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/job-manager.css')
+        );
+    }
+
+    if (file_exists(get_stylesheet_directory() . '/js/sectoren-carousel.js')) {
+        wp_enqueue_script(
+            'mh-sectoren-carousel',
+            get_stylesheet_directory_uri() . '/js/sectoren-carousel.js',
+            [],
+            filemtime(get_stylesheet_directory() . '/js/sectoren-carousel.js'),
+            true
+        );
+    }
 });
 
 /**
@@ -500,4 +537,205 @@ add_shortcode('modulaire_units_kopen_overzicht', function ($atts) {
 add_shortcode('modulaire_units_huren_overzicht', function ($atts) {
     $atts = shortcode_atts(['columns' => 3], $atts, 'modulaire_units_huren_overzicht');
     return mh_render_units_grid('huren', max(1, min(6, intval($atts['columns']))));
+});
+
+/**
+ * =====================================================================
+ * INTRO BLOK — [mh_intro_blok]
+ * Attributen: title, text, btn1_label, btn1_url, btn1_style,
+ *             btn2_label, btn2_url, btn2_style
+ * Knoppen styles: accent | outline | nav-contact | nav-quote
+ * =====================================================================
+ */
+add_shortcode('mh_intro_blok', function ($atts): string {
+    $atts = shortcode_atts([
+        'title'      => '',
+        'text'       => '',
+        'btn1_label' => 'Over Ons',
+        'btn1_url'   => 'https://modulairehuisvesting.nl/over-ons/',
+        'btn1_style' => 'accent',
+        'btn2_label' => 'Veelgestelde Vragen',
+        'btn2_url'   => 'https://modulairehuisvesting.nl/faq/',
+        'btn2_style' => 'nav-contact',
+    ], $atts, 'mh_intro_blok');
+
+    ob_start();
+    ?>
+    <div class="mh-intro-blok">
+        <?php if ($atts['title']) : ?>
+            <h2 class="mh-intro-blok__title"><?php echo esc_html($atts['title']); ?></h2>
+        <?php endif; ?>
+
+        <?php if ($atts['text']) : ?>
+            <p class="mh-intro-blok__text"><?php echo esc_html($atts['text']); ?></p>
+        <?php endif; ?>
+
+        <?php if ($atts['btn1_label'] || $atts['btn2_label']) : ?>
+            <div class="mh-intro-blok__actions">
+                <?php if ($atts['btn1_label'] && $atts['btn1_url']) : ?>
+                    <a href="<?php echo esc_url($atts['btn1_url']); ?>"
+                       class="mh-btn mh-btn--<?php echo esc_attr($atts['btn1_style']); ?>">
+                        <?php echo esc_html($atts['btn1_label']); ?>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($atts['btn2_label'] && $atts['btn2_url']) : ?>
+                    <a href="<?php echo esc_url($atts['btn2_url']); ?>"
+                       class="mh-btn mh-btn--<?php echo esc_attr($atts['btn2_style']); ?>">
+                        <?php echo esc_html($atts['btn2_label']); ?>
+                    </a>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
+    </div>
+    <?php
+    return (string) ob_get_clean();
+});
+
+/**
+ * =====================================================================
+ * SECTOREN CAROUSEL — [mh_sectoren_carousel]
+ * Beheer labels via WP-admin → Instellingen → Sectoren Carousel
+ * =====================================================================
+ */
+
+function mh_sectoren_defaults(): array {
+    return [
+        'bouw'                   => 'Bouw',
+        'onderwijs'              => 'Onderwijs',
+        'tijdelijke-huisvesting' => 'Tijdelijke huisvesting',
+        'kinderopvang'           => 'Kinderopvang',
+        'ouderenzorg'            => 'Ouderenzorg',
+        'logistiek-transport'    => 'Logistiek & Transport',
+        'defensie'               => 'Defensie',
+        'gezondheidszorg'        => 'Gezondheidszorg',
+        'overheid'               => 'Overheid',
+        'semi-overheid'          => 'Semi Overheid',
+    ];
+}
+
+function mh_get_sectoren(): array {
+    $saved = get_option('mh_sectoren_labels', []);
+    return array_merge(mh_sectoren_defaults(), is_array($saved) ? $saved : []);
+}
+
+function mh_sectoren_icons(): array {
+    $s = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+    return [
+        'bouw' => "<svg $s><path d='M4 10a8 8 0 0 1 16 0'/><rect x='2' y='10' width='20' height='3' rx='1'/><path d='M12 2v8'/><path d='M3 21h18'/><path d='M7 13v8'/><path d='M17 13v8'/></svg>",
+        'onderwijs' => "<svg $s><path d='M22 10 12 4 2 10l10 5 10-5z'/><path d='M6 12.5V17c2 1.3 4.5 2 6 2s4-.7 6-2v-4.5'/><line x1='22' y1='10' x2='22' y2='15'/></svg>",
+        'tijdelijke-huisvesting' => "<svg $s><path d='m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/><polyline points='9 22 9 12 15 12 15 22'/></svg>",
+        'kinderopvang' => "<svg $s><path d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/><circle cx='9' cy='7' r='4'/><path d='M23 21v-2a4 4 0 0 0-3-3.87'/><path d='M16 3.13a4 4 0 0 1 0 7.75'/></svg>",
+        'ouderenzorg' => "<svg $s><path d='M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z'/></svg>",
+        'logistiek-transport' => "<svg $s><rect x='1' y='3' width='15' height='13'/><polygon points='16 8 20 8 23 11 23 16 16 16 16 8'/><circle cx='5.5' cy='18.5' r='2.5'/><circle cx='18.5' cy='18.5' r='2.5'/></svg>",
+        'defensie' => "<svg $s><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>",
+        'gezondheidszorg' => "<svg $s><polyline points='22 12 18 12 15 21 9 3 6 12 2 12'/></svg>",
+        'overheid' => "<svg $s><line x1='3' y1='22' x2='21' y2='22'/><line x1='3' y1='11' x2='21' y2='11'/><polygon points='12 2 3 11 21 11'/><line x1='7' y1='11' x2='7' y2='22'/><line x1='12' y1='11' x2='12' y2='22'/><line x1='17' y1='11' x2='17' y2='22'/></svg>",
+        'semi-overheid' => "<svg $s><path d='M3 22h18'/><rect x='4' y='10' width='16' height='12' rx='1'/><path d='M4 10l8-7 8 7'/><path d='M10 22v-7h4v7'/><path d='M12 3v3'/><path d='M10.5 4.5h3'/></svg>",
+    ];
+}
+
+/**
+ * Settings API – registreer opties
+ */
+add_action('admin_init', function () {
+    register_setting('mh_sectoren_group', 'mh_sectoren_labels', [
+        'sanitize_callback' => function ($input) {
+            if (!is_array($input)) return [];
+            $clean = [];
+            foreach (mh_sectoren_defaults() as $key => $default) {
+                $clean[$key] = isset($input[$key]) ? sanitize_text_field($input[$key]) : $default;
+            }
+            return $clean;
+        },
+    ]);
+});
+
+/**
+ * Admin menu – pagina onder Instellingen
+ */
+add_action('admin_menu', function () {
+    add_options_page(
+        'Sectoren Carousel',
+        'Sectoren Carousel',
+        'manage_options',
+        'mh-sectoren',
+        'mh_sectoren_settings_page'
+    );
+});
+
+function mh_sectoren_settings_page(): void {
+    if (!current_user_can('manage_options')) return;
+    $labels = mh_get_sectoren();
+    $icons  = mh_sectoren_icons();
+    ?>
+    <div class="wrap">
+        <h1>Sectoren Carousel</h1>
+        <p>Pas hier de labels aan van de sectoren die worden getoond in de <code>[mh_sectoren_carousel]</code> shortcode.</p>
+        <form method="post" action="options.php">
+            <?php settings_fields('mh_sectoren_group'); ?>
+            <table class="form-table" role="presentation">
+                <tbody>
+                <?php foreach ($labels as $key => $label) : ?>
+                    <tr>
+                        <th scope="row">
+                            <span style="display:inline-flex;align-items:center;gap:10px;">
+                                <span style="width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;color:#25476b;flex-shrink:0;">
+                                    <?php echo $icons[$key] ?? ''; ?>
+                                </span>
+                                <code style="font-size:12px;"><?php echo esc_html($key); ?></code>
+                            </span>
+                        </th>
+                        <td>
+                            <input
+                                type="text"
+                                name="mh_sectoren_labels[<?php echo esc_attr($key); ?>]"
+                                value="<?php echo esc_attr($label); ?>"
+                                class="regular-text"
+                            >
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+            <?php submit_button('Wijzigingen opslaan'); ?>
+        </form>
+    </div>
+    <?php
+}
+
+/**
+ * Shortcode: [mh_sectoren_carousel]
+ */
+add_shortcode('mh_sectoren_carousel', function (): string {
+    $sectoren = mh_get_sectoren();
+    $icons    = mh_sectoren_icons();
+    $fallback = reset($icons);
+
+    ob_start();
+    ?>
+    <div class="mh-sectoren-carousel">
+        <div class="mh-sectoren-carousel__track-wrapper">
+            <div class="mh-sectoren-carousel__track">
+                <?php foreach ($sectoren as $key => $label) : ?>
+                    <div class="mh-sectoren-carousel__item">
+                        <span class="mh-sectoren-carousel__icon-wrap">
+                            <?php echo $icons[$key] ?? $fallback; ?>
+                        </span>
+                        <span class="mh-sectoren-carousel__label"><?php echo esc_html($label); ?></span>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
+        <div class="mh-sectoren-carousel__nav">
+            <button class="mh-sectoren-carousel__btn mh-sectoren-carousel__btn--prev" type="button" aria-label="Vorige sectoren">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="mh-sectoren-carousel__btn mh-sectoren-carousel__btn--next" type="button" aria-label="Volgende sectoren">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+        </div>
+    </div>
+    <?php
+    return (string) ob_get_clean();
 });

@@ -404,7 +404,7 @@ Text Domain: modulairehuisvesting
   font-family: 'Poppins', sans-serif;
   font-size: 14px;
   transition: background 0.12s;
-  user-select: none;
+  
 }
 
 .mh-units-catalog__select-option:hover {
@@ -608,7 +608,7 @@ Text Domain: modulairehuisvesting
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.94);
   box-shadow: 0 14px 34px rgba(37, 71, 107, 0.08);
-  backdrop-filter: blur(6px);
+  
 }
 
 .mh-process__meta {
@@ -1105,8 +1105,6 @@ Text Domain: modulairehuisvesting
   color: #333 !important;
   font-family: 'Poppins', sans-serif !important;
   font-size: 14px !important;
-  transition: background 0.12s !important;
-  user-select: none;
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;

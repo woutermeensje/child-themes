@@ -11,8 +11,7 @@ $contact_phone  = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 204
 $contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhuren.com';
 ?>
 
-<main id="content" <?php post_class('fnd-page'); ?>>
-    <section class="fnd-hero">
+<section class="fnd-hero">
 
         <div class="fnd-hero__left">
 
@@ -61,4 +60,3 @@ $contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhure
         </div>
 
     </section>
-</main>
