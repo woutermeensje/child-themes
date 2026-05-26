@@ -503,7 +503,7 @@ a.title-link:hover h2 {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    color: var(--color-primary);
+    color: var(--color-secondary);
 }
 
 .job-card-meta__text,
