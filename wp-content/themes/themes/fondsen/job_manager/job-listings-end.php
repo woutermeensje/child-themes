@@ -24,18 +24,43 @@ $get_banner_url = static function ($title) {
         'title'          => $title,
     ]);
 
+    if (empty($banner_posts)) {
+        $slug_candidates = array_values(array_unique(array_filter([
+            $title,
+            sanitize_title($title),
+            sanitize_title(str_replace(['.', '_'], '-', $title)),
+        ])));
+
+        $banner_posts = get_posts([
+            'post_type'      => 'attachment',
+            'post_status'    => 'inherit',
+            'posts_per_page' => 1,
+            'post_name__in'  => $slug_candidates,
+        ]);
+    }
+
     return !empty($banner_posts) ? wp_get_attachment_url($banner_posts[0]->ID) : '';
 };
 
 $marketing_blocks = [
+    [
+        'eyebrow'     => 'Partner van Fondsen.org',
+        'title'       => 'Teammate.nl - Recruitment Specialist voor Non Profits',
+        'description' => 'Teammate.nl verbindt non-profits met professionals die werk met impact zoeken.',
+        'button'      => 'Contact opnemen',
+        'url'         => 'https://teammate.nl/recruitment-non-profit/',
+        'image_title' => 'Teammate.nl-partner',
+        'gradient'    => 'linear-gradient(135deg,#055D92 0%,#0884CC 100%)',
+    ],
     [
         'eyebrow'     => 'Voor werkzoekenden',
         'title'       => 'Sluit je aan bij de non-profit community van Fondsen.org',
         'description' => 'Maak een account aan, bewaar interessante vacatures en blijf zichtbaar voor organisaties die mensen zoeken met hart voor maatschappelijke impact.',
         'button'      => 'Gratis account aanmaken',
         'url'         => 'https://platform.fondsen.org/registreren',
-        'image_title' => 'fondsen.org-community',
+        'image_title' => 'fondsen-marketing',
         'gradient'    => 'linear-gradient(135deg,#FF8C2C 0%,#055D92 100%)',
+        'class'       => 'fn-banner--fondsen-marketing',
     ],
 ];
 
@@ -48,6 +73,9 @@ foreach ($marketing_blocks as $block) {
         ? 'background-image:url(\'' . esc_url($banner_url) . '\');background-size:cover;background-position:center top;'
         : 'background:' . esc_attr($gradient) . ';';
     $banner_class = $banner_url ? 'fn-banner' : 'fn-banner fn-banner--no-image';
+    if (!empty($block['class'])) {
+        $banner_class .= ' ' . sanitize_html_class($block['class']);
+    }
 
     $marketing_html[] = '
 <div class="' . esc_attr($banner_class) . '">
@@ -191,6 +219,14 @@ li.fn-marketing-block {
         115deg,
         rgba(5, 93, 146, 0.62) 0%,
         rgba(8, 132, 204, 0.26) 100%
+    );
+}
+
+.fn-banner--fondsen-marketing .fn-banner__overlay {
+    background: linear-gradient(
+        115deg,
+        rgba(5, 93, 146, 0.52) 0%,
+        rgba(8, 132, 204, 0.28) 100%
     );
 }
 
