@@ -225,8 +225,8 @@ li.fn-marketing-block {
 .fn-banner--fondsen-marketing .fn-banner__overlay {
     background: linear-gradient(
         115deg,
-        rgba(5, 93, 146, 0.52) 0%,
-        rgba(8, 132, 204, 0.28) 100%
+        rgba(5, 93, 146, 0.62) 0%,
+        rgba(8, 132, 204, 0.38) 100%
     );
 }
 
