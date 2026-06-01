@@ -29,21 +29,12 @@ $get_banner_url = static function ($title) {
 
 $marketing_blocks = [
     [
-        'eyebrow'     => 'Partner van Fondsen.org',
-        'title'       => 'Teammate.nl - Recruitment Specialist voor Non Profits',
-        'description' => 'Teammate.nl verbindt non-profits met professionals die werk met impact zoeken.',
-        'button'      => 'Contact opnemen',
-        'url'         => 'https://teammate.nl/recruitment-non-profit/',
-        'image_title' => 'Teammate.nl-partner',
-        'gradient'    => 'linear-gradient(135deg,#055D92 0%,#0884CC 100%)',
-    ],
-    [
-        'eyebrow'     => 'Fondsen.org platform',
-        'title'       => 'Fondsenwerving platform',
-        'description' => 'Plaats jouw oproep voor fondsen, donaties of geefacties op het platform van Fondsen.org.',
-        'button'      => 'Account aanmaken',
+        'eyebrow'     => 'Voor werkzoekenden',
+        'title'       => 'Sluit je aan bij de non-profit community van Fondsen.org',
+        'description' => 'Maak een account aan, bewaar interessante vacatures en blijf zichtbaar voor organisaties die mensen zoeken met hart voor maatschappelijke impact.',
+        'button'      => 'Gratis account aanmaken',
         'url'         => 'https://platform.fondsen.org/registreren',
-        'image_title' => 'fondsen.org-fondsenwerving',
+        'image_title' => 'fondsen.org-community',
         'gradient'    => 'linear-gradient(135deg,#FF8C2C 0%,#055D92 100%)',
     ],
 ];
@@ -52,9 +43,10 @@ $marketing_html = [];
 
 foreach ($marketing_blocks as $block) {
     $banner_url = $get_banner_url($block['image_title']);
+    $gradient   = !empty($block['gradient']) ? $block['gradient'] : '#0884CC';
     $bg_style   = $banner_url
         ? 'background-image:url(\'' . esc_url($banner_url) . '\');background-size:cover;background-position:center top;'
-        : 'background:#0884CC;';
+        : 'background:' . esc_attr($gradient) . ';';
     $banner_class = $banner_url ? 'fn-banner' : 'fn-banner fn-banner--no-image';
 
     $marketing_html[] = '
