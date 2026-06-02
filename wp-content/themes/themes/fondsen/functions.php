@@ -40,6 +40,50 @@ add_filter('query_vars', function ( $vars ) {
     return $vars;
 });
 
+if ( ! function_exists('fondsen_get_existing_vacatures_page') ) {
+    function fondsen_get_existing_vacatures_page( $slug ) {
+        $slug = sanitize_title((string) $slug);
+        if ( $slug === '' ) {
+            return null;
+        }
+
+        $page = get_page_by_path('vacatures/' . $slug, OBJECT, 'page');
+        if ( ! $page instanceof WP_Post ) {
+            return null;
+        }
+
+        $status          = get_post_status($page);
+        $public_statuses = get_post_stati(['public' => true]);
+
+        if ( in_array($status, $public_statuses, true) || $status === 'private' ) {
+            return $page;
+        }
+
+        return null;
+    }
+}
+
+// Let real pages like /vacatures/natuurmonumenten/ win over generated filter URLs.
+add_filter('request', function ( $query_vars ) {
+    if (
+        empty($query_vars['vacatures_filter']) ||
+        empty($query_vars['pagename']) ||
+        trim((string) $query_vars['pagename'], '/') !== 'vacatures'
+    ) {
+        return $query_vars;
+    }
+
+    $slug = sanitize_title((string) $query_vars['vacatures_filter']);
+    if ( ! fondsen_get_existing_vacatures_page($slug) ) {
+        return $query_vars;
+    }
+
+    unset($query_vars['vacatures_filter']);
+    $query_vars['pagename'] = 'vacatures/' . $slug;
+
+    return $query_vars;
+});
+
 add_action('after_switch_theme', function () {
     fondsen_register_filter_rewrites();
     flush_rewrite_rules(false);
