@@ -399,6 +399,16 @@ input[type="reset"]:hover {
   transform: translateY(-1px);
 }
 
+.fnd-hero__account-note {
+  max-width: min(90%, 620px);
+  margin: 14px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+}
+
 .fnd-hero__contact {
   flex: 1;
   background: #ffffff;

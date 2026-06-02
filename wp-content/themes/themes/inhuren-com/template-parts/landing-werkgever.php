@@ -9,8 +9,9 @@ $intro           = has_excerpt($page_id) ? get_the_excerpt($page_id)
                  : 'Inhuren.com is hét platform voor werkgevers die snel de juiste freelancer of ZZP\'er zoeken. Bereik duizenden professionals en vind de perfecte match voor uw opdracht.';
 $primary_label   = 'Informatie aanvragen';
 $primary_url     = home_url('/informatie-aanvragen/');
-$secondary_label = '';
-$secondary_url   = '';
+$secondary_label = 'Account aanmaken';
+$secondary_url   = 'https://platform.inhuren.com/werkgever/registreren';
+$account_note    = 'Maak een account aan en bekijk alle tarieven en voorwaarden van Inhuren.com en geef direct jouw opdracht door.';
 $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhuren.com';
 ?>
@@ -44,6 +45,10 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhur
                         </a>
                     <?php endif; ?>
                 </div>
+
+                <?php if ($account_note) : ?>
+                    <p class="fnd-hero__account-note"><?php echo esc_html($account_note); ?></p>
+                <?php endif; ?>
 
             </div>
 

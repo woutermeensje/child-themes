@@ -222,7 +222,7 @@ add_shortcode('inhuren_info_form', function ($atts) {
                 <div class="iif-field">
                     <label id="<?php echo esc_attr($form_id); ?>-bericht-label" for="<?php echo esc_attr($form_id); ?>-bericht-fallback">Bericht <span>*</span></label>
                     <div class="iif-richtext" id="<?php echo esc_attr($form_id); ?>-bericht-editor" data-iif-editor aria-labelledby="<?php echo esc_attr($form_id); ?>-bericht-label"></div>
-                    <textarea class="iif-message-fallback" id="<?php echo esc_attr($form_id); ?>-bericht-fallback" name="bericht_plain" rows="7" required placeholder="Omschrijf kort je vraag of aanvraag."></textarea>
+                    <textarea class="iif-message-fallback" id="<?php echo esc_attr($form_id); ?>-bericht-fallback" name="bericht_plain" rows="7" required placeholder="Omschrijf kort je vraag of aanvraag." data-iif-fallback></textarea>
                     <input type="hidden" name="bericht" data-iif-message>
                 </div>
 
