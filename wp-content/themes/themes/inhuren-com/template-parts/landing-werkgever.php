@@ -11,7 +11,7 @@ $primary_label   = 'Informatie aanvragen';
 $primary_url     = home_url('/informatie-aanvragen/');
 $secondary_label = 'Account aanmaken';
 $secondary_url   = 'https://platform.inhuren.com/werkgever/registreren';
-$account_note    = 'Maak een account aan en bekijk alle tarieven en voorwaarden van Inhuren.com en geef direct jouw opdracht door.';
+$account_note    = 'Maak een account aan, bekijk de tarieven en voorwaarden en geef direct je opdracht door.';
 $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhuren.com';
 ?>
