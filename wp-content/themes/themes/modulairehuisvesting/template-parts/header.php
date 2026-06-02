@@ -12,22 +12,6 @@ $logo_url      = get_stylesheet_directory_uri() . $logo_rel_path;
 
 <header id="mh-header" class="mh-header" role="banner">
 
-    <!-- Blauwe topbalk -->
-    <div class="mh-topbar">
-        <div class="mh-topbar__inner">
-            <div class="mh-topbar__left">
-                <a href="<?php echo esc_url(home_url('/nieuw/')); ?>">Nieuw</a>
-                <span class="mh-topbar__divider">|</span>
-                <a href="<?php echo esc_url(home_url('/gebruikt/')); ?>">Gebruikt</a>
-            </div>
-            <div class="mh-topbar__right">
-                <a href="tel:0852392040">085 239 2040</a>
-                <span class="mh-topbar__divider">|</span>
-                <a href="mailto:informatie@modulairehuisvesting.nl">informatie@modulairehuisvesting.nl</a>
-            </div>
-        </div>
-    </div>
-
     <div class="mh-header__inner">
         <div class="mh-header__brand">
             <?php if ( file_exists( $logo_abs_path ) ) : ?>
