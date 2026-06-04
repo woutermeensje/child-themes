@@ -33,22 +33,34 @@ add_action('init', function () {
 });
 
 /**
- * Plan de wekelijkse nieuwsbrief-cron (donderdag 14:00).
- * Migratie: verwijder de oude maandag-planning en plan opnieuw op donderdag.
+ * Voeg tweewekelijks interval toe aan WP Cron.
+ */
+add_filter('cron_schedules', function (array $schedules): array {
+    if (!isset($schedules['biweekly'])) {
+        $schedules['biweekly'] = [
+            'interval' => 14 * DAY_IN_SECONDS,
+            'display'  => 'Eén keer per twee weken',
+        ];
+    }
+    return $schedules;
+});
+
+/**
+ * Migratie: verwijder de wekelijkse planning en plan opnieuw tweewekelijks (donderdag 14:00).
  */
 add_action('init', function () {
-    if (!get_option('sj_newsletter_thursday_schedule_v1')) {
+    if (!get_option('sj_newsletter_biweekly_v1')) {
         wp_clear_scheduled_hook('sj_newsletter_weekly');
-        wp_schedule_event(strtotime('next thursday 14:00:00'), 'weekly', 'sj_newsletter_weekly');
-        update_option('sj_newsletter_thursday_schedule_v1', true);
+        wp_schedule_event(strtotime('next thursday 14:00:00'), 'biweekly', 'sj_newsletter_weekly');
+        update_option('sj_newsletter_biweekly_v1', true);
     } elseif (!wp_next_scheduled('sj_newsletter_weekly')) {
-        wp_schedule_event(strtotime('next thursday 14:00:00'), 'weekly', 'sj_newsletter_weekly');
+        wp_schedule_event(strtotime('next thursday 14:00:00'), 'biweekly', 'sj_newsletter_weekly');
     }
 });
 
 add_action('after_switch_theme', function () {
     if (!wp_next_scheduled('sj_newsletter_weekly')) {
-        wp_schedule_event(strtotime('next thursday 14:00:00'), 'weekly', 'sj_newsletter_weekly');
+        wp_schedule_event(strtotime('next thursday 14:00:00'), 'biweekly', 'sj_newsletter_weekly');
     }
 });
 
@@ -79,7 +91,7 @@ function sj_get_all_new_vacatures(int $max = 15): array {
         'orderby'        => 'date',
         'order'          => 'DESC',
         'date_query'     => [
-            ['after' => '7 days ago', 'inclusive' => true],
+            ['after' => '14 days ago', 'inclusive' => true],
         ],
     ]);
 
