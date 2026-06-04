@@ -40,7 +40,7 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhur
                     <?php endif; ?>
 
                     <?php if ($secondary_label && $secondary_url) : ?>
-                        <a class="fnd-hero__btn fnd-hero__btn--secondary" href="<?php echo esc_url($secondary_url); ?>">
+                        <a class="fnd-hero__btn fnd-hero__btn--secondary" href="<?php echo esc_url($secondary_url); ?>" target="_blank" rel="noopener noreferrer">
                             <?php echo esc_html($secondary_label); ?>
                         </a>
                     <?php endif; ?>
