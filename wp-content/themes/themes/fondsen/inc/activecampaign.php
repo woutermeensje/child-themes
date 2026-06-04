@@ -47,15 +47,38 @@ function fn_ac_request(string $method, string $endpoint, array $body = []): ?arr
 }
 
 /**
+ * Schrijf een job alert abonnee in bij ActiveCampaign (lijst 7).
+ */
+function fn_ac_subscribe_job_alert(string $voornaam, string $email, array $sector_slugs): bool {
+    $list_id = defined('FONDSEN_AC_JOB_ALERT_LIST_ID') ? (int) FONDSEN_AC_JOB_ALERT_LIST_ID : 7;
+
+    $result = fn_ac_request('POST', 'contact/sync', [
+        'contact' => ['email' => $email, 'firstName' => $voornaam],
+    ]);
+
+    if (empty($result['contact']['id'])) {
+        error_log('[Fondsen AC] Contact sync mislukt voor: ' . $email);
+        return false;
+    }
+
+    $contact_id = (int) $result['contact']['id'];
+
+    fn_ac_request('POST', 'contactLists', [
+        'contactList' => [
+            'list'    => $list_id,
+            'contact' => $contact_id,
+            'status'  => 1,
+        ],
+    ]);
+
+    return true;
+}
+
+/**
  * Schrijf een nieuwsbrief-abonnee in bij ActiveCampaign.
  */
 function fn_ac_subscribe_newsletter(string $voornaam, string $email): bool {
-    $list_id = defined('FONDSEN_AC_NEWSLETTER_LIST_ID') ? (int) FONDSEN_AC_NEWSLETTER_LIST_ID : 0;
-
-    if (!$list_id) {
-        error_log('[Fondsen AC] FONDSEN_AC_NEWSLETTER_LIST_ID niet geconfigureerd.');
-        return false;
-    }
+    $list_id = defined('FONDSEN_AC_NEWSLETTER_LIST_ID') ? (int) FONDSEN_AC_NEWSLETTER_LIST_ID : 8;
 
     $result = fn_ac_request('POST', 'contact/sync', [
         'contact' => ['email' => $email, 'firstName' => $voornaam],
@@ -81,12 +104,7 @@ function fn_ac_subscribe_newsletter(string $voornaam, string $email): bool {
  * Maak een ActiveCampaign message + campaign aan en verstuur naar de nieuwsbrief-lijst.
  */
 function fn_ac_send_newsletter_campaign(array $vacatures): bool {
-    $list_id = defined('FONDSEN_AC_NEWSLETTER_LIST_ID') ? (int) FONDSEN_AC_NEWSLETTER_LIST_ID : 0;
-
-    if (!$list_id) {
-        error_log('[Fondsen AC] FONDSEN_AC_NEWSLETTER_LIST_ID niet geconfigureerd.');
-        return false;
-    }
+    $list_id = defined('FONDSEN_AC_NEWSLETTER_LIST_ID') ? (int) FONDSEN_AC_NEWSLETTER_LIST_ID : 8;
 
     $week_nr = date('W');
     $jaar    = date('Y');

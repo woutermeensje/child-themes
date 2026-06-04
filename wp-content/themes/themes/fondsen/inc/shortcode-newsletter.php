@@ -62,51 +62,60 @@ function fn_nieuwsbrief_shortcode(): string {
 
     if ($success): ?>
 
-    <div style="background:#E7F4FB;border:1px solid #0884CC;border-radius:6px;padding:20px 24px;display:flex;gap:12px;align-items:flex-start;max-width:540px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="#0884CC" aria-hidden="true" style="flex-shrink:0;margin-top:2px;"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
-        <div>
-            <strong style="color:#0884CC;">Je bent aangemeld!</strong>
-            <p style="margin:4px 0 0;color:#333;font-size:14px;">Je ontvangt elke twee weken de nieuwste vacatures op Fondsen.org. Check ook je spammap.</p>
+    <div style="max-width:600px;background:#ffffff;border:1px solid #dedede;border-radius:5px;padding:32px;">
+        <div style="background:#E7F4FB;border:1px solid #0884CC;border-radius:5px;padding:20px 24px;display:flex;gap:12px;align-items:flex-start;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 256 256" fill="#0884CC" aria-hidden="true" style="flex-shrink:0;margin-top:2px;"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
+            <div>
+                <strong style="color:#0884CC;">Je bent aangemeld!</strong>
+                <p style="margin:4px 0 0;color:#333;font-size:14px;">Je ontvangt elke twee weken de nieuwste vacatures op Fondsen.org. Check ook je spammap.</p>
+            </div>
         </div>
     </div>
 
     <?php else: ?>
 
-    <?php if (!empty($errors)): ?>
-    <div style="background:#fff3f3;border:1px solid #d63638;border-radius:6px;padding:16px 20px;margin-bottom:16px;max-width:540px;">
-        <strong style="color:#d63638;">Controleer de volgende velden:</strong>
-        <ul style="margin:8px 0 0;padding-left:18px;color:#333;font-size:14px;">
-            <?php foreach ($errors as $e): ?>
-                <li><?php echo esc_html($e); ?></li>
-            <?php endforeach; ?>
-        </ul>
-    </div>
-    <?php endif; ?>
+    <div style="max-width:600px;background:#ffffff;border:1px solid #dedede;border-radius:5px;padding:32px;">
 
-    <form method="post" style="max-width:540px;" novalidate>
-        <?php wp_nonce_field('fn_nieuwsbrief', 'fn_nl_nonce'); ?>
+        <h3 style="margin:0 0 4px;font-size:20px;color:#0884CC;">Vacature Nieuwsbrief — Fondsen.org</h3>
+        <p style="margin:0 0 24px;font-size:14px;color:#6B7280;">Ontvang elke twee weken de nieuwste vacatures in je inbox.</p>
 
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
-            <div>
-                <label style="display:block;font-size:14px;font-weight:600;margin-bottom:4px;color:#333;" for="fn_nl_voornaam">Voornaam <span style="color:#d63638;">*</span></label>
-                <input type="text" name="voornaam" id="fn_nl_voornaam"
-                       value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>"
-                       style="width:100%;padding:10px 12px;border:1px solid #E0E0E0;border-radius:4px;font-size:14px;box-sizing:border-box;"
-                       required>
-            </div>
-            <div>
-                <label style="display:block;font-size:14px;font-weight:600;margin-bottom:4px;color:#333;" for="fn_nl_email">E-mailadres <span style="color:#d63638;">*</span></label>
-                <input type="email" name="email" id="fn_nl_email"
-                       value="<?php echo esc_attr($_POST['email'] ?? ''); ?>"
-                       style="width:100%;padding:10px 12px;border:1px solid #E0E0E0;border-radius:4px;font-size:14px;box-sizing:border-box;"
-                       required>
-            </div>
+        <?php if (!empty($errors)): ?>
+        <div style="background:#fff3f3;border:1px solid #d63638;border-radius:5px;padding:16px 20px;margin-bottom:20px;">
+            <strong style="color:#d63638;">Controleer de volgende velden:</strong>
+            <ul style="margin:8px 0 0;padding-left:18px;color:#333;font-size:14px;">
+                <?php foreach ($errors as $e): ?>
+                    <li><?php echo esc_html($e); ?></li>
+                <?php endforeach; ?>
+            </ul>
         </div>
+        <?php endif; ?>
 
-        <button type="submit" style="display:inline-block;padding:11px 24px;background:#FF8C2C;color:#fff;font-size:15px;font-weight:700;border:none;border-radius:4px;cursor:pointer;">
-            Aanmelden voor de nieuwsbrief
-        </button>
-    </form>
+        <form method="post" novalidate>
+            <?php wp_nonce_field('fn_nieuwsbrief', 'fn_nl_nonce'); ?>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+                <div>
+                    <label style="display:block;font-size:14px;font-weight:600;margin-bottom:4px;color:#333;" for="fn_nl_voornaam">Voornaam <span style="color:#d63638;">*</span></label>
+                    <input type="text" name="voornaam" id="fn_nl_voornaam"
+                           value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>"
+                           style="width:100%;padding:10px 12px;border:1px solid #E0E0E0;border-radius:4px;font-size:14px;box-sizing:border-box;"
+                           required>
+                </div>
+                <div>
+                    <label style="display:block;font-size:14px;font-weight:600;margin-bottom:4px;color:#333;" for="fn_nl_email">E-mailadres <span style="color:#d63638;">*</span></label>
+                    <input type="email" name="email" id="fn_nl_email"
+                           value="<?php echo esc_attr($_POST['email'] ?? ''); ?>"
+                           style="width:100%;padding:10px 12px;border:1px solid #E0E0E0;border-radius:4px;font-size:14px;box-sizing:border-box;"
+                           required>
+                </div>
+            </div>
+
+            <button type="submit" style="display:inline-block;padding:11px 24px;background:#FF8C2C;color:#fff;font-size:15px;font-weight:700;border:none;border-radius:4px;cursor:pointer;">
+                Aanmelden voor de nieuwsbrief
+            </button>
+        </form>
+
+    </div>
 
     <?php endif;
 

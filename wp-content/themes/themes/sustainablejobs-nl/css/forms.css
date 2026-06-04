@@ -926,6 +926,22 @@ select.sj-hidden-select {
 .sj-ja .sj-select-btn { width: 100% !important; display: flex !important; }
 .sj-ja .sj-options { width: 100% !important; min-width: 0 !important; right: 0 !important; }
 
+/* Sidebar job alert form full width */
+.sj-single-sidebar .sj-ja {
+    max-width: 100% !important;
+    margin: 0 !important;
+}
+.sj-single-sidebar .sj-ja__fields {
+    grid-template-columns: 1fr !important;
+    gap: 16px 0 !important;
+}
+.sj-single-sidebar .sj-ja__field {
+    width: 100% !important;
+}
+.sj-single-sidebar .sj-ja__input-wrap {
+    width: 100% !important;
+}
+
 /* Select gelijkstellen aan input-stijl */
 .sj-ja .sj-select-btn {
     border: 1px solid #DEDEDE !important;

@@ -6,14 +6,6 @@ global $post;
 $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 ?>
 
-<!-- TOP SECTION -->
-<div class="update-header">
-  <div class="opdrachten-update">
-    <p>Blijf op de hoogte van de nieuwste vacatures!</p>
-    <a href="/job-alerts/" class="update-link">Vacature Alert</a>
-  </div>
-</div>
-
 <?php if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
 
     $salary    = get_post_meta($post_id, '_job_salary_range', true);
@@ -313,6 +305,13 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                 </div>
             </div>
 
+            <div class="sj-single-sidebar">
+                <p class="sj-sidebar__block-title">Job alert</p>
+                <div class="sj-sidebar__job-alert">
+                    <?php echo do_shortcode('[job-alerts]'); ?>
+                </div>
+            </div>
+
             <?php if ($con_first || $con_last || $con_email): ?>
             <!-- Blok 2: Contactpersoon -->
             <div class="sj-single-sidebar">
@@ -362,7 +361,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     gap: 24px;
     max-width: 1100px;
     width: 100%;
-    margin: 24px auto;
+    margin: 56px auto 24px;
     padding: 0 24px;
     box-sizing: border-box;
 }
@@ -608,58 +607,6 @@ a.sj-company-blok__name:hover {
     margin: 0 0 8px;
 }
 
-/* ── Top banner ──────────────────────────────────────────── */
-.update-header {
-    max-width: 1100px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 24px;
-    box-sizing: border-box;
-}
-
-.opdrachten-update {
-    padding: 24px;
-    margin: 24px 0;
-    border: 1px solid #DEDEDE;
-    border-radius: 5px;
-    box-shadow: none;
-    background-color: #ffffff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    box-sizing: border-box;
-}
-
-.opdrachten-update p {
-    color: #333;
-    margin: 0;
-    font-weight: 700;
-    font-size: 18px;
-}
-
-.update-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: #ffffff !important;
-    background: var(--color-primary);
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    padding: 10px 20px;
-    border: none !important;
-    border-radius: 5px;
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: background .18s ease, transform .18s ease;
-}
-
-.update-link:hover {
-    background: var(--color-primary-hover) !important;
-    color: #ffffff !important;
-    transform: translateY(-1px);
-}
 
 /* ── Meta pills ──────────────────────────────────────────── */
 .meta-information-single {
@@ -708,7 +655,7 @@ a.sj-company-blok__name:hover {
     font-weight: 400;
     line-height: 1.6;
     color: var(--color-text);
-    margin-top: 20px;
+    margin-top: 28px;
 }
 
 .job-manager-info {
@@ -1225,28 +1172,6 @@ h1.entry-title { display: none; }
         margin: 16px auto;
     }
 
-    .update-header {
-        padding: 0 12px;
-    }
-
-    .opdrachten-update {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 16px;
-        padding: 20px;
-        text-align: left;
-        margin: 16px 0;
-    }
-
-    .opdrachten-update p { font-size: 16px; line-height: 1.4; }
-
-    .update-link {
-        display: block;
-        width: 100%;
-        text-align: center;
-        padding: 12px 16px;
-        font-size: 16px;
-    }
 
     .meta-information-single {
         flex-wrap: wrap;
