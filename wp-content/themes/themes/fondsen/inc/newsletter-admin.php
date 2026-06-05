@@ -161,6 +161,7 @@ function fn_newsletter_admin_page(): void {
     $ja_subscribers = $wpdb->get_results("SELECT * FROM {$ja_table} ORDER BY created_at DESC", ARRAY_A) ?: [];
     $next_nl_cron   = wp_next_scheduled('fn_newsletter_biweekly');
     $next_ja_cron   = wp_next_scheduled('fn_job_alerts_weekly');
+    $ac_list_id     = defined('FONDSEN_AC_NEWSLETTER_LIST_ID') ? (int) FONDSEN_AC_NEWSLETTER_LIST_ID : 8;
     $sector_terms   = get_terms(['taxonomy' => 'job_sector', 'hide_empty' => false, 'orderby' => 'name']) ?: [];
     ?>
     <div class="wrap">
@@ -336,11 +337,11 @@ function fn_newsletter_admin_page(): void {
                         </tr>
                         <tr>
                             <td style="padding:5px 0;color:#555;">Actieve abonnees</td>
-                            <td style="padding:5px 0;font-weight:600;"><?php echo (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table} WHERE active = 1"); ?></td>
+                            <td style="padding:5px 0;font-weight:600;"><?php echo (int) $wpdb->get_var("SELECT COUNT(*) FROM {$nl_table} WHERE active = 1"); ?></td>
                         </tr>
                         <tr>
                             <td style="padding:5px 0;color:#555;">Totaal inschrijvingen</td>
-                            <td style="padding:5px 0;font-weight:600;"><?php echo (int) $wpdb->get_var("SELECT COUNT(*) FROM {$table}"); ?></td>
+                            <td style="padding:5px 0;font-weight:600;"><?php echo (int) $wpdb->get_var("SELECT COUNT(*) FROM {$nl_table}"); ?></td>
                         </tr>
                     </table>
                 </div>
