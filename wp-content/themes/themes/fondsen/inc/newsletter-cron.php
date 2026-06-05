@@ -46,18 +46,47 @@ add_filter('cron_schedules', function (array $schedules): array {
 });
 
 /**
- * Plan de tweewekelijkse nieuwsbrief-cron (donderdag 14:00).
+ * Plan de tweewekelijkse nieuwsbrief-cron (donderdag 14:00, site timezone).
  */
-add_action('init', function () {
-    if (!wp_next_scheduled('fn_newsletter_biweekly')) {
-        wp_schedule_event(strtotime('next thursday 14:00:00'), 'fn_biweekly', 'fn_newsletter_biweekly');
+function fn_newsletter_next_biweekly_timestamp(): int {
+    $timezone = wp_timezone();
+    $now      = new DateTimeImmutable('now', $timezone);
+    $target   = $now->setTime(14, 0);
+    $days     = (4 - (int) $now->format('N') + 7) % 7;
+
+    if ($days > 0) {
+        $target = $target->modify('+' . $days . ' days');
+    } elseif ($target <= $now) {
+        $target = $target->modify('+7 days');
     }
+
+    return $target->getTimestamp();
+}
+
+function fn_newsletter_schedule_biweekly(bool $force = false): void {
+    if ($force) {
+        wp_clear_scheduled_hook('fn_newsletter_biweekly');
+    }
+
+    if (!wp_next_scheduled('fn_newsletter_biweekly')) {
+        wp_schedule_event(fn_newsletter_next_biweekly_timestamp(), 'fn_biweekly', 'fn_newsletter_biweekly');
+    }
+}
+
+add_action('init', function () {
+    $version = '2026-06-05-biweekly-newsletter-list-8';
+
+    if (get_option('fn_newsletter_cron_version') !== $version) {
+        fn_newsletter_schedule_biweekly(true);
+        update_option('fn_newsletter_cron_version', $version, false);
+        return;
+    }
+
+    fn_newsletter_schedule_biweekly();
 });
 
 add_action('after_switch_theme', function () {
-    if (!wp_next_scheduled('fn_newsletter_biweekly')) {
-        wp_schedule_event(strtotime('next thursday 14:00:00'), 'fn_biweekly', 'fn_newsletter_biweekly');
-    }
+    fn_newsletter_schedule_biweekly();
 });
 
 add_action('fn_newsletter_biweekly', 'fn_send_biweekly_newsletter');
