@@ -573,6 +573,81 @@ add_shortcode('inhuren_opdrachten', function ($atts) {
     return ob_get_clean();
 });
 
+if (!function_exists('inhuren_format_page_slug_label')) {
+    function inhuren_format_page_slug_label(WP_Post $page): string {
+        $label = preg_replace('/[-_]+/', ' ', (string) $page->post_name);
+        $label = trim((string) $label);
+
+        return $label ? ucwords($label) : get_the_title($page->ID);
+    }
+}
+
+/**
+ * SHORTCODE: [inhuren_freelance_categorieen] — grid van child pages onder /freelance/
+ * Gebruik: [freelance_categorieen] of [inhuren_freelance_categorieen parent="freelance" columns="4"]
+ */
+function inhuren_freelance_categorieen_shortcode($atts): string {
+    $atts = shortcode_atts([
+        'parent'       => 'freelance',
+        'columns'      => 4,
+        'limit'        => -1,
+        'title_source' => 'slug',
+    ], $atts, 'inhuren_freelance_categorieen');
+
+    $parent_path = trim(sanitize_text_field((string) $atts['parent']), '/');
+    $parent_page = get_page_by_path($parent_path);
+
+    if (!$parent_page) {
+        return '<p>Pagina &ldquo;' . esc_html($parent_path) . '&rdquo; niet gevonden.</p>';
+    }
+
+    $pages = get_posts([
+        'post_type'      => 'page',
+        'post_parent'    => $parent_page->ID,
+        'posts_per_page' => intval($atts['limit']),
+        'post_status'    => 'publish',
+        'orderby'        => 'menu_order title',
+        'order'          => 'ASC',
+    ]);
+
+    if (empty($pages)) {
+        return '';
+    }
+
+    $columns = max(1, min(4, intval($atts['columns'])));
+    $title_source = sanitize_key((string) $atts['title_source']);
+
+    ob_start();
+    ?>
+    <div class="ifc-grid ifc-cols-<?php echo esc_attr($columns); ?>">
+        <?php foreach ($pages as $page) :
+            $image_id = get_post_thumbnail_id($page->ID);
+            $image    = $image_id ? wp_get_attachment_image($image_id, 'large', false, [
+                'class'   => 'ifc-card__image',
+                'loading' => 'lazy',
+            ]) : '';
+            $title = $title_source === 'title'
+                ? get_the_title($page->ID)
+                : inhuren_format_page_slug_label($page);
+        ?>
+            <a class="ifc-card<?php echo $image ? '' : ' ifc-card--no-image'; ?>" href="<?php echo esc_url(get_permalink($page->ID)); ?>">
+                <?php if ($image) : ?>
+                    <?php echo $image; ?>
+                <?php endif; ?>
+                <span class="ifc-card__overlay" aria-hidden="true"></span>
+                <span class="ifc-card__body">
+                    <span class="ifc-card__title"><?php echo esc_html($title); ?></span>
+                </span>
+            </a>
+        <?php endforeach; ?>
+    </div>
+    <?php
+    return ob_get_clean();
+}
+
+add_shortcode('inhuren_freelance_categorieen', 'inhuren_freelance_categorieen_shortcode');
+add_shortcode('freelance_categorieen', 'inhuren_freelance_categorieen_shortcode');
+
 /**
  * ✅ WPJM HELPER FUNCTIES
  */
