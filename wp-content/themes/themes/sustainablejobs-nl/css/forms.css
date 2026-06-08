@@ -407,6 +407,10 @@
 .sj-vp__quill-wrap .ql-toolbar button.ql-active .ql-fill { fill: var(--color-primary, #168AAD) !important; }
 
 /* ── Bestand uploaden ────────────────────────────────────── */
+.sj-vp .sj-vp__upload--square {
+    aspect-ratio: 1 / 1;
+    min-height: unset;
+}
 .sj-vp .sj-vp__upload {
     display: flex;
     flex-direction: column;

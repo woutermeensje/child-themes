@@ -27,7 +27,6 @@ function sj_vacature_plaatsen_shortcode(): string {
         $locatie        = sanitize_text_field($_POST['locatie']         ?? '');
         $type_baan      = array_map('sanitize_text_field', (array)($_POST['type_baan'] ?? []));
         $omschrijving   = wp_kses_post($_POST['omschrijving']           ?? '');
-        $extra_info     = wp_kses_post($_POST['extra_info']             ?? '');
         $referral       = sanitize_text_field($_POST['referral']        ?? '');
 
         if (!$voornaam)       $errors[] = 'Vul je voornaam in.';
@@ -76,7 +75,6 @@ function sj_vacature_plaatsen_shortcode(): string {
             $body .= "Type baan: $type_baan_str\n";
             $body .= "Hoe gevonden: $referral\n\n";
             $body .= "--- Vacature omschrijving ---\n" . strip_tags($omschrijving) . "\n\n";
-            $body .= "--- Aanvullende informatie ---\n" . strip_tags($extra_info) . "\n";
 
             $headers = ['Content-Type: text/plain; charset=UTF-8'];
 
@@ -124,7 +122,6 @@ function sj_vacature_plaatsen_shortcode(): string {
                 update_post_meta($post_id, '_sj_locatie',      $locatie);
                 update_post_meta($post_id, '_sj_type_baan',    $type_baan);
                 update_post_meta($post_id, '_sj_omschrijving', $omschrijving);
-                update_post_meta($post_id, '_sj_extra_info',   $extra_info);
                 update_post_meta($post_id, '_sj_referral',     $referral);
 
                 if (!empty($upload) && !is_wp_error($upload)) {
@@ -137,14 +134,9 @@ function sj_vacature_plaatsen_shortcode(): string {
             }
 
             /* ── Maak concept job_listing aan in WP Job Manager ── */
-            $content = $omschrijving;
-            if ($extra_info) {
-                $content .= '<h3>Aanvullende informatie</h3>' . $extra_info;
-            }
-
             $job_id = wp_insert_post([
                 'post_title'   => sanitize_text_field($vacaturetitel),
-                'post_content' => $content,
+                'post_content' => $omschrijving,
                 'post_status'  => 'draft',
                 'post_type'    => 'job_listing',
                 'post_author'  => 1,
@@ -260,7 +252,6 @@ function sj_vacature_plaatsen_shortcode(): string {
                         </label>
                         <?php endforeach; ?>
                     </div>
-                    <p class="sj-vp__pakket-note">Benieuwd naar de mogelijkheden van een strippenkaart of lidmaatschap? Bekijk <a href="<?php echo esc_url(home_url('/tarieven/')); ?>">hier</a> de mogelijkheden.</p>
                 </div>
 
                 <!-- Contactgegevens -->
@@ -270,22 +261,22 @@ function sj_vacature_plaatsen_shortcode(): string {
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_voornaam">Voornaam <span class="sj-vp__req">*</span></label>
                             <input type="text" name="voornaam" id="sj_voornaam" class="sj-vp__input"
-                                   value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" placeholder="Jan" required>
+                                   value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>" required>
                         </div>
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_achternaam">Achternaam <span class="sj-vp__req">*</span></label>
                             <input type="text" name="achternaam" id="sj_achternaam" class="sj-vp__input"
-                                   value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" placeholder="de Vries" required>
+                                   value="<?php echo esc_attr($_POST['achternaam'] ?? ''); ?>" required>
                         </div>
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_bedrijfsnaam">Bedrijfsnaam <span class="sj-vp__req">*</span></label>
                             <input type="text" name="bedrijfsnaam" id="sj_bedrijfsnaam" class="sj-vp__input"
-                                   value="<?php echo esc_attr($_POST['bedrijfsnaam'] ?? ''); ?>" placeholder="Jouw organisatie" required>
+                                   value="<?php echo esc_attr($_POST['bedrijfsnaam'] ?? ''); ?>" required>
                         </div>
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_email">E-mailadres <span class="sj-vp__req">*</span></label>
                             <input type="email" name="email" id="sj_email" class="sj-vp__input"
-                                   value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" placeholder="jan@bedrijf.nl" required>
+                                   value="<?php echo esc_attr($_POST['email'] ?? ''); ?>" required>
                         </div>
                     </div>
                 </div>
@@ -298,28 +289,26 @@ function sj_vacature_plaatsen_shortcode(): string {
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_vacaturetitel">Vacaturetitel <span class="sj-vp__req">*</span></label>
                             <input type="text" name="vacaturetitel" id="sj_vacaturetitel" class="sj-vp__input"
-                                   value="<?php echo esc_attr($_POST['vacaturetitel'] ?? ''); ?>"
-                                   placeholder="Bijv. Duurzaamheidsmanager" required>
+                                   value="<?php echo esc_attr($_POST['vacaturetitel'] ?? ''); ?>" required>
                         </div>
 
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" for="sj_locatie">Locatie</label>
                             <input type="text" name="locatie" id="sj_locatie" class="sj-vp__input"
-                                   value="<?php echo esc_attr($_POST['locatie'] ?? ''); ?>"
-                                   placeholder="Amsterdam, Hybrid, Remote...">
+                                   value="<?php echo esc_attr($_POST['locatie'] ?? ''); ?>">
                         </div>
 
                         <div class="sj-vp__field">
                             <label class="sj-vp__label" id="sj_type_baan_label">Type baan</label>
                             <?php
-                            $types = ['Fulltime', 'Parttime', 'Project', 'Stage', 'Vrijwilligerswerk'];
-                            $selected_types = (array)($_POST['type_baan'] ?? []);
+                            $job_listing_types = function_exists('get_job_listing_types') ? get_job_listing_types() : [];
+                            $selected_types    = (array)($_POST['type_baan'] ?? []);
                             ?>
                             <div class="sj-vp__ms-hidden" aria-hidden="true">
-                                <?php foreach ($types as $t): ?>
-                                <input type="checkbox" name="type_baan[]" value="<?php echo esc_attr($t); ?>"
+                                <?php foreach ($job_listing_types as $term): ?>
+                                <input type="checkbox" name="type_baan[]" value="<?php echo esc_attr($term->name); ?>"
                                        class="sj-vp__ms-cb"
-                                       <?php checked(in_array($t, $selected_types)); ?>>
+                                       <?php checked(in_array($term->name, $selected_types)); ?>>
                                 <?php endforeach; ?>
                             </div>
                             <div class="sj-vp__ms" id="sj_type_baan_ms" aria-labelledby="sj_type_baan_label" role="group">
@@ -329,15 +318,15 @@ function sj_vacature_plaatsen_shortcode(): string {
                                     <svg class="sj-vp__ms-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80A8,8,0,0,1,53.66,90.34L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg>
                                 </div>
                                 <ul class="sj-vp__ms-dropdown" role="listbox" aria-multiselectable="true">
-                                    <?php foreach ($types as $t): ?>
-                                    <li class="sj-vp__ms-option<?php echo in_array($t, $selected_types) ? ' is-selected' : ''; ?>"
+                                    <?php foreach ($job_listing_types as $term): ?>
+                                    <li class="sj-vp__ms-option<?php echo in_array($term->name, $selected_types) ? ' is-selected' : ''; ?>"
                                         role="option"
-                                        aria-selected="<?php echo in_array($t, $selected_types) ? 'true' : 'false'; ?>"
-                                        data-value="<?php echo esc_attr($t); ?>">
+                                        aria-selected="<?php echo in_array($term->name, $selected_types) ? 'true' : 'false'; ?>"
+                                        data-value="<?php echo esc_attr($term->name); ?>">
                                         <span class="sj-vp__ms-opt-check" aria-hidden="true">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 256 256" fill="currentColor"><path d="M229.66,77.66l-128,128a8,8,0,0,1-11.32,0l-56-56a8,8,0,0,1,11.32-11.32L96,188.69,218.34,66.34a8,8,0,0,1,11.32,11.32Z"/></svg>
                                         </span>
-                                        <span class="sj-vp__ms-opt-text"><?php echo esc_html($t); ?></span>
+                                        <span class="sj-vp__ms-opt-text"><?php echo esc_html($term->name); ?></span>
                                     </li>
                                     <?php endforeach; ?>
                                 </ul>
@@ -354,36 +343,28 @@ function sj_vacature_plaatsen_shortcode(): string {
                             <span class="sj-vp__hint">Beschrijf de functie, vereisten en wat je organisatie biedt.</span>
                         </div>
 
-                        <!-- Quill: aanvullende informatie -->
-                        <div class="sj-vp__field">
-                            <label class="sj-vp__label" for="sj_extra_info_hidden">Aanvullende informatie <span class="sj-vp__opt">(optioneel)</span></label>
-                            <div class="sj-vp__quill-wrap">
-                                <div id="sj_quill_extra_info" class="sj-vp__quill-editor" style="min-height:140px;"></div>
+                        <div class="sj-vp__grid sj-vp__grid--2 sj-vp__upload-grid">
+                            <div class="sj-vp__field">
+                                <label class="sj-vp__label" for="sj_bedrijfslogo">Bedrijfslogo uploaden <span class="sj-vp__opt">(optioneel)</span></label>
+                                <label class="sj-vp__upload sj-vp__upload--square" for="sj_bedrijfslogo">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M240,136v64a16,16,0,0,1-16,16H32a16,16,0,0,1-16-16V136a16,16,0,0,1,16-16H80a8,8,0,0,1,0,16H32v64H224V136H176a8,8,0,0,1,0-16h48A16,16,0,0,1,240,136ZM85.66,77.66,120,43.31V128a8,8,0,0,0,16,0V43.31l34.34,34.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,77.66Z"/></svg>
+                                    <span class="sj-vp__upload-label">Kies bestand</span>
+                                    <span class="sj-vp__upload-name">Geen bestand gekozen</span>
+                                    <input type="file" name="bedrijfslogo" id="sj_bedrijfslogo" accept="image/*" class="sj-vp__upload-input">
+                                </label>
+                                <span class="sj-vp__hint">PNG of JPG, liefst vierkant. Max. 2 MB.</span>
                             </div>
-                            <textarea name="extra_info" id="sj_extra_info_hidden" class="sj-vp__quill-hidden" aria-hidden="true"><?php echo esc_textarea($_POST['extra_info'] ?? ''); ?></textarea>
-                            <span class="sj-vp__hint">Secundaire arbeidsvoorwaarden, cultuur, of andere relevante informatie.</span>
-                        </div>
 
-                        <div class="sj-vp__field">
-                            <label class="sj-vp__label" for="sj_bedrijfslogo">Bedrijfslogo uploaden</label>
-                            <label class="sj-vp__upload" for="sj_bedrijfslogo">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M240,136v64a16,16,0,0,1-16,16H32a16,16,0,0,1-16-16V136a16,16,0,0,1,16-16H80a8,8,0,0,1,0,16H32v64H224V136H176a8,8,0,0,1,0-16h48A16,16,0,0,1,240,136ZM85.66,77.66,120,43.31V128a8,8,0,0,0,16,0V43.31l34.34,34.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,77.66Z"/></svg>
-                                <span class="sj-vp__upload-label">Kies bestand</span>
-                                <span class="sj-vp__upload-name">Geen bestand gekozen</span>
-                                <input type="file" name="bedrijfslogo" id="sj_bedrijfslogo" accept="image/*" class="sj-vp__upload-input">
-                            </label>
-                            <span class="sj-vp__hint">PNG of JPG, liefst vierkant. Max. 2 MB.</span>
-                        </div>
-
-                        <div class="sj-vp__field">
-                            <label class="sj-vp__label" for="sj_uitgelichte_afbeelding">Uitgelichte afbeelding <span class="sj-vp__opt">(optioneel)</span></label>
-                            <label class="sj-vp__upload" for="sj_uitgelichte_afbeelding">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,200V172l52-52,44,44a8,8,0,0,0,11.31,0l24.38-24.37L216,184V200Z"/></svg>
-                                <span class="sj-vp__upload-label">Kies afbeelding</span>
-                                <span class="sj-vp__upload-name">Geen bestand gekozen</span>
-                                <input type="file" name="uitgelichte_afbeelding" id="sj_uitgelichte_afbeelding" accept="image/*" class="sj-vp__upload-input">
-                            </label>
-                            <span class="sj-vp__hint">De grote afbeelding op de vacaturekaart. Liefst liggend, JPG of PNG.</span>
+                            <div class="sj-vp__field">
+                                <label class="sj-vp__label" for="sj_uitgelichte_afbeelding">Uitgelichte afbeelding <span class="sj-vp__opt">(optioneel)</span></label>
+                                <label class="sj-vp__upload sj-vp__upload--square" for="sj_uitgelichte_afbeelding">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,200V172l52-52,44,44a8,8,0,0,0,11.31,0l24.38-24.37L216,184V200Z"/></svg>
+                                    <span class="sj-vp__upload-label">Kies afbeelding</span>
+                                    <span class="sj-vp__upload-name">Geen bestand gekozen</span>
+                                    <input type="file" name="uitgelichte_afbeelding" id="sj_uitgelichte_afbeelding" accept="image/*" class="sj-vp__upload-input">
+                                </label>
+                                <span class="sj-vp__hint">Uitgelichte afbeelding op de vacaturekaart. Liefst liggend, JPG of PNG.</span>
+                            </div>
                         </div>
 
                     </div>
@@ -450,30 +431,11 @@ function sj_vacature_plaatsen_shortcode(): string {
                 }
             });
 
-            /* ── Extra info ── */
-            var extraInfoHidden = document.getElementById('sj_extra_info_hidden');
-            var quillExtraInfo  = new Quill('#sj_quill_extra_info', {
-                theme: 'snow',
-                modules: { toolbar: toolbarOptions },
-                placeholder: 'Secundaire arbeidsvoorwaarden, cultuur, of andere relevante informatie...'
-            });
-
-            if (extraInfoHidden && extraInfoHidden.value) {
-                quillExtraInfo.clipboard.dangerouslyPasteHTML(extraInfoHidden.value);
-            }
-
-            quillExtraInfo.on('text-change', function () {
-                if (extraInfoHidden) {
-                    extraInfoHidden.value = quillExtraInfo.root.innerHTML;
-                }
-            });
-
             /* Sync hidden textareas vlak voor submit */
             var form = document.querySelector('.sj-vp__form');
             if (form) {
                 form.addEventListener('submit', function () {
                     if (omschrijvingHidden) omschrijvingHidden.value = quillOmschrijving.root.innerHTML;
-                    if (extraInfoHidden)   extraInfoHidden.value   = quillExtraInfo.root.innerHTML;
                 });
             }
         }
