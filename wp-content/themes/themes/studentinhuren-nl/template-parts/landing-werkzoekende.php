@@ -19,14 +19,14 @@ $contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'support@stu
 
                 <?php si_render_breadcrumbs('fnd-hero__breadcrumb-nav', 'fnd-hero__breadcrumbs'); ?>
 
-                <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
+                <h1 class="fnd-hero__title si-landing-hero__title si-landing-hero__title--werkzoekende"><?php the_title(); ?></h1>
 
                 <?php if ($intro) : ?>
                     <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
                 <?php endif; ?>
 
                 <div class="fnd-hero__actions">
-                    <a class="wz-btn--primary" href="https://platform.student-inhuren.nl/opdrachten/" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
+                    <a class="wz-btn--primary" href="https://platform.student-inhuren.nl/opdrachten/" target="_blank" rel="noopener" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
                         Opdrachten bekijken
                     </a>
                     <a class="wz-btn--secondary" href="https://platform.student-inhuren.nl/aanmelden" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">

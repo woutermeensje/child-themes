@@ -32,6 +32,18 @@ function si_informatie_aanvragen_compact_shortcode(): string {
         if (!is_email($email)) $errors[] = 'Vul een geldig e-mailadres in.';
 
         if (empty($errors)) {
+            $submission_id = sanitize_text_field($_POST['si_submission_id'] ?? '');
+
+            if (si_is_duplicate_form_submission('informatie_aanvragen_compact', [
+                'submission_id' => $submission_id,
+                'voornaam'      => $voornaam,
+                'achternaam'    => $achternaam,
+                'email'         => strtolower($email),
+                'telefoon'      => $telefoon,
+                'bericht'       => wp_strip_all_tags($bericht),
+            ])) {
+                si_redirect_or_fallback(home_url('/bedankt-informatie-aanvraag/'));
+            }
 
             // ── Opslaan in de database ──────────────────────────
             $post_id = wp_insert_post([
@@ -50,20 +62,25 @@ function si_informatie_aanvragen_compact_shortcode(): string {
             }
 
             // ── E-mailnotificatie ────────────────────────────────
-            $body  = "Nieuwe informatieaanvraag (compact formulier):\n\n";
-            $body .= "Naam: $voornaam $achternaam\n";
-            $body .= "E-mail: $email\n";
-            $body .= "Telefoon: $telefoon\n";
-            if ($bericht) {
-                $body .= "\n--- Bericht ---\n" . wp_strip_all_tags($bericht) . "\n";
-            }
+            $body = si_build_admin_email(
+                "Informatieaanvraag van $voornaam $achternaam",
+                'Er is een nieuwe informatieaanvraag binnengekomen via het compacte formulier op Studentinhuren.nl.',
+                [
+                    ['label' => 'Naam', 'value' => "$voornaam $achternaam"],
+                    ['label' => 'E-mail', 'value' => $email, 'type' => 'email'],
+                    ['label' => 'Telefoon', 'value' => $telefoon, 'type' => 'tel'],
+                ],
+                'Bericht',
+                $bericht,
+                (int) $post_id
+            );
 
             wp_mail(
                 get_option('admin_email'),
                 "Informatieaanvraag van $voornaam $achternaam",
                 $body,
                 [
-                    'Content-Type: text/plain; charset=UTF-8',
+                    'Content-Type: text/html; charset=UTF-8',
                     'Reply-To: ' . $email,
                 ]
             );
@@ -90,6 +107,7 @@ function si_informatie_aanvragen_compact_shortcode(): string {
         <h2 class="si-iac__title">Informatie aanvragen</h2>
         <form method="post" class="si-iac__form" novalidate>
             <?php wp_nonce_field('si_informatie_aanvragen_compact', 'si_iac_nonce'); ?>
+            <input type="hidden" name="si_submission_id" value="<?php echo esc_attr($_POST['si_submission_id'] ?? wp_generate_uuid4()); ?>">
 
             <div class="si-iac__field">
                 <label class="si-iac__label" for="iac_voornaam">Voornaam <span class="si-iac__req">*</span></label>
@@ -165,8 +183,21 @@ function si_informatie_aanvragen_compact_shortcode(): string {
                 berichtHidden.value = quillBericht.root.innerHTML;
             });
 
-            form.addEventListener('submit', function () {
+            form.addEventListener('submit', function (event) {
+                if (form.dataset.siSubmitting === '1') {
+                    event.preventDefault();
+                    return;
+                }
+
                 berichtHidden.value = quillBericht.root.innerHTML;
+                form.dataset.siSubmitting = '1';
+
+                form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(function (button) {
+                    button.disabled = true;
+                    if (button.tagName === 'BUTTON') {
+                        button.textContent = 'Bezig met versturen...';
+                    }
+                });
             });
         }
 

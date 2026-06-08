@@ -45,14 +45,17 @@
 
 .fnd-hero__breadcrumb-nav a:hover { color: #ffffff !important; }
 
+.fnd-hero h1.si-landing-hero__title,
 .fnd-hero .fnd-hero__title {
-  font-family: 'Balgin Bold', sans-serif;
-  font-size: clamp(20px, 2.2vw, 32px);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: #ffffff;
-  margin: 0 0 16px;
+  display: block !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0 !important;
+  color: #ffffff !important;
+  margin: 0 0 16px !important;
+  text-transform: none !important;
 }
 
 .fnd-hero__intro {
@@ -189,23 +192,34 @@
 
 /* Direct-link onder de knoppen */
 .fnd-hero__direct-link {
-  display: inline-flex;
-  width: fit-content;
+  display: block;
+  width: auto;
   margin-top: 4px;
   font-family: 'Poppins', sans-serif !important;
   font-size: 14px !important;
   font-weight: 400 !important;
+  line-height: 1.5 !important;
   color: rgba(255, 255, 255, 0.95) !important;
-  text-decoration: underline !important;
-  text-underline-offset: 3px;
+  text-decoration: none !important;
   background: none !important;
   border: none !important;
   padding: 0 !important;
+  cursor: default;
+}
+
+.fnd-hero__direct-link a {
+  color: inherit !important;
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
   cursor: pointer;
   transition: color .15s ease;
 }
 
-.fnd-hero__direct-link:hover {
+.fnd-hero__direct-link a:hover {
   color: #ffffff !important;
   text-decoration: underline !important;
   background: none !important;

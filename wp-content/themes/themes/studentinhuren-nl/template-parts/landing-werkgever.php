@@ -6,8 +6,8 @@ if (!defined('ABSPATH')) {
 $page_id         = get_the_ID();
 $hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
 $intro           = get_post_field('post_excerpt', $page_id);
-$primary_label   = 'Call inplannen';
-$primary_url     = home_url('/call-inplannen/');
+$primary_label   = '085 239 2040';
+$primary_url     = 'tel:0852392040';
 $secondary_label = 'Informatie aanvragen';
 $secondary_url   = home_url('/informatie-aanvragen/');
 $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
@@ -23,7 +23,7 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@st
 
                 <?php si_render_breadcrumbs('fnd-hero__breadcrumb-nav', 'fnd-hero__breadcrumbs'); ?>
 
-                <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
+                <h1 class="fnd-hero__title si-landing-hero__title si-landing-hero__title--werkgever"><?php the_title(); ?></h1>
 
                 <?php if ($intro) : ?>
                     <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
@@ -43,7 +43,9 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@st
                     <?php endif; ?>
                 </div>
 
-                <a class="fnd-hero__direct-link" href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>">Of plaats een gratis opdracht in ons netwerk</a>
+                <p class="fnd-hero__direct-link">
+                    Of plaats een <a href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>" target="_blank" rel="noopener">gratis opdracht</a> in ons netwerk
+                </p>
 
             </div>
 

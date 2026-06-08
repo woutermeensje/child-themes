@@ -1,0 +1,630 @@
+/* =============================================================
+   Lesrooster — frontend styling
+   Beheerd vanuit het lansingerland-fit child theme.
+   ============================================================= */
+
+.lr-schedule,
+.lr-schedule * {
+  box-sizing: border-box;
+}
+
+.lr-schedule {
+  --lr-primary: var(--color-primary, #25476B);
+  --lr-primary-dark: var(--color-primary-dk, #325F8D);
+  --lr-secondary: var(--color-secondary, #39749B);
+  --lr-tertiary: var(--color-tertiary, #559EA3);
+  --lr-accent: var(--color-accent, #8AC697);
+  --lr-surface: rgba(255, 255, 255, 0.86);
+  --lr-border: rgba(37, 71, 107, 0.12);
+  --lr-text: var(--color-text, #25476B);
+  --lr-muted: var(--color-text-muted, #39749B);
+  --lr-shadow: 0 20px 45px rgba(20, 32, 61, 0.12);
+  position: relative;
+  margin: 40px 0;
+  padding: clamp(12px, 2vw, 20px) 0;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  overflow: hidden;
+  font-family: Inter, Arial, sans-serif !important;
+  color: var(--lr-text) !important;
+}
+
+/* ---- Intro ---- */
+
+.lr-schedule .lr-schedule__intro {
+  max-width: 760px;
+  margin-bottom: 28px;
+}
+
+.lr-schedule p.lr-schedule__eyebrow {
+  margin: 0 0 10px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lr-primary) !important;
+  font-family: Poppins, Inter, Arial, sans-serif !important;
+  line-height: 1.3 !important;
+}
+
+.lr-schedule h2.lr-schedule__title {
+  margin: 0 0 12px;
+  font-size: 32px !important;
+  line-height: 1.1 !important;
+  color: #101828 !important;
+  font-family: 'Inter', Arial, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  text-transform: none !important;
+}
+
+.lr-schedule p.lr-schedule__text {
+  margin: 0;
+  color: var(--lr-muted) !important;
+  font-size: 16px;
+  line-height: 1.7 !important;
+  font-family: Inter, Arial, sans-serif !important;
+}
+
+/* ---- Statusmeldingen ---- */
+
+.lr-schedule .lr-schedule__notice {
+  margin: 0 0 22px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: Inter, Arial, sans-serif !important;
+  line-height: 1.6 !important;
+}
+
+.lr-schedule .lr-schedule__notice--success {
+  background: rgba(138, 198, 151, 0.14);
+  border: 1px solid rgba(138, 198, 151, 0.3);
+  color: #25476B !important;
+}
+
+.lr-schedule .lr-schedule__notice--error {
+  background: rgba(181, 49, 49, 0.08);
+  border: 1px solid rgba(181, 49, 49, 0.18);
+  color: #7b1e1e !important;
+}
+
+/* ---- Toggle tabs ---- */
+
+.lr-schedule .lr-schedule__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid var(--lr-border);
+}
+
+.lr-schedule button.lr-schedule__toggle-button {
+  -webkit-appearance: none;
+  appearance: none;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--lr-muted) !important;
+  font-family: Poppins, Inter, Arial, sans-serif !important;
+  font-size: 14px;
+  font-weight: 700 !important;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease;
+}
+
+.lr-schedule button.lr-schedule__toggle-button.is-active {
+  background: var(--lr-primary);
+  color: #ffffff !important;
+}
+
+.lr-schedule .lr-schedule__panel[hidden] {
+  display: none !important;
+}
+
+/* ---- Grid ---- */
+
+.lr-schedule .lr-schedule__grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 12px;
+  align-items: stretch;
+}
+
+.lr-schedule .lr-schedule__grid--weekend {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* ---- Dagkolom ---- */
+
+.lr-schedule .lr-day-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 14px;
+  border-radius: 5px;
+  background: #ffffff;
+  border: 1px solid #dedede;
+}
+
+.lr-schedule .lr-day-card__header {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid #efefef;
+}
+
+.lr-schedule .lr-day-card__header h3,
+.lr-schedule h3.lr-day-card__title {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1 !important;
+  color: var(--lr-text) !important;
+  font-family: 'Inter', Arial, sans-serif !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+}
+
+.lr-schedule .lr-day-card__header span {
+  color: var(--lr-muted) !important;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: Inter, Arial, sans-serif !important;
+  line-height: 1.4 !important;
+}
+
+.lr-schedule .lr-day-card__list {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.lr-schedule p.lr-day-card__empty {
+  margin: 0;
+  color: var(--lr-muted) !important;
+  font-size: 14px;
+  font-family: Inter, Arial, sans-serif !important;
+  line-height: 1.6 !important;
+}
+
+/* ---- Les (geen border-box, scheiding via lijn) ---- */
+
+.lr-schedule .lr-lesson {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #efefef;
+}
+
+.lr-schedule .lr-day-card__list > .lr-lesson:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.lr-schedule p.lr-lesson__time {
+  display: none;
+}
+
+.lr-schedule h4.lr-lesson__title {
+  margin: 0 0 10px;
+  font-size: 15px;
+  line-height: 1.35 !important;
+  color: var(--lr-text) !important;
+  font-family: 'Inter', Arial, sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+}
+
+/* ---- Icoontjesrijen ---- */
+
+.lr-schedule .lr-lesson__rows {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.lr-schedule .lr-lesson__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lr-schedule .lr-lesson__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--lr-secondary);
+  width: 16px;
+}
+
+.lr-schedule .lr-lesson__row-text {
+  font-size: 13px;
+  line-height: 1.4 !important;
+  color: var(--lr-muted) !important;
+  font-family: Inter, Arial, sans-serif !important;
+}
+
+.lr-schedule .lr-lesson__row-label {
+  font-weight: 600;
+  color: var(--lr-text) !important;
+}
+
+.lr-schedule p.lr-lesson__badge {
+  display: none;
+}
+
+.lr-schedule .lr-lesson__meta {
+  display: none;
+}
+
+/* ---- Bekijk-knop ---- */
+
+.lr-schedule button.lr-lesson__button {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 38px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 0;
+  background: var(--lr-primary);
+  color: #ffffff !important;
+  font-size: 13px;
+  font-weight: 600 !important;
+  font-family: Poppins, Inter, Arial, sans-serif !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  box-shadow: none;
+  transition: background .15s ease, transform .15s ease;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.lr-schedule button.lr-lesson__button:hover,
+.lr-schedule button.lr-lesson__button:focus-visible {
+  background: var(--lr-primary-dark);
+  transform: translateY(-1px);
+  color: #ffffff !important;
+}
+
+/* ---- Reserveringsmodal ---- */
+
+.lr-reservation-modal[hidden] {
+  display: none !important;
+}
+
+.lr-reservation-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+}
+
+.lr-reservation-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.52);
+}
+
+.lr-reservation-modal__dialog {
+  position: relative;
+  z-index: 1;
+  width: min(92vw, 560px);
+  margin: min(10vh, 80px) auto 0;
+  padding: 28px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: 0 30px 60px rgba(20, 32, 61, 0.28);
+}
+
+.lr-reservation-modal__close {
+  position: absolute !important;
+  top: 14px !important;
+  right: 14px !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 1px solid #dedede !important;
+  border-radius: 6px !important;
+  background: #f5f5f5 !important;
+  color: var(--lr-text) !important;
+  font-size: 20px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  transition: background .15s ease, color .15s ease !important;
+}
+
+.lr-reservation-modal__close:hover {
+  background: var(--lr-primary) !important;
+  color: #ffffff !important;
+  border-color: var(--lr-primary) !important;
+}
+
+/* ---- Modal info-rijen ---- */
+
+.lr-reservation-modal__summary {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+  padding: 16px;
+  border-radius: 8px;
+  background: #f7fbf7;
+  border: 1px solid #dedede;
+}
+
+.lr-modal-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.lr-modal-row[hidden] {
+  display: none !important;
+}
+
+.lr-modal-row__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  padding-top: 1px;
+  color: var(--lr-secondary);
+}
+
+.lr-modal-row__text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--lr-muted);
+  font-family: Inter, Arial, sans-serif;
+}
+
+.lr-modal-row__label {
+  font-weight: 600;
+  color: var(--lr-text);
+}
+
+.lr-reservation-modal p.lr-reservation-modal__eyebrow {
+  margin: 0 0 8px;
+  color: var(--lr-primary) !important;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-family: Poppins, Inter, Arial, sans-serif !important;
+  line-height: 1.3 !important;
+}
+
+.lr-reservation-modal h3.lr-reservation-modal__title {
+  margin: 0 0 16px;
+  color: var(--lr-text) !important;
+  font-size: clamp(22px, 3vw, 28px);
+  line-height: 1.15 !important;
+  font-family: 'Inter', Arial, sans-serif !important;
+  font-weight: 700 !important;
+}
+
+
+.lr-reservation-modal .lr-reservation-form__label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--lr-text) !important;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: Inter, Arial, sans-serif !important;
+  line-height: 1.4 !important;
+}
+
+.lr-reservation-modal input.lr-reservation-form__input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 16px;
+  border: 1px solid #dedede;
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--lr-text) !important;
+  font-size: 15px;
+  font-family: Inter, Arial, sans-serif !important;
+}
+
+.lr-reservation-modal p.lr-reservation-form__hint {
+  margin: 10px 0 18px;
+  color: var(--lr-muted) !important;
+  font-size: 13px;
+  line-height: 1.6 !important;
+  font-family: Inter, Arial, sans-serif !important;
+}
+
+.lr-reservation-modal button.lr-reservation-form__submit {
+  -webkit-appearance: none;
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--lr-primary);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600 !important;
+  font-family: Poppins, Inter, Arial, sans-serif !important;
+  text-transform: none !important;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+
+.lr-reservation-modal button.lr-reservation-form__submit:hover {
+  background: var(--lr-primary-dark);
+}
+
+body.lr-modal-open {
+  overflow: hidden;
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 1400px) {
+  .lr-schedule .lr-schedule__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .lr-schedule .lr-schedule__grid--weekend {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1024px) {
+  .lr-schedule .lr-schedule__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .lr-schedule {
+    padding: 16px 0;
+    margin: 24px 0;
+  }
+
+  /* Intro */
+  .lr-schedule p.lr-schedule__eyebrow {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .lr-schedule h2.lr-schedule__title {
+    font-size: 24px !important;
+    margin-bottom: 8px;
+  }
+
+  .lr-schedule p.lr-schedule__text {
+    font-size: 15px;
+  }
+
+  /* Toggle tabs */
+  .lr-schedule .lr-schedule__toggle {
+    display: flex;
+    width: 100%;
+    gap: 4px;
+    margin-bottom: 14px;
+  }
+
+  .lr-schedule button.lr-schedule__toggle-button {
+    flex: 1;
+    min-height: 38px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  /* Grid */
+  .lr-schedule .lr-schedule__grid,
+  .lr-schedule .lr-schedule__grid--weekend {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Dagkolom */
+  .lr-schedule .lr-day-card {
+    padding: 12px;
+  }
+
+  .lr-schedule .lr-day-card__header h3,
+  .lr-schedule h3.lr-day-card__title {
+    font-size: 16px;
+  }
+
+  /* Les */
+  .lr-schedule .lr-lesson {
+    padding: 12px 0;
+  }
+
+  .lr-schedule h4.lr-lesson__title {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .lr-schedule .lr-lesson__rows {
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .lr-schedule .lr-lesson__row-text {
+    font-size: 12px;
+  }
+
+  /* Knop */
+  .lr-schedule button.lr-lesson__button {
+    min-height: 36px;
+    font-size: 13px;
+  }
+
+  /* Modal */
+  .lr-reservation-modal__dialog {
+    width: calc(100vw - 24px);
+    margin-top: 24px;
+    padding: 22px 16px 18px;
+    border-radius: 10px;
+  }
+
+  .lr-reservation-modal h3.lr-reservation-modal__title {
+    font-size: 20px;
+  }
+
+  .lr-reservation-modal__summary {
+    padding: 12px;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .lr-modal-row__text {
+    font-size: 13px;
+  }
+
+  .lr-reservation-modal input.lr-reservation-form__input {
+    min-height: 44px;
+    font-size: 16px; /* prevents iOS zoom on focus */
+  }
+
+  .lr-reservation-modal button.lr-reservation-form__submit {
+    width: 100%;
+    min-height: 48px;
+  }
+}
+
+/* Extra small (≤390px) */
+@media (max-width: 390px) {
+  .lr-schedule h2.lr-schedule__title {
+    font-size: 22px !important;
+  }
+
+  .lr-schedule button.lr-schedule__toggle-button {
+    padding: 0 8px;
+    font-size: 12px;
+  }
+}

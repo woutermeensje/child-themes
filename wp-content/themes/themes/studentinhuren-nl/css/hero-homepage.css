@@ -76,14 +76,17 @@
 }
 
 /* ── Titel & lead ── */
+.welcome-v2 h1.si-home-hero__title,
 .welcome-v2__title {
-  margin: 0;
+  display: block !important;
+  margin: 0 !important;
   color: #ffffff !important;
-  font-size: clamp(28px, 3.8vw, 56px);
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  font-family: 'Balgin Bold', sans-serif;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0 !important;
+  font-family: 'Inter', sans-serif !important;
+  text-transform: none !important;
 }
 
 .welcome-v2__lead {
@@ -244,8 +247,9 @@
     gap: 10px;
   }
 
+  .welcome-v2 h1.si-home-hero__title,
   .welcome-v2__title {
-    font-size: clamp(30px, 10vw, 40px);
+    font-size: 24px !important;
   }
 
   .welcome-v2__lead {

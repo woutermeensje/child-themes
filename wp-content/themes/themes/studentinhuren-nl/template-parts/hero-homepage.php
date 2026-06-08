@@ -19,7 +19,7 @@ $contact_email  = get_post_meta($page_id, 'hero_email', true) ?: 'support@studen
 
                     <?php si_render_breadcrumbs('blog-breadcrumbs'); ?>
 
-                    <h1 class="welcome-v2__title"><?php the_title(); ?></h1>
+                    <h1 class="welcome-v2__title si-home-hero__title"><?php the_title(); ?></h1>
 
                     <?php if (has_excerpt($page_id)) : ?>
                         <p class="welcome-v2__lead"><?php echo esc_html(get_the_excerpt($page_id)); ?></p>

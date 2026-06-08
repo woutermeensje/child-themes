@@ -187,16 +187,64 @@ final class Lesrooster_Plugin {
 			</p>
 
 			<div class="lr-admin-field lr-admin-field--full">
-				<label for="lr_schedule_lines">Datum/Tijd van en tot</label>
-				<textarea id="lr_schedule_lines" name="lr_schedule_lines" rows="6" placeholder="Maandag 9:00 uur - 10:00 uur&#10;Donderdag 9:00 uur - 10:00 uur"><?php echo esc_textarea( $values['schedule_lines'] ); ?></textarea>
-				<div class="lr-admin-example">Voorbeeld:
-Maandag 9:00 uur - 10:00 uur
-Donderdag 9:00 uur - 10:00 uur</div>
+				<label>Momenten (dag, aanvangstijd, eindtijd)</label>
+				<style>
+					.lr-time-rows { margin-top:6px; }
+					.lr-time-row-head, .lr-time-row { display:grid; grid-template-columns:140px 90px 90px 32px; gap:8px; align-items:center; margin-bottom:6px; }
+					.lr-time-row-head span { font-size:11px; font-weight:600; color:#555; text-transform:uppercase; letter-spacing:.04em; }
+					.lr-time-row select, .lr-time-row input[type="text"] { width:100%; }
+					.lr-remove-row { background:#fef2f2; border:1px solid #fca5a5; border-radius:4px; color:#dc2626; cursor:pointer; font-size:14px; padding:4px 6px; }
+					.lr-remove-row:hover { background:#fee2e2; }
+					#lr-add-row { margin-top:8px; background:#f0fdf4; border:1px solid #86efac; border-radius:4px; color:#16a34a; cursor:pointer; font-size:13px; padding:6px 12px; }
+					#lr-add-row:hover { background:#dcfce7; }
+				</style>
+				<div class="lr-time-rows">
+					<div class="lr-time-row-head">
+						<span>Dag</span><span>Aanvang</span><span>Einde</span><span></span>
+					</div>
+					<div id="lr-time-row-list">
+						<?php
+						$existing_entries = $this->parse_schedule_lines( $values['schedule_lines'] );
+						foreach ( $existing_entries as $entry ) :
+							preg_match( '/(\d{1,2}:\d{2})(?:\s*uur)?\s*[-–]\s*(\d{1,2}:\d{2})(?:\s*uur)?/u', $entry['time'], $tm );
+							$sv = isset( $tm[1] ) ? esc_attr( $tm[1] ) : '';
+							$ev = isset( $tm[2] ) ? esc_attr( $tm[2] ) : '';
+						?>
+						<div class="lr-time-row">
+							<select name="lr_time_day[]">
+								<?php foreach ( $this->days as $key => $label ) : ?>
+									<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $entry['day'], $key ); ?>><?php echo esc_html( $label ); ?></option>
+								<?php endforeach; ?>
+							</select>
+							<input type="text" name="lr_time_start[]" value="<?php echo $sv; ?>" placeholder="9:00">
+							<input type="text" name="lr_time_end[]" value="<?php echo $ev; ?>" placeholder="10:00">
+							<button type="button" class="lr-remove-row" onclick="this.closest('.lr-time-row').remove()">✕</button>
+						</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
+				<button type="button" id="lr-add-row">+ Moment toevoegen</button>
+				<script>
+				(function() {
+					const days = <?php echo wp_json_encode( $this->days ); ?>;
+					document.getElementById('lr-add-row').addEventListener('click', function() {
+						const list = document.getElementById('lr-time-row-list');
+						const row  = document.createElement('div');
+						row.className = 'lr-time-row';
+						const opts = Object.entries(days).map(([k,v]) => `<option value="${k}">${v}</option>`).join('');
+						row.innerHTML = `<select name="lr_time_day[]">${opts}</select>`
+							+ `<input type="text" name="lr_time_start[]" placeholder="9:00">`
+							+ `<input type="text" name="lr_time_end[]" placeholder="10:00">`
+							+ `<button type="button" class="lr-remove-row" onclick="this.closest('.lr-time-row').remove()">✕</button>`;
+						list.appendChild(row);
+					});
+				})();
+				</script>
 			</div>
 		</div>
 		<div class="lr-admin-help">
-			<strong>Werkwijze:</strong> gebruik de titel van dit bericht als activiteit, vul locatie en trainer eenmalig in, en zet alle dag/tijd-combinaties onder elkaar in het veld <code>Datum/Tijd van en tot</code>.<br>
-			<strong>Reserveren:</strong> op de website verschijnt automatisch een standaard knop <code>Reserveer</code>. De bezoeker krijgt dan alleen een e-mailveld te zien.<br>
+			<strong>Werkwijze:</strong> gebruik de titel als activiteit, vul locatie en trainer eenmalig in, en voeg per dag een moment toe via de tabel hierboven.<br>
+			<strong>Reserveren:</strong> op de website verschijnt automatisch een knop <code>Reserveer</code>. De bezoeker krijgt dan alleen een e-mailveld te zien.<br>
 			<strong>Shortcode:</strong> gebruik <code>[lesrooster]</code> op een pagina of in Elementor.
 		</div>
 		<?php
@@ -215,11 +263,36 @@ Donderdag 9:00 uur - 10:00 uur</div>
 			return;
 		}
 
+		$schedule_lines = '';
+		if ( isset( $_POST['lr_time_day'] ) && is_array( $_POST['lr_time_day'] ) ) {
+			$days_post  = array_map( 'sanitize_text_field', wp_unslash( $_POST['lr_time_day'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+			$starts     = isset( $_POST['lr_time_start'] ) && is_array( $_POST['lr_time_start'] )
+				? array_map( 'sanitize_text_field', wp_unslash( $_POST['lr_time_start'] ) ) : []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+			$ends       = isset( $_POST['lr_time_end'] ) && is_array( $_POST['lr_time_end'] )
+				? array_map( 'sanitize_text_field', wp_unslash( $_POST['lr_time_end'] ) ) : []; // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+			$lines = [];
+			foreach ( $days_post as $i => $day ) {
+				$day = strtolower( trim( $day ) );
+				if ( ! isset( $this->days[ $day ] ) ) {
+					continue;
+				}
+				$start = trim( $starts[ $i ] ?? '' );
+				$end   = trim( $ends[ $i ]   ?? '' );
+				if ( '' === $start ) {
+					continue;
+				}
+				$label     = $this->days[ $day ];
+				$time_str  = '' !== $end ? "{$start} uur - {$end} uur" : "{$start} uur";
+				$lines[]   = "{$label} {$time_str}";
+			}
+			$schedule_lines = implode( "\n", $lines );
+		}
+
 		$fields = [
-			'_lr_location' => isset( $_POST['lr_location'] ) ? sanitize_text_field( wp_unslash( $_POST['lr_location'] ) ) : '',
-			'_lr_trainer' => isset( $_POST['lr_trainer'] ) ? sanitize_text_field( wp_unslash( $_POST['lr_trainer'] ) ) : '',
-			'_lr_level' => isset( $_POST['lr_level'] ) ? sanitize_text_field( wp_unslash( $_POST['lr_level'] ) ) : '',
-			'_lr_schedule_lines' => isset( $_POST['lr_schedule_lines'] ) ? sanitize_textarea_field( wp_unslash( $_POST['lr_schedule_lines'] ) ) : '',
+			'_lr_location'       => isset( $_POST['lr_location'] ) ? sanitize_text_field( wp_unslash( $_POST['lr_location'] ) ) : '',
+			'_lr_trainer'        => isset( $_POST['lr_trainer'] ) ? sanitize_text_field( wp_unslash( $_POST['lr_trainer'] ) ) : '',
+			'_lr_level'          => isset( $_POST['lr_level'] ) ? sanitize_text_field( wp_unslash( $_POST['lr_level'] ) ) : '',
+			'_lr_schedule_lines' => $schedule_lines,
 		];
 
 		foreach ( $fields as $meta_key => $value ) {
@@ -309,8 +382,7 @@ Donderdag 9:00 uur - 10:00 uur</div>
 		$atts = shortcode_atts(
 			[
 				'title' => 'Lesrooster groepstrainingen',
-				'intro' => 'Bekijk hieronder per dag welke groepstrainingen er gepland staan.',
-				'button_text' => 'Reserveer',
+				'button_text' => 'Aanmelden',
 			],
 			$atts,
 			'lesrooster'
@@ -344,9 +416,7 @@ Donderdag 9:00 uur - 10:00 uur</div>
 		?>
 		<section class="lr-schedule">
 			<div class="lr-schedule__intro">
-				<p class="lr-schedule__eyebrow">Groepstrainingen</p>
 				<h2 class="lr-schedule__title"><?php echo esc_html( $atts['title'] ); ?></h2>
-				<p class="lr-schedule__text"><?php echo esc_html( $atts['intro'] ); ?></p>
 			</div>
 
 			<?php if ( $status_message ) : ?>
@@ -376,36 +446,7 @@ Donderdag 9:00 uur - 10:00 uur</div>
 							<?php else : ?>
 								<div class="lr-day-card__list">
 									<?php foreach ( $day_lessons as $lesson ) : ?>
-										<article class="lr-lesson">
-											<p class="lr-lesson__time"><?php echo esc_html( $lesson['time'] ); ?></p>
-											<h4 class="lr-lesson__title"><?php echo esc_html( $lesson['title'] ); ?></h4>
-
-											<?php if ( $lesson['level'] ) : ?>
-												<p class="lr-lesson__badge"><?php echo esc_html( $lesson['level'] ); ?></p>
-											<?php endif; ?>
-
-											<div class="lr-lesson__meta">
-												<?php if ( $lesson['trainer'] ) : ?>
-													<span>Trainer: <?php echo esc_html( $lesson['trainer'] ); ?></span>
-												<?php endif; ?>
-												<?php if ( $lesson['location'] ) : ?>
-													<span>Locatie: <?php echo esc_html( $lesson['location'] ); ?></span>
-												<?php endif; ?>
-											</div>
-
-											<button
-												type="button"
-												class="lr-lesson__button"
-												data-lr-open-reservation
-												data-lr-activity="<?php echo esc_attr( $lesson['title'] ); ?>"
-												data-lr-day="<?php echo esc_attr( $day_label ); ?>"
-												data-lr-time="<?php echo esc_attr( $lesson['time'] ); ?>"
-												data-lr-location="<?php echo esc_attr( $lesson['location'] ); ?>"
-												data-lr-trainer="<?php echo esc_attr( $lesson['trainer'] ); ?>"
-											>
-												<?php echo esc_html( $atts['button_text'] ); ?>
-											</button>
-										</article>
+										<?php echo $this->render_lesson( $lesson, $day_label, $atts['button_text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
@@ -430,36 +471,7 @@ Donderdag 9:00 uur - 10:00 uur</div>
 							<?php else : ?>
 								<div class="lr-day-card__list">
 									<?php foreach ( $day_lessons as $lesson ) : ?>
-										<article class="lr-lesson">
-											<p class="lr-lesson__time"><?php echo esc_html( $lesson['time'] ); ?></p>
-											<h4 class="lr-lesson__title"><?php echo esc_html( $lesson['title'] ); ?></h4>
-
-											<?php if ( $lesson['level'] ) : ?>
-												<p class="lr-lesson__badge"><?php echo esc_html( $lesson['level'] ); ?></p>
-											<?php endif; ?>
-
-											<div class="lr-lesson__meta">
-												<?php if ( $lesson['trainer'] ) : ?>
-													<span>Trainer: <?php echo esc_html( $lesson['trainer'] ); ?></span>
-												<?php endif; ?>
-												<?php if ( $lesson['location'] ) : ?>
-													<span>Locatie: <?php echo esc_html( $lesson['location'] ); ?></span>
-												<?php endif; ?>
-											</div>
-
-											<button
-												type="button"
-												class="lr-lesson__button"
-												data-lr-open-reservation
-												data-lr-activity="<?php echo esc_attr( $lesson['title'] ); ?>"
-												data-lr-day="<?php echo esc_attr( $day_label ); ?>"
-												data-lr-time="<?php echo esc_attr( $lesson['time'] ); ?>"
-												data-lr-location="<?php echo esc_attr( $lesson['location'] ); ?>"
-												data-lr-trainer="<?php echo esc_attr( $lesson['trainer'] ); ?>"
-											>
-												<?php echo esc_html( $atts['button_text'] ); ?>
-											</button>
-										</article>
+										<?php echo $this->render_lesson( $lesson, $day_label, $atts['button_text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 									<?php endforeach; ?>
 								</div>
 							<?php endif; ?>
@@ -475,9 +487,30 @@ Donderdag 9:00 uur - 10:00 uur</div>
 					<p class="lr-reservation-modal__eyebrow">Reservering</p>
 					<h3 id="lr-reservation-title" class="lr-reservation-modal__title">Reserveer jouw training</h3>
 					<div class="lr-reservation-modal__summary">
-						<p><strong>Activiteit:</strong> <span data-lr-summary-activity></span></p>
-						<p><strong>Moment:</strong> <span data-lr-summary-slot></span></p>
-						<p><strong>Locatie:</strong> <span data-lr-summary-location></span></p>
+						<div class="lr-modal-row">
+							<span class="lr-modal-row__icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z"/></svg></span>
+							<span class="lr-modal-row__text" data-lr-summary-activity></span>
+						</div>
+						<div class="lr-modal-row">
+							<span class="lr-modal-row__icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"/></svg></span>
+							<span class="lr-modal-row__text" data-lr-summary-day></span>
+						</div>
+						<div class="lr-modal-row">
+							<span class="lr-modal-row__icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg></span>
+							<span class="lr-modal-row__text"><span class="lr-modal-row__label">Van:</span> <span data-lr-summary-start></span></span>
+						</div>
+						<div class="lr-modal-row" data-lr-modal-row="end">
+							<span class="lr-modal-row__icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg></span>
+							<span class="lr-modal-row__text"><span class="lr-modal-row__label">Tot:</span> <span data-lr-summary-end></span></span>
+						</div>
+						<div class="lr-modal-row" data-lr-modal-row="location">
+							<span class="lr-modal-row__icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg></span>
+							<span class="lr-modal-row__text" data-lr-summary-location></span>
+						</div>
+						<div class="lr-modal-row" data-lr-modal-row="trainer">
+							<span class="lr-modal-row__icon"><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="16" height="16" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg></span>
+							<span class="lr-modal-row__text" data-lr-summary-trainer></span>
+						</div>
 					</div>
 
 					<form class="lr-reservation-form" method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>">
@@ -509,32 +542,49 @@ Donderdag 9:00 uur - 10:00 uur</div>
 		  const toggleButtons = scope.querySelectorAll('[data-lr-toggle]');
 		  const panels = scope.querySelectorAll('[data-lr-panel]');
 
-		  const emailInput = modal.querySelector('#lr-reservation-email');
-		  const summaryActivity = modal.querySelector('[data-lr-summary-activity]');
-		  const summarySlot = modal.querySelector('[data-lr-summary-slot]');
-		  const summaryLocation = modal.querySelector('[data-lr-summary-location]');
-		  const activityField = modal.querySelector('[data-lr-field-activity]');
-		  const dayField = modal.querySelector('[data-lr-field-day]');
-		  const timeField = modal.querySelector('[data-lr-field-time]');
-		  const locationField = modal.querySelector('[data-lr-field-location]');
-		  const trainerField = modal.querySelector('[data-lr-field-trainer]');
+		  const emailInput       = modal.querySelector('#lr-reservation-email');
+		  const summaryActivity  = modal.querySelector('[data-lr-summary-activity]');
+		  const summaryDay       = modal.querySelector('[data-lr-summary-day]');
+		  const summaryStart     = modal.querySelector('[data-lr-summary-start]');
+		  const summaryEnd       = modal.querySelector('[data-lr-summary-end]');
+		  const summaryLocation  = modal.querySelector('[data-lr-summary-location]');
+		  const summaryTrainer   = modal.querySelector('[data-lr-summary-trainer]');
+		  const rowEnd           = modal.querySelector('[data-lr-modal-row="end"]');
+		  const rowLocation      = modal.querySelector('[data-lr-modal-row="location"]');
+		  const rowTrainer       = modal.querySelector('[data-lr-modal-row="trainer"]');
+		  const activityField    = modal.querySelector('[data-lr-field-activity]');
+		  const dayField         = modal.querySelector('[data-lr-field-day]');
+		  const timeField        = modal.querySelector('[data-lr-field-time]');
+		  const locationField    = modal.querySelector('[data-lr-field-location]');
+		  const trainerField     = modal.querySelector('[data-lr-field-trainer]');
 
 		  const openModal = (button) => {
 		    const activity = button.getAttribute('data-lr-activity') || '';
-		    const day = button.getAttribute('data-lr-day') || '';
-		    const time = button.getAttribute('data-lr-time') || '';
+		    const day      = button.getAttribute('data-lr-day')      || '';
+		    const time     = button.getAttribute('data-lr-time')     || '';
 		    const location = button.getAttribute('data-lr-location') || '';
-		    const trainer = button.getAttribute('data-lr-trainer') || '';
+		    const trainer  = button.getAttribute('data-lr-trainer')  || '';
 
-		    summaryActivity.textContent = activity;
-		    summarySlot.textContent = [day, time].filter(Boolean).join(' ');
-		    summaryLocation.textContent = location || 'Nog niet opgegeven';
+		    const timeMatch = time.match(/(\d{1,2}:\d{2}\s*uur)\s*[-–]\s*(\d{1,2}:\d{2}\s*uur)/i);
+		    const startTime = timeMatch ? timeMatch[1] : time;
+		    const endTime   = timeMatch ? timeMatch[2] : '';
+
+		    if (summaryActivity) summaryActivity.textContent = activity;
+		    if (summaryDay)      summaryDay.textContent      = day;
+		    if (summaryStart)    summaryStart.textContent    = startTime;
+		    if (summaryEnd)      summaryEnd.textContent      = endTime;
+		    if (summaryLocation) summaryLocation.textContent = location || 'Nog niet opgegeven';
+		    if (summaryTrainer)  summaryTrainer.textContent  = trainer;
+
+		    if (rowEnd)      rowEnd.hidden      = !endTime;
+		    if (rowLocation) rowLocation.hidden = !location;
+		    if (rowTrainer)  rowTrainer.hidden  = !trainer;
 
 		    activityField.value = activity;
-		    dayField.value = day;
-		    timeField.value = time;
+		    dayField.value      = day;
+		    timeField.value     = time;
 		    locationField.value = location;
-		    trainerField.value = trainer;
+		    trainerField.value  = trainer;
 
 		    modal.hidden = false;
 		    document.body.classList.add('lr-modal-open');
@@ -579,6 +629,28 @@ Donderdag 9:00 uur - 10:00 uur</div>
 		    if (event.key === 'Escape' && !modal.hidden) {
 		      closeModal();
 		    }
+		  });
+
+		  const equalizeRows = () => {
+		    scope.querySelectorAll('.lr-schedule__grid').forEach((grid) => {
+		      const lists = Array.from(grid.querySelectorAll('.lr-day-card__list'));
+		      if (lists.length < 2) return;
+		      lists.forEach((list) => {
+		        Array.from(list.children).forEach((card) => { card.style.minHeight = ''; });
+		      });
+		      const maxLessons = Math.max(...lists.map((l) => l.children.length));
+		      for (let i = 0; i < maxLessons; i++) {
+		        const rowCards = lists.map((list) => list.children[i]).filter(Boolean);
+		        const maxH = Math.max(...rowCards.map((c) => c.offsetHeight));
+		        rowCards.forEach((c) => { c.style.minHeight = maxH + 'px'; });
+		      }
+		    });
+		  };
+
+		  window.addEventListener('load', equalizeRows);
+		  window.addEventListener('resize', () => {
+		    clearTimeout(window._lrResizeTimer);
+		    window._lrResizeTimer = setTimeout(equalizeRows, 150);
 		  });
 		})();
 		</script>
@@ -786,6 +858,11 @@ Donderdag 9:00 uur - 10:00 uur</div>
 		$subject_admin = sprintf( 'Nieuwe reservering voor %s', $reservation['activity'] );
 		$subject_user = sprintf( 'Bevestiging reservering %s', $reservation['activity'] );
 
+		$headers = [
+			'Content-Type: text/plain; charset=UTF-8',
+			'From: Lansingerland Fit <' . $admin_email . '>',
+		];
+
 		$message_lines = [
 			'Activiteit: ' . $reservation['activity'],
 			'Moment: ' . $reservation['day'] . ' ' . $reservation['time'],
@@ -794,7 +871,7 @@ Donderdag 9:00 uur - 10:00 uur</div>
 			'E-mail: ' . $reservation['email'],
 		];
 
-		wp_mail( $admin_email, $subject_admin, implode( PHP_EOL, $message_lines ) );
+		wp_mail( $admin_email, $subject_admin, implode( PHP_EOL, $message_lines ), $headers );
 
 		$user_message = array_merge(
 			[
@@ -805,12 +882,70 @@ Donderdag 9:00 uur - 10:00 uur</div>
 			$message_lines
 		);
 
-		wp_mail( $reservation['email'], $subject_user, implode( PHP_EOL, $user_message ) );
+		wp_mail( $reservation['email'], $subject_user, implode( PHP_EOL, $user_message ), $headers );
 	}
 
 	private function get_current_url(): string {
 		$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '/';
 		return home_url( $request_uri );
+	}
+
+	private function render_lesson( array $lesson, string $day_label, string $button_text ): string {
+		$time_parts     = $this->parse_time_parts( $lesson['time'] );
+		$short_location = $lesson['location'] ? $this->get_short_location( $lesson['location'] ) : '';
+
+		$icon_tag   = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6 6h.008v.008H6V6Z"/></svg>';
+		$icon_clock = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>';
+		$icon_arrow = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"/></svg>';
+		$icon_pin   = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"/></svg>';
+		$icon_user  = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" width="14" height="14" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/></svg>';
+
+		$rows = '';
+		if ( $lesson['level'] ) {
+			$rows .= '<div class="lr-lesson__row"><span class="lr-lesson__icon">' . $icon_tag . '</span><span class="lr-lesson__row-text">' . esc_html( $lesson['level'] ) . '</span></div>';
+		}
+		if ( $time_parts['start'] ) {
+			$rows .= '<div class="lr-lesson__row"><span class="lr-lesson__icon">' . $icon_clock . '</span><span class="lr-lesson__row-text"><span class="lr-lesson__row-label">Van:</span> ' . esc_html( $time_parts['start'] ) . '</span></div>';
+		}
+		if ( $time_parts['end'] ) {
+			$rows .= '<div class="lr-lesson__row"><span class="lr-lesson__icon">' . $icon_arrow . '</span><span class="lr-lesson__row-text"><span class="lr-lesson__row-label">Tot:</span> ' . esc_html( $time_parts['end'] ) . '</span></div>';
+		}
+		if ( $short_location ) {
+			$rows .= '<div class="lr-lesson__row"><span class="lr-lesson__icon">' . $icon_pin . '</span><span class="lr-lesson__row-text">' . esc_html( $short_location ) . '</span></div>';
+		}
+		if ( $lesson['trainer'] ) {
+			$rows .= '<div class="lr-lesson__row"><span class="lr-lesson__icon">' . $icon_user . '</span><span class="lr-lesson__row-text">' . esc_html( $lesson['trainer'] ) . '</span></div>';
+		}
+
+		return sprintf(
+			'<article class="lr-lesson">'
+			. '<h4 class="lr-lesson__title">%s</h4>'
+			. '<div class="lr-lesson__rows">%s</div>'
+			. '<button type="button" class="lr-lesson__button" data-lr-open-reservation '
+			. 'data-lr-activity="%s" data-lr-day="%s" data-lr-time="%s" '
+			. 'data-lr-location="%s" data-lr-trainer="%s">%s</button>'
+			. '</article>',
+			esc_html( $lesson['title'] ),
+			$rows, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			esc_attr( $lesson['title'] ),
+			esc_attr( $day_label ),
+			esc_attr( $lesson['time'] ),
+			esc_attr( $lesson['location'] ),
+			esc_attr( $lesson['trainer'] ),
+			esc_html( $button_text )
+		);
+	}
+
+	private function parse_time_parts( string $time ): array {
+		if ( preg_match( '/(\d{1,2}:\d{2}\s*uur)\s*[-–]\s*(\d{1,2}:\d{2}\s*uur)/iu', $time, $matches ) ) {
+			return [ 'start' => trim( $matches[1] ), 'end' => trim( $matches[2] ) ];
+		}
+		return [ 'start' => $time, 'end' => '' ];
+	}
+
+	private function get_short_location( string $location ): string {
+		$parts = explode( ' - ', $location, 2 );
+		return trim( $parts[0] );
 	}
 
 	private function safe_redirect( string $url, array $args = [] ): void {

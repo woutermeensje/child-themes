@@ -30,10 +30,13 @@
   width: 100%;
 }
 
-.rn-topbar__inner {
-  max-width: 1200px;
+.rn-topbar__inner,
+.rn-header__inner {
+  width: min(100% - 96px, 1840px);
   margin: 0 auto;
-  padding: 0 24px;
+}
+
+.rn-topbar__inner {
   height: var(--rn-topbar-h);
   display: flex;
   align-items: center;
@@ -65,9 +68,6 @@
 
 /* ---- Main nav bar ---- */
 .rn-header__inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
   height: var(--rn-header-h);
   display: flex;
   align-items: center;
@@ -200,6 +200,40 @@
   transform: translateY(-1px);
 }
 
+/* ---- Mobile header CTA ---- */
+.rn-header__mobile-actions {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+.rn-header__mobile-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0;
+  min-height: 38px;
+  padding: 8px 14px;
+  border-radius: 5px;
+  background: var(--color-turquoise, #559EA3);
+  color: #fff !important;
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: none !important;
+  white-space: nowrap;
+  box-shadow: none !important;
+}
+.rn-header__mobile-cta:hover,
+.rn-header__mobile-cta:focus {
+  background: var(--color-steel, #39749B);
+  color: #fff !important;
+}
+
 /* ---- Hamburger ---- */
 .rn-header__hamburger {
   display: none;
@@ -327,7 +361,8 @@
 /* ---- Responsive ---- */
 @media (max-width: 960px) {
   .rn-header__nav, .rn-header__cta { display: none; }
-  .rn-header__hamburger { display: flex; }
+  .rn-header__mobile-actions { display: flex; }
+  .rn-header__hamburger { display: flex; margin-left: 0; }
   .rn-mobile-nav { display: block; }
   .rn-topbar { display: none !important; }
 }
@@ -337,6 +372,15 @@
 }
 
 @media (max-width: 480px) {
-  .rn-header__inner { padding: 0 16px; gap: 12px; }
-  .rn-topbar__inner { padding: 0 16px; }
+  .rn-topbar__inner,
+  .rn-header__inner {
+    width: min(100% - 32px, 1840px);
+  }
+
+  .rn-header__inner { gap: 12px; }
+  .rn-header__mobile-cta {
+    min-height: 36px;
+    padding: 7px 12px;
+    font-size: 13px;
+  }
 }

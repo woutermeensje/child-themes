@@ -25,6 +25,103 @@ if (!function_exists('si_redirect_or_fallback')) {
     }
 }
 
+if (!function_exists('si_is_duplicate_form_submission')) {
+    function si_is_duplicate_form_submission(string $form_key, array $payload, int $ttl = 300): bool {
+        $payload = array_filter($payload, static function ($value) {
+            return $value !== null && $value !== '';
+        });
+        ksort($payload);
+
+        $lock_key = 'si_form_' . md5($form_key . '|' . wp_json_encode($payload));
+
+        if (get_transient($lock_key)) {
+            return true;
+        }
+
+        set_transient($lock_key, time(), $ttl);
+        return false;
+    }
+}
+
+if (!function_exists('si_admin_email_value')) {
+    function si_admin_email_value(string $value, string $type = 'text'): string {
+        $value = trim($value);
+
+        if ($value === '') {
+            return '&mdash;';
+        }
+
+        if ($type === 'email' && is_email($value)) {
+            return '<a href="mailto:' . esc_attr($value) . '" style="color:#2563eb;text-decoration:none;">' . esc_html($value) . '</a>';
+        }
+
+        if ($type === 'tel') {
+            $tel = preg_replace('/[^\d+]/', '', $value);
+            return '<a href="tel:' . esc_attr($tel) . '" style="color:#2563eb;text-decoration:none;">' . esc_html($value) . '</a>';
+        }
+
+        if ($type === 'url') {
+            return '<a href="' . esc_url($value) . '" style="color:#2563eb;text-decoration:none;">' . esc_html($value) . '</a>';
+        }
+
+        return esc_html($value);
+    }
+}
+
+if (!function_exists('si_build_admin_email')) {
+    function si_build_admin_email(string $title, string $intro, array $fields, string $message_label = '', string $message_html = '', int $post_id = 0): string {
+        $rows = '';
+
+        foreach ($fields as $field) {
+            $label = isset($field['label']) ? (string) $field['label'] : '';
+            $value = isset($field['value']) ? (string) $field['value'] : '';
+            $type  = isset($field['type']) ? (string) $field['type'] : 'text';
+
+            $rows .= '<tr>';
+            $rows .= '<td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;color:#6b7280;font-size:13px;width:150px;">' . esc_html($label) . '</td>';
+            $rows .= '<td style="padding:10px 14px;border-bottom:1px solid #e5e7eb;color:#111827;font-size:14px;font-weight:600;">' . si_admin_email_value($value, $type) . '</td>';
+            $rows .= '</tr>';
+        }
+
+        $message_block = '';
+        if ($message_label && si_rich_text_has_content($message_html)) {
+            $message_block = '
+                <div style="margin-top:22px;">
+                    <h2 style="margin:0 0 10px;font-size:15px;line-height:1.3;color:#111827;">' . esc_html($message_label) . '</h2>
+                    <div style="padding:16px;border:1px solid #e5e7eb;border-radius:8px;background:#f9fafb;color:#111827;font-size:14px;line-height:1.6;">' . wp_kses_post($message_html) . '</div>
+                </div>';
+        }
+
+        $admin_link = '';
+        if ($post_id > 0) {
+            $admin_link = '
+                <p style="margin:22px 0 0;">
+                    <a href="' . esc_url(admin_url('post.php?post=' . $post_id . '&action=edit')) . '" style="display:inline-block;padding:10px 14px;border-radius:6px;background:#3A89FF;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;">Bekijk in WordPress</a>
+                </p>';
+        }
+
+        return '<!doctype html>
+<html>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Inter,Arial,sans-serif;color:#111827;">
+    <div style="padding:28px 16px;">
+        <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
+            <div style="padding:22px 26px;background:#3A89FF;color:#ffffff;">
+                <p style="margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;">Studentinhuren.nl</p>
+                <h1 style="margin:0;font-size:22px;line-height:1.25;color:#ffffff;">' . esc_html($title) . '</h1>
+            </div>
+            <div style="padding:24px 26px;">
+                <p style="margin:0 0 18px;color:#374151;font-size:15px;line-height:1.6;">' . esc_html($intro) . '</p>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">' . $rows . '</table>
+                ' . $message_block . '
+                ' . $admin_link . '
+            </div>
+        </div>
+    </div>
+</body>
+</html>';
+    }
+}
+
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen-compact.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-latest-opdrachten.php';

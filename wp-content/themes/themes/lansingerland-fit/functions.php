@@ -35,6 +35,15 @@ add_action('wp_enqueue_scripts', function () {
             filemtime($theme_dir . '/css/hero-homepage.css')
         );
     }
+
+    if (file_exists($theme_dir . '/css/lesrooster.css')) {
+        wp_enqueue_style(
+            'lf-lesrooster',
+            $theme_uri . '/css/lesrooster.css',
+            ['child-style', 'lesrooster-style'],
+            filemtime($theme_dir . '/css/lesrooster.css')
+        );
+    }
 });
 
 

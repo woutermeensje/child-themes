@@ -150,6 +150,19 @@ function si_opdracht_plaatsen_shortcode(): string {
         if (!$beschrijving)       $errors[] = 'Vul een opdrachtbeschrijving in.';
 
         if (empty($errors)) {
+            $submission_id = sanitize_text_field($_POST['si_submission_id'] ?? '');
+
+            if (si_is_duplicate_form_submission('opdracht_plaatsen', [
+                'submission_id' => $submission_id,
+                'voornaam'      => $voornaam,
+                'achternaam'    => $achternaam,
+                'email'         => strtolower($email),
+                'telefoon'      => $telefoon,
+                'website'       => $website,
+                'beschrijving'  => wp_strip_all_tags($beschrijving),
+            ])) {
+                si_redirect_or_fallback(home_url('/bedankt-opdracht-plaatsen/'));
+            }
 
             // ── Opslaan in de database ──────────────────────────
             $post_id = wp_insert_post([
@@ -169,19 +182,26 @@ function si_opdracht_plaatsen_shortcode(): string {
             }
 
             // ── E-mailnotificatie ────────────────────────────────
-            $body  = "Nieuwe opdracht via het formulier:\n\n";
-            $body .= "Naam: $voornaam $achternaam\n";
-            $body .= "E-mail: $email\n";
-            $body .= "Telefoon: $telefoon\n";
-            $body .= "Website: $website\n\n";
-            $body .= "--- Opdrachtbeschrijving ---\n" . wp_strip_all_tags($beschrijving) . "\n";
+            $body = si_build_admin_email(
+                "Nieuwe opdracht van $voornaam $achternaam",
+                'Er is een nieuwe opdracht geplaatst via het formulier op Studentinhuren.nl.',
+                [
+                    ['label' => 'Naam', 'value' => "$voornaam $achternaam"],
+                    ['label' => 'E-mail', 'value' => $email, 'type' => 'email'],
+                    ['label' => 'Telefoon', 'value' => $telefoon, 'type' => 'tel'],
+                    ['label' => 'Website', 'value' => $website, 'type' => 'url'],
+                ],
+                'Opdrachtbeschrijving',
+                $beschrijving,
+                (int) $post_id
+            );
 
             wp_mail(
                 get_option('admin_email'),
                 "Nieuwe opdracht van $voornaam $achternaam",
                 $body,
                 [
-                    'Content-Type: text/plain; charset=UTF-8',
+                    'Content-Type: text/html; charset=UTF-8',
                     'Reply-To: ' . $email,
                 ]
             );
@@ -217,6 +237,7 @@ function si_opdracht_plaatsen_shortcode(): string {
 
             <form method="post" class="si-op__form" novalidate>
                 <?php wp_nonce_field('si_opdracht_plaatsen', 'si_op_nonce'); ?>
+                <input type="hidden" name="si_submission_id" value="<?php echo esc_attr($_POST['si_submission_id'] ?? wp_generate_uuid4()); ?>">
 
                 <div class="sj-vp__section">
                     <p class="sj-vp__section-title">Contactgegevens</p>
@@ -301,8 +322,21 @@ function si_opdracht_plaatsen_shortcode(): string {
 
             var form = beschrijvingHidden ? beschrijvingHidden.closest('form') : null;
             if (form) {
-                form.addEventListener('submit', function () {
+                form.addEventListener('submit', function (event) {
+                    if (form.dataset.siSubmitting === '1') {
+                        event.preventDefault();
+                        return;
+                    }
+
                     if (beschrijvingHidden) beschrijvingHidden.value = quillOpdracht.root.innerHTML;
+                    form.dataset.siSubmitting = '1';
+
+                    form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(function (button) {
+                        button.disabled = true;
+                        if (button.tagName === 'BUTTON') {
+                            button.textContent = 'Bezig met versturen...';
+                        }
+                    });
                 });
             }
         }

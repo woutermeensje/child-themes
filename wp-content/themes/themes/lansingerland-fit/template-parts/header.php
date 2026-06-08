@@ -8,7 +8,13 @@ $logo_url = '';
 $logo_file = '';
 // Pick the newest logo asset from the child-theme logo folder first,
 // so uploads do not depend on one exact filename.
-$logo_candidates = glob( get_stylesheet_directory() . '/site-logo/*.{svg,png,webp,jpg,jpeg}', GLOB_BRACE );
+$logo_candidates = [];
+foreach ( [ 'svg', 'png', 'webp', 'jpg', 'jpeg' ] as $_ext ) {
+    $matches = glob( get_stylesheet_directory() . '/site-logo/*.' . $_ext );
+    if ( is_array( $matches ) ) {
+        $logo_candidates = array_merge( $logo_candidates, $matches );
+    }
+}
 
 if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
     usort(
@@ -41,7 +47,7 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
 /* ---- Utility bar ---- */
 #rn-header .rn-topbar { background: var(--color-primary) !important; width: 100% !important; }
 #rn-header .rn-topbar__inner {
-  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  width: min(100% - 96px, 1600px); margin: 0 auto;
   height: 36px; display: flex; align-items: center; justify-content: space-between;
 }
 #rn-header .rn-topbar__left,
@@ -57,7 +63,7 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
 
 /* ---- Main nav bar ---- */
 #rn-header .rn-header__inner {
-  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  width: min(100% - 96px, 1600px); margin: 0 auto;
   height: 68px; display: flex; align-items: center; gap: 24px;
 }
 
@@ -141,6 +147,40 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
   transform: translateY(-1px);
 }
 
+/* ---- Mobile header CTA ---- */
+#rn-header .rn-header__mobile-actions {
+  display: none !important;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+#rn-header .rn-header__mobile-cta {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0;
+  min-height: 38px;
+  padding: 8px 14px !important;
+  border-radius: 5px !important;
+  background: var(--color-turquoise, #559EA3) !important;
+  color: #fff !important;
+  font-family: 'Inter', sans-serif !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  line-height: 1 !important;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: none !important;
+  white-space: nowrap;
+  box-shadow: none !important;
+}
+#rn-header .rn-header__mobile-cta:hover,
+#rn-header .rn-header__mobile-cta:focus {
+  background: var(--color-steel, #39749B) !important;
+  color: #fff !important;
+}
+
 /* ---- Hamburger ---- */
 #rn-header .rn-header__hamburger {
   display: none; flex-direction: column; justify-content: center; gap: 5px;
@@ -216,7 +256,8 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
 @media (max-width: 960px) {
   #rn-header .rn-header__nav,
   #rn-header .rn-header__cta { display: none !important; }
-  #rn-header .rn-header__hamburger { display: flex !important; }
+  #rn-header .rn-header__mobile-actions { display: flex !important; }
+  #rn-header .rn-header__hamburger { display: flex !important; margin-left: 0; }
   .rn-mobile-nav { display: block; }
   #rn-header .rn-topbar__right { display: none !important; }
 }
@@ -224,8 +265,9 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
   .rn-mobile-nav { display: none !important; }
 }
 @media (max-width: 480px) {
-  #rn-header .rn-header__inner { padding: 0 16px !important; gap: 12px; }
-  #rn-header .rn-topbar__inner { padding: 0 16px !important; }
+  #rn-header .rn-header__inner { width: min(100% - 32px, 1600px) !important; gap: 12px; }
+  #rn-header .rn-topbar__inner { width: min(100% - 32px, 1600px) !important; }
+  #rn-header .rn-header__mobile-cta { min-height: 36px; padding: 7px 12px !important; font-size: 13px !important; }
 }
 </style>
 
@@ -271,12 +313,18 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
             </a>
         </div>
 
-        <!-- Hamburger (mobile) -->
-        <button class="rn-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="rn-mobile-nav">
-            <span class="rn-hamburger__bar"></span>
-            <span class="rn-hamburger__bar"></span>
-            <span class="rn-hamburger__bar"></span>
-        </button>
+        <div class="rn-header__mobile-actions">
+            <a href="<?php echo esc_url( home_url( '/gratis-proefles/' ) ); ?>" class="rn-header__mobile-cta">
+                Proefles
+            </a>
+
+            <!-- Hamburger (mobile) -->
+            <button class="rn-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="rn-mobile-nav">
+                <span class="rn-hamburger__bar"></span>
+                <span class="rn-hamburger__bar"></span>
+                <span class="rn-hamburger__bar"></span>
+            </button>
+        </div>
 
     </div><!-- /.rn-header__inner -->
 
