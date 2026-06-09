@@ -226,6 +226,15 @@ function fondsen_enqueue_styles() {
         );
     }
 
+    if (file_exists(get_stylesheet_directory() . '/css/shortcodes.css')) {
+        wp_enqueue_style(
+            'fondsen-shortcodes',
+            get_stylesheet_directory_uri() . '/css/shortcodes.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/shortcodes.css')
+        );
+    }
+
     if (file_exists(get_stylesheet_directory() . '/js/job-favorites.js')) {
         wp_enqueue_script(
             'fondsen-job-favorites',

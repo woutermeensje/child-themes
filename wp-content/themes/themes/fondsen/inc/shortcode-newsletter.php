@@ -4,7 +4,9 @@ if (!defined('ABSPATH')) exit;
 /**
  * Shortcode: [fondsen-nieuwsbrief]
  */
-add_shortcode('fondsen-nieuwsbrief', 'fn_nieuwsbrief_shortcode');
+foreach (['fondsen-nieuwsbrief', 'fondsen_nieuwsbrief', 'sj-nieuwsbrief'] as $tag) {
+    add_shortcode($tag, 'fn_nieuwsbrief_shortcode');
+}
 
 function fn_nieuwsbrief_shortcode(): string {
     global $wpdb;
@@ -28,33 +30,41 @@ function fn_nieuwsbrief_shortcode(): string {
             $existing = $wpdb->get_var($wpdb->prepare(
                 "SELECT id FROM {$table} WHERE email = %s", $email
             ));
+            $saved = false;
 
             if ($existing) {
-                $wpdb->update(
+                $updated = $wpdb->update(
                     $table,
                     ['voornaam' => $voornaam, 'active' => 1],
                     ['email'    => $email],
                     ['%s', '%d'],
                     ['%s']
                 );
+                $saved = ($updated !== false);
             } else {
-                $wpdb->insert(
+                $inserted = $wpdb->insert(
                     $table,
                     ['voornaam' => $voornaam, 'email' => $email, 'unsubscribe_token' => $token, 'active' => 1],
                     ['%s', '%s', '%s', '%d']
                 );
+                $saved = ($inserted !== false);
             }
 
-            fn_ac_subscribe_newsletter($voornaam, $email);
+            if (!$saved) {
+                error_log('[Fondsen Nieuwsbrief] Aanmelding opslaan mislukt: ' . $wpdb->last_error);
+                $errors[] = 'Je aanmelding kon niet worden opgeslagen. Probeer het later opnieuw.';
+            } else {
+                fn_ac_subscribe_newsletter($voornaam, $email);
 
-            $admin_email = get_option('admin_email');
-            wp_mail(
-                $admin_email,
-                'Nieuwe nieuwsbrief aanmelding — Fondsen.org',
-                "Nieuwe aanmelding:\n\nNaam:  {$voornaam}\nE-mail: {$email}"
-            );
+                $admin_email = get_option('admin_email');
+                wp_mail(
+                    $admin_email,
+                    'Nieuwe nieuwsbrief aanmelding — Fondsen.org',
+                    "Nieuwe aanmelding:\n\nNaam:  {$voornaam}\nE-mail: {$email}"
+                );
 
-            $success = true;
+                $success = true;
+            }
         }
     }
 
@@ -74,10 +84,10 @@ function fn_nieuwsbrief_shortcode(): string {
 
     <?php else: ?>
 
-    <div style="max-width:600px;background:#ffffff;border:1px solid #dedede;border-radius:5px;padding:32px;">
+    <div class="fn-ja fn-ja__block">
 
-        <h3 style="margin:0 0 4px;font-size:20px;color:#0884CC;">Vacature Nieuwsbrief — Fondsen.org</h3>
-        <p style="margin:0 0 24px;font-size:14px;color:#6B7280;">Ontvang elke twee weken de nieuwste vacatures in je inbox.</p>
+        <h3 class="fn-ja__title">Vacature Nieuwsbrief — Fondsen.org</h3>
+        <p class="fn-ja__subtitle">Ontvang elke twee weken de nieuwste vacatures in je inbox.</p>
 
         <?php if (!empty($errors)): ?>
         <div style="background:#fff3f3;border:1px solid #d63638;border-radius:5px;padding:16px 20px;margin-bottom:20px;">
@@ -95,23 +105,23 @@ function fn_nieuwsbrief_shortcode(): string {
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
                 <div>
-                    <label style="display:block;font-size:14px;font-weight:600;margin-bottom:4px;color:#333;" for="fn_nl_voornaam">Voornaam <span style="color:#d63638;">*</span></label>
+                    <label class="fn-nl__label" for="fn_nl_voornaam">Voornaam <span class="fn-ja__req">*</span></label>
                     <input type="text" name="voornaam" id="fn_nl_voornaam"
+                           class="fn-ja__input"
                            value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>"
-                           style="width:100%;padding:10px 12px;border:1px solid #E0E0E0;border-radius:4px;font-size:14px;box-sizing:border-box;"
                            required>
                 </div>
                 <div>
-                    <label style="display:block;font-size:14px;font-weight:600;margin-bottom:4px;color:#333;" for="fn_nl_email">E-mailadres <span style="color:#d63638;">*</span></label>
+                    <label class="fn-nl__label" for="fn_nl_email">E-mailadres <span class="fn-ja__req">*</span></label>
                     <input type="email" name="email" id="fn_nl_email"
+                           class="fn-ja__input"
                            value="<?php echo esc_attr($_POST['email'] ?? ''); ?>"
-                           style="width:100%;padding:10px 12px;border:1px solid #E0E0E0;border-radius:4px;font-size:14px;box-sizing:border-box;"
                            required>
                 </div>
             </div>
 
-            <button type="submit" style="display:inline-block;padding:11px 24px;background:#FF8C2C;color:#fff;font-size:15px;font-weight:700;border:none;border-radius:4px;cursor:pointer;">
-                Aanmelden voor de nieuwsbrief
+            <button type="submit" class="fn-ja__submit">
+                Bevestigen
             </button>
         </form>
 

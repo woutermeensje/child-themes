@@ -381,3 +381,261 @@ function sj_job_alerts_shortcode(): string {
 
     return ob_get_clean();
 }
+
+/**
+ * Shortcode: [sj-job-alerts-sidebar]
+ * Compacte sidebar-versie voor op de single vacaturepagina.
+ */
+add_shortcode('sj-job-alerts-sidebar', 'sj_job_alerts_sidebar_shortcode');
+
+function sj_job_alerts_sidebar_shortcode(): string {
+    global $wpdb;
+    $table   = $wpdb->prefix . 'sj_job_alerts';
+    $errors  = [];
+    $success = false;
+
+    if (
+        $_SERVER['REQUEST_METHOD'] === 'POST' &&
+        isset($_POST['sj_ja_sb_nonce']) &&
+        wp_verify_nonce($_POST['sj_ja_sb_nonce'], 'sj_job_alerts_sidebar')
+    ) {
+        $voornaam = sanitize_text_field($_POST['sj_ja_sb_voornaam'] ?? '');
+        $email    = sanitize_email($_POST['sj_ja_sb_email']         ?? '');
+        $sectors  = array_map('sanitize_title', (array) ($_POST['sj_ja_sb_sectors'] ?? []));
+
+        if (!$voornaam)        $errors[] = 'Vul je voornaam in.';
+        if (!is_email($email)) $errors[] = 'Vul een geldig e-mailadres in.';
+        if (empty($sectors))   $errors[] = 'Kies minimaal één categorie.';
+
+        if (empty($errors)) {
+            $existing = $wpdb->get_var($wpdb->prepare(
+                "SELECT id FROM {$table} WHERE email = %s", $email
+            ));
+            $saved = false;
+
+            if ($existing) {
+                $updated = $wpdb->update(
+                    $table,
+                    ['voornaam' => $voornaam, 'sectors' => wp_json_encode($sectors), 'active' => 1],
+                    ['email'    => $email],
+                    ['%s', '%s', '%d'],
+                    ['%s']
+                );
+                $saved = ($updated !== false);
+            } else {
+                $inserted = $wpdb->insert(
+                    $table,
+                    ['voornaam' => $voornaam, 'email' => $email, 'sectors' => wp_json_encode($sectors), 'active' => 1],
+                    ['%s', '%s', '%s', '%d']
+                );
+                $saved = ($inserted !== false);
+            }
+
+            if (!$saved) {
+                error_log('[SJ Job Alerts Sidebar] Aanmelding opslaan mislukt: ' . $wpdb->last_error);
+                $errors[] = 'Je job alert kon niet worden opgeslagen. Probeer het later opnieuw.';
+            } else {
+                sj_ac_subscribe_job_alert($voornaam, $email, $sectors);
+
+                $sector_names = [];
+                foreach ($sectors as $slug) {
+                    $term = get_term_by('slug', $slug, 'job_sector');
+                    if ($term) $sector_names[] = $term->name;
+                }
+
+                $body  = "Hoi {$voornaam},\n\n";
+                $body .= "Je bent aangemeld voor job alerts op Sustainablejobs.nl!\n\n";
+                $body .= "Je ontvangt wekelijks de nieuwste vacatures in:\n";
+                foreach ($sector_names as $name) {
+                    $body .= "- {$name}\n";
+                }
+                $body .= "\nWil je je voorkeuren wijzigen of je afmelden? Stuur een mail naar support@sustainablejobs.nl.\n\nMet vriendelijke groet,\nSustainablejobs.nl";
+
+                wp_mail($email, 'Je job alert is aangemeld!', $body);
+
+                $success = true;
+            }
+        }
+    }
+
+    $sector_terms = get_terms(['taxonomy' => 'job_sector', 'hide_empty' => false, 'orderby' => 'name']);
+    if (is_wp_error($sector_terms)) $sector_terms = [];
+
+    ob_start();
+
+    if ($success): ?>
+
+    <div class="sj-ja-sb__success">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M173.66,98.34a8,8,0,0,1,0,11.32l-56,56a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35A8,8,0,0,1,173.66,98.34ZM232,128A104,104,0,1,1,128,24,104.11,104.11,0,0,1,232,128Zm-16,0a88,88,0,1,0-88,88A88.1,88.1,0,0,0,216,128Z"/></svg>
+        <span>Je alert is ingesteld! Check ook je spammap.</span>
+    </div>
+
+    <?php else: ?>
+
+    <p class="sj-ja-sb__subtitle">Ontvang wekelijks nieuwe vacatures in jouw vakgebied.</p>
+
+    <?php if (!empty($errors)): ?>
+    <div class="sj-ja-sb__errors">
+        <?php foreach ($errors as $e): ?>
+            <p><?php echo esc_html($e); ?></p>
+        <?php endforeach; ?>
+    </div>
+    <?php endif; ?>
+
+    <form method="post" class="sj-ja-sb__form" novalidate>
+        <?php wp_nonce_field('sj_job_alerts_sidebar', 'sj_ja_sb_nonce'); ?>
+
+        <div class="sj-ja-sb__field">
+            <label class="sj-ja-sb__label" for="sj_ja_sb_voornaam">Voornaam <span class="sj-ja-sb__req">*</span></label>
+            <input type="text" name="sj_ja_sb_voornaam" id="sj_ja_sb_voornaam" class="sj-ja-sb__input"
+                   value="<?php echo esc_attr($_POST['sj_ja_sb_voornaam'] ?? ''); ?>" required>
+        </div>
+
+        <div class="sj-ja-sb__field">
+            <label class="sj-ja-sb__label" for="sj_ja_sb_email">E-mailadres <span class="sj-ja-sb__req">*</span></label>
+            <input type="email" name="sj_ja_sb_email" id="sj_ja_sb_email" class="sj-ja-sb__input"
+                   value="<?php echo esc_attr($_POST['sj_ja_sb_email'] ?? ''); ?>" required>
+        </div>
+
+        <div class="sj-ja-sb__field">
+            <label class="sj-ja-sb__label" for="sj_ja_sb_sectors">Categorieën <span class="sj-ja-sb__req">*</span></label>
+            <?php $selected_sectors = array_map('sanitize_title', (array) ($_POST['sj_ja_sb_sectors'] ?? [])); ?>
+            <select name="sj_ja_sb_sectors[]" id="sj_ja_sb_sectors" class="js-custom-select" data-placeholder="Categorieën" multiple>
+                <?php foreach ($sector_terms as $term): ?>
+                <option value="<?php echo esc_attr($term->slug); ?>"
+                    <?php selected(in_array($term->slug, $selected_sectors)); ?>>
+                    <?php echo esc_html($term->name); ?>
+                </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+
+        <button type="submit" class="sj-ja-sb__submit">Alert instellen</button>
+    </form>
+
+    <script>
+    (function () {
+        var closeAll = function () {
+            document.querySelectorAll('.sj-select.active').forEach(function (el) {
+                el.classList.remove('active');
+                var s = el.querySelector('.sj-search-input');
+                if (s) { s.value = ''; el.querySelectorAll('.sj-option').forEach(function (o) { o.style.display = ''; }); }
+            });
+        };
+
+        var buildSelect = function (select) {
+            if (select.classList.contains('sj-hidden-select')) return;
+            var placeholder = select.dataset.placeholder || 'Selecteer';
+
+            var wrap = document.createElement('div');
+            wrap.className = 'sj-select-wrap';
+            select.parentNode.insertBefore(wrap, select);
+            wrap.appendChild(select);
+            select.classList.add('sj-hidden-select');
+
+            var root = document.createElement('div');
+            root.className = 'sj-select';
+
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'sj-select-btn';
+            btn.innerHTML = '<span class="sj-btn-content"><span class="sj-placeholder">' + placeholder + '</span></span><span class="sj-actions"><button type="button" class="sj-clear" aria-label="Wis selectie" title="Wis selectie">×</button><span class="sj-chev" aria-hidden="true"></span></span>';
+
+            var clearBtn = btn.querySelector('.sj-clear');
+            clearBtn.addEventListener('click', function (e) {
+                e.stopPropagation(); e.preventDefault();
+                Array.from(select.options).forEach(function (o) { o.selected = false; });
+                renderState();
+            });
+
+            var list = document.createElement('div');
+            list.className = 'sj-options';
+            list.setAttribute('role', 'listbox');
+            list.setAttribute('aria-multiselectable', 'true');
+
+            var searchWrap = document.createElement('div');
+            searchWrap.className = 'sj-search';
+            searchWrap.innerHTML = '<input type="text" class="sj-search-input" placeholder="Zoek in ' + placeholder.toLowerCase() + '">';
+            var searchInput = searchWrap.querySelector('.sj-search-input');
+            list.appendChild(searchWrap);
+
+            var optionRows = [];
+            Array.from(select.options).forEach(function (opt) {
+                var row = document.createElement('div');
+                row.className = 'sj-option';
+                row.dataset.value = opt.value;
+                row.setAttribute('role', 'option');
+                row.innerHTML = '<span class="sj-option-text"></span>';
+                row.querySelector('.sj-option-text').textContent = opt.textContent.trim();
+
+                var syncSelected = function () {
+                    row.classList.toggle('is-selected', opt.selected);
+                    row.setAttribute('aria-selected', opt.selected ? 'true' : 'false');
+                };
+                syncSelected();
+                row.addEventListener('click', function (e) { e.preventDefault(); opt.selected = !opt.selected; renderState(); });
+                optionRows.push({ opt: opt, row: row, syncSelected: syncSelected });
+                list.appendChild(row);
+            });
+
+            searchInput.addEventListener('input', function () {
+                var term = searchInput.value.trim().toLowerCase();
+                optionRows.forEach(function (item) {
+                    item.row.style.display = item.opt.textContent.toLowerCase().includes(term) ? '' : 'none';
+                });
+            });
+            searchInput.addEventListener('click', function (e) { e.stopPropagation(); });
+            searchInput.addEventListener('keydown', function (e) { e.stopPropagation(); });
+
+            var renderState = function () {
+                optionRows.forEach(function (item) { item.syncSelected(); });
+                var selected = Array.from(select.options).filter(function (o) { return o.selected; });
+                clearBtn.style.display = selected.length ? 'inline-flex' : 'none';
+                var ph = btn.querySelector('.sj-placeholder');
+                if (selected.length === 0) {
+                    ph.textContent = placeholder;
+                } else if (selected.length === 1) {
+                    ph.textContent = selected[0].textContent.trim();
+                } else {
+                    ph.textContent = selected.length + ' geselecteerd';
+                }
+            };
+
+            renderState();
+
+            btn.addEventListener('click', function (e) {
+                if (e.target.closest('.sj-clear')) return;
+                e.preventDefault();
+                var wasOpen = root.classList.contains('active');
+                closeAll();
+                if (!wasOpen) {
+                    root.classList.add('active');
+                    searchInput.value = '';
+                    optionRows.forEach(function (item) { item.row.style.display = ''; });
+                    window.setTimeout(function () { searchInput.focus(); }, 10);
+                }
+            });
+
+            root.appendChild(btn);
+            root.appendChild(list);
+            wrap.appendChild(root);
+        };
+
+        var init = function () {
+            document.querySelectorAll('.js-custom-select').forEach(buildSelect);
+            document.addEventListener('click', function (e) { if (!e.target.closest('.sj-select')) closeAll(); });
+            document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
+        };
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+    </script>
+
+    <?php endif;
+
+    return ob_get_clean();
+}

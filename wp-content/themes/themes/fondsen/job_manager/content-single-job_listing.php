@@ -73,14 +73,6 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
     }
 ?>
 
-<!-- Top banner -->
-<div class="fn-single-top">
-    <div class="fn-single-top__inner">
-        <p>Blijf op de hoogte van de laatste vacatures!</p>
-        <a href="https://www.fondsen.org/vacature-alert-instellen/" class="fn-single-top__link">Vacature Alert instellen</a>
-    </div>
-</div>
-
 <div class="fn-single-layout">
 
     <!-- Linker kolom -->
@@ -300,6 +292,11 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
             </div>
         </div>
 
+        <!-- Job alert -->
+        <div class="fn-sidebar-block">
+            <?php echo do_shortcode('[fondsen-job-alerts-sidebar]'); ?>
+        </div>
+
         <?php if ($location && $location_coords) : ?>
         <!-- Locatiekaart -->
         <div class="fn-sidebar-block fn-map-block">
@@ -439,7 +436,7 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
     gap: 24px;
     max-width: 1100px;
     width: 100%;
-    margin: 24px auto;
+    margin: 56px auto 24px;
     padding: 0 24px;
     box-sizing: border-box;
 }
@@ -503,9 +500,9 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
 .fn-single-card .fondsen-job-title {
     margin: 0 0 6px;
     font-family: Inter, system-ui, sans-serif;
-    font-size: 26px;
+    font-size: 24px;
     line-height: 1.15;
-    font-weight: 800;
+    font-weight: 700;
     color: var(--fn-ink);
     max-width: 100%;
     white-space: normal !important;

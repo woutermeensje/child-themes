@@ -307,9 +307,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 
             <div class="sj-single-sidebar">
                 <p class="sj-sidebar__block-title">Job alert</p>
-                <div class="sj-sidebar__job-alert">
-                    <?php echo do_shortcode('[job-alerts]'); ?>
-                </div>
+                <?php echo do_shortcode('[sj-job-alerts-sidebar]'); ?>
             </div>
 
             <?php if ($con_first || $con_last || $con_email): ?>
