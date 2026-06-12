@@ -649,3 +649,9 @@ add_action('job_manager_update_job_data', function($job_id, $values){
     update_post_meta($job_id, '_job_contact_lastname',  $last_name);
     update_post_meta($job_id, '_job_contact_email',     $email);
 }, 10, 2);
+
+// Voeg found_count toe aan WP Job Manager AJAX-response
+add_filter('job_manager_get_listings_result', function($result, $jobs) {
+    $result['found_count'] = (int) $jobs->found_posts;
+    return $result;
+}, 10, 2);

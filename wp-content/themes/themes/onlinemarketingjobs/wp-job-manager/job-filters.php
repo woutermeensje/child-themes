@@ -383,6 +383,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<script>
+jQuery(function($) {
+  $("div.job_listings").on("updated_results", function(event, result) {
+    if (result && typeof result.found_count !== "undefined") {
+      $(".omj-listings-count__number").text(result.found_count);
+    }
+  });
+});
+</script>
+
 
 <style>
 /* Layout – full width breakout uit Elementor container */
@@ -418,13 +428,13 @@ div.job_listings ul.job_listings {
 }
 
 div.job_listings {
-  padding-top: 40px !important;
+  padding-top: 0 !important;
 }
 
 .omj-listings-header {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px 14px;
+  padding: 40px 24px 14px;
 }
 
 .omj-listings-count {
@@ -433,6 +443,11 @@ div.job_listings {
   font-weight: 300;
   color: var(--color-text-muted, #777);
   display: block;
+}
+
+.omj-listings-count__number {
+  font-weight: 600;
+  color: var(--color-primary);
 }
 
 @media (max-width: 960px) {
