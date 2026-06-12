@@ -1302,3 +1302,9 @@ add_filter('elementor/theme/need_override_location', function($need_override, $l
     }
     return $need_override;
 }, 10, 2);
+
+// 21) Voeg found_count toe aan WP Job Manager AJAX-response
+add_filter('job_manager_get_listings_result', function($result, $jobs) {
+    $result['found_count'] = (int) $jobs->found_posts;
+    return $result;
+}, 10, 2);

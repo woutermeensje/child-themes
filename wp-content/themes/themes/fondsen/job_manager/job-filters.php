@@ -406,7 +406,15 @@ return;
 });
 </script>
 
-
+<script>
+jQuery(function($) {
+  $("div.job_listings").on("updated_results", function(event, result) {
+    if (result && typeof result.found_count !== "undefined") {
+      $(".fondsen-job-count__number").text(result.found_count);
+    }
+  });
+});
+</script>
 
 
 
@@ -418,7 +426,6 @@ return;
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
-  margin-top: 0;
   margin-bottom: 0;
   min-height: 300px;
   padding: 56px 0;
@@ -799,6 +806,20 @@ button.active-filter-x {
 button.active-filter-x:hover {
   color: var(--color-tertiary);
   background: none;
+}
+
+.fondsen-job-count {
+  max-width: 1200px;
+  margin: 24px auto 0 !important;
+  padding: 0 24px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.fondsen-job-count__number {
+  color: var(--color-secondary);
 }
 
 @media (max-width: 960px) {
