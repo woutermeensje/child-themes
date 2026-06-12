@@ -426,6 +426,7 @@ jQuery(function($) {
   right: 50%;
   margin-left: -50vw;
   margin-right: -50vw;
+  margin-top: 0;
   margin-bottom: 0;
   min-height: 300px;
   padding: 56px 0;
