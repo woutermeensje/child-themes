@@ -2,6 +2,22 @@
 // Exit if accessed directly
 if (!defined('ABSPATH')) exit;
 
+require_once get_stylesheet_directory() . '/inc/activecampaign.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-job-alerts.php';
+require_once get_stylesheet_directory() . '/inc/job-alerts-cron.php';
+require_once get_stylesheet_directory() . '/inc/newsletter-cron.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-newsletter.php';
+require_once get_stylesheet_directory() . '/inc/job-listing-meta.php';
+require_once get_stylesheet_directory() . '/inc/job-favorites.php';
+require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-vacature-formulier.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
+
+add_shortcode('omj-job-alerts', 'sj_job_alerts_shortcode');
+add_shortcode('omj-job-alerts-sidebar', 'sj_job_alerts_sidebar_shortcode');
+add_shortcode('omj-nieuwsbrief', 'sj_nieuwsbrief_shortcode');
+
 // =========================================================
 // 1) Styles en fonts
 // =========================================================
@@ -15,13 +31,57 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, wp_get_theme()->get('Version'));
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
+    wp_enqueue_style('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
     wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
     wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css');
     wp_enqueue_style('omj-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
+
+    if (file_exists(get_stylesheet_directory() . '/css/forms.css')) {
+        wp_enqueue_style(
+            'omj-forms',
+            get_stylesheet_directory_uri() . '/css/forms.css',
+            ['child-style'],
+            filemtime(get_stylesheet_directory() . '/css/forms.css')
+        );
+    }
+
+    if (file_exists(get_stylesheet_directory() . '/css/job-favorites.css')) {
+        wp_enqueue_style(
+            'omj-job-favorites',
+            get_stylesheet_directory_uri() . '/css/job-favorites.css',
+            ['rn-header'],
+            filemtime(get_stylesheet_directory() . '/css/job-favorites.css')
+        );
+    }
+
+    wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
+    wp_enqueue_script('quill-js', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js', [], null, true);
+
+    if (file_exists(get_stylesheet_directory() . '/js/job-favorites.js')) {
+        wp_enqueue_script(
+            'omj-job-favorites',
+            get_stylesheet_directory_uri() . '/js/job-favorites.js',
+            [],
+            filemtime(get_stylesheet_directory() . '/js/job-favorites.js'),
+            true
+        );
+        wp_localize_script('omj-job-favorites', 'SJJobFavoritesConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+        ]);
+    }
 });
 
 add_theme_support('job-manager-templates');
+add_filter('job_manager_multi_job_type', '__return_true');
+
+add_filter('wp_mail_from', function ($from_email) {
+    return 'support@onlinemarketingjobs.nl';
+});
+
+add_filter('wp_mail_from_name', function ($from_name) {
+    return 'Onlinemarketingjobs.nl';
+});
 
 
 // =========================================================
@@ -103,6 +163,80 @@ add_filter('job_manager_locate_template', function ($template, $template_name) {
 
 }, 10, 2);
 
+if ( ! function_exists('sj_get_image_url') ) {
+    function sj_get_image_url($image, $size = 'full') {
+        if (empty($image)) {
+            return '';
+        }
+
+        if (is_array($image)) {
+            if (!empty($image['url'])) {
+                return esc_url_raw($image['url']);
+            }
+
+            foreach ($image as $candidate) {
+                $url = sj_get_image_url($candidate, $size);
+                if ($url) {
+                    return $url;
+                }
+            }
+
+            return '';
+        }
+
+        if (is_numeric($image)) {
+            return wp_get_attachment_image_url((int) $image, $size)
+                ?: wp_get_attachment_image_url((int) $image, 'full')
+                ?: '';
+        }
+
+        if (is_string($image)) {
+            return esc_url_raw(trim($image));
+        }
+
+        return '';
+    }
+}
+
+if ( ! function_exists('sj_get_company_logo_url') ) {
+    function sj_get_company_logo_url($post_id = null, $size = 'thumbnail') {
+        $post_id = $post_id ?: get_the_ID();
+
+        if (!$post_id) {
+            return '';
+        }
+
+        $logo_url = sj_get_image_url(get_post_meta($post_id, '_company_logo', true), $size);
+
+        if (!$logo_url && !sj_get_image_url(get_post_meta($post_id, '_cover_image', true), 'full')) {
+            $logo_url = get_the_post_thumbnail_url($post_id, $size) ?: '';
+        }
+
+        return $logo_url;
+    }
+}
+
+if ( ! function_exists('sj_the_company_logo') ) {
+    function sj_the_company_logo($post_id = null, $size = 'thumbnail') {
+        $post_id  = $post_id ?: get_the_ID();
+        $logo_url = sj_get_company_logo_url($post_id, $size);
+
+        if (!$logo_url) {
+            return;
+        }
+
+        $company_name = function_exists('get_the_company_name')
+            ? get_the_company_name($post_id)
+            : get_the_title($post_id);
+
+        printf(
+            '<img class="company_logo" src="%s" alt="%s" />',
+            esc_url($logo_url),
+            esc_attr($company_name)
+        );
+    }
+}
+
 
 // =========================================================
 // 3) Helper: haal filterwaarde op uit GET/POST
@@ -144,6 +278,15 @@ add_action('init', function () {
         'rewrite'           => ['slug' => 'provincie'],
     ]);
 
+    register_taxonomy('organisatie_type', 'job_listing', [
+        'label'             => 'Type organisatie',
+        'hierarchical'      => true,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'organisatie-type'],
+    ]);
+
     register_taxonomy('job_sector', 'job_listing', [
         'label'             => 'Sectors',
         'hierarchical'      => true,
@@ -172,6 +315,7 @@ add_action('init', function () {
     register_taxonomy_for_object_type('job_company', 'page');
     register_taxonomy_for_object_type('job_tag', 'page');
     register_taxonomy_for_object_type('job_sector', 'page');
+    register_taxonomy_for_object_type('organisatie_type', 'page');
     register_taxonomy_for_object_type('certificering', 'page');
 });
 
@@ -183,6 +327,7 @@ add_filter('job_manager_output_jobs_defaults', function($defaults) {
     $defaults['job_company']      = '';
     $defaults['job_tag']          = '';
     $defaults['job_sector']       = '';
+    $defaults['organisatie_type']  = '';
     $defaults['certificering']    = '';
     $defaults['job_listing_type'] = '';
     return $defaults;
@@ -200,6 +345,7 @@ add_filter('job_manager_get_listings_shortcode_args', function($atts){
         'job_company'       => 'job_company',
         'job_tag'           => 'job_tag',
         'job_sector'        => 'job_sector',
+        'organisatie_type'   => 'organisatie_type',
         'certificering'     => 'certificering',
         'job_listing_type'  => 'job_listing_type',
     ];
@@ -260,6 +406,7 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
         'filter_job_tag'              => 'job_tag',
         'filter_job_sector'           => 'job_sector',
         'filter_job_company'          => 'job_company',
+        'filter_organisatie_type'      => 'organisatie_type',
         'filter_job_types'            => 'job_listing_type',
         'filter_certificering'        => 'certificering',
         'filter_job_listing_category' => 'job_listing_category',
@@ -310,6 +457,29 @@ add_filter('wpseo_breadcrumb_separator', function($separator) {
 add_filter('job_manager_geolocation_default_radius', function() {
     return 50;
 });
+
+add_action('init', function () {
+    if (get_option('omj_organisatie_type_seeded')) {
+        return;
+    }
+
+    $terms = ['Bureau', 'Agency', 'Adverteerder', 'SaaS', 'E-commerce', 'Corporate', 'MKB', 'Startup', 'Scale-up', 'Non-profit'];
+    foreach ($terms as $term) {
+        if (!term_exists($term, 'organisatie_type')) {
+            wp_insert_term($term, 'organisatie_type');
+        }
+    }
+
+    update_option('omj_organisatie_type_seeded', true);
+});
+
+add_filter('gettext', function ($translated, $text, $domain) {
+    if ($domain === 'wp-job-manager' && $text === 'Load more listings') {
+        return 'Toon meer vacatures';
+    }
+
+    return $translated;
+}, 10, 3);
 
 
 // =========================================================
@@ -402,6 +572,35 @@ add_filter('job_manager_job_listing_data_fields', function($fields){
 // 14) Contactpersoon velden
 // =========================================================
 add_filter('submit_job_form_fields', function($fields){
+    $fields['job']['job_salary_range'] = [
+        'label'       => __('Salarisrange', 'job_manager'),
+        'type'        => 'text',
+        'required'    => false,
+        'placeholder' => __('Bijv. 3000 - 4500 per maand', 'job_manager'),
+        'priority'    => 8,
+    ];
+    $fields['job']['job_hours_per_week'] = [
+        'label'       => __('Uren per week', 'job_manager'),
+        'type'        => 'text',
+        'required'    => false,
+        'placeholder' => __('Bijv. 32-40 uur', 'job_manager'),
+        'priority'    => 9,
+    ];
+    return $fields;
+});
+
+add_filter('job_manager_job_listing_data_fields', function($fields){
+    $fields['_job_salary_range']   = ['label' => __('Salarisrange', 'job_manager'), 'type' => 'text', 'description' => '', 'priority' => 8];
+    $fields['_job_hours_per_week'] = ['label' => __('Uren per week', 'job_manager'), 'type' => 'text', 'description' => '', 'priority' => 9];
+    return $fields;
+});
+
+add_action('job_manager_update_job_data', function($job_id, $values){
+    update_post_meta($job_id, '_job_salary_range', sanitize_text_field($values['job']['job_salary_range'] ?? ''));
+    update_post_meta($job_id, '_job_hours_per_week', sanitize_text_field($values['job']['job_hours_per_week'] ?? ''));
+}, 10, 2);
+
+add_filter('submit_job_form_fields', function($fields){
     $fields['company']['contact_first_name'] = [
         'label' => __('Contactpersoon voornaam', 'job_manager'), 'type' => 'text',
         'required' => false, 'placeholder' => __('Bijv. Sophie', 'job_manager'), 'priority' => 35,
@@ -438,7 +637,15 @@ add_filter('submit_job_form_validate_fields', function($passed, $fields, $values
 }, 10, 3);
 
 add_action('job_manager_update_job_data', function($job_id, $values){
-    update_post_meta($job_id, '_contact_first_name', sanitize_text_field($values['company']['contact_first_name'] ?? ''));
-    update_post_meta($job_id, '_contact_last_name',  sanitize_text_field($values['company']['contact_last_name'] ?? ''));
-    update_post_meta($job_id, '_contact_email',      sanitize_email($values['company']['contact_email'] ?? ''));
+    $first_name = sanitize_text_field($values['company']['contact_first_name'] ?? '');
+    $last_name  = sanitize_text_field($values['company']['contact_last_name'] ?? '');
+    $email      = sanitize_email($values['company']['contact_email'] ?? '');
+
+    update_post_meta($job_id, '_contact_first_name', $first_name);
+    update_post_meta($job_id, '_contact_last_name',  $last_name);
+    update_post_meta($job_id, '_contact_email',      $email);
+
+    update_post_meta($job_id, '_job_contact_firstname', $first_name);
+    update_post_meta($job_id, '_job_contact_lastname',  $last_name);
+    update_post_meta($job_id, '_job_contact_email',     $email);
 }, 10, 2);

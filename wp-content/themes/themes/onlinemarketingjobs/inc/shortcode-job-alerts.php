@@ -60,7 +60,6 @@ function sj_job_alerts_shortcode(): string {
                 "SELECT id FROM {$table} WHERE email = %s",
                 $email
             ));
-            $is_new = !$existing;
 
             if ($existing) {
                 $wpdb->update(
@@ -78,37 +77,36 @@ function sj_job_alerts_shortcode(): string {
                 );
             }
 
-            // E-mails en ActiveCampaign alleen bij nieuwe aanmelding sturen
-            if ($is_new) {
-                sj_ac_subscribe_job_alert($voornaam, $email, $sectors);
+            // ActiveCampaign: contact aanmaken + tags koppelen
+            sj_ac_subscribe_job_alert($voornaam, $email, $sectors);
 
-                $sector_names = [];
-                foreach ($sectors as $slug) {
-                    $term = get_term_by('slug', $slug, 'job_sector');
-                    if ($term) $sector_names[] = $term->name;
-                }
-
-                $body  = "Hoi {$voornaam},\n\n";
-                $body .= "Je bent aangemeld voor job alerts op Sustainablejobs.nl!\n\n";
-                $body .= "Je ontvangt wekelijks de nieuwste vacatures in:\n";
-                foreach ($sector_names as $name) {
-                    $body .= "- {$name}\n";
-                }
-                $body .= "\nWil je je voorkeuren wijzigen of je afmelden? Stuur een mail naar support@sustainablejobs.nl.\n\n";
-                $body .= "Met vriendelijke groet,\nSustainablejobs.nl";
-
-                wp_mail($email, 'Je job alert is aangemeld!', $body);
-
-                $admin_email = get_option('admin_email');
-                $admin_body  = "Nieuwe job alert aanmelding op Sustainablejobs.nl\n\n";
-                $admin_body .= "Naam:  {$voornaam}\n";
-                $admin_body .= "E-mail: {$email}\n";
-                $admin_body .= "Categorieën:\n";
-                foreach ($sector_names as $name) {
-                    $admin_body .= "- {$name}\n";
-                }
-                wp_mail($admin_email, 'Nieuwe job alert aanmelding', $admin_body);
+            $sector_names = [];
+            foreach ($sectors as $slug) {
+                $term = get_term_by('slug', $slug, 'job_sector');
+                if ($term) $sector_names[] = $term->name;
             }
+
+            $body  = "Hoi {$voornaam},\n\n";
+            $body .= "Je bent aangemeld voor job alerts op Onlinemarketingjobs.nl!\n\n";
+            $body .= "Je ontvangt wekelijks de nieuwste vacatures in:\n";
+            foreach ($sector_names as $name) {
+                $body .= "- {$name}\n";
+            }
+            $body .= "\nWil je je voorkeuren wijzigen of je afmelden? Stuur een mail naar support@onlinemarketingjobs.nl.\n\n";
+            $body .= "Met vriendelijke groet,\nOnlinemarketingjobs.nl";
+
+            wp_mail($email, 'Je job alert is aangemeld!', $body);
+
+            // Admin-notificatie
+            $admin_email = get_option('admin_email');
+            $admin_body  = "Nieuwe job alert aanmelding op Onlinemarketingjobs.nl\n\n";
+            $admin_body .= "Naam:  {$voornaam}\n";
+            $admin_body .= "E-mail: {$email}\n";
+            $admin_body .= "Categorieën:\n";
+            foreach ($sector_names as $name) {
+                $admin_body .= "- {$name}\n";
+            }
+            wp_mail($admin_email, 'Nieuwe job alert aanmelding', $admin_body);
 
             $success = true;
         }
@@ -163,7 +161,7 @@ function sj_job_alerts_shortcode(): string {
                     <div class="sj-ja__field">
                         <label class="sj-ja__label" for="sj_ja_voornaam">Voornaam <span class="sj-ja__req">*</span></label>
                         <div class="sj-ja__input-wrap">
-                            <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#168AAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#7C5CFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                             <input type="text" name="voornaam" id="sj_ja_voornaam" class="sj-ja__input"
                                    value="<?php echo esc_attr($_POST['voornaam'] ?? ''); ?>"
                                    required>
@@ -173,7 +171,7 @@ function sj_job_alerts_shortcode(): string {
                     <div class="sj-ja__field">
                         <label class="sj-ja__label" for="sj_ja_email">E-mailadres <span class="sj-ja__req">*</span></label>
                         <div class="sj-ja__input-wrap">
-                            <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#168AAD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                            <svg class="sj-ja__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#7C5CFA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
                             <input type="email" name="email" id="sj_ja_email" class="sj-ja__input"
                                    value="<?php echo esc_attr($_POST['email'] ?? ''); ?>"
                                    required>
@@ -203,7 +201,7 @@ function sj_job_alerts_shortcode(): string {
                 <div class="sj-ja-active-filters" id="sj_ja_active_filters" aria-live="polite"></div>
 
                 <footer class="sj-ja__footer">
-                    <button type="submit" class="sj-ja__submit" data-label="Alert instellen" data-loading="Bezig...">Alert instellen</button>
+                    <button type="submit" class="sj-ja__submit">Alert instellen</button>
                 </footer>
 
             </form>
@@ -212,18 +210,6 @@ function sj_job_alerts_shortcode(): string {
 
     <script>
     (function () {
-        var form = document.querySelector('.sj-ja__form');
-        if (form) {
-            form.addEventListener('submit', function () {
-                var btn = form.querySelector('.sj-ja__submit');
-                if (btn) {
-                    btn.disabled = true;
-                    btn.textContent = btn.dataset.loading || 'Bezig...';
-                    btn.style.opacity = '0.65';
-                }
-            });
-        }
-
         var closeAll = function () {
             document.querySelectorAll('.sj-select.active').forEach(function (el) {
                 el.classList.remove('active');
@@ -425,8 +411,7 @@ function sj_job_alerts_sidebar_shortcode(): string {
             $existing = $wpdb->get_var($wpdb->prepare(
                 "SELECT id FROM {$table} WHERE email = %s", $email
             ));
-            $is_new = !$existing;
-            $saved  = false;
+            $saved = false;
 
             if ($existing) {
                 $updated = $wpdb->update(
@@ -450,26 +435,23 @@ function sj_job_alerts_sidebar_shortcode(): string {
                 error_log('[SJ Job Alerts Sidebar] Aanmelding opslaan mislukt: ' . $wpdb->last_error);
                 $errors[] = 'Je job alert kon niet worden opgeslagen. Probeer het later opnieuw.';
             } else {
-                // E-mails en ActiveCampaign alleen bij nieuwe aanmelding sturen
-                if ($is_new) {
-                    sj_ac_subscribe_job_alert($voornaam, $email, $sectors);
+                sj_ac_subscribe_job_alert($voornaam, $email, $sectors);
 
-                    $sector_names = [];
-                    foreach ($sectors as $slug) {
-                        $term = get_term_by('slug', $slug, 'job_sector');
-                        if ($term) $sector_names[] = $term->name;
-                    }
-
-                    $body  = "Hoi {$voornaam},\n\n";
-                    $body .= "Je bent aangemeld voor job alerts op Sustainablejobs.nl!\n\n";
-                    $body .= "Je ontvangt wekelijks de nieuwste vacatures in:\n";
-                    foreach ($sector_names as $name) {
-                        $body .= "- {$name}\n";
-                    }
-                    $body .= "\nWil je je voorkeuren wijzigen of je afmelden? Stuur een mail naar support@sustainablejobs.nl.\n\nMet vriendelijke groet,\nSustainablejobs.nl";
-
-                    wp_mail($email, 'Je job alert is aangemeld!', $body);
+                $sector_names = [];
+                foreach ($sectors as $slug) {
+                    $term = get_term_by('slug', $slug, 'job_sector');
+                    if ($term) $sector_names[] = $term->name;
                 }
+
+                $body  = "Hoi {$voornaam},\n\n";
+                $body .= "Je bent aangemeld voor job alerts op Onlinemarketingjobs.nl!\n\n";
+                $body .= "Je ontvangt wekelijks de nieuwste vacatures in:\n";
+                foreach ($sector_names as $name) {
+                    $body .= "- {$name}\n";
+                }
+                $body .= "\nWil je je voorkeuren wijzigen of je afmelden? Stuur een mail naar support@onlinemarketingjobs.nl.\n\nMet vriendelijke groet,\nOnlinemarketingjobs.nl";
+
+                wp_mail($email, 'Je job alert is aangemeld!', $body);
 
                 $success = true;
             }
@@ -489,6 +471,32 @@ function sj_job_alerts_sidebar_shortcode(): string {
     </div>
 
     <?php else: ?>
+
+    <style>
+    .sj-ja-sb__submit {
+        display: block;
+        width: 100%;
+        padding: 10px 16px;
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        color: #fff !important;
+        background-color: var(--color-primary, #7C5CFA);
+        border: 2px solid var(--color-primary, #7C5CFA);
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color .15s ease, border-color .15s ease;
+        text-align: center;
+    }
+    .sj-ja-sb__submit:hover {
+        background-color: var(--color-primary-dk, #845ec2);
+        border-color: var(--color-primary-dk, #845ec2);
+    }
+    .sj-ja-sb__submit:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+    </style>
 
     <p class="sj-ja-sb__subtitle">Ontvang wekelijks nieuwe vacatures in jouw vakgebied.</p>
 
@@ -528,23 +536,11 @@ function sj_job_alerts_sidebar_shortcode(): string {
             </select>
         </div>
 
-        <button type="submit" class="sj-ja-sb__submit" data-label="Alert instellen" data-loading="Bezig...">Alert instellen</button>
+        <button type="submit" class="sj-ja-sb__submit">Alert instellen</button>
     </form>
 
     <script>
     (function () {
-        var sbForm = document.querySelector('.sj-ja-sb__form');
-        if (sbForm) {
-            sbForm.addEventListener('submit', function () {
-                var btn = sbForm.querySelector('.sj-ja-sb__submit');
-                if (btn) {
-                    btn.disabled = true;
-                    btn.textContent = btn.dataset.loading || 'Bezig...';
-                    btn.style.opacity = '0.65';
-                }
-            });
-        }
-
         var closeAll = function () {
             document.querySelectorAll('.sj-select.active').forEach(function (el) {
                 el.classList.remove('active');

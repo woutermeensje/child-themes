@@ -43,7 +43,7 @@ unset($value);
     <div class="filter-header">
         <div class="filter-header__left">
             <h2>Bekijk alle Online Marketing Vacatures</h2>
-            <p>Ontvang de laatste <a href="/online-marketing-job-alerts/" class="filter-newsletter-link">online marketing vacatures</a> in de e-mail!</p>
+            <p>Ontvang de laatste <a href="/nieuwsbrief/" class="filter-newsletter-link">online marketing vacatures</a> in de e-mail!</p>
         </div>
     </div>
 
@@ -417,6 +417,30 @@ div.job_listings ul.job_listings {
   margin-top: 0 !important;
 }
 
+div.job_listings {
+  padding-top: 40px !important;
+}
+
+.omj-listings-header {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 14px;
+}
+
+.omj-listings-count {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--color-text-muted, #777);
+  display: block;
+}
+
+@media (max-width: 960px) {
+  .omj-listings-header {
+    padding: 0 16px 12px;
+  }
+}
+
 /* Binnenste containers gecentreerd */
 .filter-header,
 .search-basic,
@@ -513,14 +537,18 @@ div.job_listings ul.job_listings {
   margin: 8px 0 0;
 }
 
-.filter-newsletter-link {
-  color: #ffffff;
+.filter-newsletter-link,
+.filter-newsletter-link:link,
+.filter-newsletter-link:visited {
+  color: #ffffff !important;
   font-weight: 400;
-  text-decoration: underline;
+  text-decoration: underline !important;
 }
 
-.filter-newsletter-link:hover {
-  color: rgba(255, 255, 255, 0.75);
+.filter-newsletter-link:hover,
+.filter-newsletter-link:focus {
+  color: rgba(255, 255, 255, 0.75) !important;
+  text-decoration: none !important;
 }
 
 .filter-header h2 {
