@@ -195,335 +195,6 @@ h4, h5 {
 }
 
 /* =============================================
-   fnd-hero — werkgever, werkzoekende & bureau landing templates
-   ============================================= */
-
-.fnd-page,
-.fnd-page__elementor-content {
-  background: transparent;
-}
-
-.fnd-hero {
-  --fnd-panel-bg: #2b174f;
-  --fnd-panel-bg-2: #50308d;
-  --fnd-accent: #2fd4bd;
-  --fnd-button-text: #2b174f;
-  --fnd-contact-accent: var(--color-primary);
-  --fnd-placeholder-start: var(--color-primary);
-  --fnd-placeholder-mid: #2b174f;
-  --fnd-placeholder-end: var(--color-secondary);
-  position: relative;
-  width: 100%;
-  min-height: 540px;
-  overflow: hidden;
-  display: flex;
-  background: #24163f;
-  border-bottom: 1px solid rgba(36, 22, 63, 0.14);
-  isolation: isolate;
-}
-
-.fnd-hero--werkgever {
-  --fnd-panel-bg: #2b174f;
-  --fnd-panel-bg-2: #50308d;
-  --fnd-accent: #2fd4bd;
-  --fnd-button-text: #2b174f;
-  --fnd-contact-accent: #7c5cfa;
-  --fnd-placeholder-start: #7c5cfa;
-  --fnd-placeholder-mid: #2b174f;
-  --fnd-placeholder-end: #2fd4bd;
-}
-
-.fnd-hero--werkzoekende {
-  --fnd-panel-bg: #12364a;
-  --fnd-panel-bg-2: #1f7281;
-  --fnd-accent: #f4b94f;
-  --fnd-button-text: #12364a;
-  --fnd-contact-accent: #1f7281;
-  --fnd-placeholder-start: #1f7281;
-  --fnd-placeholder-mid: #12364a;
-  --fnd-placeholder-end: #7c5cfa;
-}
-
-.fnd-hero__left {
-  position: relative;
-  width: 52%;
-  display: flex;
-  flex-direction: column;
-  z-index: 2;
-}
-
-.fnd-hero__left-main {
-  flex: 4;
-  position: relative;
-  z-index: 1;
-  background: linear-gradient(135deg, var(--fnd-panel-bg), var(--fnd-panel-bg-2));
-  color: #ffffff;
-  padding: clamp(32px, 5vw, 56px) clamp(24px, 5vw, 56px);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.fnd-hero__left-main > * {
-  position: relative;
-  z-index: 1;
-}
-
-.fnd-hero__left-main::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: -76px;
-  bottom: 0;
-  width: 150px;
-  background: linear-gradient(135deg, var(--fnd-panel-bg), var(--fnd-panel-bg-2));
-  transform: skewX(-9deg);
-  transform-origin: 100% 0;
-  z-index: 0;
-}
-
-.fnd-hero__breadcrumbs { margin-bottom: 12px; }
-
-.fnd-hero__breadcrumb-nav,
-.fnd-hero__breadcrumb-nav span,
-.fnd-hero__breadcrumb-nav a {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7) !important;
-  text-decoration: none !important;
-}
-
-.fnd-hero__breadcrumb-nav a:hover { color: #ffffff !important; }
-
-.fnd-hero__eyebrow {
-  display: block;
-  width: fit-content;
-  margin: 0 0 14px;
-  padding-left: 12px;
-  border-left: 3px solid var(--fnd-accent);
-  font-family: 'Inter', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: 0;
-  color: rgba(255, 255, 255, 0.88) !important;
-}
-
-.fnd-hero .fnd-hero__title {
-  display: block !important;
-  font-family: 'Balgin-Bold', serif !important;
-  font-size: 34px !important;
-  font-weight: 700 !important;
-  line-height: 1.05 !important;
-  letter-spacing: 0 !important;
-  color: #ffffff !important;
-  margin: 0 0 16px;
-  text-transform: none !important;
-}
-
-.fnd-hero__intro {
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.6;
-  color: rgba(255, 255, 255, 0.92) !important;
-  margin: 0 0 28px;
-  max-width: 54ch;
-}
-
-.fnd-hero__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 18px;
-}
-
-.fnd-hero__btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  line-height: 1.35;
-  letter-spacing: 0;
-  text-decoration: none !important;
-  transition: background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
-}
-
-.fnd-hero__btn--primary {
-  background-color: #ffffff;
-  border: 2px solid #ffffff;
-  color: var(--fnd-button-text) !important;
-}
-
-.fnd-hero__btn--primary:hover {
-  background-color: var(--fnd-accent);
-  border-color: var(--fnd-accent);
-  color: var(--fnd-button-text) !important;
-  transform: translateY(-1px);
-}
-
-.fnd-hero__btn--secondary {
-  background-color: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.65);
-  color: #ffffff !important;
-}
-
-.fnd-hero__btn--secondary:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-  border-color: #ffffff;
-}
-
-.fnd-hero__text-link {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.85) !important;
-  text-decoration: underline !important;
-  text-underline-offset: 3px;
-}
-
-.fnd-hero__text-link:hover { color: #ffffff !important; }
-
-.fnd-hero__right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 56%;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  clip-path: polygon(13% 0, 100% 0, 100% 100%, 0% 100%);
-  z-index: 1;
-}
-
-.fnd-hero__right::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, rgba(16, 8, 35, 0.18), rgba(16, 8, 35, 0));
-  pointer-events: none;
-}
-
-.fnd-hero__right--placeholder {
-  background: linear-gradient(135deg, var(--fnd-placeholder-start), var(--fnd-placeholder-mid) 52%, var(--fnd-placeholder-end));
-}
-
-.fnd-hero__contact {
-  flex: 1;
-  position: relative;
-  background: #ffffff;
-  border-top: 1px solid var(--color-border);
-  padding: 0 clamp(24px, 5vw, 56px);
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  z-index: 2;
-}
-
-.fnd-hero__contact > * {
-  position: relative;
-  z-index: 1;
-}
-
-.fnd-hero__contact::after {
-  content: '';
-  position: absolute;
-  top: -1px;
-  right: -58px;
-  bottom: 0;
-  width: 118px;
-  background: #ffffff;
-  border-top: 1px solid var(--color-border);
-  transform: skewX(-9deg);
-  transform-origin: 100% 0;
-  z-index: 0;
-}
-
-.fnd-hero__contact-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  color: var(--color-text) !important;
-  text-decoration: none !important;
-}
-
-.fnd-hero__contact-item svg {
-  color: var(--fnd-contact-accent);
-  flex-shrink: 0;
-}
-
-.fnd-hero__contact-item:hover { color: var(--fnd-contact-accent) !important; }
-
-@media (max-width: 900px) {
-  .fnd-hero {
-    min-height: 0;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .fnd-hero__left {
-    width: 100%;
-  }
-
-  .fnd-hero__left-main {
-    padding: 38px 20px 34px;
-  }
-
-  .fnd-hero__left-main::after,
-  .fnd-hero__contact::after {
-    display: none;
-  }
-
-  .fnd-hero .fnd-hero__title {
-    font-size: 28px !important;
-  }
-
-  .fnd-hero__intro { max-width: 100%; }
-
-  .fnd-hero__actions { flex-direction: column; }
-
-  .fnd-hero__btn {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .fnd-hero__right {
-    position: relative;
-    width: 100%;
-    height: 260px;
-    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
-  }
-
-  .fnd-hero__contact {
-    flex: none;
-    padding: 16px 20px;
-    flex-wrap: wrap;
-    gap: 14px;
-  }
-}
-
-@media (max-width: 520px) {
-  .fnd-hero .fnd-hero__title {
-    font-size: 25px !important;
-  }
-
-  .fnd-hero__right {
-    height: 220px;
-  }
-}
-
-/* =============================================
-   Einde fnd-hero
-   ============================================= */
-
-/* =============================================
    sj-tarieven — shortcode [omj_tarieven]
    ============================================= */
 
@@ -667,6 +338,35 @@ h4, h5 {
     box-shadow: 0 20px 34px rgba(124,92,250,0.32);
 }
 
+/* =============================================
+   Taxonomy archive: /vacatures/{term}
+   ============================================= */
+
+.omj-tax-archive {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.omj-tax-archive__header {
+    margin-bottom: 32px;
+}
+
+.omj-tax-archive__title {
+    font-family: 'Balgin Bold', sans-serif;
+    font-size: 32px;
+    color: var(--color-text);
+    margin: 0 0 10px;
+    line-height: 1.2;
+}
+
+.omj-tax-archive__description {
+    font-size: 16px;
+    color: var(--color-text-muted);
+    margin: 0;
+    max-width: 680px;
+}
+
 .sj-tarieven__card--featured .sj-tarieven__button {
     background: #ffffff;
     color: var(--color-primary) !important;
@@ -718,3 +418,4 @@ h4, h5 {
     .sj-tarieven__title { font-size: 30px; }
     .sj-tarieven__price { font-size: 42px; }
 }
+

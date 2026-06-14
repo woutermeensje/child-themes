@@ -1,0 +1,476 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=League+Spartan:wght@900&display=swap');
+
+/* =============================================
+   Landingspagina styling — Onlinemarketingjobs.nl
+   Gebruikt door:
+     - page-werkgever.php       (.fnd-hero--werkgever)
+     - page-werkzoekende.php    (.fnd-hero--werkzoekende)
+     - page-split-hero.php      (.omj-split-hero)
+   ============================================= */
+
+/* =============================================
+   fnd-hero — werkgever, werkzoekende & bureau
+   ============================================= */
+
+.fnd-page,
+.fnd-page__elementor-content {
+  background: transparent;
+}
+
+.fnd-hero {
+  --fnd-panel-bg: #2b174f;
+  --fnd-panel-bg-2: #50308d;
+  --fnd-accent: #2fd4bd;
+  --fnd-button-text: #2b174f;
+  --fnd-contact-accent: var(--color-primary);
+  --fnd-placeholder-start: var(--color-primary);
+  --fnd-placeholder-mid: #2b174f;
+  --fnd-placeholder-end: var(--color-secondary);
+  position: relative;
+  width: 100%;
+  min-height: 540px;
+  overflow: hidden;
+  display: flex;
+  background: #24163f;
+  border-bottom: 1px solid rgba(36, 22, 63, 0.14);
+  isolation: isolate;
+}
+
+.fnd-hero--werkgever {
+  --fnd-panel-bg: #2b174f;
+  --fnd-panel-bg-2: #50308d;
+  --fnd-accent: #2fd4bd;
+  --fnd-button-text: #2b174f;
+  --fnd-contact-accent: #7c5cfa;
+  --fnd-placeholder-start: #7c5cfa;
+  --fnd-placeholder-mid: #2b174f;
+  --fnd-placeholder-end: #2fd4bd;
+}
+
+.fnd-hero--werkzoekende {
+  --fnd-panel-bg: #12364a;
+  --fnd-panel-bg-2: #1f7281;
+  --fnd-accent: #f4b94f;
+  --fnd-button-text: #12364a;
+  --fnd-contact-accent: #1f7281;
+  --fnd-placeholder-start: #1f7281;
+  --fnd-placeholder-mid: #12364a;
+  --fnd-placeholder-end: #7c5cfa;
+}
+
+.fnd-hero__left {
+  position: relative;
+  width: 52%;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+}
+
+.fnd-hero__left-main {
+  flex: 4;
+  position: relative;
+  z-index: 1;
+  background: linear-gradient(135deg, var(--fnd-panel-bg), var(--fnd-panel-bg-2));
+  color: #ffffff;
+  padding: clamp(32px, 5vw, 56px) clamp(24px, 5vw, 56px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.fnd-hero__left-main > * {
+  position: relative;
+  z-index: 1;
+}
+
+.fnd-hero__left-main::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: -76px;
+  bottom: 0;
+  width: 150px;
+  background: linear-gradient(135deg, var(--fnd-panel-bg), var(--fnd-panel-bg-2));
+  transform: skewX(-9deg);
+  transform-origin: 100% 0;
+  z-index: 0;
+}
+
+.fnd-hero__breadcrumbs { margin-bottom: 12px; }
+
+.fnd-hero__breadcrumb-nav,
+.fnd-hero__breadcrumb-nav span,
+.fnd-hero__breadcrumb-nav a {
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.7) !important;
+  text-decoration: none !important;
+}
+
+.fnd-hero__breadcrumb-nav a:hover { color: #ffffff !important; }
+
+.fnd-hero__eyebrow {
+  display: block;
+  width: fit-content;
+  margin: 0 0 14px;
+  padding-left: 12px;
+  border-left: 3px solid var(--fnd-accent);
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+  color: rgba(255, 255, 255, 0.88) !important;
+}
+
+.fnd-hero .fnd-hero__title {
+  display: block !important;
+  font-family: 'Balgin-Bold', serif !important;
+  font-size: 34px !important;
+  font-weight: 700 !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0 !important;
+  color: #ffffff !important;
+  margin: 0 0 16px;
+  text-transform: none !important;
+}
+
+.fnd-hero__intro {
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.92) !important;
+  margin: 0 0 28px;
+  max-width: 54ch;
+}
+
+.fnd-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.fnd-hero__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 8px 18px;
+  border-radius: 6px;
+  font-family: 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.35;
+  letter-spacing: 0;
+  text-decoration: none !important;
+  transition: background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+}
+
+.fnd-hero__btn--primary {
+  background-color: #ffffff;
+  border: 2px solid #ffffff;
+  color: var(--fnd-button-text) !important;
+}
+
+.fnd-hero__btn--primary:hover {
+  background-color: var(--fnd-accent);
+  border-color: var(--fnd-accent);
+  color: var(--fnd-button-text) !important;
+  transform: translateY(-1px);
+}
+
+.fnd-hero__btn--secondary {
+  background-color: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.65);
+  color: #ffffff !important;
+}
+
+.fnd-hero__btn--secondary:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #ffffff;
+}
+
+.fnd-hero__text-link {
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.85) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+
+.fnd-hero__text-link:hover { color: #ffffff !important; }
+
+.fnd-hero__right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 56%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  clip-path: polygon(13% 0, 100% 0, 100% 100%, 0% 100%);
+  z-index: 1;
+}
+
+.fnd-hero__right::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(16, 8, 35, 0.18), rgba(16, 8, 35, 0));
+  pointer-events: none;
+}
+
+.fnd-hero__right--placeholder {
+  background: linear-gradient(135deg, var(--fnd-placeholder-start), var(--fnd-placeholder-mid) 52%, var(--fnd-placeholder-end));
+}
+
+.fnd-hero__contact {
+  flex: 1;
+  position: relative;
+  background: #ffffff;
+  border-top: 1px solid var(--color-border);
+  padding: 0 clamp(24px, 5vw, 56px);
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  z-index: 2;
+}
+
+.fnd-hero__contact > * {
+  position: relative;
+  z-index: 1;
+}
+
+.fnd-hero__contact::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  right: -58px;
+  bottom: 0;
+  width: 118px;
+  background: #ffffff;
+  border-top: 1px solid var(--color-border);
+  transform: skewX(-9deg);
+  transform-origin: 100% 0;
+  z-index: 0;
+}
+
+.fnd-hero__contact-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  color: var(--color-text) !important;
+  text-decoration: none !important;
+}
+
+.fnd-hero__contact-item svg {
+  color: var(--fnd-contact-accent);
+  flex-shrink: 0;
+}
+
+.fnd-hero__contact-item:hover { color: var(--fnd-contact-accent) !important; }
+
+@media (max-width: 900px) {
+  .fnd-hero {
+    min-height: 0;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .fnd-hero__left {
+    width: 100%;
+  }
+
+  .fnd-hero__left-main {
+    padding: 38px 20px 34px;
+  }
+
+  .fnd-hero__left-main::after,
+  .fnd-hero__contact::after {
+    display: none;
+  }
+
+  .fnd-hero .fnd-hero__title {
+    font-size: 28px !important;
+  }
+
+  .fnd-hero__intro { max-width: 100%; }
+
+  .fnd-hero__actions { flex-direction: column; }
+
+  .fnd-hero__btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .fnd-hero__right {
+    position: relative;
+    width: 100%;
+    height: 260px;
+    clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+  }
+
+  .fnd-hero__contact {
+    flex: none;
+    padding: 16px 20px;
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+}
+
+@media (max-width: 520px) {
+  .fnd-hero .fnd-hero__title {
+    font-size: 25px !important;
+  }
+
+  .fnd-hero__right {
+    height: 220px;
+  }
+}
+
+/* =============================================
+   Split Hero — volle breedte met gradient overlay
+   ============================================= */
+
+.hero-title {
+    font-family: "Montserrat", sans-serif !important;
+    font-size: 48px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.2px !important;
+    text-transform: uppercase !important;
+    color: #fff !important;
+    margin: 0 0 24px 0 !important;
+    text-wrap: balance !important;
+}
+
+.hero-title__accent {
+    color: #2fd4bd;
+}
+
+.omj-split-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 560px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-color: #2b174f;
+    isolation: isolate;
+}
+
+/* Gradient van solid paars links naar transparant rechts — geen harde lijn */
+.omj-split-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        #2b174f 0%,
+        #2b174f 42%,
+        rgba(43, 23, 79, 0.90) 55%,
+        rgba(43, 23, 79, 0.50) 70%,
+        rgba(43, 23, 79, 0.12) 85%,
+        transparent 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+.omj-split-hero__inner {
+    position: relative;
+    z-index: 2;
+    width: 80%;
+    max-width: 960px;
+    padding: clamp(40px, 6vw, 80px) clamp(28px, 5vw, 72px);
+}
+
+.omj-split-hero__description {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 32px 0;
+    max-width: 52ch;
+}
+
+.omj-split-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.omj-split-hero__social-proof {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.omj-split-hero__social-proof-icon {
+    flex-shrink: 0;
+    color: #2fd4bd;
+}
+
+/* Knop-styles staan in css/buttons.css */
+
+/* Elementor-content onder de hero */
+.omj-split-page .fnd-page__elementor-content {
+    background: transparent;
+}
+
+@media (max-width: 900px) {
+    .omj-split-hero {
+        min-height: 420px;
+        align-items: flex-end;
+    }
+
+    .omj-split-hero::before {
+        background: linear-gradient(
+            to top,
+            #2b174f 0%,
+            #2b174f 35%,
+            rgba(43, 23, 79, 0.85) 55%,
+            rgba(43, 23, 79, 0.3) 80%,
+            transparent 100%
+        );
+    }
+
+    .omj-split-hero__inner {
+        width: 100%;
+        padding: clamp(32px, 6vw, 56px) clamp(20px, 6vw, 40px);
+    }
+
+    .hero-title {
+        font-size: clamp(28px, 6vw, 48px);
+        letter-spacing: -0.2px;
+    }
+
+    .omj-split-hero__description {
+        font-size: 15px;
+        max-width: 100%;
+    }
+
+    .omj-split-hero__actions {
+        flex-direction: column;
+    }
+
+    .omj-split-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

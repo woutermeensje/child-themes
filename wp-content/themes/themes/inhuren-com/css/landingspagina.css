@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=League+Spartan:wght@900&display=swap');
+
+/* =============================================
+   Landingspagina styling — Inhuren.com
+   Gebruikt door:
+     - page-split-hero.php   (.inhuren-split-hero)
+   ============================================= */
+
+/* =============================================
+   Hero titel
+   ============================================= */
+
+.hero-title {
+    font-family: "Montserrat", sans-serif !important;
+    font-size: 48px !important;
+    font-weight: 900 !important;
+    line-height: 1 !important;
+    letter-spacing: -0.2px !important;
+    text-transform: uppercase !important;
+    color: #fff !important;
+    margin: 0 0 24px 0 !important;
+    text-wrap: balance !important;
+}
+
+.hero-title__accent {
+    color: #80D424 !important;
+}
+
+/* =============================================
+   Split Hero — volle breedte met gradient overlay
+   ============================================= */
+
+.omj-split-hero {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    min-height: 560px;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    background-color: #02305e;
+    isolation: isolate;
+}
+
+/* Gradient van solid donkerblauw links naar transparant rechts */
+.omj-split-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        #02305e 0%,
+        #02305e 42%,
+        rgba(2, 48, 94, 0.90) 55%,
+        rgba(2, 48, 94, 0.50) 70%,
+        rgba(2, 48, 94, 0.12) 85%,
+        transparent 100%
+    );
+    z-index: 1;
+    pointer-events: none;
+}
+
+.omj-split-hero__inner {
+    position: relative;
+    z-index: 2;
+    width: 80%;
+    max-width: 960px;
+    padding: clamp(40px, 6vw, 80px) clamp(28px, 5vw, 72px);
+}
+
+.omj-split-hero__description {
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0 0 32px 0;
+    max-width: 52ch;
+}
+
+.omj-split-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.omj-split-hero__social-proof {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.omj-split-hero__social-proof-icon {
+    flex-shrink: 0;
+    color: #80D424;
+}
+
+/* Elementor-content onder de hero */
+.inhuren-split-hero ~ .fnd-page__elementor-content {
+    background: transparent;
+}
+
+@media (max-width: 900px) {
+    .omj-split-hero {
+        min-height: 420px;
+        align-items: flex-end;
+    }
+
+    .omj-split-hero::before {
+        background: linear-gradient(
+            to top,
+            #02305e 0%,
+            #02305e 35%,
+            rgba(2, 48, 94, 0.85) 55%,
+            rgba(2, 48, 94, 0.3) 80%,
+            transparent 100%
+        );
+    }
+
+    .omj-split-hero__inner {
+        width: 100%;
+        padding: clamp(32px, 6vw, 56px) clamp(20px, 6vw, 40px);
+    }
+
+    .hero-title {
+        font-size: clamp(28px, 6vw, 48px) !important;
+    }
+
+    .omj-split-hero__description {
+        font-size: 15px;
+        max-width: 100%;
+    }
+
+    .omj-split-hero__actions {
+        flex-direction: column;
+    }
+
+    .omj-split-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}

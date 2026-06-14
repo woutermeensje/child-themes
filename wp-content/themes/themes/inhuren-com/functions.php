@@ -2,6 +2,8 @@
 // Exit if accessed directly
 if (!defined('ABSPATH')) exit;
 
+require_once get_stylesheet_directory() . '/inc/split-hero-meta.php';
+
 /**
  * ✅ CUSTOM HEADER: vervang Hello Elementor's standaard header
  */
@@ -24,6 +26,8 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap', [], null);
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
+    wp_enqueue_style('montserrat-font', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap', [], null);
+    wp_enqueue_style('league-spartan-font', 'https://fonts.googleapis.com/css2?family=League+Spartan:wght@900&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css', [], filemtime(get_stylesheet_directory() . '/fonts/fonts.css'));
     if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
         wp_enqueue_style('inhuren-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/header.css'));
@@ -42,6 +46,8 @@ add_action('wp_enqueue_scripts', function () {
     if (is_page_template('opdrachten-landingspagina.php') && file_exists(get_stylesheet_directory() . '/css/opdrachten-landingspagina.css')) {
         wp_enqueue_style('inhuren-opdrachten-landingspagina', get_stylesheet_directory_uri() . '/css/opdrachten-landingspagina.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/opdrachten-landingspagina.css'));
     }
+    wp_enqueue_style('inhuren-landingspagina', get_stylesheet_directory_uri() . '/css/landingspagina.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/landingspagina.css'));
+    wp_enqueue_style('inhuren-buttons', get_stylesheet_directory_uri() . '/css/buttons.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/buttons.css'));
 });
 
 if (!class_exists('RN_Nav_Walker')) :

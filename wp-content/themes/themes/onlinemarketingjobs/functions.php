@@ -34,6 +34,7 @@ require_once get_stylesheet_directory() . '/inc/vacature-cpt.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-formulier.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-snel-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
+require_once get_stylesheet_directory() . '/inc/split-hero-meta.php';
 
 add_shortcode('omj-job-alerts', 'sj_job_alerts_shortcode');
 add_shortcode('omj-job-alerts-sidebar', 'sj_job_alerts_sidebar_shortcode');
@@ -53,10 +54,14 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap', [], null);
+    wp_enqueue_style('league-spartan-font', 'https://fonts.googleapis.com/css2?family=League+Spartan:wght@900&display=swap', [], null);
+    wp_enqueue_style('montserrat-font', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
     wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
     wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css');
     wp_enqueue_style('omj-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
+    wp_enqueue_style('omj-landingspagina', get_stylesheet_directory_uri() . '/css/landingspagina.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/landingspagina.css'));
+    wp_enqueue_style('omj-buttons', get_stylesheet_directory_uri() . '/css/buttons.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/buttons.css'));
 
     if (file_exists(get_stylesheet_directory() . '/css/forms.css')) {
         wp_enqueue_style(
@@ -308,7 +313,7 @@ add_action('init', function () {
         'show_ui'           => true,
         'show_admin_column' => true,
         'show_in_rest'      => true,
-        'rewrite'           => ['slug' => 'organisatie-type'],
+        'rewrite'           => ['slug' => 'vacatures/organisatie', 'with_front' => false],
     ]);
 
     register_taxonomy('job_sector', 'job_listing', [
@@ -317,7 +322,7 @@ add_action('init', function () {
         'show_ui'           => true,
         'show_admin_column' => true,
         'show_in_rest'      => true,
-        'rewrite'           => ['slug' => 'sector'],
+        'rewrite'           => ['slug' => 'vacatures', 'with_front' => false],
     ]);
 
     register_taxonomy('certificering', 'job_listing', [
@@ -332,16 +337,15 @@ add_action('init', function () {
 });
 
 
-// =========================================================
-// 5) Taxonomieën ook koppelen aan pages
-// =========================================================
-add_action('init', function () {
-    register_taxonomy_for_object_type('job_company', 'page');
-    register_taxonomy_for_object_type('job_tag', 'page');
-    register_taxonomy_for_object_type('job_sector', 'page');
-    register_taxonomy_for_object_type('organisatie_type', 'page');
-    register_taxonomy_for_object_type('certificering', 'page');
+// Overschrijf WPJM job_listing_type rewrite slug → /vacatures/type/{term}
+add_filter('register_taxonomy_job_listing_type_args', function ($args) {
+    $args['rewrite'] = ['slug' => 'vacatures/type', 'with_front' => false];
+    return $args;
 });
+
+// =========================================================
+// 5) Taxonomieën
+// =========================================================
 
 
 // =========================================================

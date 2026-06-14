@@ -1,0 +1,73 @@
+/* =============================================
+   Buttons — Inhuren.com
+   Gebruikt door: alle templates
+   ============================================= */
+
+.omj-split-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 14px 28px !important;
+    border-radius: 10px !important;
+    border: 2px solid #0458AB !important;
+    background: rgba(2, 20, 50, 0.55) !important;
+    font-family: "League Spartan", sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.15s ease !important;
+    cursor: pointer !important;
+}
+
+.omj-split-btn--primary {
+    color: #ffffff !important;
+}
+
+.omj-split-btn--primary:hover {
+    background: rgba(4, 88, 171, 0.25) !important;
+    border-color: #4d8fd4 !important;
+    transform: translateY(-2px) !important;
+}
+
+.omj-split-btn--secondary {
+    color: #80D424 !important;
+}
+
+.omj-split-btn--secondary:hover {
+    background: rgba(128, 212, 36, 0.15) !important;
+    border-color: #80D424 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+}
+
+/* =============================================
+   Specifieke stijlen per knop (split hero)
+   ============================================= */
+
+/* Knop 1: Freelancer inhuren — gevuld blauw */
+.omj-split-btn--freelancer-inhuren {
+    background: #0458AB !important;
+    border-color: #0458AB !important;
+    color: #ffffff !important;
+}
+
+.omj-split-btn--freelancer-inhuren:hover {
+    background: #034085 !important;
+    border-color: #034085 !important;
+    color: #ffffff !important;
+}
+
+/* Knop 2: Bekijk opdrachten — transparant met groene rand */
+.omj-split-btn--bekijk-opdrachten {
+    background: transparent !important;
+    border-color: rgba(128, 212, 36, 0.6) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.omj-split-btn--bekijk-opdrachten:hover {
+    background: rgba(128, 212, 36, 0.15) !important;
+    border-color: #80D424 !important;
+    color: #ffffff !important;
+}

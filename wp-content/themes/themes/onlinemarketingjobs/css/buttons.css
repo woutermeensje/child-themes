@@ -1,0 +1,73 @@
+/* =============================================
+   Buttons — Onlinemarketingjobs.nl
+   Gebruikt door: alle templates
+   ============================================= */
+
+.omj-split-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 14px 28px !important;
+    border-radius: 10px !important;
+    border: 2px solid #7C5CFA !important;
+    background: rgba(20, 10, 40, 0.55) !important;
+    font-family: "League Spartan", sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 900 !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    text-decoration: none !important;
+    transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.15s ease !important;
+    cursor: pointer !important;
+}
+
+.omj-split-btn--primary {
+    color: #ffffff !important;
+}
+
+.omj-split-btn--primary:hover {
+    background: rgba(124, 92, 250, 0.25) !important;
+    border-color: #a78bfa !important;
+    transform: translateY(-2px) !important;
+}
+
+.omj-split-btn--secondary {
+    color: #7C5CFA !important;
+}
+
+.omj-split-btn--secondary:hover {
+    background: rgba(124, 92, 250, 0.2) !important;
+    border-color: #a78bfa !important;
+    color: #a78bfa !important;
+    transform: translateY(-2px) !important;
+}
+
+/* =============================================
+   Specifieke stijlen per knop (split hero)
+   ============================================= */
+
+/* Knop 1: Vacature plaatsen — gevuld paars */
+.omj-split-btn--vacature-plaatsen {
+    background: #7C5CFA !important;
+    border-color: #7C5CFA !important;
+    color: #ffffff !important;
+}
+
+.omj-split-btn--vacature-plaatsen:hover {
+    background: #6a48e8 !important;
+    border-color: #6a48e8 !important;
+    color: #ffffff !important;
+}
+
+/* Knop 2: Bekijk tarieven — transparant met subtiele paarse rand */
+.omj-split-btn--bekijk-tarieven {
+    background: transparent !important;
+    border-color: rgba(124, 92, 250, 0.5) !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.omj-split-btn--bekijk-tarieven:hover {
+    background: rgba(124, 92, 250, 0.15) !important;
+    border-color: #7C5CFA !important;
+    color: #ffffff !important;
+}
