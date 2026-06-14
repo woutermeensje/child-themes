@@ -23,7 +23,7 @@
 }
 
 .hero-title__accent {
-    color: #80D424 !important;
+    color: #FF8200 !important;
 }
 
 /* =============================================
@@ -75,7 +75,7 @@
     font-weight: 400;
     line-height: 1.65;
     color: rgba(255, 255, 255, 0.85);
-    margin: 0 0 32px 0;
+    margin: 0 0 48px 0;
     max-width: 52ch;
 }
 
@@ -100,7 +100,7 @@
 
 .omj-split-hero__social-proof-icon {
     flex-shrink: 0;
-    color: #80D424;
+    color: #FF8200;
 }
 
 /* Elementor-content onder de hero */

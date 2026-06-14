@@ -32,12 +32,12 @@
 }
 
 .omj-split-btn--secondary {
-    color: #80D424 !important;
+    color: #FF8200 !important;
 }
 
 .omj-split-btn--secondary:hover {
-    background: rgba(128, 212, 36, 0.15) !important;
-    border-color: #80D424 !important;
+    background: rgba(255, 130, 0, 0.15) !important;
+    border-color: #FF8200 !important;
     color: #ffffff !important;
     transform: translateY(-2px) !important;
 }
@@ -62,12 +62,12 @@
 /* Knop 2: Bekijk opdrachten — transparant met groene rand */
 .omj-split-btn--bekijk-opdrachten {
     background: transparent !important;
-    border-color: rgba(128, 212, 36, 0.6) !important;
+    border-color: rgba(255, 130, 0, 0.6) !important;
     color: rgba(255, 255, 255, 0.85) !important;
 }
 
 .omj-split-btn--bekijk-opdrachten:hover {
-    background: rgba(128, 212, 36, 0.15) !important;
-    border-color: #80D424 !important;
+    background: rgba(255, 130, 0, 0.15) !important;
+    border-color: #FF8200 !important;
     color: #ffffff !important;
 }
