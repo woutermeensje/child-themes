@@ -175,6 +175,29 @@ function omj_vacature_plaatsen_shortcode(): string {
                 update_post_meta($job_id, '_sj_pakket', $pakket);
             }
 
+            /* ── ActiveCampaign: werkgever toevoegen aan vacature-plaatsingen lijst ── */
+            if (function_exists('sj_ac_request')) {
+                $ac_result = sj_ac_request('POST', 'contact/sync', [
+                    'contact' => [
+                        'email'     => $email,
+                        'firstName' => $voornaam,
+                        'lastName'  => $achternaam,
+                        'fieldValues' => [
+                            ['field' => 'BEDRIJF', 'value' => $bedrijfsnaam],
+                        ],
+                    ],
+                ]);
+                if (!empty($ac_result['contact']['id'])) {
+                    sj_ac_request('POST', 'contactLists', [
+                        'contactList' => [
+                            'list'    => defined('ACTIVECAMPAIGN_WERKGEVER_LIST_ID') ? ACTIVECAMPAIGN_WERKGEVER_LIST_ID : 28,
+                            'contact' => (int) $ac_result['contact']['id'],
+                            'status'  => 1,
+                        ],
+                    ]);
+                }
+            }
+
             wp_redirect(home_url('/bevestiging-vacature-plaatsing/'));
             exit;
         }

@@ -45,7 +45,6 @@ function sj_nieuwsbrief_shortcode(): string {
                 );
             }
 
-            // ActiveCampaign: toevoegen aan nieuwsbrief-lijst (ID 10)
             if (function_exists('sj_ac_request')) {
                 $result = sj_ac_request('POST', 'contact/sync', [
                     'contact' => ['email' => $email, 'firstName' => $voornaam],
@@ -53,7 +52,7 @@ function sj_nieuwsbrief_shortcode(): string {
                 if (!empty($result['contact']['id'])) {
                     sj_ac_request('POST', 'contactLists', [
                         'contactList' => [
-                            'list'    => 10,
+                            'list'    => defined('ACTIVECAMPAIGN_NEWSLETTER_LIST_ID') ? ACTIVECAMPAIGN_NEWSLETTER_LIST_ID : 27,
                             'contact' => (int) $result['contact']['id'],
                             'status'  => 1,
                         ],

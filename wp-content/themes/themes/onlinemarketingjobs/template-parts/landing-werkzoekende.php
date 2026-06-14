@@ -3,6 +3,7 @@ if (!defined('ABSPATH')) exit;
 
 $page_id         = get_the_ID();
 $hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
+$eyebrow         = get_post_meta($page_id, 'landing_eyebrow', true)               ?: 'Voor online marketing professionals';
 $intro           = has_excerpt($page_id) ? get_the_excerpt($page_id)              : 'Onlinemarketingjobs.nl is dé vacaturesite voor online marketing professionals. Ontdek de nieuwste vacatures en zet de volgende stap in jouw carrière.';
 $primary_label   = get_post_meta($page_id, 'landing_primary_button_text', true)   ?: 'Nieuwsbrief';
 $primary_url     = get_post_meta($page_id, 'landing_primary_button_url', true)    ?: home_url('/nieuwsbrief/');
@@ -14,8 +15,7 @@ $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 20
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@onlinemarketingjobs.nl';
 ?>
 
-<main id="content" <?php post_class('fnd-page'); ?>>
-    <section class="fnd-hero">
+<section class="fnd-hero fnd-hero--werkzoekende" aria-labelledby="omj-landing-title">
 
         <div class="fnd-hero__left">
 
@@ -27,7 +27,11 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@on
                     </div>
                 <?php endif; ?>
 
-                <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
+                <?php if ($eyebrow) : ?>
+                    <p class="fnd-hero__eyebrow"><?php echo esc_html($eyebrow); ?></p>
+                <?php endif; ?>
+
+                <h1 class="fnd-hero__title" id="omj-landing-title"><?php the_title(); ?></h1>
 
                 <?php if ($intro) : ?>
                     <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
@@ -77,4 +81,3 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@on
         </div>
 
     </section>
-</main>

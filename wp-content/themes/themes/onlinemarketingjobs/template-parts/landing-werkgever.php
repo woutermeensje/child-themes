@@ -15,8 +15,7 @@ $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 20
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@onlinemarketingjobs.nl';
 ?>
 
-<main id="content" <?php post_class('fnd-page'); ?>>
-    <section class="fnd-hero">
+<section class="fnd-hero fnd-hero--werkgever" aria-labelledby="omj-landing-title">
 
         <div class="fnd-hero__left">
 
@@ -28,7 +27,11 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@on
                     </div>
                 <?php endif; ?>
 
-                <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
+                <?php if ($eyebrow) : ?>
+                    <p class="fnd-hero__eyebrow"><?php echo esc_html($eyebrow); ?></p>
+                <?php endif; ?>
+
+                <h1 class="fnd-hero__title" id="omj-landing-title"><?php the_title(); ?></h1>
 
                 <?php if ($intro) : ?>
                     <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
@@ -78,4 +81,3 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@on
         </div>
 
     </section>
-</main>

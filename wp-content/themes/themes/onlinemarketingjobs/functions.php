@@ -2,6 +2,27 @@
 // Exit if accessed directly
 if (!defined('ABSPATH')) exit;
 
+// =========================================================
+// ActiveCampaign configuratie — credentials uit .env
+// =========================================================
+(function () {
+    $env_file = ABSPATH . '.env';
+    if (file_exists($env_file)) {
+        foreach (file($env_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $line) {
+            if ($line === '' || $line[0] === '#' || strpos($line, '=') === false) continue;
+            [$key, $val] = explode('=', $line, 2);
+            putenv(trim($key) . '=' . trim($val));
+        }
+    }
+})();
+
+if (!defined('ACTIVECAMPAIGN_BASE_URL'))            define('ACTIVECAMPAIGN_BASE_URL',            getenv('ACTIVECAMPAIGN_API_URL') ?: '');
+if (!defined('ACTIVECAMPAIGN_API_KEY'))             define('ACTIVECAMPAIGN_API_KEY',             getenv('ACTIVECAMPAIGN_API_KEY') ?: '');
+if (!defined('ACTIVECAMPAIGN_ENABLED'))             define('ACTIVECAMPAIGN_ENABLED',             true);
+if (!defined('ACTIVECAMPAIGN_LIST_ID'))             define('ACTIVECAMPAIGN_LIST_ID',             21); // Job alerts - Onlinemarketingjobs.nl
+if (!defined('ACTIVECAMPAIGN_NEWSLETTER_LIST_ID'))  define('ACTIVECAMPAIGN_NEWSLETTER_LIST_ID',  27); // Nieuwsbrief - Onlinemarketingjobs.nl
+if (!defined('ACTIVECAMPAIGN_WERKGEVER_LIST_ID'))   define('ACTIVECAMPAIGN_WERKGEVER_LIST_ID',   28); // Vacature Plaatsingen - Onlinemarketingjobs.nl
+
 require_once get_stylesheet_directory() . '/inc/activecampaign.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-job-alerts.php';
 require_once get_stylesheet_directory() . '/inc/job-alerts-cron.php';
@@ -258,6 +279,9 @@ if ( ! function_exists('srmb_get_req_value') ) {
 // =========================================================
 // 4) Custom taxonomieën (job_listing)
 // =========================================================
+
+// Verwijder de ingebouwde WP Job Manager 'Categorieën'-taxonomie (job_listing_category)
+add_filter('option_job_manager_enable_categories', '__return_false');
 add_action('init', function () {
 
     register_taxonomy('job_company', 'job_listing', [
@@ -409,7 +433,6 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
         'filter_organisatie_type'      => 'organisatie_type',
         'filter_job_types'            => 'job_listing_type',
         'filter_certificering'        => 'certificering',
-        'filter_job_listing_category' => 'job_listing_category',
     ];
 
     foreach ($custom_taxonomies as $filter_key => $taxonomy) {

@@ -5,19 +5,17 @@ wp_enqueue_script('wp-job-manager-ajax-filters');
 do_action('job_manager_job_filters_before', $atts);
 
 $selected = [
-    'job_company'          => [],
-    'organization_type'    => [],
-    'job_sector'           => [],
-    'job_types'            => [],
-    'job_listing_category' => [],
+    'job_company'       => [],
+    'organization_type' => [],
+    'job_sector'        => [],
+    'job_types'         => [],
 ];
 
 $shortcode_atts = shortcode_atts([
-    'job_company'          => '',
-    'organization_type'    => '',
-    'job_sector'           => '',
-    'job_listing_type'     => '',
-    'job_listing_category' => '',
+    'job_company'      => '',
+    'organization_type' => '',
+    'job_sector'       => '',
+    'job_listing_type' => '',
 ], $atts);
 
 foreach ($selected as $key => &$value) {
