@@ -7,15 +7,15 @@
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    padding: 14px 28px !important;
+    padding: 10px 20px !important;
     border-radius: 10px !important;
     border: 2px solid #0458AB !important;
     background: rgba(2, 20, 50, 0.55) !important;
-    font-family: "League Spartan", sans-serif !important;
+    font-family: "Roboto", sans-serif !important;
     font-size: 15px !important;
     font-weight: 900 !important;
     letter-spacing: 1px !important;
-    text-transform: uppercase !important;
+    text-transform: none !important;
     text-decoration: none !important;
     transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.15s ease !important;
     cursor: pointer !important;
@@ -46,28 +46,28 @@
    Specifieke stijlen per knop (split hero)
    ============================================= */
 
-/* Knop 1: Freelancer inhuren — gevuld blauw */
+/* Knop 1: Aanmelden — gevuld groen */
 .omj-split-btn--freelancer-inhuren {
-    background: #0458AB !important;
-    border-color: #0458AB !important;
+    background: #80D424 !important;
+    border-color: #80D424 !important;
     color: #ffffff !important;
 }
 
 .omj-split-btn--freelancer-inhuren:hover {
-    background: #034085 !important;
-    border-color: #034085 !important;
+    background: #6ab31e !important;
+    border-color: #6ab31e !important;
     color: #ffffff !important;
 }
 
-/* Knop 2: Bekijk opdrachten — transparant met groene rand */
+/* Knop 2: Bekijk opdrachten — gevuld oranje */
 .omj-split-btn--bekijk-opdrachten {
-    background: transparent !important;
-    border-color: rgba(255, 130, 0, 0.6) !important;
-    color: rgba(255, 255, 255, 0.85) !important;
+    background: #FF8200 !important;
+    border-color: #FF8200 !important;
+    color: #ffffff !important;
 }
 
 .omj-split-btn--bekijk-opdrachten:hover {
-    background: rgba(255, 130, 0, 0.15) !important;
-    border-color: #FF8200 !important;
+    background: #D96F00 !important;
+    border-color: #D96F00 !important;
     color: #ffffff !important;
 }

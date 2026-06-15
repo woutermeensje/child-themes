@@ -6,10 +6,10 @@ $image_url    = get_the_post_thumbnail_url($page_id, 'full');
 $title_raw    = get_post_meta($page_id, 'split_hero_title', true)        ?: 'De beste freelancers vinden via Inhuren.com.';
 $accent_terms = get_post_meta($page_id, 'split_hero_accent_terms', true) ?: 'freelancers';
 $description  = get_post_meta($page_id, 'split_hero_description', true)  ?: 'Inhuren.com is dé marktplaats voor freelancers en opdrachtgevers. Vind de juiste professional voor jouw opdracht.';
-$social_proof = get_post_meta($page_id, 'split_hero_social_proof', true) ?: 'Bekijk alle openstaande opdrachten in ons netwerk.';
-$btn1_label   = 'Freelancer inhuren';
-$btn1_url     = home_url('/freelancer-inhuren/');
-$btn2_label   = 'Bekijk opdrachten';
+$social_proof = get_post_meta($page_id, 'split_hero_social_proof', true) ?: 'Benieuwd naar wat voor opdrachten wij allemaal wekelijks invullen?';
+$btn1_label   = 'Ik ben opdrachtgever';
+$btn1_url     = home_url('/informatie-aanvragen/');
+$btn2_label   = 'Opdrachten';
 $btn2_url     = home_url('/opdrachten/');
 
 $title_html = function_exists('inhuren_split_hero_highlight')
@@ -20,7 +20,7 @@ $title_html = function_exists('inhuren_split_hero_highlight')
 <section class="omj-split-hero inhuren-split-hero"
     aria-labelledby="split-hero-title"
     <?php if ($image_url) : ?>
-        style="background-image: url('<?php echo esc_url($image_url); ?>');"
+        style="background-image: url('<?php echo esc_url($image_url); ?>'); background-position: 75% center;"
     <?php endif; ?>>
 
     <div class="omj-split-hero__inner">
@@ -41,10 +41,10 @@ $title_html = function_exists('inhuren_split_hero_highlight')
         </div>
 
         <?php if ($social_proof) : ?>
-            <p class="omj-split-hero__social-proof">
-                <svg class="omj-split-hero__social-proof-icon" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+            <a href="#sectoren" class="omj-split-hero__social-proof inhuren-hero__sectoren-link">
+                <svg class="omj-split-hero__social-proof-icon" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
                 <?php echo esc_html($social_proof); ?>
-            </p>
+            </a>
         <?php endif; ?>
 
     </div>

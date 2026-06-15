@@ -34171,3 +34171,9 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 [14-Jun-2026 14:45:13 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 624
 [14-Jun-2026 14:45:14 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
 [14-Jun-2026 14:45:35 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 624
+[14-Jun-2026 18:54:38 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 572
+[14-Jun-2026 18:56:39 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 572
+[14-Jun-2026 19:13:12 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 572
+[15-Jun-2026 06:43:16 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 572
+[15-Jun-2026 06:43:20 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
+[15-Jun-2026 06:43:26 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 20480 bytes) in /var/www/html/wp-content/plugins/gravityforms/forms_model.php on line 8982

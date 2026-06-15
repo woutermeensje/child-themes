@@ -12,7 +12,7 @@
 
 .hero-title {
     font-family: "Montserrat", sans-serif !important;
-    font-size: 48px !important;
+    font-size: 40px !important;
     font-weight: 900 !important;
     line-height: 1 !important;
     letter-spacing: -0.2px !important;
@@ -37,8 +37,8 @@
     width: 100%;
     min-height: 560px;
     overflow: hidden;
-    background-size: cover;
-    background-position: center;
+    background-size: cover !important;
+    background-position: 75% center !important;
     background-color: #02305e;
     isolation: isolate;
 }
@@ -75,13 +75,14 @@
     font-weight: 400;
     line-height: 1.65;
     color: rgba(255, 255, 255, 0.85);
-    margin: 0 0 48px 0;
+    margin: 0 0 24px 0 !important;
     max-width: 52ch;
 }
 
 .omj-split-hero__actions {
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
     gap: 16px;
     margin-bottom: 16px;
 }
@@ -100,7 +101,17 @@
 
 .omj-split-hero__social-proof-icon {
     flex-shrink: 0;
-    color: #FF8200;
+    color: #80D424;
+}
+
+.inhuren-hero__sectoren-link {
+    text-decoration: none !important;
+    color: rgba(255, 255, 255, 0.6) !important;
+    transition: color 0.15s ease !important;
+}
+
+.inhuren-hero__sectoren-link:hover {
+    color: rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Elementor-content onder de hero */
