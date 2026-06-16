@@ -1,136 +1,312 @@
 <?php
-if (!defined('ABSPATH')) exit;
+if ( ! defined( 'ABSPATH' ) ) exit;
 
-wp_enqueue_script('wp-job-manager-ajax-filters');
-do_action('job_manager_job_filters_before', $atts);
+wp_enqueue_script( 'wp-job-manager-ajax-filters' );
+do_action( 'job_manager_job_filters_before', $atts );
 
 $selected = [
-    'job_company'       => [],
-    'organization_type' => [],
-    'job_sector'        => [],
-    'job_types'         => [],
+  'job_company'      => [],
+  'job_sector'       => [],
+  'job_types'        => [],
+  'organisatie_type' => [],
 ];
 
 $shortcode_atts = shortcode_atts([
-    'job_company'      => '',
-    'organization_type' => '',
-    'job_sector'       => '',
-    'job_listing_type' => '',
+  'job_company'      => '',
+  'job_sector'       => '',
+  'job_listing_type' => '',
+  'organisatie_type' => '',
 ], $atts);
 
-foreach ($selected as $key => &$value) {
-    $shortcode_key = $key === 'job_types' ? 'job_listing_type' : $key;
-
-    $req = srmb_get_req_value($key);
-    if (!empty($req)) {
-        $value = $req;
-    } elseif (!empty($shortcode_atts[$shortcode_key])) {
-        $value = array_filter(array_map('trim', explode(',', sanitize_text_field($shortcode_atts[$shortcode_key]))));
-    }
+if ( ! function_exists( 'sj_get_req_value' ) ) {
+  function sj_get_req_value( $key ) {
+    $filter_key = 'filter_' . $key;
+    if ( ! empty( $_GET[ $key ] ) )         return (array) $_GET[ $key ];
+    if ( ! empty( $_GET[ $filter_key ] ) )  return (array) $_GET[ $filter_key ];
+    if ( ! empty( $_POST[ $filter_key ] ) ) return (array) $_POST[ $filter_key ];
+    if ( ! empty( $_POST[ $key ] ) )        return (array) $_POST[ $key ];
+    return [];
+  }
 }
-unset($value);
+
+foreach ( $selected as $key => &$value ) {
+  $shortcode_key = ( $key === 'job_types' ) ? 'job_listing_type' : $key;
+  $req = sj_get_req_value( $key );
+  if ( ! empty( $req ) ) {
+    $value = $req;
+  } elseif ( ! empty( $shortcode_atts[ $shortcode_key ] ) ) {
+    $value = array_filter( array_map( 'trim', explode( ',', sanitize_text_field( $shortcode_atts[ $shortcode_key ] ) ) ) );
+  }
+}
+unset( $value );
+
+$keywords = isset( $keywords ) ? $keywords : ( $_GET['search_keywords'] ?? '' );
+$location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
+
+if ( ! function_exists( 'sj_get_open_job_filter_counts' ) ) {
+  function sj_get_open_job_filter_counts( $taxonomy ) {
+    static $counts_by_taxonomy = [];
+    $taxonomy = sanitize_key( $taxonomy );
+    if ( isset( $counts_by_taxonomy[ $taxonomy ] ) ) return $counts_by_taxonomy[ $taxonomy ];
+    if ( ! taxonomy_exists( $taxonomy ) ) {
+      $counts_by_taxonomy[ $taxonomy ] = [];
+      return $counts_by_taxonomy[ $taxonomy ];
+    }
+    global $wpdb;
+    $sql = $wpdb->prepare(
+      "SELECT tt.term_id, COUNT(DISTINCT p.ID) AS open_jobs
+       FROM {$wpdb->term_relationships} tr
+       INNER JOIN {$wpdb->term_taxonomy} tt ON tr.term_taxonomy_id = tt.term_taxonomy_id
+       INNER JOIN {$wpdb->posts} p ON p.ID = tr.object_id
+       LEFT JOIN {$wpdb->postmeta} filled  ON filled.post_id  = p.ID AND filled.meta_key  = '_filled'      AND filled.meta_value  = '1'
+       LEFT JOIN {$wpdb->postmeta} expires ON expires.post_id = p.ID AND expires.meta_key = '_job_expires'
+       WHERE tt.taxonomy = %s
+         AND p.post_type   = 'job_listing'
+         AND p.post_status = 'publish'
+         AND filled.meta_id IS NULL
+         AND (expires.meta_id IS NULL OR expires.meta_value = '' OR expires.meta_value >= %s)
+       GROUP BY tt.term_id",
+      $taxonomy,
+      current_time( 'Y-m-d' )
+    );
+    $counts = [];
+    foreach ( (array) $wpdb->get_results( $sql ) as $row ) {
+      $counts[ (int) $row->term_id ] = (int) $row->open_jobs;
+    }
+    $counts_by_taxonomy[ $taxonomy ] = $counts;
+    return $counts_by_taxonomy[ $taxonomy ];
+  }
+}
+
+if ( ! function_exists( 'sj_render_filter_option_with_count' ) ) {
+  function sj_render_filter_option_with_count( $term, $selected_values, $counts ) {
+    $count           = $counts[ (int) $term->term_id ] ?? 0;
+    $formatted_count = number_format_i18n( $count );
+    ?>
+    <option value="<?php echo esc_attr( $term->slug ); ?>"
+      data-label="<?php echo esc_attr( $term->name ); ?>"
+      data-count="<?php echo esc_attr( $formatted_count ); ?>"
+      <?php selected( in_array( $term->slug, $selected_values, true ) ); ?>>
+      <?php echo esc_html( $term->name . ' (' . $formatted_count . ')' ); ?>
+    </option>
+    <?php
+  }
+}
+
+if ( ! function_exists( 'sj_sort_terms_by_open_job_count' ) ) {
+  function sj_sort_terms_by_open_job_count( $terms, $counts ) {
+    if ( empty( $terms ) || is_wp_error( $terms ) ) return [];
+    $terms = array_values( (array) $terms );
+    usort( $terms, function ( $a, $b ) use ( $counts ) {
+      $count_a = $counts[ (int) $a->term_id ] ?? 0;
+      $count_b = $counts[ (int) $b->term_id ] ?? 0;
+      if ( $count_a === $count_b ) return strcasecmp( $a->name, $b->name );
+      return $count_b <=> $count_a;
+    } );
+    return $terms;
+  }
+}
+
+$job_type_counts         = sj_get_open_job_filter_counts( 'job_listing_type' );
+$job_sector_counts       = sj_get_open_job_filter_counts( 'job_sector' );
+$organisatie_type_counts = sj_get_open_job_filter_counts( 'organisatie_type' );
+$job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
+
+if ( ! function_exists( 'sj_get_named_upload_image_url' ) ) {
+  function sj_get_named_upload_image_url( $basename ) {
+    $title    = sanitize_text_field( $basename );
+    $basename = sanitize_title( $basename );
+    if ( ! $basename ) return '';
+
+    $attachment = get_page_by_path( $basename, OBJECT, 'attachment' );
+    if ( $attachment instanceof WP_Post ) {
+      $url = wp_get_attachment_image_url( $attachment->ID, 'full' );
+      if ( $url ) return $url;
+    }
+
+    global $wpdb;
+    $attachment_id = (int) $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT p.ID
+         FROM {$wpdb->posts} p
+         LEFT JOIN {$wpdb->postmeta} alt ON alt.post_id = p.ID AND alt.meta_key = '_wp_attachment_image_alt'
+         WHERE p.post_type = 'attachment'
+           AND (
+             p.post_title = %s
+             OR p.post_excerpt = %s
+             OR alt.meta_value = %s
+           )
+         ORDER BY p.ID DESC
+         LIMIT 1",
+        $title,
+        $title,
+        $title
+      )
+    );
+
+    if ( $attachment_id ) {
+      $url = wp_get_attachment_image_url( $attachment_id, 'full' );
+      if ( $url ) return $url;
+    }
+
+    $like_with_dir = '%/' . $wpdb->esc_like( $basename ) . '%';
+    $like_filename = $wpdb->esc_like( $basename ) . '%';
+    $attachment_id = (int) $wpdb->get_var(
+      $wpdb->prepare(
+        "SELECT post_id FROM {$wpdb->postmeta}
+         WHERE meta_key = '_wp_attached_file'
+           AND (meta_value LIKE %s OR meta_value LIKE %s)
+         ORDER BY post_id DESC
+         LIMIT 1",
+        $like_with_dir,
+        $like_filename
+      )
+    );
+
+    if ( $attachment_id ) {
+      $url = wp_get_attachment_image_url( $attachment_id, 'full' );
+      if ( $url ) return $url;
+    }
+
+    $upload_dir = wp_get_upload_dir();
+    if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) || empty( $upload_dir['baseurl'] ) ) return '';
+
+    foreach ( [ 'jpg', 'jpeg', 'png', 'webp' ] as $extension ) {
+      $relative_path = '2026/06/' . $basename . '.' . $extension;
+      $absolute_path = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
+      if ( file_exists( $absolute_path ) ) {
+        return trailingslashit( $upload_dir['baseurl'] ) . $relative_path;
+      }
+
+      $matches = glob( trailingslashit( $upload_dir['basedir'] ) . '2026/06/' . $basename . '-*.' . $extension );
+      if ( ! empty( $matches[0] ) && is_readable( $matches[0] ) ) {
+        return trailingslashit( $upload_dir['baseurl'] ) . '2026/06/' . basename( $matches[0] );
+      }
+    }
+
+    return '';
+  }
+}
+
+if ( ! function_exists( 'sj_get_open_job_listing_count' ) ) {
+  function sj_get_open_job_listing_count( $args = [] ) {
+    if ( ! function_exists( 'get_job_listings' ) ) return 0;
+
+    $jobs = get_job_listings( wp_parse_args( $args, [
+      'posts_per_page' => 1,
+      'fields'         => 'ids',
+    ] ) );
+
+    return $jobs instanceof WP_Query ? (int) $jobs->found_posts : 0;
+  }
+}
+
+$hero_image = sj_get_named_upload_image_url( 'online-marketing-vacature-homepage' );
+$hero_count_args = [
+  'search_keywords' => is_scalar( $keywords ) ? sanitize_text_field( wp_unslash( (string) $keywords ) ) : '',
+  'search_location' => is_scalar( $location ) ? sanitize_text_field( wp_unslash( (string) $location ) ) : '',
+];
+$hero_job_count = function_exists( 'sj_get_open_job_listing_count' ) ? sj_get_open_job_listing_count( $hero_count_args ) : 0;
 ?>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Work+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+
+<div class="sj-job-hero"<?php if ( $hero_image ) : ?> style="background-image: url('<?php echo esc_url( $hero_image ); ?>');"<?php endif; ?>>
+    <div class="sj-job-hero__inner">
+        <span class="sj-job-hero__eyebrow">OnlineMarketingjobs.nl</span>
+        <div class="sj-job-hero__title-wrap">
+            <h1 class="sj-job-hero__title">De <span class="sj-job-hero__highlight">Vacaturesite</span> Voor Vacatures, Opdrachten En Stages In De <span class="sj-job-hero__highlight">Online Marketing</span> En Communicatie.</h1>
+        </div>
+        <p class="sj-job-hero__subtitle">Bekijk alle <a href="#job_listings" class="sj-job-hero__vacatures-link"><span class="sj-hero-job-count sj-job-hero__accent"><?php echo esc_html( number_format_i18n( $hero_job_count ) ); ?></span> vacatures</a> of meld je direct aan voor onze <a href="/nieuwsbrief/" class="sj-job-hero__link">vacature nieuwsbrief</a>.</p>
+    </div>
+</div>
 
 <form class="job_filters">
-    <?php do_action('job_manager_job_filters_start', $atts); ?>
+  <?php do_action( 'job_manager_job_filters_start', $atts ); ?>
 
-    <div class="filter-header">
-        <div class="filter-header__left">
-            <h2>Bekijk alle Online Marketing Vacatures</h2>
-            <p>Ontvang de laatste <a href="/nieuwsbrief/" class="filter-newsletter-link">online marketing vacatures</a> in de e-mail!</p>
-        </div>
+  <div class="filter-row">
+    <?php do_action( 'job_manager_job_filters_search_jobs_start', $atts ); ?>
+
+    <div class="search_keywords">
+      <input type="text" name="search_keywords" id="search_keywords"
+             placeholder="Functienaam, specialisme of onderwerp.."
+             value="<?php echo esc_attr( $keywords ); ?>" />
     </div>
 
-    <div class="search-basic">
-        <?php do_action('job_manager_job_filters_search_jobs_start', $atts); ?>
-
-        <div class="search_keywords">
-            <input type="text" name="search_keywords" id="search_keywords" placeholder="Functienaam, sector of onderwerp.." value="<?php echo esc_attr($keywords); ?>" />
-        </div>
-
-        <div class="search_location">
-            <input type="text" name="search_location" id="search_location" placeholder="Stad of plaats" value="<?php echo esc_attr($location); ?>" />
-        </div>
-
-        <?php do_action('job_manager_job_filters_search_jobs_end', $atts); ?>
+    <div class="search_location">
+      <input type="text" name="search_location" id="search_location"
+             placeholder="Stad of plaats"
+             value="<?php echo esc_attr( $location ); ?>" />
     </div>
 
-    <div class="filter-box">
+    <?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
 
-        <!-- Dienstverband -->
-        <div class="job_type">
-            <select name="filter_job_types[]"
-                    id="filter_job_types"
-                    class="js-custom-select job_types"
-                    data-placeholder="Dienstverband"
-                    multiple>
-                <?php foreach (get_job_listing_types() as $type) : ?>
-                    <option value="<?php echo esc_attr($type->slug); ?>" <?php selected(in_array($type->slug, $selected['job_types'], true)); ?>>
-                        <?php echo esc_html($type->name); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <!-- Sector -->
-        <div class="job_sector">
-            <select name="filter_job_sector[]"
-                    id="filter_job_sector"
-                    class="js-custom-select job_sector"
-                    data-placeholder="Sector"
-                    multiple>
-                <?php foreach (get_terms(['taxonomy' => 'job_sector', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_sector'], true)); ?>>
-                        <?php echo esc_html($term->name); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <!-- Organisatie -->
-        <div class="job_company">
-            <select name="filter_job_company[]"
-                    id="filter_job_company"
-                    class="js-custom-select job_company"
-                    data-placeholder="Organisatie"
-                    multiple>
-                <?php foreach (get_terms(['taxonomy' => 'job_company', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_company'], true)); ?>>
-                        <?php echo esc_html($term->name); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
-        <!-- Provincie -->
-        <div class="organization_type">
-            <select name="filter_organization_type[]"
-                    id="filter_organization_type"
-                    class="js-custom-select organization_type"
-                    data-placeholder="Provincie"
-                    multiple>
-                <?php foreach (get_terms(['taxonomy' => 'organization_type', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['organization_type'], true)); ?>>
-                        <?php echo esc_html($term->name); ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-        </div>
-
+    <!-- Dienstverband -->
+    <div class="job_type">
+      <select name="filter_job_types[]" id="filter_job_types"
+              class="js-custom-select job_types"
+              data-placeholder="Dienstverband"
+              multiple>
+        <?php foreach ( sj_sort_terms_by_open_job_count( get_job_listing_types(), $job_type_counts ) as $type ) : ?>
+          <?php sj_render_filter_option_with_count( $type, $selected['job_types'], $job_type_counts ); ?>
+        <?php endforeach; ?>
+      </select>
     </div>
 
-    <!-- Actieve filters -->
-    <div class="active-filters" id="active-filters" aria-live="polite"></div>
+    <!-- Sector -->
+    <div class="job_sector">
+      <select name="filter_job_sector[]" id="filter_job_sector"
+              class="js-custom-select job_sector"
+              data-placeholder="Sector"
+              multiple>
+        <?php foreach ( sj_sort_terms_by_open_job_count( get_terms( [ 'taxonomy' => 'job_sector', 'hide_empty' => true ] ), $job_sector_counts ) as $term ) : ?>
+          <?php sj_render_filter_option_with_count( $term, $selected['job_sector'], $job_sector_counts ); ?>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <!-- Type organisatie -->
+    <div class="job_organisatie_type">
+      <select name="filter_organisatie_type[]" id="filter_organisatie_type"
+              class="js-custom-select job_organisatie_type"
+              data-placeholder="Type organisatie"
+              multiple>
+        <?php foreach ( sj_sort_terms_by_open_job_count( get_terms( [ 'taxonomy' => 'organisatie_type', 'hide_empty' => false ] ), $organisatie_type_counts ) as $term ) : ?>
+          <?php sj_render_filter_option_with_count( $term, $selected['organisatie_type'], $organisatie_type_counts ); ?>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <!-- Organisatie -->
+    <div class="job_company">
+      <select name="filter_job_company[]" id="filter_job_company"
+              class="js-custom-select job_company"
+              data-placeholder="Organisatie"
+              multiple>
+        <?php foreach ( sj_sort_terms_by_open_job_count( get_terms( [ 'taxonomy' => 'job_company', 'hide_empty' => true ] ), $job_company_counts ) as $term ) : ?>
+          <?php sj_render_filter_option_with_count( $term, $selected['job_company'], $job_company_counts ); ?>
+        <?php endforeach; ?>
+      </select>
+    </div>
+  </div>
+
+  <!-- Actieve filters -->
+  <div class="active-filters" id="active-filters" aria-live="polite"></div>
 
 </form>
 
-<?php do_action('job_manager_job_filters_after', $atts); ?>
+<?php do_action( 'job_manager_job_filters_after', $atts ); ?>
 
 <script>
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted) window.scrollTo(0, 0);
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form.job_filters");
   if (!form) return;
@@ -150,7 +326,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const kw  = document.querySelector("#search_keywords");
   const loc = document.querySelector("#search_location");
-  if (kw)  kw.addEventListener("input", debounce(wpjmFilter, 250));
+  if (kw)  kw.addEventListener("input",  debounce(wpjmFilter, 250));
   if (loc) loc.addEventListener("input", debounce(wpjmFilter, 250));
 
   form.addEventListener("submit", (e) => {
@@ -171,7 +347,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
 
-  // Actieve filters tonen
   const activeFiltersEl = document.getElementById("active-filters");
 
   const renderActiveFilters = () => {
@@ -179,18 +354,19 @@ document.addEventListener("DOMContentLoaded", () => {
     activeFiltersEl.innerHTML = "";
 
     document.querySelectorAll("select.js-custom-select").forEach((select) => {
-      [...select.options].filter(o => o.selected && o.value !== "").forEach((opt) => {
+      const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
+      selectedOptions.forEach((opt) => {
         const chip = document.createElement("span");
         chip.className = "active-filter";
-        chip.innerHTML = `<span class="active-filter-text"></span><button type="button" class="active-filter-x" aria-label="Verwijder filter">×</button>`;
-        chip.querySelector(".active-filter-text").textContent = opt.textContent;
-
-        chip.querySelector(".active-filter-x").addEventListener("click", (e) => {
+        chip.setAttribute("role", "button");
+        chip.setAttribute("title", "Verwijder filter");
+        chip.innerHTML = `<span class="active-filter-text"></span><span class="active-filter-x" aria-hidden="true">×</span>`;
+        chip.querySelector(".active-filter-text").textContent = opt.dataset.label || opt.textContent;
+        chip.addEventListener("click", (e) => {
           e.preventDefault();
           opt.selected = false;
           select.dispatchEvent(new Event("change", { bubbles: true }));
         });
-
         activeFiltersEl.appendChild(chip);
       });
     });
@@ -257,8 +433,12 @@ document.addEventListener("DOMContentLoaded", () => {
       row.dataset.value = opt.value;
       row.setAttribute("role", "option");
       row.setAttribute("aria-selected", opt.selected ? "true" : "false");
-      row.innerHTML = `<span class="sj-option-text"></span>`;
-      row.querySelector(".sj-option-text").textContent = opt.textContent;
+      const optionLabel = opt.dataset.label || opt.textContent.trim();
+      const optionCount = opt.dataset.count;
+      row.innerHTML = `<span class="sj-option-text"></span>${optionCount !== undefined ? '<span class="sj-option-count"></span>' : ''}`;
+      row.querySelector(".sj-option-text").textContent = optionLabel;
+      const countEl = row.querySelector(".sj-option-count");
+      if (countEl) countEl.textContent = optionCount;
 
       const syncSelected = () => {
         row.classList.toggle("is-selected", opt.selected);
@@ -295,10 +475,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterOptionRows = () => {
       if (!searchInput) return;
       const term = searchInput.value.trim().toLowerCase();
-
       optionRows.forEach(({ row, opt }) => {
-        const matches = opt.textContent.toLowerCase().includes(term);
-        row.style.display = matches ? "" : "none";
+        const optionLabel = opt.dataset.label || opt.textContent;
+        row.style.display = optionLabel.toLowerCase().includes(term) ? "" : "none";
       });
     };
 
@@ -308,12 +487,11 @@ document.addEventListener("DOMContentLoaded", () => {
       searchInput.addEventListener("keydown", (e) => e.stopPropagation());
     }
 
-    const tagsEl       = btn.querySelector(".sj-tags");
+    const tagsEl        = btn.querySelector(".sj-tags");
     const placeholderEl = btn.querySelector(".sj-placeholder");
 
     const renderState = () => {
-      optionRows.forEach(({ opt, syncSelected }) => syncSelected());
-
+      optionRows.forEach(({ syncSelected }) => syncSelected());
       const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
       tagsEl.innerHTML = "";
 
@@ -325,19 +503,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       clearBtn.style.display = "inline-flex";
-
-      if (isSingle) {
-        placeholderEl.textContent = selectedOptions[0].textContent;
-        placeholderEl.style.display = "inline";
-        tagsEl.style.display = "none";
-        return;
-      }
-
-      // Multi: toon alleen de placeholder, actieve filters onderaan
       placeholderEl.textContent = placeholder;
       placeholderEl.style.display = "inline";
       tagsEl.style.display = "none";
-      tagsEl.innerHTML = "";
     };
 
     renderState();
@@ -379,287 +547,289 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.key === "Escape") closeAll();
   });
 });
-</script>
 
-<script>
 jQuery(function($) {
+  const updateHeroJobCount = (count) => {
+    const parsed = parseInt(String(count).replace(/[^\d]/g, ""), 10);
+    if (Number.isNaN(parsed)) return;
+
+    $(".sj-hero-job-count").text(new Intl.NumberFormat(document.documentElement.lang || "nl-NL").format(parsed));
+  };
+
   $("div.job_listings").on("updated_results", function(event, result) {
     if (result && typeof result.found_count !== "undefined") {
-      $(".omj-listings-count__number").text(result.found_count);
+      updateHeroJobCount(result.found_count);
+    } else if (result && result.found_jobs === false) {
+      updateHeroJobCount(0);
     }
   });
 });
+
+// Scroll fix voor taxonomy-pagina's
+(function () {
+  var parts = window.location.pathname.replace(/\/+$/, "").split("/").filter(Boolean);
+  if (parts.length < 2) return;
+
+  var corrected  = false;
+  var listingsEl = document.querySelector(".job_listings");
+  if (!listingsEl) return;
+
+  var scrollToFilter = function () {
+    if (corrected) return;
+    corrected = true;
+    observer.disconnect();
+    requestAnimationFrame(function () {
+      var filter = document.querySelector("form.job_filters");
+      if (!filter) return;
+      var filterTop = filter.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: Math.max(0, filterTop - 100), behavior: "smooth" });
+    });
+  };
+
+  var observer = new MutationObserver(scrollToFilter);
+  observer.observe(listingsEl, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+
+  window.addEventListener("load", function () {
+    setTimeout(scrollToFilter, 1000);
+  });
+}());
 </script>
 
-
 <style>
-/* Layout – full width breakout uit Elementor container */
-.job_filters,
-form.job_filters {
-  display: block;
-  float: none;
-  clear: both;
+/* ── Hero section ── */
+.sj-job-hero {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 400px;
+  background-color: var(--color-primary, #7C5CFA);
+  background-size: cover;
+  background-position: center top;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.sj-job-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(35, 24, 77, 0.72);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sj-job-hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.sj-job-hero__eyebrow {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 3px solid var(--color-secondary, #b39cd0);
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.sj-job-hero__title-wrap {
+  margin: 0 0 18px;
+  max-width: 75%;
+}
+
+.sj-job-hero__title {
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: clamp(20px, calc(3vw - 4px), 32px) !important;
+  line-height: 1.2 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+.sj-job-hero__highlight {
+  color: var(--color-bg-filter, #F0ECFE);
+}
+
+.sj-job-hero__subtitle {
+  margin: 10px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.sj-job-hero__accent {
+  color: var(--color-secondary, #b39cd0);
+}
+
+.sj-job-hero__vacatures-link {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.sj-job-hero__vacatures-link:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.sj-job-hero__vacatures-link .sj-job-hero__accent {
+  color: var(--color-secondary, #b39cd0) !important;
+}
+
+.sj-job-hero__link {
+  color: var(--color-secondary, #b39cd0) !important;
+  text-decoration: none !important;
+}
+
+.sj-job-hero__link:hover {
+  color: #d8d0ff !important;
+}
+
+@media (max-width: 960px) {
+  .sj-job-hero {
+    height: 280px;
+    left: 0;
+    right: auto;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .sj-job-hero__inner {
+    max-width: none;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  .sj-job-hero__title-wrap {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+
+  .sj-job-hero__title {
+    font-size: clamp(20px, 5vw, 28px) !important;
+    text-wrap: balance;
+  }
+
+  .sj-job-hero__subtitle {
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+}
+
+/* ── Filter bar ── */
+.job_filters {
   width: 100vw;
   position: relative;
   left: 50%;
   right: 50%;
-  top: auto;
-  transform: none;
-  margin-top: 0px !important;
   margin-left: -50vw;
   margin-right: -50vw;
-  margin-bottom: 0 !important;
-  min-height: 300px;
-  padding: 60px 0;
-  background-color: var(--color-primary);
-  box-shadow: none;
-  border-radius: 0;
-  border: none;
-  border-bottom: 1px solid var(--color-primary-dk);
+  margin-top: 0;
+  margin-bottom: 40px !important;
+  min-height: 100px;
+  background: var(--color-bg-filter);
+  border-bottom: 1px solid var(--color-border);
   box-sizing: border-box;
+  scroll-margin-top: 90px;
 }
 
-div.job_listings,
-div.job_listings .showing_jobs,
-div.job_listings ul.job_listings {
-  margin-top: 0 !important;
-}
-
-div.job_listings {
-  padding-top: 0 !important;
-}
-
-.omj-listings-header {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 40px 24px 14px;
-}
-
-.omj-listings-count {
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 300;
-  color: var(--color-text-muted, #777);
-  display: block;
-}
-
-.omj-listings-count__number {
-  font-weight: 600;
-  color: var(--color-primary);
-}
-
-@media (max-width: 960px) {
-  .omj-listings-header {
-    padding: 0 16px 12px;
-  }
-}
-
-/* Binnenste containers gecentreerd */
-.filter-header,
-.search-basic,
-.filter-box,
+.filter-row,
 .active-filters {
   max-width: 1200px;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
-.filter-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px 24px 0;
+.omj-listings-header {
+  display: none;
 }
 
-.filter-box > div {
-  flex: 0 0 auto !important;
-  width: auto !important;
-  min-width: 0 !important;
-}
-
-@media (max-width: 768px) {
-  .filter-box {
-    flex-direction: column;
-    padding: 0 16px;
-    gap: 10px;
-  }
-  .filter-box > div {
-    width: 100% !important;
-    min-width: 0 !important;
-  }
-  .sj-select-wrap,
-  .sj-select {
-    width: 100% !important;
-    display: block !important;
-  }
-  .sj-select-btn {
-    width: 100% !important;
-    box-sizing: border-box;
-  }
-  .sj-panel {
-    width: 100% !important;
-    min-width: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    box-sizing: border-box;
-  }
-}
-
-/* Header */
-.filter-header {
-  padding: 20px 24px 16px !important;
+.filter-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  gap: 12px;
+  padding: 28px 24px;
 }
 
-.filter-header__left { flex: 1 1 auto; }
-.filter-header__right { flex: 0 0 auto; }
-
-.filter-alert-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  background: var(--color-secondary);
-  color: var(--color-primary) !important;
-  border: 2px solid var(--color-secondary);
-  padding: 9px 20px;
-  border-radius: 6px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  text-decoration: none !important;
-  white-space: nowrap;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  transition: background .15s ease, color .15s ease, transform .15s ease;
-}
-
-.filter-alert-btn:hover {
-  background: var(--color-tertiary);
-  border-color: var(--color-tertiary);
-  color: #ffffff !important;
-  transform: translateY(-1px);
-}
-
-.filter-header p {
-  font-family: Poppins;
-  font-size: 15px;
-  color: #ffffff;
-  margin: 8px 0 0;
-}
-
-.filter-newsletter-link,
-.filter-newsletter-link:link,
-.filter-newsletter-link:visited {
-  color: #ffffff !important;
-  font-weight: 400;
-  text-decoration: underline !important;
-}
-
-.filter-newsletter-link:hover,
-.filter-newsletter-link:focus {
-  color: rgba(255, 255, 255, 0.75) !important;
-  text-decoration: none !important;
-}
-
-.filter-header h2 {
-  font-family: 'Inter', sans-serif;
-  font-size: 24px;
-  color: #ffffff;
-  margin: 0;
-  display: block;
-  font-weight: 700;
-}
-
-/* Zoekvelden */
-.search-basic {
-  display: flex;
-  justify-content: left;
-  gap: 16px;
-  padding: 0 24px 0;
-}
-
-.search_location,
-.search_keywords {
-  flex-basis: 50%;
-  max-width: 50%;
+.search_keywords,
+.search_location {
+  flex: 1;
   display: flex;
   align-items: center;
   position: relative;
 }
 
-.search-basic input[type="text"] {
+.filter-row input[type="text"] {
   width: 100%;
-  padding: 13px 14px 13px 40px;
+  padding: 11px 14px 11px 40px;
   font-size: 15px;
-  border: 1px solid #ffffff;
-  border-radius: 6px;
+  border: 1px solid #DED7FF;
+  border-radius: 8px;
   background-color: #ffffff;
-  color: #333;
-  box-shadow: none;
+  color: var(--color-text);
   transition: border-color .2s ease, box-shadow .2s ease;
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
+  box-sizing: border-box;
 }
 
-.search-basic input[type="text"]:focus {
+.filter-row input[type="text"]:focus {
   outline: none;
-  border-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(124, 92, 250, 0.15);
 }
 
 .search_keywords input::placeholder,
 .search_location input::placeholder {
-  color: #999;
+  color: #7c7c7c;
   font-size: 15px !important;
   font-style: italic;
 }
 
-.search_keywords::before {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-size: contain;
-  pointer-events: none;
-}
-
+.search_keywords::before,
 .search_location::before {
   content: '';
   position: absolute;
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
+  width: 17px;
+  height: 17px;
   background-repeat: no-repeat;
   background-size: contain;
   pointer-events: none;
 }
 
-@media (max-width: 768px) {
-  .search-basic {
-    flex-direction: column;
-    padding: 0 16px;
-    gap: 10px;
-  }
-  .search_location,
-  .search_keywords {
-    max-width: 100%;
-    flex-basis: 100%;
-    width: 100%;
-  }
+.search_keywords::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
 }
 
-/* Custom select */
+.search_location::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
+}
+
+.filter-row > div {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+/* ── Custom select ── */
 select.sj-hidden-select {
   position: absolute !important;
   left: -9999px !important;
@@ -668,8 +838,12 @@ select.sj-hidden-select {
   opacity: 0 !important;
 }
 
-.sj-select-wrap { position: relative; width: auto; display: inline-block; }
-.sj-select { position: relative; width: auto; display: inline-block; }
+.sj-select-wrap,
+.sj-select {
+  position: relative;
+  width: auto;
+  display: inline-block;
+}
 
 .sj-select-btn {
   width: auto;
@@ -678,16 +852,25 @@ select.sj-hidden-select {
   justify-content: space-between;
   white-space: nowrap;
   border-radius: 999px;
-  border: 1px solid #E0E0E0 !important;
-  background-color: white !important;
-  padding: 12px 12px;
+  border: 1px solid #DED7FF !important;
+  background-color: #ffffff !important;
+  padding: 12px;
   min-height: 44px;
   cursor: pointer;
   user-select: none;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
-  font-size: 16px;
-  color: #111;
+  font-size: 15px;
+  color: #111111 !important;
+}
+
+.sj-select-btn:focus,
+.sj-select.active .sj-select-btn {
+  outline: none;
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(124, 92, 250, 0.18);
+  background: #ffffff !important;
+  color: #111111 !important;
 }
 
 .sj-btn-content {
@@ -704,41 +887,40 @@ select.sj-hidden-select {
   text-overflow: ellipsis;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
-  color: #333333;
-  font-size: 15px;
+  color: var(--color-text);
+  font-size: 14px;
 }
 
-.sj-tags { display: none; gap: 6px; align-items: center; flex-wrap: wrap; }
+.sj-tags {
+  display: none;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
 
 .sj-actions {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 0 !important;
   margin-left: 10px;
 }
 
 .sj-clear {
-  display: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 999px;
-  border: 1px solid #E0E0E0;
-  background: #fff;
-  line-height: 1;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
+  display: none !important;
 }
 
 .sj-chev {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-right: 2px solid #111;
   border-bottom: 2px solid #111;
   transform: rotate(45deg);
   transition: transform .2s ease;
 }
-.sj-select.active .sj-chev { transform: rotate(-135deg); }
+
+.sj-select.active .sj-chev {
+  transform: rotate(-135deg);
+}
 
 .sj-options {
   display: none;
@@ -749,15 +931,18 @@ select.sj-hidden-select {
   min-width: 100%;
   margin-top: 10px;
   background: #fff;
-  border: 1px solid #E0E0E0;
+  border: 1px solid #DED7FF;
   border-radius: 8px;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.12);
   padding: 8px;
   max-height: 280px;
   overflow: auto;
   z-index: 9999;
 }
-.sj-select.active .sj-options { display: block; }
+
+.sj-select.active .sj-options {
+  display: block;
+}
 
 .sj-search {
   position: sticky;
@@ -770,70 +955,110 @@ select.sj-hidden-select {
 .sj-search-input {
   width: 100%;
   min-width: 220px;
-  border: 1px solid var(--color-border);
+  border: 1px solid #DED7FF;
   border-radius: 8px;
   padding: 11px 12px;
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text);
   background: #ffffff;
   box-sizing: border-box;
 }
 
-.sj-search-input::placeholder {
-  color: #7c7c7c;
-}
+.sj-search-input::placeholder { color: #7c7c7c; }
 
 .sj-search-input:focus {
   outline: none;
-  border-color: var(--color-secondary);
+  border-color: var(--color-primary);
   box-shadow: 0 0 0 2px rgba(124, 92, 250, 0.16);
 }
 
 .sj-option {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 10px;
+  min-width: 240px;
   padding: 10px 12px;
   border-radius: 8px;
   cursor: pointer;
 }
-.sj-option:hover { background: #f2f2f2; }
 
-.sj-option.is-selected .sj-option-text { color: var(--color-primary); font-weight: 700; }
+.sj-option:hover { background: var(--color-bg-filter); }
+
+.sj-option.is-selected .sj-option-text {
+  color: var(--color-primary);
+  font-weight: 700;
+}
 
 .sj-option-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
   font-family: 'Poppins', sans-serif;
+  font-size: 15px;
   font-weight: 600;
-  color: #333;
+  color: var(--color-text);
 }
 
-/* Focus ring */
-.sj-select-btn:focus {
-  outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(124, 92, 250, 0.2);
+.sj-option-count {
+  flex: 0 0 auto;
+  margin-left: 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
 }
 
-/* Altijd wit */
-.sj-select-btn,
-.sj-select-btn:hover,
-.sj-select.active .sj-select-btn,
-.sj-select-btn:focus {
-  background: #ffffff !important;
-  color: #111111 !important;
+.sj-option.is-selected .sj-option-count { color: var(--color-primary); }
+
+/* Filter knop iconen */
+.job_type .sj-select-btn,
+.job_sector .sj-select-btn,
+.job_organisatie_type .sj-select-btn,
+.job_company .sj-select-btn {
+  padding-left: 38px !important;
+  position: relative;
 }
 
-/* Verberg clear knop in de dropdown button */
-.sj-select-btn .sj-clear { display: none !important; }
-.sj-select-btn .sj-actions { gap: 0 !important; }
+.job_type .sj-select-btn::before,
+.job_sector .sj-select-btn::before,
+.job_organisatie_type .sj-select-btn::before,
+.job_company .sj-select-btn::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.job_type .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
+}
+
+.job_sector .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
+}
+
+.job_organisatie_type .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8' r='6'/%3E%3Cpath d='M15.477 12.89L17 22l-5-3-5 3 1.523-9.11'/%3E%3C/svg%3E");
+}
+
+.job_company .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
+}
 
 /* Actieve filters */
 .active-filters {
   display: none;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 14px 24px 0 !important;
+  padding: 0 24px 28px;
 }
 
 span.active-filter {
@@ -841,125 +1066,101 @@ span.active-filter {
   align-items: center;
   gap: 6px;
   background: #ffffff;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--color-primary, #7C5CFA);
   border-radius: 999px;
-  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 24px -18px rgba(124, 92, 250, 0.28);
   padding: 8px 12px;
-  font-size: 16px;
-  color: #111;
-  font-weight: 700 !important;
-  cursor: pointer;
-}
-
-span.active-filter:hover { border-color: var(--color-primary); }
-
-.active-filter-text { color: #333333; }
-
-button.active-filter-x {
-  color: var(--color-primary);
+  font-size: 14px;
+  color: var(--color-primary, #7C5CFA);
   font-weight: 700;
-  font-size: 20px;
-  margin-left: 6px;
-  line-height: 1;
-  padding: 0;
-  background: none;
-  border: none;
   cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
 }
 
-button.active-filter-x:hover { color: var(--color-tertiary); background: none; }
-
-/* ---- Filter icoontjes per dropdown ---- */
-
-/* Ruimte voor het icoon links in de button */
-.job_type .sj-select-btn,
-.job_sector .sj-select-btn,
-.job_company .sj-select-btn,
-.organization_type .sj-select-btn {
-  padding-left: 38px !important;
-  position: relative;
+.active-filter:hover {
+  background: var(--color-bg-filter, #F0ECFE);
+  transform: translateY(-1px);
 }
 
-/* Gedeelde pseudo-element basis */
-.job_type .sj-select-btn::before,
-.job_sector .sj-select-btn::before,
-.job_company .sj-select-btn::before,
-.organization_type .sj-select-btn::before {
-  content: '';
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
-  background-repeat: no-repeat;
-  background-size: contain;
+.active-filter-text { color: inherit; font-weight: 700; }
+
+.active-filter-x {
+  color: var(--color-primary, #7C5CFA);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  margin-left: 4px;
   pointer-events: none;
-  flex-shrink: 0;
 }
 
-/* Dienstverband → aktetas */
-.job_type .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
-}
-
-/* Sector → categorie-raster */
-.job_sector .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
-}
-
-/* Organisatie → gebouw */
-.job_company .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
-}
-
-/* Provincie → kaart/locatie */
-.organization_type .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/%3E%3Cline x1='8' y1='2' x2='8' y2='18'/%3E%3Cline x1='16' y1='6' x2='16' y2='22'/%3E%3C/svg%3E");
-}
-
-/* Mobile */
+/* Responsive */
 @media (max-width: 960px) {
   form.job_filters {
-    /* Reset de desktop breakout – voorkomt verschuiving */
     width: 100% !important;
     position: relative !important;
     left: 0 !important;
     right: auto !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 16px 0 20px !important;
+    margin: 0 0 40px !important;
+    min-height: 0 !important;
+  }
+
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 16px !important;
+    width: 100%;
     box-sizing: border-box;
   }
 
-  form.job_filters .filter-header {
-    padding: 0 16px 12px 16px !important;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+  .search_keywords,
+  .search_location {
+    flex: none;
+    width: 100%;
   }
-  form.job_filters .filter-header h2 {
-    font-size: 20px !important;
-    line-height: 1.2 !important;
+
+  .filter-row > div,
+  .sj-select-wrap,
+  .sj-select,
+  .sj-select-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
   }
-  form.job_filters .filter-header p {
-    font-size: 13px !important;
+
+  .sj-select-btn {
+    min-width: 0;
+    white-space: normal;
   }
-  .filter-alert-btn {
-    display: none;
+
+  .sj-btn-content {
+    flex: 1 1 auto;
   }
-  form.job_filters .search-basic {
-    padding: 0 16px !important;
-    gap: 10px !important;
+
+  .sj-placeholder {
+    white-space: normal;
   }
-  form.job_filters .filter-box {
-    padding: 10px 16px 0 !important;
-    gap: 10px !important;
+
+  .sj-options {
+    width: 100% !important;
+    min-width: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
   }
-  form.job_filters .active-filters {
-    margin: 10px 16px 0 !important;
-    flex-wrap: wrap;
-    gap: 6px;
+
+  .active-filters {
+    padding: 0 16px 16px !important;
+    box-sizing: border-box;
+  }
+
+  span.active-filter {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .active-filter-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 }
 </style>

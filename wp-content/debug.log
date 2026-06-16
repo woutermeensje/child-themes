@@ -34247,3 +34247,53 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 [16-Jun-2026 05:41:31 UTC]   Automatic plugin updates starting...
 [16-Jun-2026 05:41:31 UTC]   Automatic plugin updates complete.
 [16-Jun-2026 05:41:31 UTC] Automatic updates complete.
+[16-Jun-2026 06:35:34 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: DELETE FROM wp_yoast_indexable WHERE object_type = :param0  AND object_sub_type = :param1  ORDER BY id LIMIT 1000 | parameters: post, shop_order</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "ORDER": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/wordpress-seo/src/repositories/indexable-cleanup-repository.php(78): WP_SQLite_DB->query('DELETE FROM wp_...')
+#2 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(122): Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type('post', 'shop_order', 1000)
+#3 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(96): Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}(1000)
+#4 /var/www/html/wp-includes/class-wp-hook.php(341): Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup()
+#5 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-cron.php(191): do_action_ref_array('wpseo_start_cle...', Array)
+#8 {main}</pre>
+ for query DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000 made by do_action_ref_array('wpseo_start_cleanup_indexables'), WP_Hook->do_action, WP_Hook->apply_filters, Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup, Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}, Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[16-Jun-2026 06:59:39 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: DELETE FROM wp_yoast_indexable WHERE object_type = :param0  AND object_sub_type = :param1  ORDER BY id LIMIT 1000 | parameters: post, shop_order</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "ORDER": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/wordpress-seo/src/repositories/indexable-cleanup-repository.php(78): WP_SQLite_DB->query('DELETE FROM wp_...')
+#2 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(122): Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type('post', 'shop_order', 1000)
+#3 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(96): Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}(1000)
+#4 /var/www/html/wp-includes/class-wp-hook.php(341): Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup()
+#5 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-cron.php(191): do_action_ref_array('wpseo_start_cle...', Array)
+#8 {main}</pre>
+ for query DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000 made by do_action_ref_array('wpseo_start_cleanup_indexables'), WP_Hook->do_action, WP_Hook->apply_filters, Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup, Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}, Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type, WP_SQLite_DB->query, WP_SQLite_DB->print_error

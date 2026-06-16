@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=League+Spartan:wght@900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&family=League+Spartan:wght@900&family=Work+Sans:wght@700;800;900&display=swap');
 
 /* =============================================
    Landingspagina styling — Inhuren.com
@@ -11,52 +11,51 @@
    ============================================= */
 
 .hero-title {
-    font-family: "Montserrat", sans-serif !important;
-    font-size: 40px !important;
-    font-weight: 900 !important;
-    line-height: 1 !important;
-    letter-spacing: -0.2px !important;
-    text-transform: uppercase !important;
+    font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-size: clamp(24px, 3vw, 36px) !important;
+    font-weight: 800 !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0 !important;
+    text-transform: none !important;
     color: #fff !important;
-    margin: 0 0 24px 0 !important;
+    margin: 0 !important;
     text-wrap: balance !important;
 }
 
 .hero-title__accent {
-    color: #FF8200 !important;
+    color: var(--inhuren-split-highlight, #EAF2FF) !important;
 }
 
 /* =============================================
-   Split Hero — volle breedte met gradient overlay
+   Split Hero — hero + actie-balk
    ============================================= */
 
 .omj-split-hero {
+    --inhuren-split-bar-bg: #EAF2FF;
+    --inhuren-split-bar-border: #CFE2F5;
+    --inhuren-split-highlight: #EAF2FF;
     position: relative;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    height: 400px;
     display: flex;
     align-items: center;
-    width: 100%;
-    min-height: 560px;
     overflow: hidden;
-    background-size: cover !important;
-    background-position: 75% center !important;
-    background-color: #02305e;
+    background-color: var(--color-primary, #0458AB);
+    background-size: cover;
+    background-position: center top;
+    box-sizing: border-box;
     isolation: isolate;
 }
 
-/* Gradient van solid donkerblauw links naar transparant rechts */
 .omj-split-hero::before {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-        to right,
-        #02305e 0%,
-        #02305e 42%,
-        rgba(2, 48, 94, 0.90) 55%,
-        rgba(2, 48, 94, 0.50) 70%,
-        rgba(2, 48, 94, 0.12) 85%,
-        transparent 100%
-    );
+    background: rgba(3, 38, 82, 0.72);
     z-index: 1;
     pointer-events: none;
 }
@@ -64,98 +63,181 @@
 .omj-split-hero__inner {
     position: relative;
     z-index: 2;
-    width: 80%;
-    max-width: 960px;
-    padding: clamp(40px, 6vw, 80px) clamp(28px, 5vw, 72px);
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.omj-split-hero__eyebrow {
+    display: inline-block;
+    margin: 0 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--color-secondary, #80D424);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.35;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.omj-split-hero__title-wrap {
+    max-width: 75%;
+    margin: 0;
 }
 
 .omj-split-hero__description {
     font-family: 'Poppins', sans-serif;
     font-size: 16px;
-    font-weight: 400;
-    line-height: 1.65;
-    color: rgba(255, 255, 255, 0.85);
-    margin: 0 0 24px 0 !important;
-    max-width: 52ch;
-}
-
-.omj-split-hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-.omj-split-hero__social-proof {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
+    font-weight: 600;
     line-height: 1.5;
-    color: rgba(255, 255, 255, 0.6);
+    color: #ffffff;
+    margin: 12px 0 0 !important;
+    max-width: 64ch;
 }
 
-.omj-split-hero__social-proof-icon {
-    flex-shrink: 0;
-    color: #80D424;
+.omj-split-hero__bar {
+    --inhuren-split-bar-bg: #EAF2FF;
+    --inhuren-split-bar-border: #CFE2F5;
+    position: relative;
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    min-height: 100px;
+    background: var(--inhuren-split-bar-bg);
+    border-bottom: 1px solid var(--inhuren-split-bar-border);
+    box-sizing: border-box;
 }
 
-.inhuren-hero__sectoren-link {
+.omj-split-hero__bar-inner {
+    max-width: 1200px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding: 28px 24px;
+    box-sizing: border-box;
+}
+
+.omj-split-hero__facts {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    width: 100%;
+}
+
+.omj-split-hero__fact {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 12px 16px;
+    border: 1px solid var(--inhuren-split-bar-border, #CFE2F5);
+    border-radius: 999px;
+    background: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--color-primary, #0458AB);
     text-decoration: none !important;
-    color: rgba(255, 255, 255, 0.6) !important;
-    transition: color 0.15s ease !important;
+    box-shadow: 0 10px 28px -22px rgba(4, 88, 171, 0.45);
+    box-sizing: border-box;
+    white-space: nowrap;
+    transition: border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
 }
 
-.inhuren-hero__sectoren-link:hover {
-    color: rgba(255, 255, 255, 0.9) !important;
+.omj-split-hero__fact:hover {
+    border-color: var(--color-primary, #0458AB);
+    color: var(--color-primary-dk, #034085);
+    transform: translateY(-1px);
+}
+
+.omj-split-hero__fact-icon {
+    flex-shrink: 0;
+    display: inline-flex;
+    width: 19px;
+    height: 19px;
+    color: var(--color-primary, #0458AB);
+}
+
+.omj-split-hero__fact-icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.omj-split-hero__fact-text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* Elementor-content onder de hero */
-.inhuren-split-hero ~ .fnd-page__elementor-content {
+.inhuren-split-hero ~ .fnd-page__elementor-content,
+.inhuren-split-hero__bar ~ .fnd-page__elementor-content {
     background: transparent;
 }
 
 @media (max-width: 900px) {
     .omj-split-hero {
-        min-height: 420px;
-        align-items: flex-end;
-    }
-
-    .omj-split-hero::before {
-        background: linear-gradient(
-            to top,
-            #02305e 0%,
-            #02305e 35%,
-            rgba(2, 48, 94, 0.85) 55%,
-            rgba(2, 48, 94, 0.3) 80%,
-            transparent 100%
-        );
+        width: 100%;
+        left: 0;
+        right: auto;
+        margin-left: 0;
+        margin-right: 0;
+        height: 300px;
     }
 
     .omj-split-hero__inner {
         width: 100%;
-        padding: clamp(32px, 6vw, 56px) clamp(20px, 6vw, 40px);
+        max-width: none;
+        padding: 0 16px;
+        box-sizing: border-box;
     }
 
-    .hero-title {
-        font-size: clamp(28px, 6vw, 48px) !important;
-    }
-
-    .omj-split-hero__description {
-        font-size: 15px;
+    .omj-split-hero__title-wrap {
+        width: 100%;
         max-width: 100%;
     }
 
-    .omj-split-hero__actions {
-        flex-direction: column;
+    .hero-title {
+        font-size: clamp(22px, 5vw, 30px) !important;
     }
 
-    .omj-split-btn {
+    .omj-split-hero__description {
+        font-size: 14px;
+        line-height: 1.45;
+        max-width: 100%;
+    }
+
+    .omj-split-hero__bar {
         width: 100%;
-        justify-content: center;
+        left: 0;
+        right: auto;
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .omj-split-hero__bar-inner {
+        padding: 16px;
+    }
+
+    .omj-split-hero__facts {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .omj-split-hero__fact {
+        width: 100%;
+    }
+}
+
+@media (max-width: 560px) {
+    .omj-split-hero__facts {
+        grid-template-columns: 1fr;
     }
 }

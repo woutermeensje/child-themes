@@ -480,7 +480,7 @@ jQuery(function($) {
   display: inline-block;
   margin: 0 0 14px;
   padding-bottom: 6px;
-  border-bottom: 3px solid var(--color-primary);
+  border-bottom: 3px solid var(--color-bg-filter, #FFE0C0);
   font-family: 'Poppins', sans-serif;
   font-size: 13px;
   font-weight: 700;
@@ -512,7 +512,7 @@ jQuery(function($) {
 }
 
 .fondsen-job-hero__count {
-  color: var(--color-primary);
+  color: var(--color-bg-filter, #FFE0C0);
 }
 
 .fondsen-job-hero__vacatures-link {
@@ -525,16 +525,16 @@ jQuery(function($) {
 }
 
 .fondsen-job-hero__vacatures-link .fondsen-job-hero__count {
-  color: var(--color-primary) !important;
+  color: var(--color-bg-filter, #FFE0C0) !important;
 }
 
 .fondsen-job-hero__link {
-  color: var(--color-primary) !important;
+  color: var(--color-bg-filter, #FFE0C0) !important;
   text-decoration: none !important;
 }
 
 .fondsen-job-hero__link:hover {
-  color: var(--color-primary-dk) !important;
+  color: #fff3e6 !important;
 }
 
 .fondsen-job-hero__description {
