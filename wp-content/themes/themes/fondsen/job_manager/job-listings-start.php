@@ -16,5 +16,4 @@ if (!defined('ABSPATH')) {
 	exit; // Exit if accessed directly.
 }
 ?>
-<p class="fondsen-job-count"><span class="fondsen-job-count__number">–</span> openstaande vacatures</p>
 <ul class="job_listings">

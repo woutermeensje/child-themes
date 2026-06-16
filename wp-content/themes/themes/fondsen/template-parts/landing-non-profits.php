@@ -14,8 +14,8 @@ $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 20
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'informatie@fondsen.org';
 ?>
 
-<main id="content" <?php post_class('fnd-page'); ?>>
-    <section class="fnd-hero">
+<main id="content" <?php post_class('fnd-page fnd-template fnd-template--non-profits'); ?>>
+    <section class="fnd-hero fnd-hero--non-profits">
 
         <div class="fnd-hero__left">
 

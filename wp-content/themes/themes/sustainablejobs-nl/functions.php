@@ -278,6 +278,29 @@ add_filter('job_manager_locate_template', function ($template, $template_name) {
     return (in_array($template_name, $custom_templates) && file_exists($custom_path)) ? $custom_path : $template;
 }, 10, 2);
 
+if (!function_exists('sj_get_open_job_listing_count')) {
+    function sj_get_open_job_listing_count($args = []) {
+        if (!function_exists('get_job_listings')) {
+            return 0;
+        }
+
+        $jobs = get_job_listings(wp_parse_args($args, [
+            'posts_per_page' => 1,
+            'fields'         => 'ids',
+        ]));
+
+        return $jobs instanceof WP_Query ? (int) $jobs->found_posts : 0;
+    }
+}
+
+add_filter('job_manager_get_listings_result', function ($result, $jobs) {
+    if ($jobs instanceof WP_Query) {
+        $result['found_count'] = (int) $jobs->found_posts;
+    }
+
+    return $result;
+}, 10, 2);
+
 /**
  * WP Job Manager gebruikt de post thumbnail standaard als bedrijfslogo.
  * Voor de Fondsen-style vacaturekaart houden we logo en cover expliciet gescheiden.

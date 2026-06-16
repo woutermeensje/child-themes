@@ -42,18 +42,36 @@ unset($value);
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Work+Sans:wght@700;800;900&display=swap" rel="stylesheet">
 <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+<?php
+$hero_attachment = get_page_by_path('fondsen-org-non-profit-vacaturesite-en-platform', OBJECT, 'attachment');
+$hero_image = $hero_attachment
+    ? wp_get_attachment_url($hero_attachment->ID)
+    : get_the_post_thumbnail_url(get_the_ID(), 'full');
+$job_count  = count(get_posts([
+    'post_type'        => 'job_listing',
+    'post_status'      => 'publish',
+    'posts_per_page'   => -1,
+    'fields'           => 'ids',
+    'suppress_filters' => true,
+]));
+?>
+<div class="fondsen-job-hero"<?php if ($hero_image) : ?> style="background-image: url('<?php echo esc_url($hero_image); ?>');"<?php endif; ?>>
+    <div class="fondsen-job-hero__inner">
+        <span class="fondsen-job-hero__eyebrow">Fondsen.org</span>
+        <div class="fondsen-job-hero__title-wrap">
+            <h1 class="fondsen-job-hero__title">Vacaturesite en platform voor <span class="fondsen-job-hero__count">Non Profits</span>!</h1>
+            <p class="fondsen-job-hero__subtitle">Bekijk alle <a href="#job_listings" class="fondsen-job-hero__vacatures-link"><span class="fondsen-hero-job-count fondsen-job-hero__count">–</span> vacatures</a> of meld je direct aan voor onze <a href="/nieuwsbrief/" class="fondsen-job-hero__link">vacature nieuwsbrief</a>.</p>
+        </div>
+    </div>
+</div>
 
 <form class="job_filters">
     <?php do_action('job_manager_job_filters_start', $atts); ?>
 
-    <div class="filter-header" style="padding: 0 20px 10px 20px;">
-        <h2>Vacaturesite en impact platform voor non-profits!</h2>
-        <p>Of schrijf je in voor de <a href="https://www.fondsen.org/nieuwsbrief/" target="_blank" class="unstyled-newsletter-link">vacature nieuwsbrief</a>!</p>
-    </div>
-
-    <div class="search-basic">
+    <div class="filter-row">
         <?php do_action('job_manager_job_filters_search_jobs_start', $atts); ?>
 
         <div class="search_keywords">
@@ -65,25 +83,21 @@ unset($value);
         </div>
 
         <?php do_action('job_manager_job_filters_search_jobs_end', $atts); ?>
-    </div>
-
-    <div class="filter-box">
 
         <!-- Dienstverband (single) -->
-       <div class="job_type">
-    <select name="filter_job_types[]"
-            id="filter_job_types"
-            class="js-custom-select job_types"
-            data-placeholder="Dienstverband"
-            multiple>
-        <?php foreach (get_job_listing_types() as $type) : ?>
-            <option value="<?php echo esc_attr($type->slug); ?>" <?php selected(in_array($type->slug, $selected['job_types'], true)); ?>>
-                <?php echo esc_html($type->name); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-</div>
-
+        <div class="job_type">
+            <select name="filter_job_types[]"
+                    id="filter_job_types"
+                    class="js-custom-select job_types"
+                    data-placeholder="Dienstverband"
+                    multiple>
+                <?php foreach (get_job_listing_types() as $type) : ?>
+                    <option value="<?php echo esc_attr($type->slug); ?>" <?php selected(in_array($type->slug, $selected['job_types'], true)); ?>>
+                        <?php echo esc_html($type->name); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
         <!-- Sector (multi) -->
         <div class="job_sector">
@@ -101,20 +115,19 @@ unset($value);
         </div>
 
         <!-- Organisatie (single) -->
-      <div class="job_company">
-    <select name="filter_job_company[]"
-            id="filter_job_company"
-            class="js-custom-select job_company"
-            data-placeholder="Organisatie"
-            multiple>
-        <?php foreach (get_terms(['taxonomy' => 'job_company', 'hide_empty' => true]) as $term) : ?>
-            <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_company'], true)); ?>>
-                <?php echo esc_html($term->name); ?>
-            </option>
-        <?php endforeach; ?>
-    </select>
-</div>
-
+        <div class="job_company">
+            <select name="filter_job_company[]"
+                    id="filter_job_company"
+                    class="js-custom-select job_company"
+                    data-placeholder="Organisatie"
+                    multiple>
+                <?php foreach (get_terms(['taxonomy' => 'job_company', 'hide_empty' => true]) as $term) : ?>
+                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_company'], true)); ?>>
+                        <?php echo esc_html($term->name); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
 
         <!-- Organization Type (multi) -->
         <div class="organization_type">
@@ -130,10 +143,9 @@ unset($value);
                 <?php endforeach; ?>
             </select>
         </div>
-
     </div>
 
-    <!-- ✅ Actieve filters tonen onder de filter-box -->
+    <!-- Actieve filters tonen onder de filter-row -->
     <div class="active-filters" id="active-filters" aria-live="polite"></div>
 
 </form>
@@ -141,6 +153,13 @@ unset($value);
 <?php do_action('job_manager_job_filters_after', $atts); ?>
 
 <script>
+if ('scrollRestoration' in history) {
+  history.scrollRestoration = 'manual';
+}
+window.addEventListener('pageshow', function(e) {
+  if (e.persisted) window.scrollTo(0, 0);
+});
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form.job_filters");
   if (!form) return;
@@ -411,6 +430,7 @@ jQuery(function($) {
   $("div.job_listings").on("updated_results", function(event, result) {
     if (result && typeof result.found_count !== "undefined") {
       $(".fondsen-job-count__number").text(result.found_count);
+      $(".fondsen-hero-job-count").text(result.found_count);
     }
   });
 });
@@ -419,6 +439,155 @@ jQuery(function($) {
 
 
 <style>
+/* ── Hero section ── */
+.fondsen-job-hero {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 400px;
+  background-color: var(--color-tertiary);
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.fondsen-job-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(5, 93, 146, 0.70);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.fondsen-job-hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.fondsen-job-hero__eyebrow {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 3px solid var(--color-primary);
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.fondsen-job-hero__title-wrap {
+  margin: 0 0 18px;
+  max-width: 75%;
+}
+
+.fondsen-job-hero__title {
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: clamp(24px, 3vw, 36px) !important;
+  line-height: 1.2 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+.fondsen-job-hero__subtitle {
+  margin: 10px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.fondsen-job-hero__count {
+  color: var(--color-primary);
+}
+
+.fondsen-job-hero__vacatures-link {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.fondsen-job-hero__vacatures-link:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.fondsen-job-hero__vacatures-link .fondsen-job-hero__count {
+  color: var(--color-primary) !important;
+}
+
+.fondsen-job-hero__link {
+  color: var(--color-primary) !important;
+  text-decoration: none !important;
+}
+
+.fondsen-job-hero__link:hover {
+  color: var(--color-primary-dk) !important;
+}
+
+.fondsen-job-hero__description {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 50ch;
+}
+
+@media (max-width: 960px) {
+  .fondsen-job-hero {
+    height: 280px;
+    left: 0;
+    right: auto;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .fondsen-job-hero__inner {
+    max-width: none;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  .fondsen-job-hero__title-wrap {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+
+  .fondsen-job-hero__title {
+    font-size: clamp(24px, 7vw, 32px) !important;
+    line-height: 1.12 !important;
+    text-wrap: balance;
+  }
+
+  .fondsen-job-hero__subtitle {
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .fondsen-job-hero__description {
+    font-size: 14px;
+    max-width: 100%;
+  }
+}
+
+/* ── Filter bar ── */
 .job_filters {
   width: 100vw;
   position: relative;
@@ -428,87 +597,50 @@ jQuery(function($) {
   margin-right: -50vw;
   margin-top: 0;
   margin-bottom: 0;
-  min-height: 300px;
-  padding: 56px 0;
+  min-height: 100px;
   background: var(--color-bg-filter);
-  box-shadow: none;
-  border: none;
   border-bottom: 1px solid #f5d9b8;
   border-radius: 0;
   box-sizing: border-box;
 }
 
-.filter-header,
-.search-basic,
-.filter-box,
+.filter-row,
 .active-filters {
   max-width: 1200px;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
-.filter-header {
-  padding: 0 24px 18px !important;
-}
-
-.filter-header h2 {
-  margin: 0;
-  font-family: 'Inter', sans-serif;
-  font-size: 28px;
-  line-height: 1.1;
-  font-weight: 700;
-  color: #333333;
-}
-
-.filter-header p {
-  margin: 10px 0 0;
-  font-family: 'Poppins', sans-serif;
-  font-size: 15px;
-  color: #333333;
-}
-
-body .filter-header a.unstyled-newsletter-link {
-  color: #333333;
-  font-weight: 400;
-  text-decoration: underline;
-  font-family: 'Poppins', sans-serif;
-}
-
-body .filter-header a.unstyled-newsletter-link:hover {
-  color: var(--color-secondary) !important;
-  text-decoration: underline;
-}
-
-.search-basic {
+.filter-row {
   display: flex;
-  gap: 16px;
-  padding: 0 24px;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 24px;
 }
 
-.search_location,
-.search_keywords {
-  flex-basis: 50%;
-  max-width: 50%;
+.search_keywords,
+.search_location {
+  flex: 1;
   display: flex;
   align-items: center;
   position: relative;
 }
 
-.search-basic input[type="text"] {
+.filter-row input[type="text"] {
   width: 100%;
-  padding: 13px 14px 13px 40px;
+  padding: 11px 14px 11px 40px;
   font-size: 15px;
   border: 1px solid #f5d9b8;
   border-radius: 8px;
   background-color: #ffffff;
   color: var(--color-text);
-  box-shadow: none;
   transition: border-color .2s ease, box-shadow .2s ease;
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
+  box-sizing: border-box;
 }
 
-.search-basic input[type="text"]:focus {
+.filter-row input[type="text"]:focus {
   outline: none;
   border-color: var(--color-secondary);
   box-shadow: 0 0 0 3px rgba(8, 132, 204, 0.18);
@@ -528,8 +660,8 @@ body .filter-header a.unstyled-newsletter-link:hover {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 18px;
-  height: 18px;
+  width: 17px;
+  height: 17px;
   background-repeat: no-repeat;
   background-size: contain;
   pointer-events: none;
@@ -543,16 +675,9 @@ body .filter-header a.unstyled-newsletter-link:hover {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23055D92' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
 }
 
-.filter-box {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  padding: 16px 24px 0;
-}
-
-.filter-box > div {
-  flex: 0 0 auto !important;
-  min-width: 0 !important;
+.filter-row > div {
+  flex: 0 0 auto;
+  min-width: 0;
 }
 
 select.sj-hidden-select {
@@ -585,7 +710,7 @@ select.sj-hidden-select {
   user-select: none;
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   color: #111111 !important;
 }
 
@@ -604,7 +729,7 @@ select.sj-hidden-select {
   font-family: 'Poppins', sans-serif;
   font-weight: 700;
   color: var(--color-text);
-  font-size: 15px;
+  font-size: 14px;
 }
 
 .sj-tags {
@@ -626,8 +751,8 @@ select.sj-hidden-select {
 }
 
 .sj-chev {
-  width: 10px;
-  height: 10px;
+  width: 9px;
+  height: 9px;
   border-right: 2px solid #111;
   border-bottom: 2px solid #111;
   transform: rotate(45deg);
@@ -675,7 +800,7 @@ select.sj-hidden-select {
   border-radius: 8px;
   padding: 11px 12px;
   font-family: 'Poppins', sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--color-text);
   background: #ffffff;
   box-sizing: border-box;
@@ -711,6 +836,7 @@ select.sj-hidden-select {
 
 .sj-option-text {
   font-family: 'Poppins', sans-serif;
+  font-size: 15px;
   font-weight: 600;
   color: var(--color-text);
 }
@@ -732,8 +858,8 @@ select.sj-hidden-select {
   left: 12px;
   top: 50%;
   transform: translateY(-50%);
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   background-repeat: no-repeat;
   background-size: contain;
   pointer-events: none;
@@ -766,7 +892,7 @@ select.sj-hidden-select {
   display: none;
   flex-wrap: wrap;
   gap: 10px;
-  margin: 14px 24px 0 !important;
+  padding: 0 24px 14px;
 }
 
 span.active-filter {
@@ -778,7 +904,7 @@ span.active-filter {
   border-radius: 999px;
   box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
   padding: 8px 12px;
-  font-size: 16px;
+  font-size: 15px;
   color: #111;
   font-weight: 700 !important;
   cursor: pointer;
@@ -830,37 +956,44 @@ button.active-filter-x:hover {
     left: 0 !important;
     right: auto !important;
     margin: 0 !important;
-    padding: 24px 0 !important;
+    min-height: 0 !important;
   }
 
-  .filter-header {
-    padding: 0 16px 12px !important;
-  }
-
-  .search-basic {
+  .filter-row {
     flex-direction: column;
+    align-items: stretch;
     gap: 10px;
-    padding: 0 16px !important;
+    padding: 16px !important;
+    width: 100%;
+    box-sizing: border-box;
   }
 
-  .search_location,
-  .search_keywords {
-    max-width: 100%;
-    flex-basis: 100%;
+  .search_keywords,
+  .search_location {
+    flex: none;
     width: 100%;
   }
 
-  .filter-box {
-    flex-direction: column;
-    padding: 12px 16px 0 !important;
-    gap: 10px;
-  }
-
-  .filter-box > div,
+  .filter-row > div,
   .sj-select-wrap,
   .sj-select,
   .sj-select-btn {
     width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .sj-select-btn {
+    min-width: 0;
+    white-space: normal;
+  }
+
+  .sj-btn-content {
+    flex: 1 1 auto;
+  }
+
+  .sj-placeholder {
+    white-space: normal;
   }
 
   .sj-options {
@@ -871,7 +1004,18 @@ button.active-filter-x:hover {
   }
 
   .active-filters {
-    margin: 12px 16px 0 !important;
+    padding: 0 16px 14px !important;
+    box-sizing: border-box;
+  }
+
+  span.active-filter {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .active-filter-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
 }
 </style>
