@@ -34297,3 +34297,11 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 #7 /var/www/html/wp-cron.php(191): do_action_ref_array('wpseo_start_cle...', Array)
 #8 {main}</pre>
  for query DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000 made by do_action_ref_array('wpseo_start_cleanup_indexables'), WP_Hook->do_action, WP_Hook->apply_filters, Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup, Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}, Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[16-Jun-2026 07:32:29 UTC] PHP Fatal error:  Out of memory (allocated 6291456) (tried to allocate 4194304 bytes) in /var/www/html/wp-admin/includes/class-wp-list-table.php on line 1171
+[16-Jun-2026 07:33:20 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 622
+[16-Jun-2026 07:34:05 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 563
+[16-Jun-2026 09:16:14 UTC] PHP Fatal error:  Out of memory (allocated 4194304) (tried to allocate 28672 bytes) in /var/www/html/wp-admin/includes/template.php on line 384
+[16-Jun-2026 09:16:23 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 624
+[16-Jun-2026 09:17:00 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 624
+[16-Jun-2026 09:17:04 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 624
+[16-Jun-2026 09:17:19 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 624

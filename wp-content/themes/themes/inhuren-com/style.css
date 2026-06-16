@@ -22,6 +22,7 @@ Text Domain: Inhuren.com
 
 :root {
   /* 🔁 Verwisselbaar kleurenpalet voor branding */
+  --logo-blauw: #3a89ff;
   --color-primary: #0458AB;
   --color-primary-dk: #034085;
   --color-secondary: #80D424;

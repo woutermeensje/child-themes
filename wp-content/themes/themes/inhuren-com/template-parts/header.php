@@ -37,7 +37,7 @@ if (!$mobile_logo_url) {
         <div class="rn-header__cta">
             <div class="rn-info-menu">
                 <button type="button" class="rn-btn rn-btn--outline rn-info-menu__toggle" aria-expanded="false" aria-controls="rn-info-menu-desktop">
-                    Ik heb een opdracht
+                    Informatie aanvragen
                 </button>
                 <div id="rn-info-menu-desktop" class="rn-info-menu__menu" aria-hidden="true">
                     <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-info-menu__item">
@@ -106,7 +106,7 @@ if (!$mobile_logo_url) {
             <a href="https://platform.inhuren.com/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">Inloggen</a>
             <div class="rn-info-menu rn-info-menu--mobile">
                 <button type="button" class="rn-btn rn-btn--outline rn-mobile-nav__cta rn-info-menu__toggle" aria-expanded="false" aria-controls="rn-info-menu-mobile">
-                    Ik heb een opdracht
+                    Informatie aanvragen
                 </button>
                 <div id="rn-info-menu-mobile" class="rn-info-menu__menu" aria-hidden="true">
                     <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-info-menu__item">
