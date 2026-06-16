@@ -199,9 +199,9 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: 'Inter', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 18px !important;
+    font-weight: 700 !important;
     color: #333333 !important;
     text-decoration: none !important;
     white-space: nowrap;
