@@ -1,8 +1,8 @@
 :root {
-  --rn-primary:    var(--color-primary,    #0458AB);
-  --rn-primary-dk: var(--color-primary-dk, #034085);
-  --rn-primary-mid:var(--color-primary-mid,#3B82F6);
-  --rn-accent:     var(--color-secondary,  #CADDF6);
+  --rn-primary:    var(--color-primary,    #007BA7);
+  --rn-primary-dk: var(--color-primary-dk, #005f82);
+  --rn-primary-mid:var(--color-primary-mid,#3BB4DC);
+  --rn-accent:     var(--color-secondary,  #FFFACD);
   --rn-accent-dk:  #b8cde8;
   --rn-text:       var(--color-text,       #333333);
   --rn-bg:         var(--color-bg,         #ffffff);
@@ -21,53 +21,15 @@
   z-index: 9000;
   background: var(--rn-bg);
   box-shadow: var(--rn-shadow);
-  width: 100%;
-}
-
-/* ---- Utility bar ---- */
-.rn-topbar {
-  background: var(--rn-primary);
-  width: 100%;
-}
-
-.rn-topbar__inner {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 24px;
-  height: var(--rn-topbar-h);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.rn-topbar__left,
-.rn-topbar__right {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.rn-topbar a {
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.9) !important;
-  text-decoration: none !important;
-  transition: color .15s ease;
-}
-
-.rn-topbar a:hover { color: #fff !important; text-decoration: underline !important; }
-
-.rn-topbar__divider {
-  color: rgba(255,255,255,0.4);
-  font-size: 13px;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  box-sizing: border-box;
 }
 
 /* ---- Main nav bar ---- */
 .rn-header__inner {
-  max-width: 1200px;
+  width: min(100% - 96px, 1840px);
   margin: 0 auto;
-  padding: 0 24px;
   height: var(--rn-header-h);
   display: flex;
   align-items: center;
@@ -99,9 +61,9 @@
   align-items: center;
   gap: 5px;
   padding: 8px 12px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Roboto', sans-serif;
   font-size: 15px;
-  font-weight: 300;
+  font-weight: 600;
   color: var(--rn-text) !important;
   text-decoration: none !important;
   border-radius: 6px;
@@ -168,10 +130,10 @@
   align-items: center;
   justify-content: center;
   text-decoration: none !important;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 9px 20px;
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  padding: 6px 16px;
   border-radius: 8px;
   transition: background .15s ease, color .15s ease, transform .15s ease;
   white-space: nowrap;
@@ -191,13 +153,14 @@
 .rn-btn--accent {
   background: var(--rn-primary-mid);
   color: #fff !important;
-  border: 2px solid var(--rn-primary-mid);
+  border: 5px solid var(--rn-primary-mid);
   box-shadow: 0 2px 8px rgba(59,130,246,0.3);
 }
 .rn-btn--accent:hover {
-  background: var(--rn-primary);
-  border-color: var(--rn-primary);
-  transform: translateY(-1px);
+  background: var(--rn-primary-mid);
+  border-color: var(--rn-primary-mid);
+  color: #fff !important;
+  transform: none;
 }
 
 /* ---- Hamburger ---- */
@@ -249,7 +212,6 @@
   background: #fff;
   border-left: 1px solid #e5e7eb;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
   padding: 76px 18px 18px;
   transform: translateX(100%);
   transition: transform .2s ease;
@@ -318,9 +280,10 @@
 .rn-mobile-nav__cta {
   width: 100%;
   justify-content: center;
-  font-size: 15px;
-  font-weight: 600;
-  padding: 13px 16px;
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 10px 14px;
   border-radius: 8px;
 }
 
@@ -329,7 +292,7 @@
   .rn-header__nav, .rn-header__cta { display: none; }
   .rn-header__hamburger { display: flex; }
   .rn-mobile-nav { display: block; }
-  .rn-topbar { display: none !important; }
+  .rn-topbar { display: none; }
 }
 
 @media (min-width: 961px) {
@@ -337,6 +300,6 @@
 }
 
 @media (max-width: 480px) {
-  .rn-header__inner { padding: 0 16px; gap: 12px; }
-  .rn-topbar__inner { padding: 0 16px; }
+  .rn-topbar__inner,
+  .rn-header__inner { width: min(100% - 32px, 1840px); gap: 12px; }
 }

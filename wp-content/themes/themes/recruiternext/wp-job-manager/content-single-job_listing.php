@@ -3,459 +3,1025 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 global $post;
 
-if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
+$post_id = isset( $post->ID ) ? (int) $post->ID : 0;
+?>
 
-<div class="sj-wrap">
+<?php if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
 
-    <div class="sj-card">
-      <?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
-        <div class="job-manager-info"><?php _e( 'This listing has expired.', 'wp-job-manager' ); ?></div>
-      <?php else : ?>
+    $salary    = get_post_meta($post_id, '_job_salary_range', true);
+    $hours     = get_post_meta($post_id, '_job_hours_per_week', true);
+    $location  = get_post_meta($post_id, '_job_location', true);
+    $company   = get_the_company_name();
+    $con_first = get_post_meta($post_id, '_contact_first_name', true);
+    $con_last  = get_post_meta($post_id, '_contact_last_name', true);
+    $con_email = get_post_meta($post_id, '_contact_email', true);
 
-        <?php
-        $company_name    = function_exists('get_the_company_name') ? get_the_company_name() : '';
-        $company_website = get_post_meta( $post->ID, '_company_website', true );
-        ?>
+    $job_company_terms  = get_the_terms($post_id, 'job_company');
+    $job_company_term   = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0] : null;
+    $job_company_slug   = $job_company_term ? $job_company_term->slug : '';
+    $job_company_url    = $job_company_slug ? home_url('/vacatures/' . $job_company_slug . '/') : '';
+    $company_logo       = has_post_thumbnail($post_id) ? get_the_post_thumbnail($post_id, 'thumbnail') : '';
 
-        <div class="sj-meta">
-          <span class="sj-chip">🗓️ <?php echo esc_html( date_i18n( 'j F Y', get_post_time( 'U' ) ) ); ?></span>
-          <span class="sj-chip">🏷️ <?php the_job_type(); ?></span>
+    $vacancy_count = 0;
+    if ($job_company_term) {
+        $vacancy_q     = new WP_Query([
+            'post_type'      => 'job_listing',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'tax_query'      => [[
+                'taxonomy' => 'job_company',
+                'field'    => 'term_id',
+                'terms'    => $job_company_term->term_id,
+            ]],
+        ]);
+        $vacancy_count = $vacancy_q->found_posts;
+        wp_reset_postdata();
+    }
 
-          <?php if ( ! empty( $company_name ) ) : ?>
-            <span class="sj-chip">🏢 <?php echo esc_html( $company_name ); ?></span>
-          <?php endif; ?>
+    /* ── Vraag-formulier verwerking ── */
+    $vraag_success = false;
+    $vraag_error   = '';
+    if (
+        $_SERVER['REQUEST_METHOD'] === 'POST' &&
+        isset($_POST['rn_vraag_nonce']) &&
+        wp_verify_nonce($_POST['rn_vraag_nonce'], 'rn_stel_vraag_' . $post_id)
+    ) {
+        $v_naam    = sanitize_text_field($_POST['vraag_voornaam']   ?? '');
+        $v_ach     = sanitize_text_field($_POST['vraag_achternaam'] ?? '');
+        $v_email   = sanitize_email($_POST['vraag_email']           ?? '');
+        $v_tel     = sanitize_text_field($_POST['vraag_telefoon']   ?? '');
+        $v_vraag   = sanitize_textarea_field($_POST['vraag_tekst']  ?? '');
+        $to        = $con_email ?: 'info@recruiternext.nl';
+
+        $attachments = [];
+        if (!empty($_FILES['vraag_cv']['tmp_name'])) {
+            require_once ABSPATH . 'wp-admin/includes/file.php';
+            require_once ABSPATH . 'wp-admin/includes/media.php';
+            require_once ABSPATH . 'wp-admin/includes/image.php';
+            $upload = media_handle_upload('vraag_cv', 0);
+            if (!is_wp_error($upload)) {
+                $path = get_attached_file($upload);
+                if (file_exists($path)) $attachments[] = $path;
+            }
+        }
+
+        if ($v_naam && is_email($v_email) && $v_vraag) {
+            $subject = 'Vraag over vacature: ' . get_the_title($post_id);
+            $body    = "Vraag via de vacaturepagina:\n\nVan: $v_naam $v_ach <$v_email>";
+            if ($v_tel) $body .= "\nTelefoon: $v_tel";
+            $body   .= "\n\n$v_vraag";
+            wp_mail($to, $subject, $body, [
+                'Content-Type: text/plain; charset=UTF-8',
+                "Reply-To: $v_naam $v_ach <$v_email>",
+            ], $attachments);
+            $vraag_success = true;
+        } else {
+            $vraag_error = 'Vul alle verplichte velden in.';
+        }
+    }
+?>
+
+    <div class="sj-single-layout">
+
+        <!-- Linker kolom: vacature inhoud -->
+        <div class="sj-single-layout__main">
+            <div class="single_job_listing">
+                <?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
+
+                    <div class="sj-expired">
+                        <div class="sj-expired__notice">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            Deze vacature is verlopen
+                        </div>
+
+                        <h1 class="sj-expired__title"><?php echo esc_html(get_the_title($post_id)); ?></h1>
+
+                        <?php if ($company || $location): ?>
+                        <p class="sj-expired__meta">
+                            <?php echo implode(' &nbsp;·&nbsp; ', array_filter([esc_html($company), esc_html($location)])); ?>
+                        </p>
+                        <?php endif; ?>
+
+                        <p class="sj-expired__intro">Helaas is deze vacature niet meer beschikbaar. Bekijk onze andere openstaande vacatures.</p>
+
+                        <div class="sj-expired__all-link">
+                            <a href="<?php echo esc_url(home_url('/vacatures/')); ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                                Bekijk alle openstaande vacatures
+                            </a>
+                        </div>
+                    </div>
+
+                <?php elseif ('expired' === $post->post_status): ?>
+
+                    <div class="sj-expired-banner">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Let op: deze vacature is verlopen en staat mogelijk niet meer open.
+                        <a href="<?php echo esc_url(home_url('/vacatures/')); ?>">Bekijk actuele vacatures →</a>
+                    </div>
+
+                <?php else : ?>
+
+                    <div class="content-part-job-description">
+                        <div class="top-div">
+
+                            <div class="job-title sj-single-title-row">
+                                <h1><?php wpjm_the_job_title(); ?></h1>
+                            </div>
+
+                            <div class="job_description">
+                                <?php wpjm_the_job_description(); ?>
+                            </div>
+
+                            <?php $company_website = get_post_meta( $post_id, '_company_website', true ); ?>
+                            <?php if ( ! empty( $company_website ) ) : ?>
+                                <div class="job-apply-button">
+                                    <a href="<?php echo esc_url( $company_website ); ?>" class="apply-button" target="_blank" rel="noopener">
+                                        Solliciteren op deze vacature!
+                                    </a>
+                                </div>
+                            <?php endif; ?>
+
+                            <?php do_action( 'single_job_listing_end' ); ?>
+
+                        </div>
+                    </div>
+
+                <?php endif; ?>
+            </div>
+
+            <!-- Stel een vraag blok -->
+            <div class="sj-vraag-blok" id="rn-vraag">
+                <h3 class="sj-vraag-blok__title">Stel een vraag aan de contactpersoon van deze vacature.</h3>
+
+                <?php if ($vraag_success): ?>
+                    <p class="sj-sidebar__vraag-success">Je vraag is verstuurd! We nemen zo snel mogelijk contact met je op.</p>
+                <?php else: ?>
+                    <?php if ($vraag_error): ?>
+                    <p class="sj-sidebar__vraag-error"><?php echo esc_html($vraag_error); ?></p>
+                    <?php endif; ?>
+                    <form method="post" class="sj-vraag-blok__form" enctype="multipart/form-data" novalidate>
+                        <?php wp_nonce_field('rn_stel_vraag_' . $post_id, 'rn_vraag_nonce'); ?>
+
+                        <div class="sj-vraag-blok__row">
+                            <div class="sj-vraag-blok__field">
+                                <label class="sj-vraag-blok__label" for="vraag_voornaam">Voornaam <span class="sj-vraag-req">*</span></label>
+                                <input type="text" name="vraag_voornaam" id="vraag_voornaam"
+                                       class="sj-vraag-blok__input"
+                                       placeholder="Voornaam" required
+                                       value="<?php echo esc_attr($_POST['vraag_voornaam'] ?? ''); ?>">
+                            </div>
+                            <div class="sj-vraag-blok__field">
+                                <label class="sj-vraag-blok__label" for="vraag_achternaam">Achternaam</label>
+                                <input type="text" name="vraag_achternaam" id="vraag_achternaam"
+                                       class="sj-vraag-blok__input"
+                                       placeholder="Achternaam"
+                                       value="<?php echo esc_attr($_POST['vraag_achternaam'] ?? ''); ?>">
+                            </div>
+                        </div>
+
+                        <div class="sj-vraag-blok__row">
+                            <div class="sj-vraag-blok__field">
+                                <label class="sj-vraag-blok__label" for="vraag_email">E-mailadres <span class="sj-vraag-req">*</span></label>
+                                <input type="email" name="vraag_email" id="vraag_email"
+                                       class="sj-vraag-blok__input"
+                                       placeholder="jouw@emailadres.nl" required
+                                       value="<?php echo esc_attr($_POST['vraag_email'] ?? ''); ?>">
+                            </div>
+                            <div class="sj-vraag-blok__field">
+                                <label class="sj-vraag-blok__label" for="vraag_telefoon">Telefoonnummer</label>
+                                <input type="tel" name="vraag_telefoon" id="vraag_telefoon"
+                                       class="sj-vraag-blok__input"
+                                       placeholder="+31 6 12345678"
+                                       value="<?php echo esc_attr($_POST['vraag_telefoon'] ?? ''); ?>">
+                            </div>
+                        </div>
+
+                        <div class="sj-vraag-blok__field">
+                            <label class="sj-vraag-blok__label" for="vraag_tekst">Je vraag of motivatie <span class="sj-vraag-req">*</span></label>
+                            <textarea name="vraag_tekst" id="vraag_tekst"
+                                      class="sj-vraag-blok__input sj-vraag-blok__textarea"
+                                      rows="6"
+                                      placeholder="Stel je vraag of schrijf een korte motivatie..." required><?php echo esc_textarea($_POST['vraag_tekst'] ?? ''); ?></textarea>
+                        </div>
+
+                        <div class="sj-vraag-blok__field">
+                            <label class="sj-vraag-blok__label" for="vraag_cv">CV uploaden <span style="font-weight:400;color:#6b7280;font-size:12px;">(optioneel)</span></label>
+                            <label class="sj-vraag-blok__upload" for="vraag_cv">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-72-96a8,8,0,0,1,8,8v16h16a8,8,0,0,1,0,16H136v16a8,8,0,0,1-16,0V160H104a8,8,0,0,1,0-16h16V128A8,8,0,0,1,128,120Z"/></svg>
+                                <span class="sj-vraag-blok__upload-label">Kies je CV</span>
+                                <span class="sj-vraag-blok__upload-name" id="rn_vraag_cv_name">Geen bestand gekozen</span>
+                                <input type="file" name="vraag_cv" id="vraag_cv" accept=".pdf,.doc,.docx"
+                                       class="sj-vraag-blok__upload-input"
+                                       onchange="document.getElementById('rn_vraag_cv_name').textContent = this.files[0]?.name || 'Geen bestand gekozen'">
+                            </label>
+                            <span class="sj-vraag-blok__hint">PDF, Word. Max. 5 MB.</span>
+                        </div>
+
+                        <button type="submit" class="sj-vraag-blok__submit">Versturen</button>
+                    </form>
+                <?php endif; ?>
+            </div>
         </div>
 
-        <header class="sj-header">
-          <h1 class="sj-title"><?php wpjm_the_job_title(); ?></h1>
-          <?php if ( ! empty( $company_name ) ) : ?>
-            <p class="sj-subtitle"><?php echo esc_html( $company_name ); ?></p>
-          <?php endif; ?>
-        </header>
+        <!-- Rechter kolom: sidebar -->
+        <aside class="sj-single-layout__sidebar">
 
-        <div class="job_description sj-content">
-          <?php wpjm_the_job_description(); ?>
-        </div>
+            <?php if ($company || $company_logo): ?>
+            <div class="sj-single-sidebar">
+                <p class="sj-sidebar__block-title">Over het bedrijf</p>
+                <div class="sj-company-blok">
+                    <?php if ($company_logo): ?>
+                    <div class="sj-company-blok__logo">
+                        <?php echo $company_logo; ?>
+                    </div>
+                    <?php endif; ?>
+                    <div class="sj-company-blok__info">
+                        <?php if ($job_company_url && $company): ?>
+                            <a href="<?php echo esc_url($job_company_url); ?>" class="sj-company-blok__name"><?php echo esc_html($company); ?></a>
+                        <?php elseif ($company): ?>
+                            <span class="sj-company-blok__name"><?php echo esc_html($company); ?></span>
+                        <?php endif; ?>
+                        <?php if ($vacancy_count > 0): ?>
+                            <a href="<?php echo esc_url($job_company_url); ?>" class="sj-company-blok__count">
+                                <?php echo $vacancy_count; ?> openstaande <?php echo $vacancy_count === 1 ? 'vacature' : 'vacatures'; ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
 
-        <?php if ( ! empty( $company_website ) ) : ?>
-          <div class="sj-actions">
-            <a href="<?php echo esc_url( $company_website ); ?>" class="sj-btn" target="_blank" rel="noopener">
-              Solliciteren bij werkgever
-            </a>
-          </div>
-        <?php endif; ?>
+            <!-- Vacature details -->
+            <div class="sj-single-sidebar">
+                <p class="sj-sidebar__block-title">Vacature details</p>
+                <div class="sj-sidebar__details">
+                    <?php if ($company): ?>
+                    <div class="sj-sidebar__detail-row">
+                        <span class="sj-sidebar__detail-label">Bedrijf</span>
+                        <span class="sj-sidebar__detail-value"><?php echo esc_html($company); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    <?php
+                    $types = wpjm_get_the_job_types();
+                    if (!empty($types)):
+                    ?>
+                    <div class="sj-sidebar__detail-row">
+                        <span class="sj-sidebar__detail-label">Type baan</span>
+                        <span class="sj-sidebar__detail-value">
+                            <?php foreach ($types as $type): ?>
+                            <span class="sj-sidebar__chip"><?php echo esc_html($type->name); ?></span>
+                            <?php endforeach; ?>
+                        </span>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($salary): ?>
+                    <div class="sj-sidebar__detail-row">
+                        <span class="sj-sidebar__detail-label">Salaris</span>
+                        <span class="sj-sidebar__detail-value"><?php echo esc_html($salary); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($location): ?>
+                    <div class="sj-sidebar__detail-row">
+                        <span class="sj-sidebar__detail-label">Standplaats</span>
+                        <span class="sj-sidebar__detail-value"><?php echo esc_html($location); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($hours): ?>
+                    <div class="sj-sidebar__detail-row">
+                        <span class="sj-sidebar__detail-label">Uren/week</span>
+                        <span class="sj-sidebar__detail-value"><?php echo esc_html($hours); ?></span>
+                    </div>
+                    <?php endif; ?>
+                </div>
+            </div>
 
-        <?php do_action( 'single_job_listing_end' ); ?>
+            <?php if ($con_first || $con_last || $con_email): ?>
+            <div class="sj-single-sidebar">
+                <p class="sj-sidebar__block-title">Contactpersoon</p>
+                <div class="sj-sidebar__contact">
+                    <?php if ($con_first || $con_last): ?>
+                    <p class="sj-sidebar__contact-name"><?php echo esc_html(trim("$con_first $con_last")); ?></p>
+                    <?php endif; ?>
+                    <?php if ($con_email): ?>
+                    <a href="mailto:<?php echo esc_attr($con_email); ?>" class="sj-sidebar__contact-email"><?php echo esc_html($con_email); ?></a>
+                    <?php endif; ?>
+                </div>
+            </div>
+            <?php endif; ?>
 
-      <?php endif; ?>
+        </aside>
+
     </div>
 
-    <?php
-    // Contactgegevens contactpersoon
-    $cf = get_post_meta( get_the_ID(), '_contact_first_name', true );
-    $cl = get_post_meta( get_the_ID(), '_contact_last_name', true );
-    $ce = get_post_meta( get_the_ID(), '_contact_email', true );
-    $has_contact = ( ! empty($cf) || ! empty($cl) || ! empty($ce) );
-    ?>
-
-    <?php if ( $has_contact ) : ?>
-      <section class="sj-contact sj-card">
-        <h2 class="sj-contact-title">Contactpersoon</h2>
-
-        <div class="sj-contact-grid">
-          <?php if ( ! empty($cf) || ! empty($cl) ) : ?>
-            <div class="sj-contact-row">
-              <span class="sj-contact-label">Contactpersoon</span>
-              <span class="sj-contact-value"><?php echo esc_html( trim($cf . ' ' . $cl) ); ?></span>
-            </div>
-          <?php endif; ?>
-
-          <?php if ( ! empty($ce) ) : ?>
-            <div class="sj-contact-row">
-              <span class="sj-contact-label">E-mail</span>
-              <a class="sj-contact-value sj-contact-link" href="mailto:<?php echo esc_attr( antispambot($ce) ); ?>">
-                <?php echo esc_html( antispambot($ce) ); ?>
-              </a>
-            </div>
-          <?php endif; ?>
-        </div>
-      </section>
-    <?php endif; ?>
-
-
-    <?php
-    // Recente vacatures
-    $current_id  = get_the_ID();
-    $recent_jobs = new WP_Query([
-      'post_type'      => 'job_listing',
-      'posts_per_page' => 6,
-      'orderby'        => 'date',
-      'order'          => 'DESC',
-      'post__not_in'   => [ $current_id ],
-      'post_status'    => 'publish',
-    ]);
-    ?>
-
-    <?php if ( $recent_jobs->have_posts() ) : ?>
-      <section class="sj-recent sj-card">
-        <div class="sj-recent-head">
-          <h2 class="sj-recent-title">Recente vacatures</h2>
-          <p class="sj-recent-sub">Bekijk de nieuwste vacatures in ons netwerk.</p>
-        </div>
-
-        <ul class="sj-recent-grid">
-          <?php while ( $recent_jobs->have_posts() ) : $recent_jobs->the_post(); ?>
-            <?php
-              $rc_name    = function_exists('get_the_company_name') ? get_the_company_name() : '';
-              $rc_title   = function_exists('wpjm_get_the_job_title') ? wpjm_get_the_job_title() : get_the_title();
-              $rc_excerpt = wp_trim_words( get_the_excerpt(), 14, '…' );
-            ?>
-            <li class="sj-recent-item" <?php job_listing_class(); ?>>
-              <a class="sj-recent-link" href="<?php the_job_permalink(); ?>" aria-label="<?php echo esc_attr( $rc_title ); ?>">
-                <div class="sj-recent-logo">
-                  <?php the_company_logo(); ?>
-                </div>
-                <div class="sj-recent-body">
-                  <?php if ( ! empty($rc_name) ) : ?>
-                    <div class="sj-recent-company"><?php echo esc_html( $rc_name ); ?></div>
-                  <?php endif; ?>
-                  <h3 class="sj-recent-jobtitle"><?php echo esc_html( $rc_title ); ?></h3>
-                  <?php if ( ! empty($rc_excerpt) ) : ?>
-                    <p class="sj-recent-excerpt"><?php echo esc_html( $rc_excerpt ); ?></p>
-                  <?php endif; ?>
-                </div>
-              </a>
-            </li>
-          <?php endwhile; ?>
-        </ul>
-
-        <?php wp_reset_postdata(); ?>
-      </section>
-    <?php endif; ?>
-
-</div>
-
 <?php else : ?>
-  <?php get_job_manager_template_part( 'access-denied', 'single-job_listing' ); ?>
+
+    <?php get_job_manager_template_part( 'access-denied', 'single-job_listing' ); ?>
+
 <?php endif; ?>
+
+<!-- Sticky bottom balk -->
+<div class="sj-vp-snel" id="rn-profiel-balk">
+    <div class="sj-vp-snel__text">
+        <h2 class="sj-vp-snel__title">Profiel aanmaken</h2>
+        <p class="sj-vp-snel__desc">Wist je dat je met een profiel ook benaderd kunt worden door opdrachtgevers?</p>
+    </div>
+    <div class="sj-vp-snel__contact">
+        <a href="<?php echo esc_url(home_url('/profiel-aanmaken/')); ?>" class="sj-vp-snel__btn">Profiel aanmaken</a>
+    </div>
+    <button class="sj-vp-snel__close" aria-label="Sluiten" onclick="document.getElementById('rn-profiel-balk').classList.add('is-hidden')">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
+    </button>
+</div>
 
 
 <style>
-:root {
-  --sj-ink: #111827;
-  --sj-muted: #6B7280;
-  --sj-border: #E5E7EB;
-  --sj-card: #FFFFFF;
-  --sj-blue: #3563A2;
-  --sj-blue-dark: #254d82;
-  --sj-radius: 12px;
-  --sj-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
+
+/* ── Layout wrapper ──────────────────────────────────────── */
+.sj-single-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 24px;
+    max-width: 1100px;
+    width: 100%;
+    margin: 56px auto 24px;
+    padding: 0 24px;
+    box-sizing: border-box;
 }
 
-html, body {
-  width: 100%;
-  max-width: 100%;
-  overflow-x: hidden;
+.sj-single-layout__main {
+    min-width: 0;
 }
 
-.sj-wrap {
-  max-width: 900px;
-  width: 100%;
-  margin: 20px auto;
-  padding: 0 16px;
-  display: grid;
-  gap: 16px;
+/* ── Hoofd vacature blok ─────────────────────────────────── */
+.single_job_listing {
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: none;
+    border: 1px solid #DEDEDE;
+    padding: 24px;
 }
 
-.job_description,
-.sj-content {
-  overflow-wrap: anywhere;
-  word-break: break-word !important;
+/* ── Sidebar kolom ───────────────────────────────────────── */
+.sj-single-layout__sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    position: sticky;
+    top: 24px;
+    align-self: start;
 }
 
-.sj-card {
-  padding: 24px;
-  border: 1px solid #DEDEDE;
-  box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
-  border-radius: 5px;
+/* ── Sidebar blokken ─────────────────────────────────────── */
+.sj-single-sidebar {
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: none;
+    border: 1px solid #DEDEDE;
+    padding: 20px;
 }
 
-/* Chips */
-.sj-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 14px;
+.sj-sidebar__block-title {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #DEDEDE;
 }
 
-.sj-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  border-radius: 999px;
-  border: 1px solid #DEDEDE;
-  background: #fff;
-  color: #333;
-  font-family: Poppins, system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+/* ── Bedrijfsblok ────────────────────────────────────────── */
+.sj-company-blok {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
 
-/* Header */
-.sj-header {
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--sj-border);
-  margin-bottom: 16px;
-  margin-top: 24px;
-  min-width: 0;
+.sj-company-blok__logo {
+    flex: 0 0 auto;
 }
 
-.sj-title {
-  margin: 0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-  font-size: 26px;
-  line-height: 1.15;
-  font-weight: 800;
-  color: var(--sj-ink);
-  max-width: 100%;
-  white-space: normal !important;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  hyphens: auto;
+.sj-company-blok__logo img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid var(--color-border-light);
+    padding: 5px;
+    background: #fff;
+    display: block;
 }
 
-.sj-subtitle {
-  margin: 8px 0 0 0;
-  font-family: Poppins, system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--sj-blue);
+.sj-company-blok__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
 }
 
-/* Content */
-.sj-content {
-  font-family: Poppins, system-ui, sans-serif;
-  color: var(--sj-ink);
-  font-size: 15px;
-  line-height: 1.75;
+.sj-company-blok__name {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    text-decoration: none;
+    display: block;
+    overflow-wrap: anywhere;
 }
 
-.sj-content p { margin: 0 0 14px 0; }
-
-/* Button */
-.sj-actions {
-  margin-top: 18px;
-  display: flex;
+a.sj-company-blok__name:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
 }
 
-.sj-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 14px;
-  border-radius: 10px;
-  background: rgba(53, 99, 162, 0.12);
-  color: var(--sj-blue) !important;
-  text-decoration: none !important;
-  border: 1px solid var(--sj-blue);
-  font-family: Poppins, system-ui, sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
-  transition: transform .15s ease, filter .15s ease, box-shadow .15s ease;
+.sj-company-blok__count {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-primary);
+    text-decoration: none;
+    display: block;
 }
 
-.sj-btn:hover {
-  transform: translateY(-1px);
-  background: rgba(53, 99, 162, 0.2) !important;
+.sj-company-blok__count:hover {
+    text-decoration: underline;
+}
+
+/* ── Details blok ────────────────────────────────────────── */
+.sj-sidebar__details {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sj-sidebar__detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.sj-sidebar__detail-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: #6b7280;
+}
+
+.sj-sidebar__detail-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.sj-sidebar__chip {
+    display: inline-block;
+    padding: 3px 10px;
+    background: rgba(53, 99, 162, 0.08);
+    border: 1px solid rgba(53, 99, 162, 0.2);
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    color: var(--color-primary);
+    margin-right: 4px;
+}
+
+/* ── Contactpersoon blok ─────────────────────────────────── */
+.sj-sidebar__contact-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 4px;
+}
+
+.sj-sidebar__contact-email {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-primary);
+    text-decoration: none;
+}
+
+.sj-sidebar__contact-email:hover { text-decoration: underline; }
+
+.sj-sidebar__vraag-success {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #065f46;
+    background: #ecfdf5;
+    border: 1px solid #6ee7b7;
+    border-radius: 5px;
+    padding: 10px 14px;
+    margin: 0;
+}
+
+.sj-sidebar__vraag-error {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #991b1b;
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin: 0 0 8px;
+}
+
+/* ── Titel ───────────────────────────────────────────────── */
+.sj-single-title-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.job-title h1 {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #DEDEDE;
+    font-family: Inter, sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    padding-top: 4px;
+    line-height: 1.25;
+    color: #111827;
+}
+
+/* ── Beschrijving ────────────────────────────────────────── */
+.job_description {
+    font-family: Poppins;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--color-text);
+    margin-top: 24px;
+}
+
+.job_description p { margin: 0 0 14px; }
+
+/* ── Solliciteer knop ────────────────────────────────────── */
+.job-apply-button {
+    margin-top: 24px;
+}
+
+.job-apply-button a {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 28px;
+    color: #ffffff;
+    background-color: var(--color-primary);
+    border-radius: 5px;
+    font-family: Balgin-Bold, serif;
+    font-size: 15px;
+    text-decoration: none;
+    border: 1px solid var(--color-primary);
+    transition: background .18s ease, color .18s ease;
+}
+
+.job-apply-button a:hover {
+    background: var(--color-primary-dk, #005f82);
+    border-color: var(--color-primary-dk, #005f82);
+    color: #ffffff;
 }
 
 h1.entry-title { display: none; }
 
-/* Contact */
-.sj-contact { padding: 24px; }
-
-h2.sj-contact-title {
-  font-family: Poppins;
-  font-weight: 600;
-  font-size: 20px;
-  color: #333;
+/* ── Vraag blok ──────────────────────────────────────────── */
+.sj-vraag-blok {
+    scroll-margin-top: 100px;
+    margin-top: 20px;
+    background: #fff;
+    border: 1px solid #DEDEDE;
+    border-radius: 5px;
+    box-shadow: none;
+    padding: 28px;
 }
 
-.sj-contact-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px 56px;
+.sj-vraag-blok__title {
+    font-family: 'Inter', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--color-text, #333333);
+    margin: 0 0 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #DEDEDE;
+    line-height: 1.3;
 }
 
-.sj-contact-row { display: grid; gap: 8px; }
-
-.sj-contact-label {
-  font-family: Poppins, system-ui, sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: #7A7F87;
+.sj-vraag-blok__form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-.sj-contact-value {
-  font-family: Poppins, system-ui, sans-serif;
-  font-size: 14px;
-  font-weight: 400;
-  color: #333;
-  line-height: 1.25;
-  word-break: break-word;
+.sj-vraag-blok__row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
 }
 
-.sj-contact-link {
-  color: var(--sj-blue) !important;
-  text-decoration: none !important;
-}
-.sj-contact-link:hover { text-decoration: underline !important; }
-
-/* Recente vacatures */
-.sj-recent { padding: 24px; }
-
-.sj-recent-head { margin-bottom: 18px; }
-
-.sj-recent-title {
-  margin: 0;
-  font-family: Poppins;
-  font-weight: 700;
-  font-size: 20px;
-  color: var(--sj-ink);
+.sj-vraag-blok__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
 }
 
-.sj-recent-sub {
-  margin: 6px 0 0 0;
-  font-family: Poppins, system-ui, sans-serif;
-  font-size: 14px;
-  color: var(--sj-muted);
+.sj-vraag-blok__label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #333333;
+    line-height: 1.4;
 }
 
-.sj-recent-grid {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-}
+.sj-vraag-req { color: var(--color-primary, #007BA7); margin-left: 2px; }
 
-.sj-recent-item {
-  background: #fff;
-  border: 1px solid var(--sj-border);
-  border-radius: 5px;
-  overflow: hidden;
-  box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
-  transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
-}
-
-.sj-recent-item:hover {
-  transform: translateY(-3px);
-  border-color: rgba(53, 99, 162, 0.35);
-  box-shadow: 0 18px 44px rgba(16,24,40,.14);
-}
-
-.sj-recent-link {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  padding: 18px;
-  text-decoration: none !important;
-  color: inherit;
-  align-items: flex-start;
-}
-
-.sj-recent-logo {
-  display: block;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.sj-recent-logo img,
-.sj-recent-logo .company_logo {
-  display: block;
-  margin: 0 !important;
-}
-
-.sj-recent-logo img {
-  width: 120px;
-  height: auto;
-  max-height: 80px;
-  object-fit: contain;
-}
-
-.sj-recent-body {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  min-width: 0;
-}
-
-.sj-recent-company {
-  font-family: Poppins, system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--sj-blue);
-}
-
-h3.sj-recent-jobtitle {
-  margin: 0;
-  font-family: Poppins;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--sj-ink);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.sj-recent-excerpt {
-  margin: 0;
-  font-family: Poppins, system-ui, sans-serif;
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--sj-muted);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.sj-recent-item:hover .sj-recent-jobtitle { color: var(--sj-blue); }
-
-/* Responsive */
-@media (max-width: 768px) {
-  .sj-wrap,
-  .single_job_listing,
-  .sj-contact,
-  .sj-recent,
-  .sj-card {
+.sj-vraag-blok__input {
     width: 100% !important;
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-  }
+    padding: 8px 12px !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    color: var(--color-text, #333333) !important;
+    background: #fff !important;
+    border: 1px solid #DEDEDE !important;
+    border-radius: 5px !important;
+    outline: none !important;
+    box-shadow: none !important;
+    transition: border-color .2s ease, box-shadow .2s ease;
+    box-sizing: border-box;
+    height: auto !important;
+    line-height: 1.5 !important;
+}
 
-  .sj-wrap { padding: 0 16px; }
+.sj-vraag-blok__textarea {
+    resize: vertical;
+    min-height: 140px;
+}
 
-  .sj-meta,
-  .sj-recent-grid,
-  .sj-recent-link,
-  .sj-contact-grid { min-width: 0 !important; }
+.sj-vraag-blok__input:focus {
+    border-color: var(--color-primary, #007BA7) !important;
+    box-shadow: 0 0 0 3px rgba(53, 99, 162, .15) !important;
+}
 
-  .sj-contact-grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
+.sj-vraag-blok__input::placeholder {
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 300 !important;
+    color: var(--color-text-muted, #777777) !important;
+}
 
-  .sj-recent-grid { grid-template-columns: 1fr; }
+/* CV Upload */
+.sj-vraag-blok__upload {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    min-height: 110px;
+    padding: 24px 20px;
+    background: #f8f9fb;
+    border: 2px dashed var(--color-primary, #007BA7);
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+    transition: border-color .2s ease, background .2s ease;
+    box-sizing: border-box;
+}
 
-  img { max-width: 100%; height: auto; }
+.sj-vraag-blok__upload:hover {
+    border-color: var(--color-primary-dk, #005f82);
+    background: #f0f4fb;
+}
+
+.sj-vraag-blok__upload svg {
+    color: var(--color-primary, #007BA7);
+    flex-shrink: 0;
+}
+
+.sj-vraag-blok__upload-label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-primary, #007BA7);
+}
+
+.sj-vraag-blok__upload-name {
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--color-text-muted, #777777);
+}
+
+.sj-vraag-blok__upload-input {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
+}
+
+.sj-vraag-blok__hint {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-text-muted, #777777);
+    line-height: 1.5;
+}
+
+.sj-vraag-blok__submit {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Balgin-Bold', serif;
+    font-size: 15px;
+    font-weight: 600;
+    background-color: var(--color-primary, #007BA7);
+    border: 2px solid var(--color-primary, #007BA7);
+    color: #ffffff !important;
+    padding: 10px 28px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color .15s ease, border-color .15s ease;
+    text-decoration: none;
+}
+
+.sj-vraag-blok__submit:hover {
+    background-color: var(--color-primary-dk, #005f82);
+    border-color: var(--color-primary-dk, #005f82);
+}
+
+@media (max-width: 640px) {
+    .sj-vraag-blok__row { grid-template-columns: 1fr; }
+    .sj-vraag-blok__submit { width: 100%; align-self: stretch; }
+}
+
+/* ── Verlopen vacature ───────────────────────────────────── */
+.sj-expired {
+    padding: 32px 28px 28px;
+}
+
+.sj-expired__notice {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 999px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #C2410C;
+    margin-bottom: 24px;
+}
+
+.sj-expired__notice svg {
+    flex-shrink: 0;
+    color: #C2410C;
+}
+
+.sj-expired__title {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 10px;
+    line-height: 1.3;
+}
+
+.sj-expired__meta {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #6b7280;
+    margin: 0 0 20px;
+}
+
+.sj-expired__intro {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #374151;
+    line-height: 1.65;
+    margin: 0 0 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #DEDEDE;
+}
+
+.sj-expired__all-link {
+    margin-top: 8px;
+}
+
+.sj-expired__all-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-primary, #007BA7);
+    text-decoration: none;
+    transition: color .18s ease;
+}
+
+.sj-expired__all-link a:hover {
+    text-decoration: underline;
+}
+
+.sj-expired-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #92400E;
+    flex-wrap: wrap;
+}
+
+.sj-expired-banner svg { flex-shrink: 0; color: #C2410C; }
+
+.sj-expired-banner a {
+    margin-left: auto;
+    font-weight: 600;
+    color: var(--color-primary, #007BA7);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sj-expired-banner a:hover { text-decoration: underline; }
+
+/* ── Sticky balk ─────────────────────────────────────────── */
+.sj-vp-snel {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 14px 32px;
+    background: #fff;
+    border-top: 1px solid #DEDEDE;
+    box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+    transition: transform .3s ease, opacity .3s ease;
+}
+
+.sj-vp-snel.is-hidden {
+    transform: translateY(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.sj-vp-snel__text {
+    flex: 1;
+    min-width: 0;
+}
+
+.sj-vp-snel__title {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 2px;
+    line-height: 1.2;
+}
+
+.sj-vp-snel__desc {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #6b7280;
+    margin: 0;
+}
+
+.sj-vp-snel__contact {
+    flex-shrink: 0;
+}
+
+.sj-vp-snel__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 24px;
+    background: var(--color-primary, #007BA7);
+    color: #fff !important;
+    border: none;
+    border-radius: 5px;
+    font-family: 'Balgin-Bold', serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: background .18s ease;
+}
+
+.sj-vp-snel__btn:hover {
+    background: var(--color-primary-dk, #005f82);
+    color: #fff !important;
+}
+
+.sj-vp-snel__close {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 0;
+    border-radius: 50%;
+    transition: background .15s ease, color .15s ease;
+}
+
+.sj-vp-snel__close:hover {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+/* ── Meta pills ──────────────────────────────────────────── */
+.meta-information-single {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.meta-information-single p {
+    font-family: Poppins !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #333;
+    border: 1px solid #DEDEDE;
+    background-color: white;
+    border-radius: 999px;
+    padding: 10px 14px;
+    margin: 0;
+    display: inline-block;
+    width: auto;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .sj-single-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .sj-single-layout__sidebar {
+        order: -1;
+        position: static;
+    }
+
+    .sj-vp-snel {
+        padding: 12px 16px;
+        gap: 12px;
+    }
+
+    .sj-vp-snel__desc {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .sj-single-layout {
+        padding: 0 12px;
+        margin: 16px auto;
+    }
+
+    .sj-vp-snel__title {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .sj-vp-snel {
+        flex-wrap: wrap;
+        gap: 8px;
+        padding: 10px 14px;
+    }
+
+    .sj-vp-snel__btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 </style>

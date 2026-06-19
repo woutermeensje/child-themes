@@ -34305,3 +34305,194 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 [16-Jun-2026 09:17:00 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 624
 [16-Jun-2026 09:17:04 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 624
 [16-Jun-2026 09:17:19 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 624
+[18-Jun-2026 11:24:55 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: DELETE FROM wp_yoast_indexable WHERE object_type = :param0  AND object_sub_type = :param1  ORDER BY id LIMIT 1000 | parameters: post, shop_order</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "ORDER": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/wordpress-seo/src/repositories/indexable-cleanup-repository.php(78): WP_SQLite_DB->query('DELETE FROM wp_...')
+#2 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(122): Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type('post', 'shop_order', 1000)
+#3 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(96): Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}(1000)
+#4 /var/www/html/wp-includes/class-wp-hook.php(341): Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup()
+#5 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-cron.php(191): do_action_ref_array('wpseo_start_cle...', Array)
+#8 {main}</pre>
+ for query DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000 made by do_action_ref_array('wpseo_start_cleanup_indexables'), WP_Hook->do_action, WP_Hook->apply_filters, Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup, Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}, Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[18-Jun-2026 11:59:59 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>DESCRIBE wp_rn_job_alerts</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: SELECT
+				`name` as `Field`,
+				(
+					CASE `notnull`
+					WHEN 0 THEN 'YES'
+					WHEN 1 THEN 'NO'
+					END
+				) as `Null`,
+				COALESCE(
+					d.`mysql_type`,
+					(
+						CASE `type`
+						WHEN 'INTEGER' THEN 'int'
+						WHEN 'TEXT' THEN 'text'
+						WHEN 'BLOB' THEN 'blob'
+						WHEN 'REAL' THEN 'real'
+						ELSE `type`
+						END
+					)
+				) as `Type`,
+				TRIM(`dflt_value`, &quot;'&quot;) as `Default`,
+				'' as Extra,
+				(
+					CASE `pk`
+					WHEN 0 THEN ''
+					ELSE 'PRI'
+					END
+				) as `Key`
+				FROM pragma_table_info(&quot;wp_rn_job_alerts&quot;) p
+				LEFT JOIN _mysql_data_types_cache d
+				ON d.`table` = &quot;wp_rn_job_alerts&quot;
+				AND d.`column_or_index` = p.`name`
+				;
+			 | (no parameters)</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: Table not found.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-includes/class-wpdb.php(3117): WP_SQLite_DB->query('DESCRIBE wp_rn_...')
+#2 /var/www/html/wp-content/themes/themes/recruiternext/inc/job-alerts-cron.php(12): wpdb->get_col('DESCRIBE wp_rn_...', 0)
+#3 /var/www/html/wp-includes/class-wp-hook.php(341): {closure}('')
+#4 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters(NULL, Array)
+#5 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#6 /var/www/html/wp-settings.php(742): do_action('init')
+#7 /var/www/html/wp-config.php(106): require_once('/var/www/html/w...')
+#8 /var/www/html/wp-load.php(50): require_once('/var/www/html/w...')
+#9 /var/www/html/wp-blog-header.php(13): require_once('/var/www/html/w...')
+#10 /var/www/html/index.php(17): require('/var/www/html/w...')
+#11 {main}</pre>
+ for query DESCRIBE wp_rn_job_alerts made by require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, {closure}, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[18-Jun-2026 11:59:59 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>ALTER TABLE wp_rn_job_alerts ADD COLUMN last_sent datetime NULL DEFAULT NULL</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: INSERT INTO _mysql_data_types_cache (`table`, `column_or_index`, `mysql_type`)
+				VALUES (:table, :column, :datatype)
+				ON CONFLICT(`table`, `column_or_index`) DO UPDATE SET `mysql_type` = :datatype
+			 | parameters: wp_rn_job_alerts, last_sent, datetime</li>
+<li>Executing: DROP TRIGGER IF EXISTS &quot;__wp_rn_job_alerts_COLUMN_on_update__&quot; | (no parameters)</li>
+<li>Executing: ALTER TABLE wp_rn_job_alerts ADD COLUMN last_sent text NULL DEFAULT NULL | (no parameters)</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 no such table: wp_rn_job_alerts.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/themes/themes/recruiternext/inc/job-alerts-cron.php(15): WP_SQLite_DB->query('ALTER TABLE wp_...')
+#2 /var/www/html/wp-includes/class-wp-hook.php(341): {closure}('')
+#3 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters(NULL, Array)
+#4 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#5 /var/www/html/wp-settings.php(742): do_action('init')
+#6 /var/www/html/wp-config.php(106): require_once('/var/www/html/w...')
+#7 /var/www/html/wp-load.php(50): require_once('/var/www/html/w...')
+#8 /var/www/html/wp-blog-header.php(13): require_once('/var/www/html/w...')
+#9 /var/www/html/index.php(17): require('/var/www/html/w...')
+#10 {main}</pre>
+ for query ALTER TABLE wp_rn_job_alerts ADD COLUMN last_sent datetime NULL DEFAULT NULL made by require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, {closure}, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[18-Jun-2026 11:59:59 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>ALTER TABLE wp_rn_job_alerts ADD COLUMN unsubscribe_token varchar(64) NOT NULL DEFAULT ''</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: INSERT INTO _mysql_data_types_cache (`table`, `column_or_index`, `mysql_type`)
+				VALUES (:table, :column, :datatype)
+				ON CONFLICT(`table`, `column_or_index`) DO UPDATE SET `mysql_type` = :datatype
+			 | parameters: wp_rn_job_alerts, unsubscribe_token, varchar(64)</li>
+<li>Executing: DROP TRIGGER IF EXISTS &quot;__wp_rn_job_alerts_COLUMN_on_update__&quot; | (no parameters)</li>
+<li>Executing: ALTER TABLE wp_rn_job_alerts ADD COLUMN unsubscribe_token text NOT NULL DEFAULT '' | (no parameters)</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 no such table: wp_rn_job_alerts.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/themes/themes/recruiternext/inc/job-alerts-cron.php(19): WP_SQLite_DB->query('ALTER TABLE wp_...')
+#2 /var/www/html/wp-includes/class-wp-hook.php(341): {closure}('')
+#3 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters(NULL, Array)
+#4 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#5 /var/www/html/wp-settings.php(742): do_action('init')
+#6 /var/www/html/wp-config.php(106): require_once('/var/www/html/w...')
+#7 /var/www/html/wp-load.php(50): require_once('/var/www/html/w...')
+#8 /var/www/html/wp-blog-header.php(13): require_once('/var/www/html/w...')
+#9 /var/www/html/index.php(17): require('/var/www/html/w...')
+#10 {main}</pre>
+ for query ALTER TABLE wp_rn_job_alerts ADD COLUMN unsubscribe_token varchar(64) NOT NULL DEFAULT '' made by require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, {closure}, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[18-Jun-2026 11:59:59 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>UPDATE wp_rn_job_alerts SET unsubscribe_token = SUBSTRING(MD5(RAND()), 1, 32) WHERE unsubscribe_token = ''</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: UPDATE wp_rn_job_alerts SET unsubscribe_token = SUBSTR(MD5(RAND()), 1, 32) WHERE rowid IN (SELECT rowid FROM wp_rn_job_alerts WHERE unsubscribe_token = :param0 ) | parameters: </li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 no such table: wp_rn_job_alerts.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/themes/themes/recruiternext/inc/job-alerts-cron.php(23): WP_SQLite_DB->query('UPDATE wp_rn_jo...')
+#2 /var/www/html/wp-includes/class-wp-hook.php(341): {closure}('')
+#3 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters(NULL, Array)
+#4 /var/www/html/wp-includes/plugin.php(522): WP_Hook->do_action(Array)
+#5 /var/www/html/wp-settings.php(742): do_action('init')
+#6 /var/www/html/wp-config.php(106): require_once('/var/www/html/w...')
+#7 /var/www/html/wp-load.php(50): require_once('/var/www/html/w...')
+#8 /var/www/html/wp-blog-header.php(13): require_once('/var/www/html/w...')
+#9 /var/www/html/index.php(17): require('/var/www/html/w...')
+#10 {main}</pre>
+ for query UPDATE wp_rn_job_alerts SET unsubscribe_token = SUBSTRING(MD5(RAND()), 1, 32) WHERE unsubscribe_token = '' made by require('wp-blog-header.php'), require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), WP_Hook->do_action, WP_Hook->apply_filters, {closure}, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[18-Jun-2026 18:01:44 UTC] Automatic updates starting...
+[18-Jun-2026 18:01:45 UTC]   Automatic plugin updates starting...
+[18-Jun-2026 18:01:45 UTC]   Automatic plugin updates complete.
+[18-Jun-2026 18:01:45 UTC] Automatic updates complete.
+[18-Jun-2026 18:01:46 UTC] Cron reschedule event error for hook: sj_newsletter_weekly, Error code: invalid_schedule, Error message: Event schedule does not exist., Data: {"schedule":"biweekly","args":[],"interval":1209600}
+[18-Jun-2026 18:01:46 UTC] Cron reschedule event error for hook: fn_newsletter_biweekly, Error code: invalid_schedule, Error message: Event schedule does not exist., Data: {"schedule":"fn_biweekly","args":[],"interval":1209600}
+[19-Jun-2026 05:59:36 UTC] Automatic updates starting...
+[19-Jun-2026 05:59:39 UTC]   Automatic plugin updates starting...
+[19-Jun-2026 05:59:39 UTC]   Automatic plugin updates complete.
+[19-Jun-2026 05:59:40 UTC] Automatic updates complete.
+[19-Jun-2026 12:25:34 UTC] Automatic updates starting...
+[19-Jun-2026 12:25:34 UTC]   Automatic plugin updates starting...
+[19-Jun-2026 12:25:34 UTC]   Automatic plugin updates complete.
+[19-Jun-2026 12:25:35 UTC] Automatic updates complete.

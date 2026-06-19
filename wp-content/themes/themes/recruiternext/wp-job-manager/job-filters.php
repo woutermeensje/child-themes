@@ -35,25 +35,39 @@ unset($value);
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Work+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+
+<?php
+$hero_attachment = get_page_by_path('recruiter-vacatures-opdrachten-homepage', OBJECT, 'attachment');
+$hero_image = $hero_attachment
+    ? wp_get_attachment_url($hero_attachment->ID)
+    : get_the_post_thumbnail_url(get_the_ID(), 'full');
+$job_count = 0;
+if (function_exists('get_job_listings')) {
+    $job_count_query = get_job_listings([
+        'posts_per_page' => 1,
+        'post_status'    => 'publish',
+        'fields'         => 'ids',
+    ]);
+    $job_count = isset($job_count_query->found_posts) ? (int) $job_count_query->found_posts : 0;
+}
+?>
+<div class="recruiternext-job-hero"<?php if ($hero_image) : ?> style="background-image: url('<?php echo esc_url($hero_image); ?>');"<?php endif; ?>>
+    <div class="recruiternext-job-hero__inner">
+        <span class="recruiternext-job-hero__eyebrow">Recruiternext.nl</span>
+        <div class="recruiternext-job-hero__content">
+            <h1 class="recruiternext-job-hero__title"><span class="recruiternext-job-hero__highlight">Vacaturesite</span> voor <span class="recruiternext-job-hero__highlight">Recruiters</span>, Recruitment Marketeers en HR Professionals.</h1>
+<p class="recruiternext-job-hero__subtitle">
+                Bekijk alle <a href="#job_listings" class="recruiternext-job-hero__vacatures-link"><span class="recruiternext-hero-job-count recruiternext-job-hero__highlight"><?php echo esc_html(number_format_i18n($job_count)); ?></span> openstaande vacatures</a> of maak een <a href="<?php echo esc_url(home_url('/job-alerts/')); ?>" class="recruiternext-job-hero__link">Vacature Alert</a> aan.
+            </p>
+        </div>
+    </div>
+</div>
 
 <form class="job_filters">
     <?php do_action('job_manager_job_filters_start', $atts); ?>
 
-    <div class="filter-header">
-        <div class="filter-header__left">
-            <h2>Bekijk alle Recruitment Vacatures</h2>
-            <p>Ontvang de laatste recruitment vacatures in de e-mail!</p>
-        </div>
-        <div class="filter-header__right">
-            <a href="<?php echo esc_url( home_url( '/job-alerts/' ) ); ?>" class="filter-alert-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                Vacature Alerts
-            </a>
-        </div>
-    </div>
-
-    <div class="search-basic">
+    <div class="rn-filter-row">
         <?php do_action('job_manager_job_filters_search_jobs_start', $atts); ?>
 
         <div class="search_keywords">
@@ -65,9 +79,6 @@ unset($value);
         </div>
 
         <?php do_action('job_manager_job_filters_search_jobs_end', $atts); ?>
-    </div>
-
-    <div class="filter-box">
 
         <!-- Dienstverband -->
         <div class="job_type">
@@ -132,7 +143,7 @@ unset($value);
     </div>
 
     <!-- Actieve filters -->
-    <div class="active-filters" id="active-filters" aria-live="polite"></div>
+    <div class="rn-active-filters" id="rn-active-filters" aria-live="polite"></div>
 
 </form>
 
@@ -180,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Actieve filters tonen
-  const activeFiltersEl = document.getElementById("active-filters");
+  const activeFiltersEl = document.getElementById("rn-active-filters");
 
   const renderActiveFilters = () => {
     if (!activeFiltersEl) return;
@@ -389,6 +400,17 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 
+<script>
+jQuery(function($) {
+  $("div.job_listings").on("updated_results", function(event, result) {
+    if (result && typeof result.found_count !== "undefined") {
+      const foundCount = parseInt(result.found_count, 10);
+      $(".recruiternext-hero-job-count").text(Number.isNaN(foundCount) ? "0" : foundCount.toLocaleString("nl-NL"));
+    }
+  });
+});
+</script>
+
 
 <style>
 /* Layout – full width breakout uit Elementor container */
@@ -401,43 +423,43 @@ document.addEventListener("DOMContentLoaded", () => {
   margin-right: -50vw;
   min-height: 300px;
   padding: 60px 0;
-  background-color: #0458AB;
-  box-shadow: 0 4px 24px rgba(4, 88, 171, 0.25);
+  background-color: #FFFACD !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
   border-radius: 0;
   border: none;
   box-sizing: border-box;
 }
 
 /* Binnenste containers gecentreerd */
-.filter-header,
-.search-basic,
-.filter-box,
-.active-filters {
+.rn-filter-header,
+.rn-search-basic,
+.rn-filter-box,
+.rn-active-filters {
   max-width: 1200px;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
-.filter-box {
+.rn-filter-box {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   padding: 16px 24px 0;
 }
 
-.filter-box > div {
+.rn-filter-box > div {
   flex: 0 0 auto !important;
   width: auto !important;
   min-width: 0 !important;
 }
 
 @media (max-width: 768px) {
-  .filter-box {
+  .rn-filter-box {
     flex-direction: column;
     padding: 0 16px;
     gap: 10px;
   }
-  .filter-box > div {
+  .rn-filter-box > div {
     width: 100% !important;
     min-width: 0 !important;
   }
@@ -460,7 +482,7 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 /* Header */
-.filter-header {
+.rn-filter-header {
   padding: 20px 24px 16px !important;
   display: flex;
   align-items: center;
@@ -468,16 +490,16 @@ document.addEventListener("DOMContentLoaded", () => {
   gap: 20px;
 }
 
-.filter-header__left { flex: 1 1 auto; }
-.filter-header__right { flex: 0 0 auto; }
+.rn-filter-header__left { flex: 1 1 auto; }
+.rn-filter-header__right { flex: 0 0 auto; }
 
-.filter-alert-btn {
+.rn-filter-alert-btn {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  background: #CADDF6;
-  color: #0458AB !important;
-  border: 2px solid #CADDF6;
+  background: #FFFACD;
+  color: #007BA7 !important;
+  border: 2px solid #FFFACD;
   padding: 9px 20px;
   border-radius: 6px;
   font-family: 'Poppins', sans-serif;
@@ -490,31 +512,31 @@ document.addEventListener("DOMContentLoaded", () => {
   transition: background .15s ease, color .15s ease, transform .15s ease;
 }
 
-.filter-alert-btn:hover {
-  background: #b8cde8;
-  border-color: #b8cde8;
-  color: #034085 !important;
+.rn-filter-alert-btn:hover {
+  background: var(--color-primary-mid, #3BB4DC);
+  border-color: var(--color-primary-mid, #3BB4DC);
+  color: #005f82 !important;
   transform: translateY(-1px);
 }
 
-.filter-header p {
+.rn-filter-header p {
   font-family: Poppins;
   font-size: 15px;
   color: rgba(255, 255, 255, 0.85);
   margin: 8px 0 0;
 }
 
-.filter-newsletter-link {
+.rn-filter-newsletter-link {
   color: #ffffff;
   font-weight: 600;
   text-decoration: underline;
 }
 
-.filter-newsletter-link:hover {
-  color: #CADDF6;
+.rn-filter-newsletter-link:hover {
+  color: #FFFACD;
 }
 
-.filter-header h2 {
+.rn-filter-header h2 {
   font-family: 'Inter', sans-serif;
   font-size: 26px;
   color: #ffffff;
@@ -524,7 +546,7 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 /* Zoekvelden */
-.search-basic {
+.rn-search-basic {
   display: flex;
   justify-content: left;
   gap: 16px;
@@ -540,24 +562,25 @@ document.addEventListener("DOMContentLoaded", () => {
   position: relative;
 }
 
-.search-basic input[type="text"] {
+.rn-search-basic input[type="text"] {
   width: 100%;
   padding: 13px 14px 13px 40px;
   font-size: 15px;
-  border: 1px solid #ffffff;
+  border: 1px solid #dedede;
   border-radius: 6px;
   background-color: #ffffff;
   color: #333;
   box-shadow: none;
-  transition: border-color .2s ease, box-shadow .2s ease;
+  outline: none;
+  transition: border-color .2s ease;
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
 }
 
-.search-basic input[type="text"]:focus {
+.rn-search-basic input[type="text"]:focus {
   outline: none;
-  border-color: #ffffff;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.35);
+  border-color: #dedede;
+  box-shadow: none;
 }
 
 .search_keywords input::placeholder,
@@ -575,7 +598,7 @@ document.addEventListener("DOMContentLoaded", () => {
   transform: translateY(-50%);
   width: 18px;
   height: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: contain;
   pointer-events: none;
@@ -589,14 +612,14 @@ document.addEventListener("DOMContentLoaded", () => {
   transform: translateY(-50%);
   width: 18px;
   height: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: contain;
   pointer-events: none;
 }
 
 @media (max-width: 768px) {
-  .search-basic {
+  .rn-search-basic {
     flex-direction: column;
     padding: 0 16px;
     gap: 10px;
@@ -737,7 +760,7 @@ select.sj-hidden-select {
 .sj-search-input:focus {
   outline: none;
   border-color: var(--color-secondary);
-  box-shadow: 0 0 0 2px rgba(4, 88, 171, 0.16);
+  box-shadow: 0 0 0 2px rgba(0, 123, 167, 0.16);
 }
 
 .sj-option {
@@ -750,7 +773,7 @@ select.sj-hidden-select {
 }
 .sj-option:hover { background: #f2f2f2; }
 
-.sj-option.is-selected .sj-option-text { color: #3563A2; font-weight: 700; }
+.sj-option.is-selected .sj-option-text { color: var(--color-primary, #007BA7); font-weight: 700; }
 
 .sj-option-text {
   font-family: 'Poppins', sans-serif;
@@ -761,7 +784,7 @@ select.sj-hidden-select {
 /* Focus ring */
 .sj-select-btn:focus {
   outline: none;
-  border-color: #3563A2;
+  border-color: var(--color-primary, #007BA7);
   box-shadow: 0 0 0 2px rgba(53, 99, 162, 0.2);
 }
 
@@ -779,7 +802,7 @@ select.sj-hidden-select {
 .sj-select-btn .sj-actions { gap: 0 !important; }
 
 /* Actieve filters */
-.active-filters {
+.rn-active-filters {
   display: none;
   flex-wrap: wrap;
   gap: 10px;
@@ -801,12 +824,12 @@ span.active-filter {
   cursor: pointer;
 }
 
-span.active-filter:hover { border-color: #3563A2; }
+span.active-filter:hover { border-color: var(--color-primary, #007BA7); }
 
 .active-filter-text { color: #333333; }
 
 button.active-filter-x {
-  color: #3563A2;
+  color: var(--color-primary, #007BA7);
   font-weight: 700;
   font-size: 20px;
   margin-left: 6px;
@@ -817,7 +840,7 @@ button.active-filter-x {
   cursor: pointer;
 }
 
-button.active-filter-x:hover { color: #034085; background: none; }
+button.active-filter-x:hover { color: #005f82; background: none; }
 
 /* ---- Filter icoontjes per dropdown ---- */
 
@@ -850,66 +873,409 @@ button.active-filter-x:hover { color: #034085; background: none; }
 
 /* Dienstverband → aktetas */
 .job_type .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
 }
 
 /* Sector → categorie-raster */
 .job_sector .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
 }
 
 /* Organisatie → gebouw */
 .job_company .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
 }
 
 /* Provincie → kaart/locatie */
 .organization_type .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B82F6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/%3E%3Cline x1='8' y1='2' x2='8' y2='18'/%3E%3Cline x1='16' y1='6' x2='16' y2='22'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/%3E%3Cline x1='8' y1='2' x2='8' y2='18'/%3E%3Cline x1='16' y1='6' x2='16' y2='22'/%3E%3C/svg%3E");
 }
 
 /* Mobile */
 @media (max-width: 960px) {
+  /* ── Hero ── */
+  .recruiternext-job-hero {
+    width: 100%;
+    left: 0;
+    right: auto;
+    margin-left: 0;
+    margin-right: 0;
+    min-height: 260px;
+    height: auto;
+    padding: 40px 0;
+  }
+
+  .recruiternext-job-hero__inner {
+    max-width: none;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  .recruiternext-job-hero__eyebrow {
+    font-size: 11px !important;
+    margin-bottom: 10px !important;
+  }
+
+  .recruiternext-job-hero__title {
+    font-size: clamp(20px, 6vw, 28px) !important;
+    line-height: 1.15 !important;
+  }
+
+  .recruiternext-job-hero__subtitle {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    line-height: 1.55 !important;
+    margin-top: 10px !important;
+  }
+
+  .recruiternext-job-hero__vacatures-link,
+  .recruiternext-job-hero__link {
+    font-size: 13px !important;
+    font-weight: 600 !important;
+  }
+
+  /* ── Filterformulier ── */
   form.job_filters {
-    /* Reset de desktop breakout – voorkomt verschuiving */
     width: 100% !important;
     position: relative !important;
     left: 0 !important;
     right: auto !important;
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-    padding: 16px 0 20px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
     box-sizing: border-box;
   }
 
-  form.job_filters .filter-header {
-    padding: 0 16px 12px 16px !important;
+  form.job_filters .rn-filter-header {
+    padding: 14px 16px 10px !important;
     flex-direction: column;
     align-items: flex-start;
-    gap: 12px;
+    gap: 10px;
   }
-  form.job_filters .filter-header h2 {
-    font-size: 20px !important;
+
+  form.job_filters .rn-filter-header h2 {
+    font-size: 18px !important;
     line-height: 1.2 !important;
   }
-  form.job_filters .filter-header p {
+
+  form.job_filters .rn-filter-header p {
     font-size: 13px !important;
+    margin: 4px 0 0 !important;
   }
-  .filter-alert-btn {
-    display: none;
+
+  .rn-filter-alert-btn {
+    display: none !important;
   }
-  form.job_filters .search-basic {
+
+  form.job_filters .rn-search-basic {
+    flex-direction: column !important;
     padding: 0 16px !important;
     gap: 10px !important;
   }
-  form.job_filters .filter-box {
+
+  form.job_filters .rn-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 16px !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  form.job_filters .rn-filter-row > div,
+  form.job_filters .rn-filter-row .search_keywords,
+  form.job_filters .rn-filter-row .search_location {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  form.job_filters .rn-filter-box {
+    flex-direction: column !important;
     padding: 10px 16px 0 !important;
     gap: 10px !important;
   }
-  form.job_filters .active-filters {
-    margin: 10px 16px 0 !important;
+
+  form.job_filters .rn-filter-box > div {
+    width: 100% !important;
+  }
+
+  form.job_filters .sj-select-wrap,
+  form.job_filters .sj-select,
+  form.job_filters .sj-select-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  form.job_filters .sj-select-btn {
+    min-width: 0;
+    white-space: normal;
+  }
+
+  form.job_filters .sj-options {
+    width: 100% !important;
+    min-width: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  form.job_filters .rn-active-filters {
+    padding: 0 16px 14px !important;
+    margin-top: 0 !important;
+    box-sizing: border-box;
     flex-wrap: wrap;
     gap: 6px;
   }
 }
+
+@media (max-width: 480px) {
+  .recruiternext-job-hero {
+    padding: 32px 0;
+    min-height: 220px;
+  }
+
+  .recruiternext-job-hero__title {
+    font-size: clamp(18px, 7vw, 24px) !important;
+  }
+
+  .recruiternext-job-hero__subtitle {
+    font-size: 12px !important;
+  }
+
+  .recruiternext-job-hero__vacatures-link,
+  .recruiternext-job-hero__link {
+    font-size: 12px !important;
+  }
+}
+
+/* Recruiternext job filters: fondsen-style intro + horizontal filter bar */
+.recruiternext-job-hero {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 380px;
+  background-color: #007BA7;
+  background-size: cover;
+  background-position: center top;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.recruiternext-job-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 123, 167, 0.84);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.recruiternext-job-hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.recruiternext-job-hero__eyebrow {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 3px solid var(--color-secondary, #FFFACD);
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff;
+}
+
+.recruiternext-job-hero__content {
+  max-width: 780px;
+}
+
+.recruiternext-job-hero__title {
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: clamp(24px, 3vw, 36px) !important;
+  line-height: 1.2 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+.recruiternext-job-hero__description {
+  margin: 14px 0 0;
+  max-width: 60ch;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.recruiternext-job-hero__subtitle {
+  margin: 12px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.recruiternext-job-hero__highlight {
+  color: #FFFACD;
+}
+
+.recruiternext-job-hero__vacatures-link,
+.recruiternext-job-hero__link {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.recruiternext-job-hero__link,
+.recruiternext-job-hero__vacatures-link .recruiternext-job-hero__highlight {
+  color: #FFFACD !important;
+}
+
+.recruiternext-job-hero__vacatures-link:hover,
+.recruiternext-job-hero__link:hover {
+  color: #ffffff !important;
+}
+
+form.job_filters {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  margin-top: 0;
+  margin-bottom: 0;
+  min-height: 100px;
+  padding: 0;
+  background: rgba(0, 123, 167, 0.12);
+  background: color-mix(in srgb, var(--color-primary, #007BA7) 12%, transparent);
+  border-bottom: 1px solid rgba(0, 123, 167, 0.18);
+  border-bottom-color: color-mix(in srgb, var(--color-primary, #007BA7) 18%, transparent);
+  border-radius: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+}
+
+.rn-filter-row,
+form.job_filters .rn-active-filters {
+  max-width: 1200px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.rn-filter-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 24px;
+  box-sizing: border-box;
+}
+
+.rn-filter-row > div {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.rn-filter-row .search_keywords,
+.rn-filter-row .search_location {
+  flex: 1 1 205px !important;
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.rn-filter-row input[type="text"] {
+  width: 100%;
+  padding: 11px 14px 11px 40px;
+  font-size: 15px;
+  border: 1px solid #dedede;
+  border-radius: 8px;
+  background-color: #ffffff;
+  color: #333333;
+  transition: border-color .2s ease;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.rn-filter-row input[type="text"]:focus {
+  outline: none;
+  border-color: #dedede;
+  box-shadow: none;
+}
+
+.rn-filter-row .search_keywords::before,
+.rn-filter-row .search_location::before {
+  width: 17px;
+  height: 17px;
+}
+
+.rn-filter-row .search_keywords::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23007BA7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+}
+
+.rn-filter-row .search_location::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23007BA7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
+}
+
+form.job_filters .sj-select-btn {
+  border-color: #E0E0E0 !important;
+  color: #111111 !important;
+  font-size: 15px;
+}
+
+form.job_filters .sj-select-btn:focus {
+  border-color: #007BA7;
+  box-shadow: 0 0 0 2px rgba(0, 123, 167, 0.2);
+}
+
+form.job_filters .sj-option.is-selected .sj-option-text {
+  color: #007BA7;
+}
+
+form.job_filters .rn-active-filters {
+  display: none;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 24px 14px !important;
+  margin-top: 0 !important;
+}
+
+form.job_filters span.active-filter {
+  font-size: 15px;
+}
+
+form.job_filters span.active-filter:hover {
+  border-color: #007BA7;
+}
+
+form.job_filters button.active-filter-x {
+  color: #007BA7;
+}
+
+form.job_filters button.active-filter-x:hover {
+  color: #005f82;
+}
+
 </style>

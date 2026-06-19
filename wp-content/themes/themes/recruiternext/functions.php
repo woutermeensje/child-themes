@@ -12,12 +12,13 @@ add_action('wp_enqueue_scripts', function () {
     }
 
     wp_enqueue_style('parent-style', get_template_directory_uri() . '/style.css');
-    wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, wp_get_theme()->get('Version'));
+    wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, filemtime(get_stylesheet_directory() . '/style.css'));
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
-    wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
-    wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
-    wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
-    wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css');
+    wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;600&display=swap', [], null);
+    wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;800;900&display=swap', [], null);
+    wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css', [], filemtime(get_stylesheet_directory() . '/fonts/fonts.css'));
+    wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style', 'work-sans-font'], filemtime(get_stylesheet_directory() . '/css/header.css'));
+    wp_enqueue_style('rn-shortcodes', get_stylesheet_directory_uri() . '/css/shortcodes.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/shortcodes.css'));
     wp_enqueue_style('rn-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
 });
 
@@ -295,6 +296,12 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
     return $query_args;
 }, 10, 2);
 
+add_filter('job_manager_get_listings_result', function ($result, $jobs) {
+    $result['found_count'] = isset($jobs->found_posts) ? (int) $jobs->found_posts : 0;
+
+    return $result;
+}, 10, 2);
+
 
 // =========================================================
 // 9) Breadcrumb separator (Yoast)
@@ -442,3 +449,68 @@ add_action('job_manager_update_job_data', function($job_id, $values){
     update_post_meta($job_id, '_contact_last_name',  sanitize_text_field($values['company']['contact_last_name'] ?? ''));
     update_post_meta($job_id, '_contact_email',      sanitize_email($values['company']['contact_email'] ?? ''));
 }, 10, 2);
+
+// =========================================================
+// Inc: nieuwsbrief, job alerts, vacature plaatsen, AC
+// =========================================================
+require_once get_stylesheet_directory() . '/inc/activecampaign.php';
+require_once get_stylesheet_directory() . '/inc/newsletter-cron.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-newsletter.php';
+require_once get_stylesheet_directory() . '/inc/job-alerts-cron.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-job-alerts.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-vacature-plaatsen.php';
+
+
+// =========================================================
+// Google Jobs – structured data fixes
+// =========================================================
+
+add_filter( 'wpjm_get_job_listing_structured_data', function ( $data, $post ) {
+
+    // 1. @context moet https zijn (Google eist dit)
+    $data['@context'] = 'https://schema.org/';
+
+    // 2. validThrough: Google verwijdert listings zonder einddatum na verloop van tijd.
+    //    Fallback: 6 maanden na plaatsingsdatum.
+    if ( empty( $data['validThrough'] ) ) {
+        $date_posted = get_post_datetime( $post );
+        if ( $date_posted ) {
+            $expires = clone $date_posted;
+            $expires->modify( '+6 months' );
+            $data['validThrough'] = $expires->format( 'c' );
+        }
+    }
+
+    // 3. hiringOrganization.name mag nooit leeg zijn (Google verplicht veld).
+    if ( empty( $data['hiringOrganization']['name'] ) ) {
+        $data['hiringOrganization']['name'] = get_bloginfo( 'name' );
+    }
+
+    // 4. jobLocation.address: als geocoding niet ingesteld is valt WP Job Manager
+    //    terug op een plain string. Upgrade die naar een PostalAddress object.
+    if ( ! empty( $data['jobLocation']['address'] ) && is_string( $data['jobLocation']['address'] ) ) {
+        $data['jobLocation']['address'] = [
+            '@type'           => 'PostalAddress',
+            'addressLocality' => $data['jobLocation']['address'],
+            'addressCountry'  => 'NL',
+        ];
+    }
+
+    // 5. jobLocation helemaal leeg maar locatietekst aanwezig: voeg fallback toe.
+    if ( empty( $data['jobLocation'] ) ) {
+        $location = get_the_job_location( $post );
+        if ( ! empty( $location ) ) {
+            $data['jobLocation'] = [
+                '@type'   => 'Place',
+                'address' => [
+                    '@type'           => 'PostalAddress',
+                    'addressLocality' => $location,
+                    'addressCountry'  => 'NL',
+                ],
+            ];
+        }
+    }
+
+    return $data;
+
+}, 20, 2 );

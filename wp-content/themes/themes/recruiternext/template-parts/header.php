@@ -17,29 +17,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   z-index: 9000 !important;
   background: #ffffff !important;
   box-shadow: 0 2px 16px rgba(0,0,0,0.08) !important;
-  width: 100% !important;
+  width: 100vw !important;
+  margin-left: calc(50% - 50vw) !important;
+  box-sizing: border-box !important;
 }
-
-/* ---- Utility bar ---- */
-#rn-header .rn-topbar { background: #0458AB !important; width: 100% !important; }
-#rn-header .rn-topbar__inner {
-  max-width: 1200px; margin: 0 auto; padding: 0 24px;
-  height: 36px; display: flex; align-items: center; justify-content: space-between;
-}
-#rn-header .rn-topbar__left,
-#rn-header .rn-topbar__right { display: flex; align-items: center; gap: 10px; }
-#rn-header .rn-topbar a {
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 13px !important; font-weight: 500 !important;
-  color: rgba(255,255,255,0.9) !important;
-  text-decoration: none !important;
-}
-#rn-header .rn-topbar a:hover { color: #fff !important; text-decoration: underline !important; }
-#rn-header .rn-topbar__divider { color: rgba(255,255,255,0.4); font-size: 13px; }
 
 /* ---- Main nav bar ---- */
 #rn-header .rn-header__inner {
-  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  width: min(100% - 96px, 1840px) !important; margin: 0 auto !important; padding: 0 !important;
   height: 68px; display: flex; align-items: center; gap: 24px;
 }
 
@@ -55,8 +40,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 #rn-header .rn-nav__link {
   display: inline-flex !important; align-items: center; gap: 5px;
   padding: 8px 12px !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 15px !important; font-weight: 300 !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px !important; font-weight: 600 !important;
   color: #333333 !important;
   text-decoration: none !important;
   border-radius: 6px; white-space: nowrap;
@@ -66,8 +51,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   box-shadow: none !important;
   border: none !important;
 }
-#rn-header .rn-nav__link:hover { color: #0458AB !important; background: transparent !important; }
-#rn-header .rn-nav__link.is-active { color: #0458AB !important; font-weight: 600 !important; }
+#rn-header .rn-nav__link:hover { color: #007BA7 !important; background: transparent !important; }
+#rn-header .rn-nav__link.is-active { color: #007BA7 !important; font-weight: 600 !important; }
 
 /* Chevron */
 #rn-header .rn-nav__chev {
@@ -81,7 +66,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 #rn-header .rn-nav__dropdown {
   display: none; position: absolute; top: 100%; left: 0;
   min-width: 210px; background: #fff;
-  border: 1px solid #e8ecf0; border-top: 3px solid #0458AB;
+  border: 1px solid #e8ecf0; border-top: 3px solid #007BA7;
   border-radius: 0 0 8px 8px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.12);
   padding: 6px; list-style: none; margin: 0; z-index: 9001;
@@ -99,26 +84,27 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 #rn-header .rn-header__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
 #rn-header .rn-btn {
   display: inline-flex !important; align-items: center; justify-content: center;
-  font-family: 'Poppins', sans-serif !important;
-  font-weight: 600 !important; font-size: 14px !important;
-  padding: 9px 20px !important; border-radius: 8px !important;
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 800 !important; font-size: 16px !important;
+  padding: 6px 16px !important; border-radius: 8px !important;
   white-space: nowrap; cursor: pointer;
   text-decoration: none !important;
   transition: background .15s ease, color .15s ease, transform .15s ease;
 }
 #rn-header .rn-btn--outline {
-  background: transparent !important; color: #0458AB !important;
-  border: 2px solid #0458AB !important;
+  background: transparent !important; color: #007BA7 !important;
+  border: 2px solid #007BA7 !important;
 }
-#rn-header .rn-btn--outline:hover { background: #0458AB !important; color: #fff !important; }
+#rn-header .rn-btn--outline:hover { background: #007BA7 !important; color: #fff !important; }
 #rn-header .rn-btn--accent {
-  background: #3B82F6 !important; color: #fff !important;
-  border: 2px solid #3B82F6 !important;
+  background: #3BB4DC !important; color: #fff !important;
+  border: 5px solid #3BB4DC !important;
   box-shadow: 0 2px 8px rgba(59,130,246,0.3) !important;
 }
 #rn-header .rn-btn--accent:hover {
-  background: #0458AB !important; border-color: #0458AB !important;
-  transform: translateY(-1px);
+  background: #3BB4DC !important; border-color: #3BB4DC !important;
+  color: #fff !important;
+  transform: none;
 }
 
 /* ---- Hamburger ---- */
@@ -176,7 +162,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   text-decoration: none !important; box-shadow: none !important;
   background: transparent !important;
 }
-.rn-mobile-nav__list a:hover { color: #0458AB !important; }
+.rn-mobile-nav__list a:hover { color: #007BA7 !important; }
 .rn-mobile-nav__list .rn-nav__chev { display: none !important; }
 
 /* Submenu mobile */
@@ -190,7 +176,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /* Divider + CTA knoppen */
 .rn-mobile-nav__divider { height: 1px; background: #e5e7eb; margin: 14px 0; }
 .rn-mobile-nav__ctas { display: flex !important; flex-direction: column; gap: 10px; }
-.rn-mobile-nav__cta { width: 100%; justify-content: center; font-size: 15px !important; font-weight: 600 !important; padding: 13px 16px !important; border-radius: 8px !important; }
+.rn-mobile-nav__cta { width: 100%; justify-content: center; font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important; font-size: 16px !important; font-weight: 800 !important; padding: 10px 14px !important; border-radius: 8px !important; }
 
 /* ---- Responsive ---- */
 @media (max-width: 960px) {
@@ -198,34 +184,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   #rn-header .rn-header__cta { display: none !important; }
   #rn-header .rn-header__hamburger { display: flex !important; }
   .rn-mobile-nav { display: block; }
-  #rn-header .rn-topbar__right { display: none !important; }
 }
 @media (min-width: 961px) {
   .rn-mobile-nav { display: none !important; }
 }
 @media (max-width: 480px) {
-  #rn-header .rn-header__inner { padding: 0 16px !important; gap: 12px; }
-  #rn-header .rn-topbar__inner { padding: 0 16px !important; }
+  #rn-header .rn-header__inner { width: min(100% - 32px, 1840px) !important; gap: 12px; }
 }
 </style>
 
 <header id="rn-header" class="rn-header" role="banner">
-
-    <!-- Utility bar -->
-    <div class="rn-topbar">
-        <div class="rn-topbar__inner">
-            <div class="rn-topbar__left">
-                <a href="<?php echo esc_url( home_url( '/vacature-plaatsen/' ) ); ?>">Vacature Plaatsen</a>
-                <span class="rn-topbar__divider">|</span>
-                <a href="<?php echo esc_url( home_url( '/freelance-opdrachten/' ) ); ?>">Freelance Opdrachten</a>
-            </div>
-            <div class="rn-topbar__right">
-                <a href="<?php echo esc_url( home_url( '/tarieven/' ) ); ?>">Tarieven</a>
-                <span class="rn-topbar__divider">|</span>
-                <a href="mailto:support@recruiternext.nl">Support@recruiternext.nl</a>
-            </div>
-        </div>
-    </div>
 
     <!-- Main nav -->
     <div class="rn-header__inner">
