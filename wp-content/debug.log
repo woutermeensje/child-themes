@@ -34496,3 +34496,108 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 [19-Jun-2026 12:25:34 UTC]   Automatic plugin updates starting...
 [19-Jun-2026 12:25:34 UTC]   Automatic plugin updates complete.
 [19-Jun-2026 12:25:35 UTC] Automatic updates complete.
+[20-Jun-2026 06:03:15 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: DELETE FROM wp_yoast_indexable WHERE object_type = :param0  AND object_sub_type = :param1  ORDER BY id LIMIT 1000 | parameters: post, shop_order</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "ORDER": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/wordpress-seo/src/repositories/indexable-cleanup-repository.php(78): WP_SQLite_DB->query('DELETE FROM wp_...')
+#2 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(122): Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type('post', 'shop_order', 1000)
+#3 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(96): Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}(1000)
+#4 /var/www/html/wp-includes/class-wp-hook.php(341): Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup()
+#5 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-cron.php(191): do_action_ref_array('wpseo_start_cle...', Array)
+#8 {main}</pre>
+ for query DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000 made by do_action_ref_array('wpseo_start_cleanup_indexables'), WP_Hook->do_action, WP_Hook->apply_filters, Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup, Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}, Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[20-Jun-2026 06:03:16 UTC] Automatic updates starting...
+[20-Jun-2026 06:03:17 UTC]   Automatic plugin updates starting...
+[20-Jun-2026 06:03:17 UTC]   Automatic plugin updates complete.
+[20-Jun-2026 06:03:17 UTC] Automatic updates complete.
+[20-Jun-2026 10:03:17 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 579
+[20-Jun-2026 10:03:29 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 622
+[20-Jun-2026 10:03:35 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 579
+[20-Jun-2026 10:03:39 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 579
+[20-Jun-2026 10:03:40 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 579
+[20-Jun-2026 10:03:42 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 622
+[20-Jun-2026 10:03:49 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 20480 bytes) in /var/www/html/wp-content/plugins/gravityforms/forms_model.php on line 8982
+[20-Jun-2026 10:03:49 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 131072 bytes) in /var/www/html/wp-includes/class-wp-recovery-mode.php on line 182
+[20-Jun-2026 10:18:25 UTC] PHP Fatal error:  Out of memory (allocated 14680064) (tried to allocate 249856 bytes) in /var/www/html/wp-includes/block-editor.php on line 777
+[20-Jun-2026 10:18:25 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 579
+[20-Jun-2026 10:18:25 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 579
+[20-Jun-2026 10:18:26 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 563
+[20-Jun-2026 10:18:27 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 579
+[20-Jun-2026 10:19:09 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 563
+[20-Jun-2026 10:19:10 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 579
+[20-Jun-2026 10:19:14 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 622
+[20-Jun-2026 14:47:55 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: DELETE FROM wp_yoast_indexable WHERE object_type = :param0  AND object_sub_type = :param1  ORDER BY id LIMIT 1000 | parameters: post, shop_order</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "ORDER": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/wordpress-seo/src/repositories/indexable-cleanup-repository.php(78): WP_SQLite_DB->query('DELETE FROM wp_...')
+#2 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(122): Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type('post', 'shop_order', 1000)
+#3 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(96): Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}(1000)
+#4 /var/www/html/wp-includes/class-wp-hook.php(341): Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup()
+#5 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-cron.php(191): do_action_ref_array('wpseo_start_cle...', Array)
+#8 {main}</pre>
+ for query DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000 made by do_action_ref_array('wpseo_start_cleanup_indexables'), WP_Hook->do_action, WP_Hook->apply_filters, Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup, Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}, Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[20-Jun-2026 14:47:55 UTC] Automatic updates starting...
+[20-Jun-2026 14:47:56 UTC]   Automatic plugin updates starting...
+[20-Jun-2026 14:47:56 UTC]   Automatic plugin updates complete.
+[20-Jun-2026 14:47:57 UTC] Automatic updates complete.
+[20-Jun-2026 15:04:38 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
+[20-Jun-2026 15:04:38 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
+[20-Jun-2026 15:04:38 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
+[20-Jun-2026 15:04:39 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
+[20-Jun-2026 15:04:39 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
+[20-Jun-2026 15:04:39 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 626
+[20-Jun-2026 18:47:05 UTC] WordPress database error <div style="clear:both">&nbsp;</div>
+<div class="queries" style="clear:both;margin-bottom:2px;border:red dotted thin;">
+<p>MySQL query:</p>
+<p>DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000</p>
+<p>Queries made or created this session were:</p>
+<ol>
+<li>Executing: BEGIN | (no parameters)</li>
+<li>Executing: DELETE FROM wp_yoast_indexable WHERE object_type = :param0  AND object_sub_type = :param1  ORDER BY id LIMIT 1000 | parameters: post, shop_order</li>
+<li>Executing: ROLLBACK | (no parameters)</li>
+</ol>
+</div>
+<div style="clear:both;margin-bottom:2px;border:red dotted thin;" class="error_message" style="border-bottom:dotted blue thin;">
+Error occurred at line 4108 in Function <code>handle_error</code>. Error message was: SQLSTATE[HY000]: General error: 1 near "ORDER": syntax error.
+</div>
+<p>Backtrace:</p>
+<pre>#0 /var/www/html/wp-content/mu-plugins/sqlite-database-integration-main/wp-includes/sqlite/class-wp-sqlite-db.php(287): WP_SQLite_Translator->get_error_message()
+#1 /var/www/html/wp-content/plugins/wordpress-seo/src/repositories/indexable-cleanup-repository.php(78): WP_SQLite_DB->query('DELETE FROM wp_...')
+#2 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(122): Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type('post', 'shop_order', 1000)
+#3 /var/www/html/wp-content/plugins/wordpress-seo/src/integrations/cleanup-integration.php(96): Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}(1000)
+#4 /var/www/html/wp-includes/class-wp-hook.php(341): Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup()
+#5 /var/www/html/wp-includes/class-wp-hook.php(365): WP_Hook->apply_filters('', Array)
+#6 /var/www/html/wp-includes/plugin.php(570): WP_Hook->do_action(Array)
+#7 /var/www/html/wp-cron.php(191): do_action_ref_array('wpseo_start_cle...', Array)
+#8 {main}</pre>
+ for query DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000 made by do_action_ref_array('wpseo_start_cleanup_indexables'), WP_Hook->do_action, WP_Hook->apply_filters, Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup, Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}, Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type, WP_SQLite_DB->query, WP_SQLite_DB->print_error

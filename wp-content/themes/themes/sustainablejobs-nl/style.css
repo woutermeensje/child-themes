@@ -400,6 +400,57 @@ h4, h5 {
     color: var(--color-text);
     line-height: 1.5;
 }
+
+/* Uitgelichte werkgever — border op vacaturekaart */
+li.job_listing .job-card--featured-employer {
+    border: 3px solid var(--color-primary);
+}
+
+/* Recruitment partner — border op vacaturekaart */
+li.job_listing .job-card--recruitment-partner {
+    border: 3px solid #F5C842;
+}
+
+/* Activisme — border op vacaturekaart */
+li.job_listing .job-card--activisme {
+    border: 3px solid #3aaa5c;
+}
+
+/* Uitgelichte vacature — label boven eerste kaart */
+li.sj-featured-label-row {
+    list-style: none;
+    padding: 0 !important;
+    margin-bottom: -12px;
+}
+
+.sj-featured-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    color: #333;
+    font-family: "Work Sans", sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    padding: 0 4px;
+}
+
+@media (max-width: 960px) {
+    li.sj-featured-label-row {
+        padding-left: 16px !important;
+        margin-bottom: -8px;
+    }
+
+    .sj-featured-label {
+        font-size: 15px;
+    }
+}
+
+/* Uitgelichte vacature — gemarkeerde border */
+li.job_listing.job_position_featured .job-card {
+    border: 5px solid var(--color-secondary);
+}
+
+
 /* ✅ Styling voor de bedrijfspagina filter */
 
 form.company_filter-form {

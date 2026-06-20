@@ -1,279 +1,145 @@
-/* Homepage hero template */
+/* =========================================================
+   LF Homepage hero — fondsen werkzoekende stijl
+   ========================================================= */
 
-.welcome-v2__hero {
-  position: relative;
-  min-height: 500px;
-  overflow: hidden;
-  isolation: isolate;
-  display: flex;
-  align-items: stretch;
-  background: var(--color-bg);
-  border-bottom: 1px solid var(--color-border);
+.lf-hero-home {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    overflow: hidden;
+    isolation: isolate;
 }
 
-.welcome-v2__hero-left {
-  color: #fff;
-  position: relative;
-  z-index: 2;
-  min-height: 100%;
-  align-self: stretch;
-  display: flex;
-  width: min(64%, 980px);
-  clip-path: polygon(0 0, 85% 0, 70% 100%, 0 100%);
+.lf-hero-home__bg {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color-secondary);
+    background-size: cover;
+    background-position: center top;
+    z-index: 0;
 }
 
-.welcome-v2__hero-content {
-  width: min(560px, calc(100% - 150px));
-  margin: 0 auto 0 clamp(20px, 4vw, 72px);
-  min-height: 100%;
-  flex: 1 1 auto;
-  display: grid;
-  align-content: center;
-  gap: 14px;
+.lf-hero-home__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(37, 71, 107, 0.72);
 }
 
-.welcome-v2__hero-copy {
-  display: grid;
-  gap: 14px;
+.lf-hero-home__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: clamp(48px, 8vw, 80px) 24px 32px;
 }
 
-.welcome-v2__hero--lansingerland-fit .welcome-v2__hero-content {
-  align-content: stretch;
-  grid-template-rows: minmax(0, 1fr) auto;
-  gap: 0;
-  padding: 0;
+.lf-hero-home__eyebrow {
+    display: inline-block;
+    margin: 0 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--color-highlight);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.88);
 }
 
-.welcome-v2__hero--lansingerland-fit .welcome-v2__hero-left {
-  background: var(--color-primary);
+.lf-hero-home__title {
+    font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-weight: 800 !important;
+    font-size: clamp(24px, 3vw, 36px) !important;
+    line-height: 1.2 !important;
+    color: #ffffff !important;
+    margin: 0 0 16px !important;
+    max-width: 70%;
 }
 
-.welcome-v2__hero--lansingerland-fit .welcome-v2__hero-copy {
-  align-content: center;
-  min-height: 0;
-  padding: 36px 0 22px;
+.lf-hero-home__lead {
+    margin: 0 0 28px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.9);
+    max-width: 60ch;
 }
 
-.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs {
-  margin-bottom: 10px;
+/* ── Knoppen ── */
+
+.lf-hero-home__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs,
-.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs a,
-.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs span {
-  color: rgba(255, 255, 255, 0.85) !important;
-  font-family: Poppins, sans-serif;
-  font-size: 13px;
-  text-decoration: none !important;
+.lf-hero-home__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-family: 'Balgin-Bold', serif;
+    font-size: 15px;
+    text-decoration: none !important;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
 }
 
-.welcome-v2__hero--lansingerland-fit .blog-breadcrumbs a:hover {
-  color: #fff !important;
+.lf-hero-home__btn--primary {
+    background: var(--color-highlight);
+    color: var(--color-navy-dark) !important;
+    border: 2px solid var(--color-highlight);
 }
 
-.welcome-v2__title {
-  margin: 0;
-  color: #ffffff !important;
-  font-family: 'Poppins', sans-serif;
-  font-size: clamp(34px, 4.4vw, 56px);
-  font-weight: 700;
-  line-height: 1.04;
-  letter-spacing: -0.02em;
-  max-width: 9ch;
-  text-wrap: pretty;
+.lf-hero-home__btn--primary:hover {
+    background: var(--color-accent-soft);
+    border-color: var(--color-accent-soft);
 }
 
-.welcome-v2__title--homepage {
-  display: block;
-  width: 100%;
-  max-width: 100%;
-  margin-right: 0;
-  font-size: 32px;
-  line-height: 1.2;
-  letter-spacing: -0.045em;
-  text-wrap: balance;
-  overflow-wrap: anywhere;
+.lf-hero-home__btn--outline {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.7);
+    color: #ffffff !important;
 }
 
-.welcome-v2__lead {
-  margin: 0;
-  max-width: 52ch;
-  color: rgba(255, 255, 255, 0.92);
-  font-family: Poppins, sans-serif;
-  font-size: 15px;
-  font-weight: 400;
-  line-height: 1.6;
+.lf-hero-home__btn--outline:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: #ffffff;
 }
 
-.welcome-v2__actions {
-  margin-top: 18px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
-  justify-content: flex-start;
-}
-
-.welcome-v2__hero-actions-panel {
-  display: flex;
-  align-items: center;
-  min-height: 96px;
-  margin-top: -1px;
-  margin-left: calc(clamp(20px, 4vw, 72px) * -1);
-  margin-right: -96px;
-  width: calc(100% + clamp(20px, 4vw, 72px) + 96px);
-  background: var(--color-bg-light);
-  padding: 16px calc(clamp(20px, 4vw, 72px) + 96px) 18px clamp(20px, 4vw, 72px);
-  border-top: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
-  box-shadow: none;
-}
-
-.welcome-v2__hero-contact-list {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 18px 28px;
-}
-
-.welcome-v2__hero-contact-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--color-text) !important;
-  font-family: Inter, sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 1.4;
-  text-decoration: none !important;
-}
-
-.welcome-v2__hero-contact-icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  color: var(--color-turquoise);
-  flex: 0 0 auto;
-}
-
-.welcome-v2__hero-contact-icon svg {
-  width: 100%;
-  height: 100%;
-  display: block;
-}
-
-.welcome-v2__hero-contact-item:hover {
-  color: var(--color-primary) !important;
-}
-
-.welcome-v2__hero-right {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
-  background-size: cover;
-  background-position: center 20%;
-  background-color: var(--color-bg);
-}
+/* ── Responsive ── */
 
 @media (max-width: 768px) {
-  .welcome-v2__hero {
-    min-height: auto;
-    display: grid;
-    background: var(--color-primary);
-  }
+    .lf-hero-home__inner {
+        padding: 40px 20px 24px;
+    }
 
-  .welcome-v2__hero-left {
-    width: 100%;
-    min-height: auto;
-    clip-path: none;
-    order: 1;
-    background: var(--color-primary);
-  }
+    .lf-hero-home__title {
+        max-width: 100%;
+        font-size: clamp(24px, 7vw, 32px) !important;
+    }
 
-  .welcome-v2__hero-content {
-    width: min(680px, calc(100% - 40px));
-    flex: 0 1 auto;
-    margin: 0 auto;
-    padding: 24px 0 0;
-    height: auto;
-    gap: 16px;
-  }
+    .lf-hero-home__lead {
+        font-size: 14px;
+    }
 
-  .welcome-v2__hero-right {
-    position: relative;
-    height: 220px;
-    order: -1;
-    display: none;
-  }
+    .lf-hero-home__actions {
+        flex-direction: column;
+    }
 
-  .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-content {
-    grid-template-rows: auto;
-    gap: 16px;
-    padding: 24px 0 0;
-  }
+    .lf-hero-home__btn {
+        width: 100%;
+    }
 
-  .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-left {
-    background: var(--color-primary);
-  }
-
-  .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-copy {
-    padding: 0;
-    gap: 12px;
-  }
-
-  .welcome-v2__hero--lansingerland-fit .welcome-v2__hero-actions-panel {
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-    width: 100vw;
-    padding: 18px 20px 20px;
-    border: 1px solid var(--color-border);
-    border-radius: 0;
-    box-shadow: none;
-  }
-
-  .welcome-v2__actions {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .welcome-v2__title {
-    font-size: 34px;
-    max-width: 100%;
-    line-height: 1.02;
-  }
-
-  .welcome-v2__title--homepage {
-    font-size: 32px;
-    line-height: 1.2;
-    letter-spacing: -0.03em;
-  }
-
-  .welcome-v2__lead {
-    max-width: 100%;
-    font-size: 14px;
-  }
-
-  .welcome-v2__hero-contact-list {
-    width: 100%;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-  }
-
-  .welcome-v2__hero-contact-item,
-  .welcome-v2 .rn-btn {
-    width: 100%;
-  }
-
-  .welcome-v2__hero-contact-item {
-    justify-content: flex-start;
-  }
-
-  .welcome-v2 .rn-btn {
-    justify-content: center;
-  }
+    .lf-hero-home__contact-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
 }

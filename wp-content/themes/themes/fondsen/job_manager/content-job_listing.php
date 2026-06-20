@@ -62,12 +62,45 @@ if (!empty($org_types) && !is_wp_error($org_types)) {
 
 $geo_long = $post->geolocation_long ?? get_post_meta($post_id, '_geolocation_long', true);
 $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat', true);
+
+global $sj_featured_label_shown;
+if (is_position_featured($post_id) && !$sj_featured_label_shown) {
+    $sj_featured_label_shown = true;
+    echo '<li class="sj-featured-label-row"><div class="sj-featured-label"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>Uitgelichte Vacatures</div></li>';
+}
+
+global $sj_prev_featured_employer;
+$sj_is_featured_employer = function_exists('sj_is_featured_employer') && sj_is_featured_employer($post_id);
+if ($sj_is_featured_employer && !$sj_prev_featured_employer) {
+    echo '<li class="sj-featured-label-row"><div class="sj-featured-label"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>Uitgelichte Werkgever</div></li>';
+}
+$sj_prev_featured_employer = $sj_is_featured_employer;
+
+global $sj_prev_recruitment_partner;
+$sj_is_recruitment_partner = function_exists('sj_is_recruitment_partner') && sj_is_recruitment_partner($post_id);
+if ($sj_is_recruitment_partner && !$sj_prev_recruitment_partner) {
+    echo '<li class="sj-featured-label-row"><div class="sj-featured-label"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>Recruitment</div></li>';
+}
+$sj_prev_recruitment_partner = $sj_is_recruitment_partner;
+
+global $sj_prev_activisme;
+$sj_is_activisme = function_exists('sj_is_activisme') && sj_is_activisme($post_id);
+if ($sj_is_activisme && !$sj_prev_activisme) {
+    echo '<li class="sj-featured-label-row"><div class="sj-featured-label"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>Activisme</div></li>';
+}
+$sj_prev_activisme = $sj_is_activisme;
 ?>
 <li <?php job_listing_class(); ?>
     data-longitude="<?php echo esc_attr($geo_long); ?>"
     data-latitude="<?php echo esc_attr($geo_lat); ?>"
 >
-    <div class="job-card" data-href="<?php the_job_permalink(); ?>">
+    <?php
+    $card_classes = 'job-card';
+    if (function_exists('sj_is_featured_employer') && sj_is_featured_employer($post_id)) $card_classes .= ' job-card--featured-employer';
+    if (function_exists('sj_is_recruitment_partner') && sj_is_recruitment_partner($post_id)) $card_classes .= ' job-card--recruitment-partner';
+    if (function_exists('sj_is_activisme') && sj_is_activisme($post_id)) $card_classes .= ' job-card--activisme';
+    ?>
+    <div class="<?php echo esc_attr($card_classes); ?>" data-href="<?php the_job_permalink(); ?>">
         <div class="job-card__desktop">
             <div class="job-card__media">
                 <div class="background-wrapper">
@@ -419,7 +452,7 @@ h2.job-card__title {
     line-height: 48px !important;
     border-radius: 0 !important;
     text-decoration: none !important;
-    font-family: Balgin-Bold, serif !important;
+    font-family: "Work Sans", sans-serif !important;
     font-size: 15px;
     box-shadow: none;
     transition: background .18s ease, border-color .18s ease, color .18s ease;

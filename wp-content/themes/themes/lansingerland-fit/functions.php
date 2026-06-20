@@ -22,6 +22,7 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('child-style', $theme_uri . '/style.css', $dependencies, $style_version);
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
+    wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;800&display=swap', [], null);
     wp_enqueue_style('custom-fonts', $theme_uri . '/fonts/fonts.css', [], $fonts_version);
     wp_enqueue_style('lf-header', $theme_uri . '/css/header.css', ['child-style'], $header_version);
     wp_enqueue_style('lf-buttons', $theme_uri . '/css/buttons.css', ['child-style', 'lf-header'], filemtime($theme_dir . '/css/buttons.css'));
@@ -42,6 +43,15 @@ add_action('wp_enqueue_scripts', function () {
             $theme_uri . '/css/lesrooster.css',
             ['child-style', 'lesrooster-style'],
             filemtime($theme_dir . '/css/lesrooster.css')
+        );
+    }
+
+    if (file_exists($theme_dir . '/css/landingspagina.css')) {
+        wp_enqueue_style(
+            'lf-landingspagina',
+            $theme_uri . '/css/landingspagina.css',
+            ['child-style'],
+            filemtime($theme_dir . '/css/landingspagina.css')
         );
     }
 });

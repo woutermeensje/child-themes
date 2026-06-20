@@ -11,6 +11,8 @@ if ( ! defined('ABSPATH') ) exit;
 
 require_once get_stylesheet_directory() . '/inc/job-favorites.php';
 require_once get_stylesheet_directory() . '/inc/job-expiry.php';
+require_once get_stylesheet_directory() . '/inc/uitgelichte-werkgever.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-hero.php';
 require_once get_stylesheet_directory() . '/inc/activecampaign.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-job-alerts.php';
 require_once get_stylesheet_directory() . '/inc/job-alerts-cron.php';
@@ -208,6 +210,13 @@ function fondsen_enqueue_styles() {
         null
     );
 
+    wp_enqueue_style(
+        'work-sans-font',
+        'https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700;800&display=swap',
+        [],
+        null
+    );
+
     if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
         wp_enqueue_style(
             'fondsen-header',
@@ -255,6 +264,17 @@ function fondsen_enqueue_styles() {
             get_stylesheet_directory_uri() . '/css/blog.css',
             ['child-style'],
             filemtime( get_stylesheet_directory() . '/css/blog.css' )
+        );
+    }
+
+    // Landingspagina CSS (Lidmaatschap, Werkgever, Werkzoekende)
+    $lp_templates = ['page-lidmaatschap.php', 'page-werkgever.php', 'page-werkzoekende.php'];
+    if ( is_page_template( $lp_templates ) && file_exists( get_stylesheet_directory() . '/css/landingspagina.css' ) ) {
+        wp_enqueue_style(
+            'fondsen-landingspagina',
+            get_stylesheet_directory_uri() . '/css/landingspagina.css',
+            ['child-style'],
+            filemtime( get_stylesheet_directory() . '/css/landingspagina.css' )
         );
     }
 

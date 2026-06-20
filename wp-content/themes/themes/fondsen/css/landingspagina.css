@@ -1,0 +1,168 @@
+/* =========================================================
+   Fondsen Landingspagina — hero block
+   ========================================================= */
+
+.fondsen-lp {
+    margin: 0;
+    padding: 0;
+}
+
+.fondsen-job-hero {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    background-color: var(--color-tertiary);
+    background-size: cover;
+    background-position: center;
+    overflow: hidden;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+}
+
+.fondsen-job-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(5, 93, 146, 0.70);
+    z-index: 1;
+    pointer-events: none;
+}
+
+.fondsen-job-hero__inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.fondsen-job-hero__eyebrow {
+    display: inline-block;
+    margin: 0 0 14px;
+    padding-bottom: 6px;
+    border-bottom: 3px solid var(--color-bg-filter, #FFE0C0);
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.fondsen-job-hero__title-wrap {
+    margin: 0 0 18px;
+    max-width: 75%;
+}
+
+.fondsen-job-hero__title {
+    font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-weight: 800 !important;
+    font-size: clamp(24px, 3vw, 36px) !important;
+    line-height: 1.2 !important;
+    color: #ffffff !important;
+    margin: 0 !important;
+}
+
+.fondsen-job-hero__subtitle {
+    margin: 10px 0 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.fondsen-job-hero__count {
+    color: var(--color-bg-filter, #FFE0C0);
+}
+
+.fondsen-job-hero__link {
+    color: var(--color-bg-filter, #FFE0C0) !important;
+    text-decoration: none !important;
+}
+
+.fondsen-job-hero__link:hover {
+    color: #fff3e6 !important;
+}
+
+.fondsen-job-hero__description {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.88);
+    max-width: 50ch;
+}
+
+/* ── Hero knop ── */
+
+.fondsen-lp__btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 12px 28px;
+    background: var(--color-primary, #FF8C2C);
+    color: #ffffff !important;
+    font-family: "Work Sans", sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    text-decoration: none !important;
+    border-radius: 4px;
+    transition: background 0.15s;
+}
+
+.fondsen-lp__btn:hover {
+    background: #e67c1f;
+    color: #ffffff !important;
+}
+
+/* ── Landingspagina body styling ── */
+
+.fondsen-lp__content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 60px 24px;
+}
+
+/* ── Responsive ── */
+
+@media (max-width: 960px) {
+    .fondsen-job-hero {
+        height: 280px;
+        width: 100%;
+    }
+
+    .fondsen-job-hero__inner {
+        max-width: none;
+        padding: 0 16px;
+        box-sizing: border-box;
+    }
+
+    .fondsen-job-hero__title-wrap {
+        width: 100%;
+        max-width: 100%;
+        margin-bottom: 0;
+    }
+
+    .fondsen-job-hero__title {
+        font-size: clamp(24px, 7vw, 32px) !important;
+        line-height: 1.12 !important;
+    }
+
+    .fondsen-job-hero__subtitle {
+        max-width: 100%;
+        font-size: 14px;
+        line-height: 1.45;
+    }
+
+    .fondsen-job-hero__description {
+        font-size: 14px;
+        max-width: 100%;
+    }
+
+    .fondsen-lp__content {
+        padding: 40px 16px;
+    }
+}

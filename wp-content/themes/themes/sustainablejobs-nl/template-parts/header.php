@@ -21,7 +21,7 @@ if (!$rn_mobile_logo_url) {
             <div class="rn-topbar__left">
                 <a href="mailto:support@sustainablejobs.nl">support@sustainablejobs.nl</a>
                 <span class="rn-topbar__divider">|</span>
-                <a href="https://sustainablejobs.nl/uitgelichte-werkgevers/">Uitgelichte Werkgevers</a>
+                <a href="https://www.fondsen.org/" target="_blank" rel="noopener noreferrer">Fondsen.org</a>
             </div>
             <div class="rn-topbar__right">
                 <a href="https://platform.sustainablejobs.nl/aanmelden">Profiel aanmaken</a>
