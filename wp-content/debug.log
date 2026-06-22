@@ -34601,3 +34601,7 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 #7 /var/www/html/wp-cron.php(191): do_action_ref_array('wpseo_start_cle...', Array)
 #8 {main}</pre>
  for query DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000 made by do_action_ref_array('wpseo_start_cleanup_indexables'), WP_Hook->do_action, WP_Hook->apply_filters, Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup, Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}, Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[21-Jun-2026 15:13:39 UTC] Automatic updates starting...
+[21-Jun-2026 15:13:39 UTC]   Automatic plugin updates starting...
+[21-Jun-2026 15:13:39 UTC]   Automatic plugin updates complete.
+[21-Jun-2026 15:13:39 UTC] Automatic updates complete.

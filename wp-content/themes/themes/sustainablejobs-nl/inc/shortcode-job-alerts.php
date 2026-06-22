@@ -32,6 +32,146 @@ add_action('init', function () {
 });
 
 /**
+ * Gedeelde anti-spam checks voor alle job alert formulieren.
+ */
+function sj_job_alerts_get_client_ip(): string {
+    return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR'] ?? ''));
+}
+
+function sj_job_alerts_spam_fields(string $prefix): string {
+    $honeypot_name = $prefix . '_website';
+    $started_name  = $prefix . '_started_at';
+    $honeypot_id   = wp_unique_id($honeypot_name . '_');
+
+    ob_start();
+    ?>
+    <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
+        <label for="<?php echo esc_attr($honeypot_id); ?>">Website</label>
+        <input type="text" name="<?php echo esc_attr($honeypot_name); ?>" id="<?php echo esc_attr($honeypot_id); ?>" value="" tabindex="-1" autocomplete="off">
+    </div>
+    <input type="hidden" name="<?php echo esc_attr($started_name); ?>" value="<?php echo esc_attr((string) time()); ?>">
+    <?php
+    return ob_get_clean();
+}
+
+function sj_job_alerts_log_spam(string $context, string $reason): void {
+    if (defined('WP_DEBUG') && WP_DEBUG) {
+        error_log(sprintf('[SJ Job Alerts] Spam geblokkeerd (%s): %s', $context, $reason));
+    }
+}
+
+function sj_job_alerts_is_rate_limited(string $context, string $email): bool {
+    $ip        = sj_job_alerts_get_client_ip();
+    $email_key = 'sj_ja_email_rl_' . md5($context . '|' . strtolower($email) . '|' . $ip);
+    $ip_key    = 'sj_ja_ip_rl_' . md5($context . '|' . $ip);
+
+    $email_count = (int) get_transient($email_key);
+    if ($email_count >= 5) {
+        sj_job_alerts_log_spam($context, 'rate limit email/ip');
+        return true;
+    }
+
+    $ip_count = (int) get_transient($ip_key);
+    if ($ip_count >= 30) {
+        sj_job_alerts_log_spam($context, 'rate limit ip');
+        return true;
+    }
+
+    set_transient($email_key, $email_count + 1, HOUR_IN_SECONDS);
+    set_transient($ip_key, $ip_count + 1, HOUR_IN_SECONDS);
+
+    return false;
+}
+
+function sj_job_alerts_akismet_flags_spam(string $context, string $voornaam, string $email, array $sectors): bool {
+    if (
+        !class_exists('Akismet') ||
+        !method_exists('Akismet', 'get_api_key') ||
+        !method_exists('Akismet', 'build_query') ||
+        !method_exists('Akismet', 'http_post') ||
+        !Akismet::get_api_key()
+    ) {
+        return false;
+    }
+
+    $request_uri = sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'] ?? ''));
+    $permalink   = is_singular() ? get_permalink() : home_url($request_uri ?: '/');
+
+    $request = [
+        'blog'                 => get_option('home'),
+        'user_ip'              => sj_job_alerts_get_client_ip(),
+        'user_agent'           => sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? '')),
+        'referrer'             => wp_get_referer() ?: '',
+        'permalink'            => $permalink,
+        'comment_type'         => 'contact-form',
+        'comment_author'       => $voornaam,
+        'comment_author_email' => $email,
+        'comment_content'      => 'Job alert aanmelding (' . $context . '): ' . implode(', ', $sectors),
+    ];
+
+    $response = Akismet::http_post(Akismet::build_query($request), 'comment-check');
+
+    if (is_array($response) && isset($response[1]) && trim((string) $response[1]) === 'true') {
+        sj_job_alerts_log_spam($context, 'akismet');
+        return true;
+    }
+
+    return false;
+}
+
+function sj_job_alerts_is_spam(array $args): bool {
+    $context    = sanitize_key($args['context'] ?? 'job_alert');
+    $voornaam   = sanitize_text_field($args['voornaam'] ?? '');
+    $email      = sanitize_email($args['email'] ?? '');
+    $sectors    = array_map('sanitize_title', (array) ($args['sectors'] ?? []));
+    $honeypot   = trim((string) ($args['honeypot'] ?? ''));
+    $started_at = absint($args['started_at'] ?? 0);
+
+    if ($honeypot !== '') {
+        sj_job_alerts_log_spam($context, 'honeypot');
+        return true;
+    }
+
+    if ($started_at <= 0) {
+        sj_job_alerts_log_spam($context, 'missing submit timing');
+        return true;
+    }
+
+    $elapsed = time() - $started_at;
+    if ($elapsed < 3 || $started_at > time() + 300) {
+        sj_job_alerts_log_spam($context, 'submit timing');
+        return true;
+    }
+
+    if (preg_match('/(?:https?:\/\/|www\.|<[^>]+>)/i', $voornaam)) {
+        sj_job_alerts_log_spam($context, 'name contains url/html');
+        return true;
+    }
+
+    $content = 'Job alert aanmelding: ' . implode(', ', $sectors);
+    if (
+        function_exists('wp_check_comment_disallowed_list') &&
+        wp_check_comment_disallowed_list(
+            $voornaam,
+            $email,
+            '',
+            $content,
+            sj_job_alerts_get_client_ip(),
+            sanitize_text_field(wp_unslash($_SERVER['HTTP_USER_AGENT'] ?? ''))
+        )
+    ) {
+        sj_job_alerts_log_spam($context, 'comment disallowed list');
+        return true;
+    }
+
+    if (sj_job_alerts_is_rate_limited($context, $email)) {
+        return true;
+    }
+
+    return sj_job_alerts_akismet_flags_spam($context, $voornaam, $email, $sectors);
+}
+
+/**
  * Shortcode: [job-alerts]
  */
 add_shortcode('job-alerts', 'sj_job_alerts_shortcode');
@@ -54,6 +194,20 @@ function sj_job_alerts_shortcode(): string {
         if (!$voornaam)        $errors[] = 'Vul je voornaam in.';
         if (!is_email($email)) $errors[] = 'Vul een geldig e-mailadres in.';
         if (empty($sectors))   $errors[] = 'Kies minimaal één categorie.';
+
+        if (
+            empty($errors) &&
+            sj_job_alerts_is_spam([
+                'context'    => 'job_alerts_main',
+                'voornaam'   => $voornaam,
+                'email'      => $email,
+                'sectors'    => $sectors,
+                'honeypot'   => $_POST['sj_ja_website'] ?? '',
+                'started_at' => $_POST['sj_ja_started_at'] ?? 0,
+            ])
+        ) {
+            $errors[] = 'Je aanmelding kon niet worden verwerkt. Probeer het later opnieuw.';
+        }
 
         if (empty($errors)) {
             $existing = $wpdb->get_var($wpdb->prepare(
@@ -157,6 +311,7 @@ function sj_job_alerts_shortcode(): string {
 
             <form method="post" class="sj-ja__form" novalidate>
                 <?php wp_nonce_field('sj_job_alerts', 'sj_ja_nonce'); ?>
+                <?php echo sj_job_alerts_spam_fields('sj_ja'); ?>
 
                 <div class="sj-ja__fields">
 
@@ -244,7 +399,6 @@ function sj_job_alerts_shortcode(): string {
             wrap.className = 'sj-select-wrap';
             select.parentNode.insertBefore(wrap, select);
             wrap.appendChild(select);
-            select.classList.add('sj-hidden-select');
 
             var root = document.createElement('div');
             root.className = 'sj-select';
@@ -253,7 +407,8 @@ function sj_job_alerts_shortcode(): string {
             var btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'sj-select-btn';
-            btn.innerHTML = '<span class="sj-btn-content"><span class="sj-placeholder">' + placeholder + '</span><span class="sj-tags" aria-hidden="true"></span></span><span class="sj-actions"><button type="button" class="sj-clear" aria-label="Wis selectie" title="Wis selectie">×</button><span class="sj-chev" aria-hidden="true"></span></span>';
+            btn.innerHTML = '<span class="sj-btn-content"><span class="sj-placeholder"></span><span class="sj-tags" aria-hidden="true"></span></span><span class="sj-actions"><span class="sj-clear" role="button" aria-label="Wis selectie" title="Wis selectie">×</span><span class="sj-chev" aria-hidden="true"></span></span>';
+            btn.querySelector('.sj-placeholder').textContent = placeholder;
 
             var clearBtn = btn.querySelector('.sj-clear');
             clearBtn.addEventListener('click', function (e) {
@@ -292,6 +447,7 @@ function sj_job_alerts_shortcode(): string {
 
                 row.addEventListener('click', function (e) {
                     e.preventDefault();
+                    if (opt.disabled) return;
                     opt.selected = !opt.selected;
                     renderState();
                 });
@@ -312,7 +468,8 @@ function sj_job_alerts_shortcode(): string {
             var placeholderEl = btn.querySelector('.sj-placeholder');
 
             var renderChips = function () {
-                var container = document.getElementById('sj_ja_active_filters');
+                var form = select.closest('form');
+                var container = form ? form.querySelector('.sj-ja-active-filters') : document.getElementById('sj_ja_active_filters');
                 if (!container) return;
                 container.innerHTML = '';
                 var selected = Array.from(select.options).filter(function (o) { return o.selected; });
@@ -342,9 +499,15 @@ function sj_job_alerts_shortcode(): string {
                 optionRows.forEach(function (item) { item.syncSelected(); });
                 var selected = Array.from(select.options).filter(function (o) { return o.selected; });
                 if (selected.length === 0) {
+                    placeholderEl.textContent = placeholder;
                     placeholderEl.style.display = 'inline';
                     clearBtn.style.display = 'none';
+                } else if (selected.length === 1) {
+                    placeholderEl.textContent = selected[0].textContent.trim();
+                    placeholderEl.style.display = 'inline';
+                    clearBtn.style.display = 'inline-flex';
                 } else {
+                    placeholderEl.textContent = selected.length + ' geselecteerd';
                     placeholderEl.style.display = 'inline';
                     clearBtn.style.display = 'inline-flex';
                 }
@@ -369,11 +532,11 @@ function sj_job_alerts_shortcode(): string {
             root.appendChild(btn);
             root.appendChild(list);
             wrap.appendChild(root);
+            select.classList.add('sj-hidden-select');
         };
 
         var init = function () {
-            var select = document.getElementById('sj_ja_sectors');
-            if (select) buildSelect(select);
+            document.querySelectorAll('.sj-ja__form .js-custom-select').forEach(buildSelect);
 
             document.addEventListener('click', function (e) {
                 if (!e.target.closest('.sj-select')) closeAll();
@@ -420,6 +583,20 @@ function sj_job_alerts_sidebar_shortcode(): string {
         if (!$voornaam)        $errors[] = 'Vul je voornaam in.';
         if (!is_email($email)) $errors[] = 'Vul een geldig e-mailadres in.';
         if (empty($sectors))   $errors[] = 'Kies minimaal één categorie.';
+
+        if (
+            empty($errors) &&
+            sj_job_alerts_is_spam([
+                'context'    => 'job_alerts_sidebar',
+                'voornaam'   => $voornaam,
+                'email'      => $email,
+                'sectors'    => $sectors,
+                'honeypot'   => $_POST['sj_ja_sb_website'] ?? '',
+                'started_at' => $_POST['sj_ja_sb_started_at'] ?? 0,
+            ])
+        ) {
+            $errors[] = 'Je aanmelding kon niet worden verwerkt. Probeer het later opnieuw.';
+        }
 
         if (empty($errors)) {
             $existing = $wpdb->get_var($wpdb->prepare(
@@ -502,6 +679,7 @@ function sj_job_alerts_sidebar_shortcode(): string {
 
     <form method="post" class="sj-ja-sb__form" novalidate>
         <?php wp_nonce_field('sj_job_alerts_sidebar', 'sj_ja_sb_nonce'); ?>
+        <?php echo sj_job_alerts_spam_fields('sj_ja_sb'); ?>
 
         <div class="sj-ja-sb__field">
             <label class="sj-ja-sb__label" for="sj_ja_sb_voornaam">Voornaam <span class="sj-ja-sb__req">*</span></label>
@@ -561,7 +739,6 @@ function sj_job_alerts_sidebar_shortcode(): string {
             wrap.className = 'sj-select-wrap';
             select.parentNode.insertBefore(wrap, select);
             wrap.appendChild(select);
-            select.classList.add('sj-hidden-select');
 
             var root = document.createElement('div');
             root.className = 'sj-select';
@@ -569,7 +746,8 @@ function sj_job_alerts_sidebar_shortcode(): string {
             var btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'sj-select-btn';
-            btn.innerHTML = '<span class="sj-btn-content"><span class="sj-placeholder">' + placeholder + '</span></span><span class="sj-actions"><button type="button" class="sj-clear" aria-label="Wis selectie" title="Wis selectie">×</button><span class="sj-chev" aria-hidden="true"></span></span>';
+            btn.innerHTML = '<span class="sj-btn-content"><span class="sj-placeholder"></span></span><span class="sj-actions"><span class="sj-clear" role="button" aria-label="Wis selectie" title="Wis selectie">×</span><span class="sj-chev" aria-hidden="true"></span></span>';
+            btn.querySelector('.sj-placeholder').textContent = placeholder;
 
             var clearBtn = btn.querySelector('.sj-clear');
             clearBtn.addEventListener('click', function (e) {
@@ -603,7 +781,12 @@ function sj_job_alerts_sidebar_shortcode(): string {
                     row.setAttribute('aria-selected', opt.selected ? 'true' : 'false');
                 };
                 syncSelected();
-                row.addEventListener('click', function (e) { e.preventDefault(); opt.selected = !opt.selected; renderState(); });
+                row.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    if (opt.disabled) return;
+                    opt.selected = !opt.selected;
+                    renderState();
+                });
                 optionRows.push({ opt: opt, row: row, syncSelected: syncSelected });
                 list.appendChild(row);
             });
@@ -649,10 +832,11 @@ function sj_job_alerts_sidebar_shortcode(): string {
             root.appendChild(btn);
             root.appendChild(list);
             wrap.appendChild(root);
+            select.classList.add('sj-hidden-select');
         };
 
         var init = function () {
-            document.querySelectorAll('.js-custom-select').forEach(buildSelect);
+            document.querySelectorAll('.sj-ja-sb__form .js-custom-select').forEach(buildSelect);
             document.addEventListener('click', function (e) { if (!e.target.closest('.sj-select')) closeAll(); });
             document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeAll(); });
         };
