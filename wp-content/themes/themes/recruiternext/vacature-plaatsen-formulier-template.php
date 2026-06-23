@@ -80,7 +80,7 @@ get_header();
     font-family: 'Balgin-Bold', serif;
     font-size: 26px;
     font-weight: 700;
-    color: var(--color-primary, #007BA7);
+    color: var(--color-primary, #0458ab);
     margin: 0 0 8px;
     line-height: 1.2;
 }
@@ -97,7 +97,7 @@ get_header();
 }
 
 .rn-vp-card__intro a {
-    color: var(--color-primary, #007BA7);
+    color: var(--color-primary, #0458ab);
     text-decoration: underline;
 }
 
@@ -105,7 +105,7 @@ get_header();
     font-family: 'Balgin-Bold', serif;
     font-size: 17px;
     font-weight: 700;
-    color: var(--color-primary, #007BA7);
+    color: var(--color-primary, #0458ab);
     margin: 28px 0 16px;
     padding-bottom: 8px;
     border-bottom: 1px solid #DEDEDE;
@@ -155,8 +155,8 @@ get_header();
 
 .rn-vp-field input:focus,
 .rn-vp-field select:focus {
-    border-color: var(--color-primary, #007BA7);
-    box-shadow: 0 0 0 3px rgba(0, 123, 167, .12);
+    border-color: var(--color-primary, #0458ab);
+    box-shadow: 0 0 0 3px rgba(4, 88, 171, .12);
 }
 
 .rn-vp-field input[type="file"] {
@@ -186,8 +186,8 @@ get_header();
     width: 100%;
     margin-top: 28px;
     padding: 13px 28px;
-    background: var(--color-primary, #007BA7);
-    border: 2px solid var(--color-primary, #007BA7);
+    background: var(--color-primary, #0458ab);
+    border: 2px solid var(--color-primary, #0458ab);
     border-radius: 5px;
     font-family: 'Balgin-Bold', serif;
     font-size: 16px;
@@ -198,8 +198,8 @@ get_header();
 }
 
 .rn-vp-submit:hover {
-    background: var(--color-primary-dk, #005f82);
-    border-color: var(--color-primary-dk, #005f82);
+    background: var(--color-primary-dk, #034483);
+    border-color: var(--color-primary-dk, #034483);
 }
 
 @media (max-width: 600px) {

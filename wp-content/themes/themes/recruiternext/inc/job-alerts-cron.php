@@ -146,10 +146,10 @@ function rn_build_job_alert_email(string $voornaam, array $vacatures, string $un
         $vacature_rows .= "
         <tr>
           <td style=\"padding:18px 0;border-bottom:1px solid #e0eaf0;\">
-            <a href=\"{$link}\" style=\"font-size:16px;font-weight:700;color:#007BA7;text-decoration:none;font-family:Arial,sans-serif;\">{$title}</a>
+            <a href=\"{$link}\" style=\"font-size:16px;font-weight:700;color:#0458ab;text-decoration:none;font-family:Arial,sans-serif;\">{$title}</a>
             {$meta_html}
             <div style=\"margin-top:12px;\">
-              <a href=\"{$link}\" style=\"display:inline-block;padding:8px 18px;background:#007BA7;color:#ffffff;font-size:13px;font-weight:600;border-radius:4px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk vacature &rarr;</a>
+              <a href=\"{$link}\" style=\"display:inline-block;padding:8px 18px;background:#0458ab;color:#ffffff;font-size:13px;font-weight:600;border-radius:4px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk vacature &rarr;</a>
             </div>
           </td>
         </tr>";
@@ -168,13 +168,13 @@ function rn_build_job_alert_email(string $voornaam, array $vacatures, string $un
     <td align=\"center\">
       <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:600px;width:100%;background:#ffffff;border-radius:8px;overflow:hidden;border:1px solid #d0e4ec;\">
         <tr>
-          <td style=\"background:#007BA7;padding:24px 32px;\">
+          <td style=\"background:#0458ab;padding:24px 32px;\">
             <span style=\"font-family:Arial,sans-serif;font-size:20px;font-weight:700;color:#ffffff;letter-spacing:-0.3px;\">Recruiternext.nl</span>
           </td>
         </tr>
         <tr>
           <td style=\"padding:28px 32px 8px;\">
-            <p style=\"margin:0 0 10px;font-size:20px;font-weight:700;color:#007BA7;font-family:Arial,sans-serif;\">Hoi {$voornaam}!</p>
+            <p style=\"margin:0 0 10px;font-size:20px;font-weight:700;color:#0458ab;font-family:Arial,sans-serif;\">Hoi {$voornaam}!</p>
             <p style=\"margin:0;font-size:15px;color:#444444;line-height:1.65;font-family:Arial,sans-serif;\">Er staan nieuwe vacatures klaar in jouw vakgebied. Bekijk ze hieronder en reageer snel &mdash; de beste vacatures gaan snel!</p>
           </td>
         </tr>
@@ -185,7 +185,7 @@ function rn_build_job_alert_email(string $voornaam, array $vacatures, string $un
         </tr>
         <tr>
           <td style=\"padding:0 32px 32px;text-align:center;\">
-            <a href=\"{$alle_vacatures}\" style=\"display:inline-block;padding:13px 28px;background:#007BA7;color:#ffffff;font-size:15px;font-weight:700;border-radius:6px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk alle vacatures</a>
+            <a href=\"{$alle_vacatures}\" style=\"display:inline-block;padding:13px 28px;background:#0458ab;color:#ffffff;font-size:15px;font-weight:700;border-radius:6px;text-decoration:none;font-family:Arial,sans-serif;\">Bekijk alle vacatures</a>
           </td>
         </tr>
         <tr>
@@ -195,7 +195,7 @@ function rn_build_job_alert_email(string $voornaam, array $vacatures, string $un
           <td style=\"padding:20px 32px;text-align:center;\">
             <p style=\"margin:0 0 6px;font-size:12px;color:#999999;font-family:Arial,sans-serif;\">Je ontvangt deze mail omdat je een job alert hebt ingesteld op Recruiternext.nl.</p>
             <p style=\"margin:0;font-size:12px;font-family:Arial,sans-serif;\">
-              <a href=\"{$unsubscribe_url}\" style=\"color:#007BA7;\">Afmelden voor job alerts</a>
+              <a href=\"{$unsubscribe_url}\" style=\"color:#0458ab;\">Afmelden voor job alerts</a>
             </p>
           </td>
         </tr>
@@ -231,7 +231,7 @@ add_action('init', function () {
     wp_die(
         '<div style="font-family:Arial,sans-serif;max-width:480px;margin:80px auto;text-align:center;">'
         . '<p style="font-size:16px;color:#333;">' . esc_html($message) . '</p>'
-        . '<a href="' . esc_url(home_url('/')) . '" style="color:#007BA7;font-size:14px;">Terug naar de homepage</a>'
+        . '<a href="' . esc_url(home_url('/')) . '" style="color:#0458ab;font-size:14px;">Terug naar de homepage</a>'
         . '</div>',
         'Afmelden job alerts',
         ['response' => 200]

@@ -1,6 +1,6 @@
 /* ============================================================
    Elementor Forms – File Upload Styling
-   Recruiternext  |  primary #007BA7
+   Recruiternext  |  primary #0458ab
    ============================================================ */
 
 .elementor-field-type-upload {
@@ -29,7 +29,7 @@
   min-height: 130px;
   padding: 30px 20px;
   background: #f0f6ff;
-  border: 2px dashed var(--color-primary, #007BA7);
+  border: 2px dashed var(--color-primary, #0458ab);
   border-radius: 8px;
   cursor: pointer;
   text-align: center;
@@ -46,7 +46,7 @@
   font-family: 'Font Awesome 5 Free';
   font-weight: 900;
   font-size: 30px;
-  color: var(--color-primary, #007BA7);
+  color: var(--color-primary, #0458ab);
   line-height: 1;
 }
 
@@ -61,7 +61,7 @@
 
 /* Hover */
 .elementor-field-type-upload:hover .elementor-field-label {
-  border-color: var(--color-primary-dk, #005f82);
+  border-color: var(--color-primary-dk, #034483);
   background: #e6f0ff;
 }
 

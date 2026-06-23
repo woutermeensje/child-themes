@@ -12,9 +12,9 @@ Text Domain: Recruiternext
 
 :root {
   /* 🔁 Verwisselbaar kleurenpalet voor branding */
-  --color-primary: #007BA7;
-  --color-primary-dk: #005f82;
-  --color-primary-mid: #3BB4DC;
+  --color-primary: #0458ab;
+  --color-primary-dk: #034483;
+  --color-primary-mid: #2f7fd6;
   --color-secondary: #FFFACD;
   --color-tertiary: #FFFACD;
   --color-accent: #FFFACD;
@@ -316,7 +316,7 @@ h4, h5 {
 }
 
 .fnd-hero__right--placeholder {
-  background: linear-gradient(135deg, rgba(4, 88, 171, 0.4), rgba(3, 64, 133, 0.6));
+  background: linear-gradient(135deg, rgba(4, 88, 171, 0.4), rgba(3, 68, 131, 0.6));
 }
 
 .fnd-hero__contact {

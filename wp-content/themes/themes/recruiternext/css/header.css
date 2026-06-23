@@ -1,7 +1,7 @@
 :root {
-  --rn-primary:    var(--color-primary,    #007BA7);
-  --rn-primary-dk: var(--color-primary-dk, #005f82);
-  --rn-primary-mid:var(--color-primary-mid,#3BB4DC);
+  --rn-primary:    var(--color-primary,    #0458ab);
+  --rn-primary-dk: var(--color-primary-dk, #034483);
+  --rn-primary-mid:var(--color-primary-mid,#2f7fd6);
   --rn-accent:     var(--color-secondary,  #FFFACD);
   --rn-accent-dk:  #b8cde8;
   --rn-text:       var(--color-text,       #333333);
@@ -154,7 +154,8 @@
   background: var(--rn-primary-mid);
   color: #fff !important;
   border: 5px solid var(--rn-primary-mid);
-  box-shadow: 0 2px 8px rgba(59,130,246,0.3);
+  border-radius: 5px;
+  box-shadow: 0 2px 8px rgba(47, 127, 214,0.3);
 }
 .rn-btn--accent:hover {
   background: var(--rn-primary-mid);

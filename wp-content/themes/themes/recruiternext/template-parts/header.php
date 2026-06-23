@@ -51,8 +51,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   box-shadow: none !important;
   border: none !important;
 }
-#rn-header .rn-nav__link:hover { color: #007BA7 !important; background: transparent !important; }
-#rn-header .rn-nav__link.is-active { color: #007BA7 !important; font-weight: 600 !important; }
+#rn-header .rn-nav__link:hover { color: #0458ab !important; background: transparent !important; }
+#rn-header .rn-nav__link.is-active { color: #0458ab !important; font-weight: 600 !important; }
 
 /* Chevron */
 #rn-header .rn-nav__chev {
@@ -66,7 +66,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 #rn-header .rn-nav__dropdown {
   display: none; position: absolute; top: 100%; left: 0;
   min-width: 210px; background: #fff;
-  border: 1px solid #e8ecf0; border-top: 3px solid #007BA7;
+  border: 1px solid #e8ecf0; border-top: 3px solid #0458ab;
   border-radius: 0 0 8px 8px;
   box-shadow: 0 12px 40px rgba(0,0,0,0.12);
   padding: 6px; list-style: none; margin: 0; z-index: 9001;
@@ -92,17 +92,18 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   transition: background .15s ease, color .15s ease, transform .15s ease;
 }
 #rn-header .rn-btn--outline {
-  background: transparent !important; color: #007BA7 !important;
-  border: 2px solid #007BA7 !important;
+  background: transparent !important; color: #0458ab !important;
+  border: 2px solid #0458ab !important;
 }
-#rn-header .rn-btn--outline:hover { background: #007BA7 !important; color: #fff !important; }
+#rn-header .rn-btn--outline:hover { background: #0458ab !important; color: #fff !important; }
 #rn-header .rn-btn--accent {
-  background: #3BB4DC !important; color: #fff !important;
-  border: 5px solid #3BB4DC !important;
-  box-shadow: 0 2px 8px rgba(59,130,246,0.3) !important;
+  background: #2f7fd6 !important; color: #fff !important;
+  border: 5px solid #2f7fd6 !important;
+  border-radius: 5px !important;
+  box-shadow: 0 2px 8px rgba(47, 127, 214,0.3) !important;
 }
 #rn-header .rn-btn--accent:hover {
-  background: #3BB4DC !important; border-color: #3BB4DC !important;
+  background: #2f7fd6 !important; border-color: #2f7fd6 !important;
   color: #fff !important;
   transform: none;
 }
@@ -162,7 +163,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   text-decoration: none !important; box-shadow: none !important;
   background: transparent !important;
 }
-.rn-mobile-nav__list a:hover { color: #007BA7 !important; }
+.rn-mobile-nav__list a:hover { color: #0458ab !important; }
 .rn-mobile-nav__list .rn-nav__chev { display: none !important; }
 
 /* Submenu mobile */

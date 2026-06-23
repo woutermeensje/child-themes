@@ -67,7 +67,7 @@ if (function_exists('get_job_listings')) {
 <form class="job_filters">
     <?php do_action('job_manager_job_filters_start', $atts); ?>
 
-    <div class="rn-filter-row">
+    <div class="filter-row rn-filter-row">
         <?php do_action('job_manager_job_filters_search_jobs_start', $atts); ?>
 
         <div class="search_keywords">
@@ -88,7 +88,9 @@ if (function_exists('get_job_listings')) {
                     data-placeholder="Dienstverband"
                     multiple>
                 <?php foreach (get_job_listing_types() as $type) : ?>
-                    <option value="<?php echo esc_attr($type->slug); ?>" <?php selected(in_array($type->slug, $selected['job_types'], true)); ?>>
+                    <option value="<?php echo esc_attr($type->slug); ?>"
+                            data-label="<?php echo esc_attr($type->name); ?>"
+                            <?php selected(in_array($type->slug, $selected['job_types'], true)); ?>>
                         <?php echo esc_html($type->name); ?>
                     </option>
                 <?php endforeach; ?>
@@ -103,7 +105,9 @@ if (function_exists('get_job_listings')) {
                     data-placeholder="Sector"
                     multiple>
                 <?php foreach (get_terms(['taxonomy' => 'job_sector', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_sector'], true)); ?>>
+                    <option value="<?php echo esc_attr($term->slug); ?>"
+                            data-label="<?php echo esc_attr($term->name); ?>"
+                            <?php selected(in_array($term->slug, $selected['job_sector'], true)); ?>>
                         <?php echo esc_html($term->name); ?>
                     </option>
                 <?php endforeach; ?>
@@ -118,7 +122,9 @@ if (function_exists('get_job_listings')) {
                     data-placeholder="Organisatie"
                     multiple>
                 <?php foreach (get_terms(['taxonomy' => 'job_company', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['job_company'], true)); ?>>
+                    <option value="<?php echo esc_attr($term->slug); ?>"
+                            data-label="<?php echo esc_attr($term->name); ?>"
+                            <?php selected(in_array($term->slug, $selected['job_company'], true)); ?>>
                         <?php echo esc_html($term->name); ?>
                     </option>
                 <?php endforeach; ?>
@@ -133,7 +139,9 @@ if (function_exists('get_job_listings')) {
                     data-placeholder="Provincie"
                     multiple>
                 <?php foreach (get_terms(['taxonomy' => 'organization_type', 'hide_empty' => true]) as $term) : ?>
-                    <option value="<?php echo esc_attr($term->slug); ?>" <?php selected(in_array($term->slug, $selected['organization_type'], true)); ?>>
+                    <option value="<?php echo esc_attr($term->slug); ?>"
+                            data-label="<?php echo esc_attr($term->name); ?>"
+                            <?php selected(in_array($term->slug, $selected['organization_type'], true)); ?>>
                         <?php echo esc_html($term->name); ?>
                     </option>
                 <?php endforeach; ?>
@@ -143,7 +151,7 @@ if (function_exists('get_job_listings')) {
     </div>
 
     <!-- Actieve filters -->
-    <div class="rn-active-filters" id="rn-active-filters" aria-live="polite"></div>
+    <div class="active-filters rn-active-filters" id="rn-active-filters" aria-live="polite"></div>
 
 </form>
 
@@ -198,18 +206,24 @@ document.addEventListener("DOMContentLoaded", () => {
     activeFiltersEl.innerHTML = "";
 
     document.querySelectorAll("select.js-custom-select").forEach((select) => {
-      [...select.options].filter(o => o.selected && o.value !== "").forEach((opt) => {
+      const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
+      selectedOptions.forEach((opt) => {
         const chip = document.createElement("span");
         chip.className = "active-filter";
-        chip.innerHTML = `<span class="active-filter-text"></span><button type="button" class="active-filter-x" aria-label="Verwijder filter">×</button>`;
-        chip.querySelector(".active-filter-text").textContent = opt.textContent;
-
-        chip.querySelector(".active-filter-x").addEventListener("click", (e) => {
+        chip.setAttribute("role", "button");
+        chip.setAttribute("title", "Verwijder filter");
+        chip.tabIndex = 0;
+        chip.innerHTML = `<span class="active-filter-text"></span><span class="active-filter-x" aria-hidden="true">×</span>`;
+        chip.querySelector(".active-filter-text").textContent = opt.dataset.label || opt.textContent;
+        const removeFilter = (e) => {
           e.preventDefault();
           opt.selected = false;
           select.dispatchEvent(new Event("change", { bubbles: true }));
+        };
+        chip.addEventListener("click", removeFilter);
+        chip.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") removeFilter(e);
         });
-
         activeFiltersEl.appendChild(chip);
       });
     });
@@ -276,8 +290,12 @@ document.addEventListener("DOMContentLoaded", () => {
       row.dataset.value = opt.value;
       row.setAttribute("role", "option");
       row.setAttribute("aria-selected", opt.selected ? "true" : "false");
-      row.innerHTML = `<span class="sj-option-text"></span>`;
-      row.querySelector(".sj-option-text").textContent = opt.textContent;
+      const optionLabel = opt.dataset.label || opt.textContent.trim();
+      const optionCount = opt.dataset.count;
+      row.innerHTML = `<span class="sj-option-text"></span>${optionCount !== undefined ? '<span class="sj-option-count"></span>' : ''}`;
+      row.querySelector(".sj-option-text").textContent = optionLabel;
+      const countEl = row.querySelector(".sj-option-count");
+      if (countEl) countEl.textContent = optionCount;
 
       const syncSelected = () => {
         row.classList.toggle("is-selected", opt.selected);
@@ -314,10 +332,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterOptionRows = () => {
       if (!searchInput) return;
       const term = searchInput.value.trim().toLowerCase();
-
       optionRows.forEach(({ row, opt }) => {
-        const matches = opt.textContent.toLowerCase().includes(term);
-        row.style.display = matches ? "" : "none";
+        const optionLabel = opt.dataset.label || opt.textContent;
+        row.style.display = optionLabel.toLowerCase().includes(term) ? "" : "none";
       });
     };
 
@@ -327,12 +344,11 @@ document.addEventListener("DOMContentLoaded", () => {
       searchInput.addEventListener("keydown", (e) => e.stopPropagation());
     }
 
-    const tagsEl       = btn.querySelector(".sj-tags");
+    const tagsEl        = btn.querySelector(".sj-tags");
     const placeholderEl = btn.querySelector(".sj-placeholder");
 
     const renderState = () => {
-      optionRows.forEach(({ opt, syncSelected }) => syncSelected());
-
+      optionRows.forEach(({ syncSelected }) => syncSelected());
       const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
       tagsEl.innerHTML = "";
 
@@ -344,19 +360,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       clearBtn.style.display = "inline-flex";
-
-      if (isSingle) {
-        placeholderEl.textContent = selectedOptions[0].textContent;
-        placeholderEl.style.display = "inline";
-        tagsEl.style.display = "none";
-        return;
-      }
-
-      // Multi: toon alleen de placeholder, actieve filters onderaan
       placeholderEl.textContent = placeholder;
       placeholderEl.style.display = "inline";
       tagsEl.style.display = "none";
-      tagsEl.innerHTML = "";
     };
 
     renderState();
@@ -498,7 +504,7 @@ jQuery(function($) {
   align-items: center;
   gap: 7px;
   background: #FFFACD;
-  color: #007BA7 !important;
+  color: #0458ab !important;
   border: 2px solid #FFFACD;
   padding: 9px 20px;
   border-radius: 6px;
@@ -513,9 +519,9 @@ jQuery(function($) {
 }
 
 .rn-filter-alert-btn:hover {
-  background: var(--color-primary-mid, #3BB4DC);
-  border-color: var(--color-primary-mid, #3BB4DC);
-  color: #005f82 !important;
+  background: var(--color-primary-mid, #2f7fd6);
+  border-color: var(--color-primary-mid, #2f7fd6);
+  color: #034483 !important;
   transform: translateY(-1px);
 }
 
@@ -598,7 +604,7 @@ jQuery(function($) {
   transform: translateY(-50%);
   width: 18px;
   height: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: contain;
   pointer-events: none;
@@ -612,7 +618,7 @@ jQuery(function($) {
   transform: translateY(-50%);
   width: 18px;
   height: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-size: contain;
   pointer-events: none;
@@ -760,7 +766,7 @@ select.sj-hidden-select {
 .sj-search-input:focus {
   outline: none;
   border-color: var(--color-secondary);
-  box-shadow: 0 0 0 2px rgba(0, 123, 167, 0.16);
+  box-shadow: 0 0 0 2px rgba(4, 88, 171, 0.16);
 }
 
 .sj-option {
@@ -773,7 +779,7 @@ select.sj-hidden-select {
 }
 .sj-option:hover { background: #f2f2f2; }
 
-.sj-option.is-selected .sj-option-text { color: var(--color-primary, #007BA7); font-weight: 700; }
+.sj-option.is-selected .sj-option-text { color: var(--color-primary, #0458ab); font-weight: 700; }
 
 .sj-option-text {
   font-family: 'Poppins', sans-serif;
@@ -784,8 +790,8 @@ select.sj-hidden-select {
 /* Focus ring */
 .sj-select-btn:focus {
   outline: none;
-  border-color: var(--color-primary, #007BA7);
-  box-shadow: 0 0 0 2px rgba(53, 99, 162, 0.2);
+  border-color: var(--color-primary, #0458ab);
+  box-shadow: 0 0 0 2px rgba(4, 88, 171, 0.2);
 }
 
 /* Altijd wit */
@@ -824,12 +830,12 @@ span.active-filter {
   cursor: pointer;
 }
 
-span.active-filter:hover { border-color: var(--color-primary, #007BA7); }
+span.active-filter:hover { border-color: var(--color-primary, #0458ab); }
 
 .active-filter-text { color: #333333; }
 
 button.active-filter-x {
-  color: var(--color-primary, #007BA7);
+  color: var(--color-primary, #0458ab);
   font-weight: 700;
   font-size: 20px;
   margin-left: 6px;
@@ -840,7 +846,7 @@ button.active-filter-x {
   cursor: pointer;
 }
 
-button.active-filter-x:hover { color: #005f82; background: none; }
+button.active-filter-x:hover { color: #034483; background: none; }
 
 /* ---- Filter icoontjes per dropdown ---- */
 
@@ -873,22 +879,22 @@ button.active-filter-x:hover { color: #005f82; background: none; }
 
 /* Dienstverband → aktetas */
 .job_type .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
 }
 
 /* Sector → categorie-raster */
 .job_sector .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
 }
 
 /* Organisatie → gebouw */
 .job_company .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
 }
 
 /* Provincie → kaart/locatie */
 .organization_type .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233BB4DC' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/%3E%3Cline x1='8' y1='2' x2='8' y2='18'/%3E%3Cline x1='16' y1='6' x2='16' y2='22'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/%3E%3Cline x1='8' y1='2' x2='8' y2='18'/%3E%3Cline x1='16' y1='6' x2='16' y2='22'/%3E%3C/svg%3E");
 }
 
 /* Mobile */
@@ -1059,7 +1065,7 @@ button.active-filter-x:hover { color: #005f82; background: none; }
   margin-left: -50vw;
   margin-right: -50vw;
   height: 380px;
-  background-color: #007BA7;
+  background-color: #0458ab;
   background-size: cover;
   background-position: center top;
   overflow: hidden;
@@ -1073,7 +1079,7 @@ button.active-filter-x:hover { color: #005f82; background: none; }
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(0, 123, 167, 0.84);
+  background: rgba(4, 88, 171, 0.84);
   z-index: 1;
   pointer-events: none;
 }
@@ -1162,25 +1168,30 @@ form.job_filters {
   margin-left: -50vw;
   margin-right: -50vw;
   margin-top: 0;
-  margin-bottom: 0;
-  min-height: 100px;
-  padding: 0;
-  background: rgba(0, 123, 167, 0.12);
-  background: color-mix(in srgb, var(--color-primary, #007BA7) 12%, transparent);
-  border-bottom: 1px solid rgba(0, 123, 167, 0.18);
-  border-bottom-color: color-mix(in srgb, var(--color-primary, #007BA7) 18%, transparent);
-  border-radius: 0;
-  box-shadow: none;
+  margin-bottom: 40px !important;
+  min-height: 100px !important;
+  padding: 0 !important;
+  background-color: #edf4fb !important;
+  background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff) !important;
+  border: none;
+  border-bottom: 1px solid #d9e4f2 !important;
+  border-bottom-color: color-mix(in srgb, var(--color-primary, #0458ab) 18%, #ffffff) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
   box-sizing: border-box;
+  scroll-margin-top: 90px;
 }
 
+.filter-row,
 .rn-filter-row,
+form.job_filters .active-filters,
 form.job_filters .rn-active-filters {
   max-width: 1200px;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
+.filter-row,
 .rn-filter-row {
   display: flex;
   align-items: center;
@@ -1189,6 +1200,7 @@ form.job_filters .rn-active-filters {
   box-sizing: border-box;
 }
 
+.filter-row > div,
 .rn-filter-row > div {
   flex: 0 0 auto !important;
   width: auto !important;
@@ -1196,86 +1208,561 @@ form.job_filters .rn-active-filters {
   max-width: none !important;
 }
 
+.filter-row .search_keywords,
+.filter-row .search_location,
 .rn-filter-row .search_keywords,
 .rn-filter-row .search_location {
-  flex: 1 1 205px !important;
+  flex: 1 1 0 !important;
   display: flex;
   align-items: center;
   position: relative;
+  width: auto !important;
+  max-width: none !important;
 }
 
+.filter-row input[type="text"],
 .rn-filter-row input[type="text"] {
   width: 100%;
   padding: 11px 14px 11px 40px;
   font-size: 15px;
-  border: 1px solid #dedede;
+  border: 1px solid #d9e4f2;
   border-radius: 8px;
   background-color: #ffffff;
-  color: #333333;
-  transition: border-color .2s ease;
+  color: var(--color-text);
+  transition: border-color .2s ease, box-shadow .2s ease;
   font-family: 'Poppins', sans-serif;
   font-weight: 400;
   box-sizing: border-box;
-  outline: none;
 }
 
+.filter-row input[type="text"]:focus,
 .rn-filter-row input[type="text"]:focus {
   outline: none;
-  border-color: #dedede;
-  box-shadow: none;
+  border-color: var(--color-primary, #0458ab);
+  box-shadow: 0 0 0 3px rgba(4, 88, 171, 0.15);
 }
 
+.filter-row .search_keywords input::placeholder,
+.filter-row .search_location input::placeholder,
+.rn-filter-row .search_keywords input::placeholder,
+.rn-filter-row .search_location input::placeholder {
+  color: #7c7c7c;
+  font-size: 15px !important;
+  font-style: italic;
+}
+
+.filter-row .search_keywords::before,
+.filter-row .search_location::before,
 .rn-filter-row .search_keywords::before,
 .rn-filter-row .search_location::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
   width: 17px;
   height: 17px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
 }
 
+.filter-row .search_keywords::before,
 .rn-filter-row .search_keywords::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23007BA7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
 }
 
+.filter-row .search_location::before,
 .rn-filter-row .search_location::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23007BA7' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
 }
 
-form.job_filters .sj-select-btn {
-  border-color: #E0E0E0 !important;
-  color: #111111 !important;
+.sj-select-wrap,
+.sj-select {
+  position: relative;
+  width: auto;
+  display: inline-block;
+}
+
+.sj-select-btn {
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  white-space: nowrap;
+  border-radius: 999px;
+  border: 1px solid #d9e4f2 !important;
+  background-color: #ffffff !important;
+  padding: 12px;
+  min-height: 44px;
+  cursor: pointer;
+  user-select: none;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
   font-size: 15px;
+  color: #111111 !important;
 }
 
-form.job_filters .sj-select-btn:focus {
-  border-color: #007BA7;
-  box-shadow: 0 0 0 2px rgba(0, 123, 167, 0.2);
+.sj-select-btn:focus,
+.sj-select.active .sj-select-btn {
+  outline: none;
+  border-color: var(--color-primary, #0458ab) !important;
+  box-shadow: 0 0 0 2px rgba(4, 88, 171, 0.18);
+  background: #ffffff !important;
+  color: #111111 !important;
 }
 
+.sj-btn-content {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.sj-placeholder {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  color: var(--color-text);
+  font-size: 14px;
+}
+
+.sj-tags {
+  display: none;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.sj-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0 !important;
+  margin-left: 10px;
+}
+
+.sj-clear {
+  display: none !important;
+}
+
+.sj-chev {
+  width: 9px;
+  height: 9px;
+  border-right: 2px solid #111;
+  border-bottom: 2px solid #111;
+  transform: rotate(45deg);
+  transition: transform .2s ease;
+}
+
+.sj-select.active .sj-chev {
+  transform: rotate(-135deg);
+}
+
+.sj-options {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: auto;
+  width: max-content;
+  min-width: 100%;
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid #d9e4f2;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.12);
+  padding: 8px;
+  max-height: 280px;
+  overflow: auto;
+  z-index: 9999;
+}
+
+.sj-select.active .sj-options {
+  display: block;
+}
+
+.sj-search {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #ffffff;
+  padding: 4px 4px 10px;
+}
+
+.sj-search-input {
+  width: 100%;
+  min-width: 220px;
+  border: 1px solid #d9e4f2;
+  border-radius: 8px;
+  padding: 11px 12px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  color: var(--color-text);
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.sj-search-input::placeholder { color: #7c7c7c; }
+
+.sj-search-input:focus {
+  outline: none;
+  border-color: var(--color-primary, #0458ab);
+  box-shadow: 0 0 0 2px rgba(4, 88, 171, 0.16);
+}
+
+.sj-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 240px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.sj-option:hover {
+  background: #edf4fb;
+  background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff);
+}
+
+.sj-option.is-selected .sj-option-text,
 form.job_filters .sj-option.is-selected .sj-option-text {
-  color: #007BA7;
+  color: var(--color-primary, #0458ab);
+  font-weight: 700;
 }
 
+.sj-option-text {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.sj-option-count {
+  flex: 0 0 auto;
+  margin-left: 16px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-text-muted);
+}
+
+.sj-option.is-selected .sj-option-count {
+  color: var(--color-primary, #0458ab);
+}
+
+.job_type .sj-select-btn,
+.job_sector .sj-select-btn,
+.job_company .sj-select-btn,
+.organization_type .sj-select-btn {
+  padding-left: 38px !important;
+  position: relative;
+}
+
+.job_type .sj-select-btn::before,
+.job_sector .sj-select-btn::before,
+.job_company .sj-select-btn::before,
+.organization_type .sj-select-btn::before {
+  content: '';
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 15px;
+  height: 15px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+.job_type .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
+}
+
+.job_sector .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
+}
+
+.job_company .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
+}
+
+.organization_type .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/%3E%3Cline x1='8' y1='2' x2='8' y2='18'/%3E%3Cline x1='16' y1='6' x2='16' y2='22'/%3E%3C/svg%3E");
+}
+
+.active-filters,
 form.job_filters .rn-active-filters {
   display: none;
   flex-wrap: wrap;
   gap: 10px;
-  padding: 0 24px 14px !important;
-  margin-top: 0 !important;
+  padding: 0 24px 28px !important;
+  margin-top: 0;
 }
 
+span.active-filter,
 form.job_filters span.active-filter {
-  font-size: 15px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #ffffff;
+  border: 1px solid var(--color-primary, #0458ab);
+  border-radius: 999px;
+  box-shadow: 0 10px 24px -18px rgba(4, 88, 171, 0.38);
+  padding: 8px 12px;
+  font-size: 14px;
+  color: var(--color-primary, #0458ab);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color .18s ease, border-color .18s ease, transform .18s ease;
 }
 
+span.active-filter:hover,
 form.job_filters span.active-filter:hover {
-  border-color: #007BA7;
+  background: #edf4fb;
+  background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff);
+  border-color: var(--color-primary, #0458ab);
+  transform: translateY(-1px);
 }
 
-form.job_filters button.active-filter-x {
-  color: #007BA7;
+.active-filter-text {
+  color: inherit;
+  font-weight: 700;
 }
 
-form.job_filters button.active-filter-x:hover {
-  color: #005f82;
+.active-filter-x {
+  color: var(--color-primary, #0458ab);
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  margin-left: 4px;
+  pointer-events: none;
+}
+
+@media (max-width: 960px) {
+  form.job_filters {
+    width: 100% !important;
+    position: relative !important;
+    left: 0 !important;
+    right: auto !important;
+    margin: 0 0 40px !important;
+    min-height: 0 !important;
+  }
+
+  .filter-row,
+  .rn-filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 16px !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .filter-row .search_keywords,
+  .filter-row .search_location,
+  .rn-filter-row .search_keywords,
+  .rn-filter-row .search_location {
+    flex: none !important;
+    width: 100% !important;
+  }
+
+  .filter-row > div,
+  .rn-filter-row > div,
+  .sj-select-wrap,
+  .sj-select,
+  .sj-select-btn {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  .sj-select-btn {
+    min-width: 0;
+    white-space: normal;
+  }
+
+  .sj-btn-content {
+    flex: 1 1 auto;
+  }
+
+  .sj-placeholder {
+    white-space: normal;
+  }
+
+  .sj-options {
+    width: 100% !important;
+    min-width: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  .active-filters,
+  .rn-active-filters {
+    padding: 0 16px 16px !important;
+    box-sizing: border-box;
+  }
+
+  span.active-filter {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .active-filter-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Screenshot-style filter controls */
+form.job_filters {
+  background-color: #edf4fb !important;
+  background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff) !important;
+  border-bottom: 1px solid #DDE8C5 !important;
+}
+
+form.job_filters .filter-row,
+form.job_filters .rn-filter-row {
+  gap: 18px;
+}
+
+form.job_filters .search_keywords,
+form.job_filters .search_location {
+  flex: 1 1 230px !important;
+}
+
+form.job_filters .filter-row input[type="text"],
+form.job_filters .rn-filter-row input[type="text"] {
+  min-height: 44px;
+  padding: 11px 18px 11px 52px;
+  border: 1px solid #DDE8C5 !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  box-shadow: none;
+  color: #333333;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+form.job_filters .filter-row input[type="text"]:focus,
+form.job_filters .rn-filter-row input[type="text"]:focus {
+  border-color: #168AAD !important;
+  box-shadow: 0 0 0 3px rgba(22, 138, 173, 0.15);
+}
+
+form.job_filters .search_keywords input::placeholder,
+form.job_filters .search_location input::placeholder {
+  color: #7c7c7c;
+  font-size: 15px !important;
+  font-style: italic;
+  font-weight: 400;
+}
+
+form.job_filters .search_keywords::before,
+form.job_filters .search_location::before {
+  left: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+form.job_filters .search_keywords::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") !important;
+}
+
+form.job_filters .search_location::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E") !important;
+}
+
+form.job_filters .sj-select-btn {
+  min-height: 44px;
+  padding: 11px 18px 11px 52px !important;
+  border: 1px solid #DDE8C5 !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  box-shadow: none;
+  color: #333333 !important;
+  font-size: 16px;
+}
+
+form.job_filters .sj-select-btn:focus,
+form.job_filters .sj-select.active .sj-select-btn {
+  border-color: #DDE8C5 !important;
+  box-shadow: 0 0 0 3px rgba(22, 138, 173, 0.15);
+}
+
+form.job_filters .sj-placeholder {
+  color: #333 !important;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+form.job_filters .sj-actions {
+  margin-left: 14px;
+}
+
+form.job_filters .sj-chev {
+  width: 9px;
+  height: 9px;
+  border-right: 3px solid #111111;
+  border-bottom: 3px solid #111111;
+}
+
+form.job_filters .job_type .sj-select-btn::before,
+form.job_filters .job_sector .sj-select-btn::before,
+form.job_filters .job_company .sj-select-btn::before,
+form.job_filters .organization_type .sj-select-btn::before {
+  left: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+form.job_filters .job_type .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E") !important;
+}
+
+form.job_filters .job_sector .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E") !important;
+}
+
+form.job_filters .job_company .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E") !important;
+}
+
+form.job_filters .organization_type .sj-select-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/%3E%3Cline x1='8' y1='2' x2='8' y2='18'/%3E%3Cline x1='16' y1='6' x2='16' y2='22'/%3E%3C/svg%3E") !important;
+}
+
+form.job_filters .sj-options,
+form.job_filters .sj-search-input {
+  border-color: #DDE8C5;
+}
+
+form.job_filters .sj-option:hover {
+  background: #edf4fb;
+  background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff);
+}
+
+form.job_filters .sj-option.is-selected .sj-option-text,
+form.job_filters .sj-option.is-selected .sj-option-count {
+  color: #168AAD;
+}
+
+@media (max-width: 960px) {
+  form.job_filters .filter-row,
+  form.job_filters .rn-filter-row {
+    gap: 10px;
+  }
+
+  form.job_filters .search_keywords,
+  form.job_filters .search_location {
+    flex: 0 0 auto !important;
+  }
 }
 
 </style>

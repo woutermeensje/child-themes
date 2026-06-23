@@ -481,8 +481,8 @@ a.sj-company-blok__name:hover {
 .sj-sidebar__chip {
     display: inline-block;
     padding: 3px 10px;
-    background: rgba(53, 99, 162, 0.08);
-    border: 1px solid rgba(53, 99, 162, 0.2);
+    background: rgba(4, 88, 171, 0.08);
+    border: 1px solid rgba(4, 88, 171, 0.2);
     border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
@@ -583,8 +583,8 @@ a.sj-company-blok__name:hover {
 }
 
 .job-apply-button a:hover {
-    background: var(--color-primary-dk, #005f82);
-    border-color: var(--color-primary-dk, #005f82);
+    background: var(--color-primary-dk, #034483);
+    border-color: var(--color-primary-dk, #034483);
     color: #ffffff;
 }
 
@@ -638,7 +638,7 @@ h1.entry-title { display: none; }
     line-height: 1.4;
 }
 
-.sj-vraag-req { color: var(--color-primary, #007BA7); margin-left: 2px; }
+.sj-vraag-req { color: var(--color-primary, #0458ab); margin-left: 2px; }
 
 .sj-vraag-blok__input {
     width: 100% !important;
@@ -664,8 +664,8 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__input:focus {
-    border-color: var(--color-primary, #007BA7) !important;
-    box-shadow: 0 0 0 3px rgba(53, 99, 162, .15) !important;
+    border-color: var(--color-primary, #0458ab) !important;
+    box-shadow: 0 0 0 3px rgba(4, 88, 171, .15) !important;
 }
 
 .sj-vraag-blok__input::placeholder {
@@ -686,7 +686,7 @@ h1.entry-title { display: none; }
     min-height: 110px;
     padding: 24px 20px;
     background: #f8f9fb;
-    border: 2px dashed var(--color-primary, #007BA7);
+    border: 2px dashed var(--color-primary, #0458ab);
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
@@ -696,12 +696,12 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__upload:hover {
-    border-color: var(--color-primary-dk, #005f82);
+    border-color: var(--color-primary-dk, #034483);
     background: #f0f4fb;
 }
 
 .sj-vraag-blok__upload svg {
-    color: var(--color-primary, #007BA7);
+    color: var(--color-primary, #0458ab);
     flex-shrink: 0;
 }
 
@@ -709,7 +709,7 @@ h1.entry-title { display: none; }
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-primary, #007BA7);
+    color: var(--color-primary, #0458ab);
 }
 
 .sj-vraag-blok__upload-name {
@@ -745,8 +745,8 @@ h1.entry-title { display: none; }
     font-family: 'Balgin-Bold', serif;
     font-size: 15px;
     font-weight: 600;
-    background-color: var(--color-primary, #007BA7);
-    border: 2px solid var(--color-primary, #007BA7);
+    background-color: var(--color-primary, #0458ab);
+    border: 2px solid var(--color-primary, #0458ab);
     color: #ffffff !important;
     padding: 10px 28px;
     border-radius: 4px;
@@ -756,8 +756,8 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__submit:hover {
-    background-color: var(--color-primary-dk, #005f82);
-    border-color: var(--color-primary-dk, #005f82);
+    background-color: var(--color-primary-dk, #034483);
+    border-color: var(--color-primary-dk, #034483);
 }
 
 @media (max-width: 640px) {
@@ -829,7 +829,7 @@ h1.entry-title { display: none; }
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-primary, #007BA7);
+    color: var(--color-primary, #0458ab);
     text-decoration: none;
     transition: color .18s ease;
 }
@@ -859,7 +859,7 @@ h1.entry-title { display: none; }
 .sj-expired-banner a {
     margin-left: auto;
     font-weight: 600;
-    color: var(--color-primary, #007BA7);
+    color: var(--color-primary, #0458ab);
     text-decoration: none;
     white-space: nowrap;
 }
@@ -920,7 +920,7 @@ h1.entry-title { display: none; }
     align-items: center;
     justify-content: center;
     padding: 10px 24px;
-    background: var(--color-primary, #007BA7);
+    background: var(--color-primary, #0458ab);
     color: #fff !important;
     border: none;
     border-radius: 5px;
@@ -933,7 +933,7 @@ h1.entry-title { display: none; }
 }
 
 .sj-vp-snel__btn:hover {
-    background: var(--color-primary-dk, #005f82);
+    background: var(--color-primary-dk, #034483);
     color: #fff !important;
 }
 

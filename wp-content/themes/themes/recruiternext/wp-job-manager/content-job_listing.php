@@ -37,7 +37,7 @@ $secondary_image  = function_exists('get_secondary_imageurl') ? get_secondary_im
 $background_image = $cover_image ?: $secondary_image;
 $background_style = $background_image
     ? "background-image: url('" . esc_url($background_image) . "');"
-    : "background-image: linear-gradient(135deg, rgba(53, 99, 162, 0.92), rgba(37, 60, 110, 0.92));";
+    : "background-image: linear-gradient(135deg, rgba(4, 88, 171, 0.92), rgba(3, 68, 131, 0.92));";
 
 $job_location = get_the_job_location($post_id);
 $job_types    = get_the_terms($post_id, 'job_listing_type');
@@ -504,7 +504,7 @@ a.title-link:hover h2 {
     height: 100%;
     top: 0;
     background:
-        linear-gradient(135deg, rgba(53, 99, 162, 0.32), rgba(37, 60, 110, 0.58)),
+        linear-gradient(135deg, rgba(4, 88, 171, 0.32), rgba(3, 68, 131, 0.58)),
         var(--color-primary);
     opacity: 0.38 !important;
 }
@@ -749,8 +749,8 @@ ul.job_listings li.job_listing .job-card__mobile a.job-mobile__chip,
 
 ul.job_listings li.job_listing .job-card__mobile a.job-mobile__chip:hover,
 ul.job_listings li.job_listing .job-card__mobile a.job-mobile__chip:focus {
-    background: rgba(53, 99, 162, 0.06) !important;
-    border-color: rgba(53, 99, 162, 0.32) !important;
+    background: rgba(4, 88, 171, 0.06) !important;
+    border-color: rgba(4, 88, 171, 0.32) !important;
     color: var(--color-primary) !important;
 }
 

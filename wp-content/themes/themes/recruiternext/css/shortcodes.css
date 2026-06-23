@@ -97,7 +97,7 @@
     font-family: 'Poppins', sans-serif !important;
     font-size: 22px !important;
     font-weight: 700 !important;
-    color: var(--color-primary, #007BA7) !important;
+    color: var(--color-primary, #0458ab) !important;
     margin: 0 0 6px !important;
     line-height: 1.2 !important;
 }
@@ -136,7 +136,7 @@
 }
 
 .sj-ja__req {
-    color: var(--color-primary, #007BA7) !important;
+    color: var(--color-primary, #0458ab) !important;
 }
 
 /* ── Input wrapper & icoon ───────────────────────────────────── */
@@ -179,7 +179,7 @@
 
 .sj-ja__input:focus {
     border-color: #dedede !important;
-    box-shadow: 0 0 0 3px rgba(0,123,167,.10) !important;
+    box-shadow: 0 0 0 3px rgba(4, 88, 171,.10) !important;
     outline: none !important;
 }
 
@@ -194,8 +194,8 @@
     justify-content: center !important;
     width: 100% !important;
     padding: 12px 24px !important;
-    background: var(--color-primary, #007BA7) !important;
-    border: 2px solid var(--color-primary, #007BA7) !important;
+    background: var(--color-primary, #0458ab) !important;
+    border: 2px solid var(--color-primary, #0458ab) !important;
     border-radius: 5px !important;
     font-family: 'Poppins', sans-serif !important;
     font-size: 15px !important;
@@ -209,8 +209,8 @@
 }
 
 .sj-ja__submit:hover {
-    background: var(--color-primary-dk, #005f82) !important;
-    border-color: var(--color-primary-dk, #005f82) !important;
+    background: var(--color-primary-dk, #034483) !important;
+    border-color: var(--color-primary-dk, #034483) !important;
     color: #fff !important;
 }
 
@@ -255,7 +255,7 @@
 .sj-select-btn:focus {
     outline: none !important;
     border-color: #dedede !important;
-    box-shadow: 0 0 0 3px rgba(0,123,167,.10) !important;
+    box-shadow: 0 0 0 3px rgba(4, 88, 171,.10) !important;
 }
 
 .sj-btn-content {
@@ -400,9 +400,9 @@
 }
 
 .sj-option.is-selected {
-    color: var(--color-primary, #007BA7) !important;
+    color: var(--color-primary, #0458ab) !important;
     font-weight: 600 !important;
-    background: rgba(0,123,167,.06) !important;
+    background: rgba(4, 88, 171,.06) !important;
 }
 
 .sj-option-text {
@@ -422,12 +422,12 @@
     align-items: center !important;
     gap: 6px !important;
     padding: 4px 10px !important;
-    background: rgba(0,123,167,.08) !important;
-    border: 1px solid rgba(0,123,167,.25) !important;
+    background: rgba(4, 88, 171,.08) !important;
+    border: 1px solid rgba(4, 88, 171,.25) !important;
     border-radius: 999px !important;
     font-family: 'Poppins', sans-serif !important;
     font-size: 13px !important;
-    color: var(--color-primary, #007BA7) !important;
+    color: var(--color-primary, #0458ab) !important;
 }
 
 .sj-ja-chip__remove {
@@ -445,7 +445,7 @@
 }
 
 .sj-ja-chip__remove:hover {
-    color: var(--color-primary-dk, #005f82) !important;
+    color: var(--color-primary-dk, #034483) !important;
 }
 
 /* ── Sidebar variant ──────────────────────────────────────────── */
@@ -492,7 +492,7 @@
 }
 
 .sj-ja-sb__req {
-    color: var(--color-primary, #007BA7) !important;
+    color: var(--color-primary, #0458ab) !important;
 }
 
 .sj-ja-sb__input {
@@ -515,7 +515,7 @@
 
 .sj-ja-sb__input:focus {
     border-color: #dedede !important;
-    box-shadow: 0 0 0 3px rgba(0,123,167,.10) !important;
+    box-shadow: 0 0 0 3px rgba(4, 88, 171,.10) !important;
     outline: none !important;
 }
 
@@ -525,8 +525,8 @@
     justify-content: center !important;
     width: 100% !important;
     padding: 10px 20px !important;
-    background: var(--color-primary, #007BA7) !important;
-    border: 2px solid var(--color-primary, #007BA7) !important;
+    background: var(--color-primary, #0458ab) !important;
+    border: 2px solid var(--color-primary, #0458ab) !important;
     border-radius: 5px !important;
     font-family: 'Poppins', sans-serif !important;
     font-size: 14px !important;
@@ -541,8 +541,8 @@
 }
 
 .sj-ja-sb__submit:hover {
-    background: var(--color-primary-dk, #005f82) !important;
-    border-color: var(--color-primary-dk, #005f82) !important;
+    background: var(--color-primary-dk, #034483) !important;
+    border-color: var(--color-primary-dk, #034483) !important;
     color: #fff !important;
 }
 
@@ -602,7 +602,7 @@
     font-family: 'Balgin-Bold', serif !important;
     font-size: 26px !important;
     font-weight: 700 !important;
-    color: var(--color-primary, #007BA7) !important;
+    color: var(--color-primary, #0458ab) !important;
     margin: 0 0 8px !important;
     line-height: 1.2 !important;
 }
@@ -619,7 +619,7 @@
 }
 
 .rn-vp-card__intro a {
-    color: var(--color-primary, #007BA7) !important;
+    color: var(--color-primary, #0458ab) !important;
     text-decoration: underline !important;
 }
 
@@ -627,7 +627,7 @@
     font-family: 'Balgin-Bold', serif !important;
     font-size: 17px !important;
     font-weight: 700 !important;
-    color: var(--color-primary, #007BA7) !important;
+    color: var(--color-primary, #0458ab) !important;
     margin: 28px 0 16px !important;
     padding-bottom: 8px !important;
     border-bottom: 1px solid #dedede !important;
@@ -685,7 +685,7 @@
 .rn-vp-field input[type="url"]:focus,
 .rn-vp-field select:focus {
     border-color: #dedede !important;
-    box-shadow: 0 0 0 3px rgba(0,123,167,.12) !important;
+    box-shadow: 0 0 0 3px rgba(4, 88, 171,.12) !important;
     outline: none !important;
 }
 
@@ -711,7 +711,7 @@
 
 .rn-vp-textarea:focus {
     border-color: #dedede !important;
-    box-shadow: 0 0 0 3px rgba(0,123,167,.12) !important;
+    box-shadow: 0 0 0 3px rgba(4, 88, 171,.12) !important;
     outline: none !important;
 }
 
@@ -738,8 +738,8 @@
     width: 100% !important;
     margin-top: 28px !important;
     padding: 13px 28px !important;
-    background: var(--color-primary, #007BA7) !important;
-    border: 2px solid var(--color-primary, #007BA7) !important;
+    background: var(--color-primary, #0458ab) !important;
+    border: 2px solid var(--color-primary, #0458ab) !important;
     border-radius: 5px !important;
     font-family: 'Balgin-Bold', serif !important;
     font-size: 16px !important;
@@ -754,7 +754,7 @@
 }
 
 .rn-vp-submit:hover {
-    background: var(--color-primary-dk, #005f82) !important;
-    border-color: var(--color-primary-dk, #005f82) !important;
+    background: var(--color-primary-dk, #034483) !important;
+    border-color: var(--color-primary-dk, #034483) !important;
     color: #fff !important;
 }
