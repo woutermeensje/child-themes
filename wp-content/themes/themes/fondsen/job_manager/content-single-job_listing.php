@@ -201,10 +201,13 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
                         $rc_name    = (!is_wp_error($rc_terms) && !empty($rc_terms)) ? $rc_terms[0]->name : '';
                         $rc_title   = function_exists('wpjm_get_the_job_title') ? wpjm_get_the_job_title() : get_the_title();
                         $rc_excerpt = wp_trim_words(get_the_excerpt(), 14, '…');
+                        $rc_logo    = function_exists('fondsen_get_job_listing_company_logo_html')
+                            ? fondsen_get_job_listing_company_logo_html(get_the_ID(), 'thumbnail')
+                            : get_the_post_thumbnail(get_the_ID(), 'thumbnail');
                         ?>
                         <li class="fn-recent-item" <?php job_listing_class(); ?>>
                             <a class="fn-recent-link" href="<?php the_job_permalink(); ?>" aria-label="<?php echo esc_attr($rc_title); ?>">
-                                <div class="fn-recent-logo"><?php the_company_logo(); ?></div>
+                                <div class="fn-recent-logo"><?php echo $rc_logo; ?></div>
                                 <div class="fn-recent-body">
                                     <?php if ($rc_name) : ?>
                                         <div class="fn-recent-company"><?php echo esc_html($rc_name); ?></div>
@@ -256,7 +259,12 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
                     </div>
                 <?php endif; ?>
 
-                <?php $sectors = get_the_terms($post_id, 'job_sector'); if (!is_wp_error($sectors) && !empty($sectors)) : ?>
+                <?php
+                $sectors = function_exists('fondsen_get_job_listing_sector_terms')
+                    ? fondsen_get_job_listing_sector_terms($post_id)
+                    : get_the_terms($post_id, 'job_sector');
+                if (!is_wp_error($sectors) && !empty($sectors)) :
+                ?>
                     <div class="fn-sidebar__detail-row">
                         <span class="fn-sidebar__detail-label">Sector</span>
                         <span class="fn-sidebar__detail-value">
@@ -267,23 +275,17 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
                     </div>
                 <?php endif; ?>
 
-                <?php $org_types = get_the_terms($post_id, 'organization_type'); if (!is_wp_error($org_types) && !empty($org_types)) : ?>
+                <?php
+                $org_types = function_exists('fondsen_get_job_listing_organization_type_terms')
+                    ? fondsen_get_job_listing_organization_type_terms($post_id)
+                    : get_the_terms($post_id, 'organization_type');
+                if (!is_wp_error($org_types) && !empty($org_types)) :
+                ?>
                     <div class="fn-sidebar__detail-row">
                         <span class="fn-sidebar__detail-label">Type organisatie</span>
                         <span class="fn-sidebar__detail-value">
                             <?php foreach ($org_types as $o) : ?>
                                 <span class="fn-sidebar__chip"><?php echo esc_html($o->name); ?></span>
-                            <?php endforeach; ?>
-                        </span>
-                    </div>
-                <?php endif; ?>
-
-                <?php $certs = get_the_terms($post_id, 'certificering'); if (!is_wp_error($certs) && !empty($certs)) : ?>
-                    <div class="fn-sidebar__detail-row">
-                        <span class="fn-sidebar__detail-label">Certificering</span>
-                        <span class="fn-sidebar__detail-value">
-                            <?php foreach ($certs as $c) : ?>
-                                <span class="fn-sidebar__chip"><?php echo esc_html($c->name); ?></span>
                             <?php endforeach; ?>
                         </span>
                     </div>

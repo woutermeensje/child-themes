@@ -94,7 +94,7 @@ li.sj-featured-label-row {
 
 /* Uitgelichte vacature — gemarkeerde border */
 li.job_listing.job_position_featured .job-card {
-    border: 5px solid var(--color-primary);
+    border: 5px solid var(--color-bg-filter);
 }
 
 html, body{

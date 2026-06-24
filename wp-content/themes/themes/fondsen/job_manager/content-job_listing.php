@@ -11,8 +11,11 @@ if (!defined('ABSPATH')) {
 
 global $post;
 
-$post_id          = $post ? (int) $post->ID : get_the_ID();
-$has_company_logo = has_post_thumbnail($post_id);
+$post_id           = $post ? (int) $post->ID : get_the_ID();
+$company_logo_html = function_exists('fondsen_get_job_listing_company_logo_html')
+    ? fondsen_get_job_listing_company_logo_html($post_id, 'thumbnail')
+    : get_the_post_thumbnail($post_id, 'thumbnail');
+$has_company_logo  = $company_logo_html !== '';
 
 $job_company_terms = get_the_terms($post_id, 'job_company');
 $job_company_term  = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0] : null;
@@ -36,7 +39,9 @@ $background_style = $background_image
 
 $job_location = get_the_job_location($post_id);
 $job_types    = get_the_terms($post_id, 'job_listing_type');
-$org_types    = get_the_terms($post_id, 'organization_type');
+$org_types    = function_exists('fondsen_get_job_listing_organization_type_terms')
+    ? fondsen_get_job_listing_organization_type_terms($post_id)
+    : get_the_terms($post_id, 'organization_type');
 
 $location_links = [];
 if ($job_location) {
@@ -122,7 +127,7 @@ $sj_prev_activisme = $sj_is_activisme;
 
                     <?php if ($has_company_logo) : ?>
                     <div class="job-card__desktop-logo">
-                        <?php echo get_the_post_thumbnail($post_id, 'thumbnail'); ?>
+                        <?php echo $company_logo_html; ?>
                     </div>
                     <?php endif; ?>
                 </div>
@@ -210,7 +215,7 @@ $sj_prev_activisme = $sj_is_activisme;
                 <div class="job-mobile__body<?php echo $has_company_logo ? '' : ' job-mobile__body--no-logo'; ?>">
                     <?php if ($has_company_logo) : ?>
                     <div class="job-mobile__logo">
-                        <?php echo get_the_post_thumbnail($post_id, 'thumbnail'); ?>
+                        <?php echo $company_logo_html; ?>
                     </div>
                     <?php endif; ?>
 

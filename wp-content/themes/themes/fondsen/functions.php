@@ -130,6 +130,9 @@ add_action('template_redirect', function () {
     } elseif ( get_term_by('slug', $slug, 'organization_type') ) {
         $_GET['filter_organization_type'] = [ $slug ];
         $_REQUEST['filter_organization_type'] = [ $slug ];
+    } elseif ( get_term_by('slug', $slug, 'job_sector') ) {
+        $_GET['filter_job_sector'] = [ $slug ];
+        $_REQUEST['filter_job_sector'] = [ $slug ];
     } else {
         $location = str_replace('-', ' ', urldecode($slug));
         $_GET['search_location'] = $location;
@@ -457,11 +460,23 @@ add_action('init', function () {
     ]);
 
     register_taxonomy('organization_type', 'job_listing', [
-        'label'             => 'Organization Type',
+        'label'             => 'Type organisatie',
+        'labels'            => [
+            'name'          => 'Type organisaties',
+            'singular_name' => 'Type organisatie',
+            'search_items'  => 'Type organisaties zoeken',
+            'all_items'     => 'Alle type organisaties',
+            'edit_item'     => 'Type organisatie bewerken',
+            'update_item'   => 'Type organisatie bijwerken',
+            'add_new_item'  => 'Nieuw type organisatie toevoegen',
+            'new_item_name' => 'Nieuwe type organisatie',
+            'menu_name'     => 'Type organisaties',
+        ],
         'hierarchical'      => true,
         'show_ui'           => true,
         'show_admin_column' => true,
         'show_in_rest'      => true,
+        'meta_box_cb'       => false,
         'rewrite'           => ['slug' => 'organization_type'],
     ]);
 
@@ -474,15 +489,6 @@ add_action('init', function () {
         'rewrite'           => ['slug' => 'sector'],
     ]);
 
-    register_taxonomy('certificering', 'job_listing', [
-        'label'             => 'Certificeringen',
-        'hierarchical'      => true,
-        'show_ui'           => true,
-        'show_admin_column' => true,
-        'show_in_rest'      => true,
-        'rewrite'           => ['slug' => 'certificering'],
-    ]);
-
 });
 
 
@@ -493,7 +499,6 @@ add_action('init', function () {
     register_taxonomy_for_object_type('job_company', 'page');
     register_taxonomy_for_object_type('job_tag', 'page');
     register_taxonomy_for_object_type('job_sector', 'page');
-    register_taxonomy_for_object_type('certificering', 'page');
 });
 
 // =========================================================
@@ -540,6 +545,741 @@ function fondsen_save_job_company_notification_email($term_id) {
 }
 add_action('created_job_company', 'fondsen_save_job_company_notification_email');
 add_action('edited_job_company', 'fondsen_save_job_company_notification_email');
+
+// =========================================================
+// 5c) Organisatie term-meta: type organisatie
+// =========================================================
+if ( ! defined('FONDSEN_ORG_TYPE_SYNC_VERSION') ) {
+    define('FONDSEN_ORG_TYPE_SYNC_VERSION', '2026-06-24-company-organization-types');
+}
+
+function fondsen_get_all_organization_type_terms() {
+    $terms = get_terms([
+        'taxonomy'   => 'organization_type',
+        'hide_empty' => false,
+        'orderby'    => 'name',
+        'order'      => 'ASC',
+    ]);
+
+    return is_wp_error($terms) ? [] : $terms;
+}
+
+function fondsen_normalize_organization_type_ids($ids) {
+    $ids = array_values(array_unique(array_filter(array_map('absint', (array) $ids))));
+    if (empty($ids)) {
+        return [];
+    }
+
+    $valid_ids = get_terms([
+        'taxonomy'   => 'organization_type',
+        'hide_empty' => false,
+        'include'    => $ids,
+        'fields'     => 'ids',
+    ]);
+
+    return is_wp_error($valid_ids)
+        ? []
+        : array_values(array_intersect($ids, array_map('absint', $valid_ids)));
+}
+
+function fondsen_get_job_company_organization_type_ids($company_term_id) {
+    $ids = get_term_meta((int) $company_term_id, '_fondsen_organization_type_ids', true);
+    return fondsen_normalize_organization_type_ids(is_array($ids) ? $ids : []);
+}
+
+function fondsen_get_organization_type_terms_by_ids($ids) {
+    $ids = fondsen_normalize_organization_type_ids($ids);
+    if (empty($ids)) {
+        return [];
+    }
+
+    $terms = get_terms([
+        'taxonomy'   => 'organization_type',
+        'hide_empty' => false,
+        'include'    => $ids,
+        'orderby'    => 'include',
+    ]);
+
+    return is_wp_error($terms) ? [] : $terms;
+}
+
+function fondsen_get_job_listing_organization_type_ids_from_companies($job_id, &$has_company_config = null) {
+    $has_company_config = false;
+    $company_terms = get_the_terms((int) $job_id, 'job_company');
+    if (is_wp_error($company_terms) || empty($company_terms)) {
+        return [];
+    }
+
+    $type_ids = [];
+    foreach ($company_terms as $company_term) {
+        if (metadata_exists('term', $company_term->term_id, '_fondsen_organization_type_ids')) {
+            $has_company_config = true;
+        }
+
+        $type_ids = array_merge(
+            $type_ids,
+            fondsen_get_job_company_organization_type_ids($company_term->term_id)
+        );
+    }
+
+    return fondsen_normalize_organization_type_ids($type_ids);
+}
+
+function fondsen_get_job_listing_organization_type_terms($job_id) {
+    $has_company_config = false;
+    $type_ids = fondsen_get_job_listing_organization_type_ids_from_companies($job_id, $has_company_config);
+
+    if (!empty($type_ids)) {
+        return fondsen_get_organization_type_terms_by_ids($type_ids);
+    }
+
+    $legacy_terms = get_the_terms((int) $job_id, 'organization_type');
+    return is_wp_error($legacy_terms) || empty($legacy_terms) ? [] : $legacy_terms;
+}
+
+function fondsen_render_organization_type_checkboxes($selected_ids = []) {
+    $selected_ids = fondsen_normalize_organization_type_ids($selected_ids);
+    $terms = fondsen_get_all_organization_type_terms();
+
+    wp_nonce_field('fondsen_save_job_company_organization_types', 'fondsen_organization_type_nonce');
+
+    if (empty($terms)) {
+        echo '<p class="description">Maak eerst termen aan bij Type organisaties. Daarna kun je ze hier aan organisaties koppelen.</p>';
+        return;
+    }
+
+    echo '<fieldset>';
+    foreach ($terms as $term) {
+        echo '<label style="display:block;margin:0 0 6px;">';
+        echo '<input type="checkbox" name="fondsen_organization_type_ids[]" value="' . esc_attr($term->term_id) . '" ' . checked(in_array((int) $term->term_id, $selected_ids, true), true, false) . '> ';
+        echo esc_html($term->name);
+        echo '</label>';
+    }
+    echo '</fieldset>';
+}
+
+function fondsen_render_job_company_organization_types_add_field() {
+    ?>
+    <div class="form-field term-fondsen-organization-types-wrap">
+        <label>Type organisatie</label>
+        <?php fondsen_render_organization_type_checkboxes(); ?>
+        <p class="description">Kies een of meerdere types. Deze worden automatisch toegepast op alle vacatures van deze organisatie.</p>
+    </div>
+    <?php
+}
+add_action('job_company_add_form_fields', 'fondsen_render_job_company_organization_types_add_field');
+
+function fondsen_render_job_company_organization_types_edit_field($term) {
+    $selected_ids = fondsen_get_job_company_organization_type_ids($term->term_id);
+    ?>
+    <tr class="form-field term-fondsen-organization-types-wrap">
+        <th scope="row">
+            <label>Type organisatie</label>
+        </th>
+        <td>
+            <?php fondsen_render_organization_type_checkboxes($selected_ids); ?>
+            <p class="description">Kies een of meerdere types. Deze worden automatisch getoond en gefilterd bij alle vacatures van deze organisatie.</p>
+        </td>
+    </tr>
+    <?php
+}
+add_action('job_company_edit_form_fields', 'fondsen_render_job_company_organization_types_edit_field');
+
+add_filter('manage_edit-job_company_columns', function ($columns) {
+    $new_columns = [];
+
+    foreach ($columns as $key => $label) {
+        $new_columns[$key] = $label;
+
+        if ($key === 'name') {
+            $new_columns['fondsen_company_logo'] = 'Logo';
+            $new_columns['fondsen_organization_types'] = 'Type organisatie';
+            $new_columns['fondsen_job_sectors'] = 'Sectoren';
+        }
+    }
+
+    return $new_columns;
+});
+
+add_filter('manage_job_company_custom_column', function ($content, $column_name, $term_id) {
+    if ($column_name === 'fondsen_company_logo') {
+        $logo_id = fondsen_get_job_company_logo_id((int) $term_id);
+        return $logo_id
+            ? wp_get_attachment_image($logo_id, 'thumbnail', false, ['style' => 'width:40px;height:40px;object-fit:contain;'])
+            : '&mdash;';
+    }
+
+    if ($column_name === 'fondsen_organization_types') {
+        $terms = fondsen_get_organization_type_terms_by_ids(
+            fondsen_get_job_company_organization_type_ids((int) $term_id)
+        );
+
+        return empty($terms)
+            ? '&mdash;'
+            : esc_html(implode(', ', wp_list_pluck($terms, 'name')));
+    }
+
+    if ($column_name === 'fondsen_job_sectors') {
+        $terms = fondsen_get_job_sector_terms_by_ids(
+            fondsen_get_job_company_sector_ids((int) $term_id)
+        );
+
+        return empty($terms)
+            ? '&mdash;'
+            : esc_html(implode(', ', wp_list_pluck($terms, 'name')));
+    }
+
+    return $content;
+}, 10, 3);
+
+// =========================================================
+// 5d) Organisatie term-meta: logo
+// =========================================================
+function fondsen_get_job_company_logo_id($company_term_id) {
+    return absint(get_term_meta((int) $company_term_id, '_fondsen_company_logo_id', true));
+}
+
+function fondsen_get_job_listing_company_logo_id($job_id) {
+    $post_logo_id = get_post_thumbnail_id((int) $job_id);
+    if ($post_logo_id) {
+        return (int) $post_logo_id;
+    }
+
+    $company_terms = get_the_terms((int) $job_id, 'job_company');
+    if (is_wp_error($company_terms) || empty($company_terms)) {
+        return 0;
+    }
+
+    foreach ($company_terms as $company_term) {
+        $logo_id = fondsen_get_job_company_logo_id($company_term->term_id);
+        if ($logo_id) {
+            return $logo_id;
+        }
+    }
+
+    return 0;
+}
+
+function fondsen_get_job_listing_company_logo_html($job_id, $size = 'thumbnail', $attr = []) {
+    $default_attr = [
+        'class' => 'company_logo fondsen-company-logo',
+        'alt'   => function_exists('get_the_company_name')
+            ? trim(wp_strip_all_tags(get_the_company_name((int) $job_id)))
+            : trim(wp_strip_all_tags(get_the_title((int) $job_id))),
+    ];
+
+    $post_logo_id = get_post_thumbnail_id((int) $job_id);
+    if ($post_logo_id) {
+        return wp_get_attachment_image($post_logo_id, $size, false, array_merge($default_attr, $attr));
+    }
+
+    $meta_logo_url = get_post_meta((int) $job_id, '_company_logo', true);
+    if ($meta_logo_url) {
+        $image_attr = array_merge($default_attr, $attr);
+        $attributes = '';
+        foreach ($image_attr as $name => $value) {
+            $attributes .= ' ' . esc_attr($name) . '="' . esc_attr($value) . '"';
+        }
+
+        return '<img src="' . esc_url($meta_logo_url) . '"' . $attributes . '>';
+    }
+
+    $logo_id = fondsen_get_job_listing_company_logo_id((int) $job_id);
+    if (!$logo_id) {
+        return '';
+    }
+
+    return wp_get_attachment_image($logo_id, $size, false, array_merge($default_attr, $attr));
+}
+
+function fondsen_render_company_logo_field($logo_id = 0) {
+    $logo_id = absint($logo_id);
+    $image = $logo_id ? wp_get_attachment_image($logo_id, 'thumbnail', false, ['class' => 'fondsen-company-logo-preview__image']) : '';
+
+    wp_nonce_field('fondsen_save_job_company_logo', 'fondsen_company_logo_nonce');
+    ?>
+    <div class="fondsen-company-logo-field">
+        <input type="hidden" name="fondsen_company_logo_id" class="fondsen-company-logo-id" value="<?php echo esc_attr($logo_id); ?>">
+        <div class="fondsen-company-logo-preview" style="margin:0 0 8px;">
+            <?php echo $image ?: '<span class="description">Nog geen logo gekozen.</span>'; ?>
+        </div>
+        <button type="button" class="button fondsen-company-logo-select">Logo kiezen</button>
+        <button type="button" class="button fondsen-company-logo-remove" <?php disabled(!$logo_id); ?>>Logo verwijderen</button>
+    </div>
+    <?php
+}
+
+function fondsen_render_job_company_logo_add_field() {
+    ?>
+    <div class="form-field term-fondsen-company-logo-wrap">
+        <label>Organisatielogo</label>
+        <?php fondsen_render_company_logo_field(); ?>
+        <p class="description">Dit logo wordt automatisch gebruikt bij vacatures van deze organisatie als de vacature zelf geen logo heeft.</p>
+    </div>
+    <?php
+}
+add_action('job_company_add_form_fields', 'fondsen_render_job_company_logo_add_field');
+
+function fondsen_render_job_company_logo_edit_field($term) {
+    $logo_id = fondsen_get_job_company_logo_id($term->term_id);
+    ?>
+    <tr class="form-field term-fondsen-company-logo-wrap">
+        <th scope="row">
+            <label>Organisatielogo</label>
+        </th>
+        <td>
+            <?php fondsen_render_company_logo_field($logo_id); ?>
+            <p class="description">Dit logo wordt automatisch gebruikt bij vacatures van deze organisatie als de vacature zelf geen logo heeft.</p>
+        </td>
+    </tr>
+    <?php
+}
+add_action('job_company_edit_form_fields', 'fondsen_render_job_company_logo_edit_field');
+
+function fondsen_save_job_company_logo($term_id) {
+    if (
+        !isset($_POST['fondsen_company_logo_nonce']) ||
+        !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['fondsen_company_logo_nonce'])), 'fondsen_save_job_company_logo')
+    ) {
+        return;
+    }
+
+    if (!current_user_can('manage_categories')) {
+        return;
+    }
+
+    $logo_id = isset($_POST['fondsen_company_logo_id'])
+        ? absint(wp_unslash($_POST['fondsen_company_logo_id']))
+        : 0;
+
+    if ($logo_id) {
+        update_term_meta((int) $term_id, '_fondsen_company_logo_id', $logo_id);
+    } else {
+        delete_term_meta((int) $term_id, '_fondsen_company_logo_id');
+    }
+}
+add_action('created_job_company', 'fondsen_save_job_company_logo');
+add_action('edited_job_company', 'fondsen_save_job_company_logo');
+
+add_action('admin_enqueue_scripts', function ($hook_suffix) {
+    $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+    if (!$screen || $screen->taxonomy !== 'job_company') {
+        return;
+    }
+
+    wp_enqueue_media();
+    wp_add_inline_script('media-editor', "
+        document.addEventListener('click', function(event) {
+            const selectButton = event.target.closest('.fondsen-company-logo-select');
+            const removeButton = event.target.closest('.fondsen-company-logo-remove');
+
+            if (selectButton) {
+                event.preventDefault();
+                const field = selectButton.closest('.fondsen-company-logo-field');
+                const input = field.querySelector('.fondsen-company-logo-id');
+                const preview = field.querySelector('.fondsen-company-logo-preview');
+                const remove = field.querySelector('.fondsen-company-logo-remove');
+                const frame = wp.media({
+                    title: 'Organisatielogo kiezen',
+                    button: { text: 'Logo gebruiken' },
+                    library: { type: 'image' },
+                    multiple: false
+                });
+
+                frame.on('select', function() {
+                    const attachment = frame.state().get('selection').first().toJSON();
+                    const imageUrl = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+                    input.value = attachment.id;
+                    preview.innerHTML = '<img src=\"' + imageUrl + '\" class=\"fondsen-company-logo-preview__image\" style=\"max-width:80px;height:auto;object-fit:contain;\" alt=\"\">';
+                    remove.disabled = false;
+                });
+
+                frame.open();
+                return;
+            }
+
+            if (removeButton) {
+                event.preventDefault();
+                const field = removeButton.closest('.fondsen-company-logo-field');
+                field.querySelector('.fondsen-company-logo-id').value = '';
+                field.querySelector('.fondsen-company-logo-preview').innerHTML = '<span class=\"description\">Nog geen logo gekozen.</span>';
+                removeButton.disabled = true;
+            }
+        });
+    ");
+
+    wp_add_inline_style('common', '
+        .fondsen-company-logo-preview__image {
+            max-width: 80px;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            padding: 6px;
+            background: #fff;
+            border: 1px solid #dcdcde;
+            border-radius: 4px;
+        }
+    ');
+});
+
+// =========================================================
+// 5e) Organisatie term-meta: basis sectoren
+// =========================================================
+if ( ! defined('FONDSEN_COMPANY_SECTOR_SYNC_VERSION') ) {
+    define('FONDSEN_COMPANY_SECTOR_SYNC_VERSION', '2026-06-24-company-sectors');
+}
+
+function fondsen_get_all_job_sector_terms() {
+    $terms = get_terms([
+        'taxonomy'   => 'job_sector',
+        'hide_empty' => false,
+        'orderby'    => 'name',
+        'order'      => 'ASC',
+    ]);
+
+    return is_wp_error($terms) ? [] : $terms;
+}
+
+function fondsen_normalize_job_sector_ids($ids) {
+    $ids = array_values(array_unique(array_filter(array_map('absint', (array) $ids))));
+    if (empty($ids)) {
+        return [];
+    }
+
+    $valid_ids = get_terms([
+        'taxonomy'   => 'job_sector',
+        'hide_empty' => false,
+        'include'    => $ids,
+        'fields'     => 'ids',
+    ]);
+
+    return is_wp_error($valid_ids)
+        ? []
+        : array_values(array_intersect($ids, array_map('absint', $valid_ids)));
+}
+
+function fondsen_get_job_company_sector_ids($company_term_id) {
+    $ids = get_term_meta((int) $company_term_id, '_fondsen_job_sector_ids', true);
+    return fondsen_normalize_job_sector_ids(is_array($ids) ? $ids : []);
+}
+
+function fondsen_get_job_sector_terms_by_ids($ids) {
+    $ids = fondsen_normalize_job_sector_ids($ids);
+    if (empty($ids)) {
+        return [];
+    }
+
+    $terms = get_terms([
+        'taxonomy'   => 'job_sector',
+        'hide_empty' => false,
+        'include'    => $ids,
+        'orderby'    => 'include',
+    ]);
+
+    return is_wp_error($terms) ? [] : $terms;
+}
+
+function fondsen_get_job_listing_sector_ids_from_companies($job_id, &$has_company_config = null) {
+    $has_company_config = false;
+    $company_terms = get_the_terms((int) $job_id, 'job_company');
+    if (is_wp_error($company_terms) || empty($company_terms)) {
+        return [];
+    }
+
+    $sector_ids = [];
+    foreach ($company_terms as $company_term) {
+        if (metadata_exists('term', $company_term->term_id, '_fondsen_job_sector_ids')) {
+            $has_company_config = true;
+        }
+
+        $sector_ids = array_merge(
+            $sector_ids,
+            fondsen_get_job_company_sector_ids($company_term->term_id)
+        );
+    }
+
+    return fondsen_normalize_job_sector_ids($sector_ids);
+}
+
+function fondsen_get_job_listing_sector_terms($job_id) {
+    $current_terms = get_the_terms((int) $job_id, 'job_sector');
+    $current_ids = is_wp_error($current_terms) || empty($current_terms)
+        ? []
+        : wp_list_pluck($current_terms, 'term_id');
+
+    $inherited_ids = fondsen_get_job_listing_sector_ids_from_companies($job_id);
+    $sector_ids = fondsen_normalize_job_sector_ids(array_merge($current_ids, $inherited_ids));
+
+    return fondsen_get_job_sector_terms_by_ids($sector_ids);
+}
+
+function fondsen_render_job_sector_checkboxes($selected_ids = []) {
+    $selected_ids = fondsen_normalize_job_sector_ids($selected_ids);
+    $terms = fondsen_get_all_job_sector_terms();
+
+    wp_nonce_field('fondsen_save_job_company_sectors', 'fondsen_job_sector_nonce');
+
+    if (empty($terms)) {
+        echo '<p class="description">Maak eerst sectoren aan. Daarna kun je ze hier aan organisaties koppelen.</p>';
+        return;
+    }
+
+    echo '<fieldset>';
+    foreach ($terms as $term) {
+        echo '<label style="display:block;margin:0 0 6px;">';
+        echo '<input type="checkbox" name="fondsen_job_sector_ids[]" value="' . esc_attr($term->term_id) . '" ' . checked(in_array((int) $term->term_id, $selected_ids, true), true, false) . '> ';
+        echo esc_html($term->name);
+        echo '</label>';
+    }
+    echo '</fieldset>';
+}
+
+function fondsen_render_job_company_sectors_add_field() {
+    ?>
+    <div class="form-field term-fondsen-job-sectors-wrap">
+        <label>Basis sectoren</label>
+        <?php fondsen_render_job_sector_checkboxes(); ?>
+        <p class="description">Deze sectoren worden automatisch toegepast op alle vacatures van deze organisatie. Extra sectoren kun je nog per vacature aanvinken.</p>
+    </div>
+    <?php
+}
+add_action('job_company_add_form_fields', 'fondsen_render_job_company_sectors_add_field');
+
+function fondsen_render_job_company_sectors_edit_field($term) {
+    $selected_ids = fondsen_get_job_company_sector_ids($term->term_id);
+    ?>
+    <tr class="form-field term-fondsen-job-sectors-wrap">
+        <th scope="row">
+            <label>Basis sectoren</label>
+        </th>
+        <td>
+            <?php fondsen_render_job_sector_checkboxes($selected_ids); ?>
+            <p class="description">Deze sectoren worden automatisch getoond en gefilterd bij alle vacatures van deze organisatie. Extra sectoren kun je nog per vacature aanvinken, bijvoorbeeld IT.</p>
+        </td>
+    </tr>
+    <?php
+}
+add_action('job_company_edit_form_fields', 'fondsen_render_job_company_sectors_edit_field');
+
+function fondsen_sync_sectors_for_job($job_id, $force = false) {
+    $job_id = (int) $job_id;
+    if (get_post_type($job_id) !== 'job_listing') {
+        return;
+    }
+
+    $previous_inherited_ids = fondsen_normalize_job_sector_ids(
+        get_post_meta($job_id, '_fondsen_inherited_job_sector_ids', true)
+    );
+
+    $has_company_config = false;
+    $inherited_ids = fondsen_get_job_listing_sector_ids_from_companies($job_id, $has_company_config);
+
+    if (!$force && !$has_company_config && empty($previous_inherited_ids)) {
+        return;
+    }
+
+    $current_ids = wp_get_object_terms($job_id, 'job_sector', ['fields' => 'ids']);
+    $current_ids = is_wp_error($current_ids) ? [] : array_map('absint', $current_ids);
+    $direct_ids = array_values(array_diff($current_ids, $previous_inherited_ids));
+    $merged_ids = fondsen_normalize_job_sector_ids(array_merge($direct_ids, $inherited_ids));
+
+    wp_set_object_terms($job_id, $merged_ids, 'job_sector', false);
+
+    if (!empty($inherited_ids)) {
+        update_post_meta($job_id, '_fondsen_inherited_job_sector_ids', $inherited_ids);
+    } else {
+        delete_post_meta($job_id, '_fondsen_inherited_job_sector_ids');
+    }
+}
+
+function fondsen_sync_sectors_for_company($company_term_id) {
+    $job_ids = get_posts([
+        'post_type'      => 'job_listing',
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'tax_query'      => [
+            [
+                'taxonomy'         => 'job_company',
+                'field'            => 'term_id',
+                'terms'            => [(int) $company_term_id],
+                'include_children' => false,
+            ],
+        ],
+    ]);
+
+    foreach ($job_ids as $job_id) {
+        fondsen_sync_sectors_for_job((int) $job_id, true);
+    }
+}
+
+function fondsen_save_job_company_sectors($term_id) {
+    if (
+        !isset($_POST['fondsen_job_sector_nonce']) ||
+        !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['fondsen_job_sector_nonce'])), 'fondsen_save_job_company_sectors')
+    ) {
+        return;
+    }
+
+    if (!current_user_can('manage_categories')) {
+        return;
+    }
+
+    $sector_ids = isset($_POST['fondsen_job_sector_ids'])
+        ? fondsen_normalize_job_sector_ids(wp_unslash($_POST['fondsen_job_sector_ids']))
+        : [];
+
+    if (!empty($sector_ids)) {
+        update_term_meta((int) $term_id, '_fondsen_job_sector_ids', $sector_ids);
+    } else {
+        delete_term_meta((int) $term_id, '_fondsen_job_sector_ids');
+    }
+
+    fondsen_sync_sectors_for_company((int) $term_id);
+}
+add_action('created_job_company', 'fondsen_save_job_company_sectors');
+add_action('edited_job_company', 'fondsen_save_job_company_sectors');
+
+function fondsen_sync_organization_types_for_job($job_id, $force = false) {
+    $job_id = (int) $job_id;
+    if (get_post_type($job_id) !== 'job_listing') {
+        return;
+    }
+
+    $has_company_config = false;
+    $type_ids = fondsen_get_job_listing_organization_type_ids_from_companies($job_id, $has_company_config);
+
+    if (!$force && !$has_company_config) {
+        return;
+    }
+
+    wp_set_object_terms($job_id, $type_ids, 'organization_type', false);
+}
+
+function fondsen_sync_organization_types_for_company($company_term_id) {
+    $job_ids = get_posts([
+        'post_type'      => 'job_listing',
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'tax_query'      => [
+            [
+                'taxonomy'         => 'job_company',
+                'field'            => 'term_id',
+                'terms'            => [(int) $company_term_id],
+                'include_children' => false,
+            ],
+        ],
+    ]);
+
+    foreach ($job_ids as $job_id) {
+        fondsen_sync_organization_types_for_job((int) $job_id, true);
+    }
+}
+
+function fondsen_save_job_company_organization_types($term_id) {
+    if (
+        !isset($_POST['fondsen_organization_type_nonce']) ||
+        !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['fondsen_organization_type_nonce'])), 'fondsen_save_job_company_organization_types')
+    ) {
+        return;
+    }
+
+    if (!current_user_can('manage_categories')) {
+        return;
+    }
+
+    $type_ids = isset($_POST['fondsen_organization_type_ids'])
+        ? fondsen_normalize_organization_type_ids(wp_unslash($_POST['fondsen_organization_type_ids']))
+        : [];
+
+    if (!empty($type_ids)) {
+        update_term_meta((int) $term_id, '_fondsen_organization_type_ids', $type_ids);
+    } else {
+        delete_term_meta((int) $term_id, '_fondsen_organization_type_ids');
+    }
+
+    fondsen_sync_organization_types_for_company((int) $term_id);
+}
+add_action('created_job_company', 'fondsen_save_job_company_organization_types');
+add_action('edited_job_company', 'fondsen_save_job_company_organization_types');
+
+add_action('save_post_job_listing', function ($post_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    fondsen_sync_organization_types_for_job((int) $post_id);
+    fondsen_sync_sectors_for_job((int) $post_id);
+}, 100);
+
+add_action('set_object_terms', function ($object_id, $terms, $tt_ids, $taxonomy) {
+    if ($taxonomy !== 'job_company' || get_post_type((int) $object_id) !== 'job_listing') {
+        return;
+    }
+
+    fondsen_sync_organization_types_for_job((int) $object_id);
+    fondsen_sync_sectors_for_job((int) $object_id);
+}, 10, 4);
+
+function fondsen_backfill_job_company_organization_type_meta() {
+    if (get_option('fondsen_org_type_sync_version') === FONDSEN_ORG_TYPE_SYNC_VERSION) {
+        return;
+    }
+
+    $job_ids = get_posts([
+        'post_type'      => 'job_listing',
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+    ]);
+
+    foreach ($job_ids as $job_id) {
+        $company_terms = get_the_terms((int) $job_id, 'job_company');
+        $org_terms = get_the_terms((int) $job_id, 'organization_type');
+
+        if (is_wp_error($company_terms) || empty($company_terms) || is_wp_error($org_terms) || empty($org_terms)) {
+            continue;
+        }
+
+        $org_type_ids = wp_list_pluck($org_terms, 'term_id');
+        foreach ($company_terms as $company_term) {
+            $existing_ids = fondsen_get_job_company_organization_type_ids($company_term->term_id);
+            $merged_ids = fondsen_normalize_organization_type_ids(array_merge($existing_ids, $org_type_ids));
+
+            if (!empty($merged_ids)) {
+                update_term_meta((int) $company_term->term_id, '_fondsen_organization_type_ids', $merged_ids);
+            }
+        }
+    }
+
+    foreach ($job_ids as $job_id) {
+        fondsen_sync_organization_types_for_job((int) $job_id);
+    }
+
+    update_option('fondsen_org_type_sync_version', FONDSEN_ORG_TYPE_SYNC_VERSION, false);
+}
+add_action('admin_init', 'fondsen_backfill_job_company_organization_type_meta');
+
+function fondsen_backfill_job_company_sector_terms() {
+    if (get_option('fondsen_company_sector_sync_version') === FONDSEN_COMPANY_SECTOR_SYNC_VERSION) {
+        return;
+    }
+
+    $job_ids = get_posts([
+        'post_type'      => 'job_listing',
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+    ]);
+
+    foreach ($job_ids as $job_id) {
+        fondsen_sync_sectors_for_job((int) $job_id);
+    }
+
+    update_option('fondsen_company_sector_sync_version', FONDSEN_COMPANY_SECTOR_SYNC_VERSION, false);
+}
+add_action('admin_init', 'fondsen_backfill_job_company_sector_terms');
 
 function fondsen_get_job_company_notification_email($job_id) {
     $terms = get_the_terms($job_id, 'job_company');
@@ -684,7 +1424,6 @@ add_filter('job_manager_output_jobs_defaults', function($defaults) {
     $defaults['job_company']      = '';
     $defaults['job_tag']          = '';
     $defaults['job_sector']       = '';
-    $defaults['certificering']    = '';
     $defaults['organization_type'] = '';
     $defaults['job_listing_type'] = '';
     return $defaults;
@@ -702,7 +1441,6 @@ add_filter('job_manager_get_listings_shortcode_args', function($atts){
         'job_company'       => 'job_company',
         'job_tag'           => 'job_tag',
         'job_sector'        => 'job_sector',
-        'certificering'     => 'certificering',
         'organization_type' => 'organization_type',
         'job_listing_type'  => 'job_listing_type',
     ];
@@ -776,7 +1514,6 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
         'filter_job_company'          => 'job_company',
         'filter_organization_type'    => 'organization_type',
         'filter_job_types'            => 'job_listing_type',
-        'filter_certificering'        => 'certificering',
         'filter_job_listing_category' => 'job_listing_category',
     ];
 
