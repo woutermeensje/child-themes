@@ -352,32 +352,53 @@ if (!function_exists('sj_get_company_logo_url')) {
 
         $logo_url = sj_get_image_url(get_post_meta($post_id, '_company_logo', true), $size);
 
-        if (!$logo_url && !sj_get_image_url(get_post_meta($post_id, '_cover_image', true), 'full')) {
+        if (!$logo_url) {
             $logo_url = get_the_post_thumbnail_url($post_id, $size) ?: '';
+        }
+
+        if (!$logo_url && function_exists('sj_get_job_listing_company_logo_id')) {
+            $logo_id = sj_get_job_listing_company_logo_id($post_id);
+            if ($logo_id) {
+                $logo_url = wp_get_attachment_image_url($logo_id, $size)
+                    ?: wp_get_attachment_image_url($logo_id, 'full')
+                    ?: '';
+            }
         }
 
         return $logo_url;
     }
 }
 
-if (!function_exists('sj_the_company_logo')) {
-    function sj_the_company_logo($post_id = null, $size = 'thumbnail') {
+if (!function_exists('sj_get_company_logo_html')) {
+    function sj_get_company_logo_html($post_id = null, $size = 'thumbnail', $attr = []) {
         $post_id  = $post_id ?: get_the_ID();
         $logo_url = sj_get_company_logo_url($post_id, $size);
 
         if (!$logo_url) {
-            return;
+            return '';
         }
 
         $company_name = function_exists('get_the_company_name')
             ? get_the_company_name($post_id)
             : get_the_title($post_id);
 
-        printf(
-            '<img class="company_logo" src="%s" alt="%s" />',
-            esc_url($logo_url),
-            esc_attr($company_name)
-        );
+        $attr = array_merge([
+            'class' => 'company_logo sj-company-logo',
+            'alt'   => trim(wp_strip_all_tags($company_name)),
+        ], $attr);
+
+        $attributes = '';
+        foreach ($attr as $name => $value) {
+            $attributes .= ' ' . esc_attr($name) . '="' . esc_attr($value) . '"';
+        }
+
+        return '<img src="' . esc_url($logo_url) . '"' . $attributes . '>';
+    }
+}
+
+if (!function_exists('sj_the_company_logo')) {
+    function sj_the_company_logo($post_id = null, $size = 'thumbnail') {
+        echo sj_get_company_logo_html($post_id, $size);
     }
 }
 
@@ -437,10 +458,22 @@ add_action('init', function () {
 
     register_taxonomy('organisatie_type', 'job_listing', [
         'label'             => 'Type organisatie',
+        'labels'            => [
+            'name'          => 'Type organisaties',
+            'singular_name' => 'Type organisatie',
+            'search_items'  => 'Type organisaties zoeken',
+            'all_items'     => 'Alle type organisaties',
+            'edit_item'     => 'Type organisatie bewerken',
+            'update_item'   => 'Type organisatie bijwerken',
+            'add_new_item'  => 'Nieuw type organisatie toevoegen',
+            'new_item_name' => 'Nieuwe type organisatie',
+            'menu_name'     => 'Type organisaties',
+        ],
         'hierarchical'      => true,
         'show_ui'           => true,
         'show_admin_column' => true,
         'show_in_rest'      => true,
+        'meta_box_cb'       => false,
         'rewrite'           => ['slug' => 'organisatie-type'],
     ]);
 });
@@ -455,6 +488,681 @@ add_action('init', function () {
     register_taxonomy_for_object_type('job_tag', 'page');
     register_taxonomy_for_object_type('job_sector', 'page');
     register_taxonomy_for_object_type('organisatie_type', 'page');
+});
+
+// =========================================================
+// Organisatie term-meta: logo, type organisatie en basis sectoren
+// =========================================================
+if (!defined('SJ_ORGANISATIE_TYPE_SYNC_VERSION')) {
+    define('SJ_ORGANISATIE_TYPE_SYNC_VERSION', '2026-06-24-company-organisation-types');
+}
+
+if (!defined('SJ_COMPANY_SECTOR_SYNC_VERSION')) {
+    define('SJ_COMPANY_SECTOR_SYNC_VERSION', '2026-06-24-company-sectors');
+}
+
+function sj_get_job_company_logo_id($company_term_id) {
+    return absint(get_term_meta((int) $company_term_id, '_sj_company_logo_id', true));
+}
+
+function sj_get_job_listing_company_logo_id($job_id) {
+    $company_terms = get_the_terms((int) $job_id, 'job_company');
+    if (is_wp_error($company_terms) || empty($company_terms)) {
+        return 0;
+    }
+
+    foreach ($company_terms as $company_term) {
+        $logo_id = sj_get_job_company_logo_id($company_term->term_id);
+        if ($logo_id) {
+            return $logo_id;
+        }
+    }
+
+    return 0;
+}
+
+function sj_get_all_organisatie_type_terms() {
+    $terms = get_terms([
+        'taxonomy'   => 'organisatie_type',
+        'hide_empty' => false,
+        'orderby'    => 'name',
+        'order'      => 'ASC',
+    ]);
+
+    return is_wp_error($terms) ? [] : $terms;
+}
+
+function sj_normalize_organisatie_type_ids($ids) {
+    $ids = array_values(array_unique(array_filter(array_map('absint', (array) $ids))));
+    if (empty($ids)) {
+        return [];
+    }
+
+    $valid_ids = get_terms([
+        'taxonomy'   => 'organisatie_type',
+        'hide_empty' => false,
+        'include'    => $ids,
+        'fields'     => 'ids',
+    ]);
+
+    return is_wp_error($valid_ids)
+        ? []
+        : array_values(array_intersect($ids, array_map('absint', $valid_ids)));
+}
+
+function sj_get_job_company_organisatie_type_ids($company_term_id) {
+    $ids = get_term_meta((int) $company_term_id, '_sj_organisatie_type_ids', true);
+    return sj_normalize_organisatie_type_ids(is_array($ids) ? $ids : []);
+}
+
+function sj_get_organisatie_type_terms_by_ids($ids) {
+    $ids = sj_normalize_organisatie_type_ids($ids);
+    if (empty($ids)) {
+        return [];
+    }
+
+    $terms = get_terms([
+        'taxonomy'   => 'organisatie_type',
+        'hide_empty' => false,
+        'include'    => $ids,
+        'orderby'    => 'include',
+    ]);
+
+    return is_wp_error($terms) ? [] : $terms;
+}
+
+function sj_get_job_listing_organisatie_type_ids_from_companies($job_id, &$has_company_config = null) {
+    $has_company_config = false;
+    $company_terms = get_the_terms((int) $job_id, 'job_company');
+    if (is_wp_error($company_terms) || empty($company_terms)) {
+        return [];
+    }
+
+    $type_ids = [];
+    foreach ($company_terms as $company_term) {
+        if (metadata_exists('term', $company_term->term_id, '_sj_organisatie_type_ids')) {
+            $has_company_config = true;
+        }
+
+        $type_ids = array_merge(
+            $type_ids,
+            sj_get_job_company_organisatie_type_ids($company_term->term_id)
+        );
+    }
+
+    return sj_normalize_organisatie_type_ids($type_ids);
+}
+
+function sj_get_job_listing_organisatie_type_terms($job_id) {
+    $type_ids = sj_get_job_listing_organisatie_type_ids_from_companies($job_id);
+
+    if (!empty($type_ids)) {
+        return sj_get_organisatie_type_terms_by_ids($type_ids);
+    }
+
+    $legacy_terms = get_the_terms((int) $job_id, 'organisatie_type');
+    return is_wp_error($legacy_terms) || empty($legacy_terms) ? [] : $legacy_terms;
+}
+
+function sj_get_all_job_sector_terms() {
+    $terms = get_terms([
+        'taxonomy'   => 'job_sector',
+        'hide_empty' => false,
+        'orderby'    => 'name',
+        'order'      => 'ASC',
+    ]);
+
+    return is_wp_error($terms) ? [] : $terms;
+}
+
+function sj_normalize_job_sector_ids($ids) {
+    $ids = array_values(array_unique(array_filter(array_map('absint', (array) $ids))));
+    if (empty($ids)) {
+        return [];
+    }
+
+    $valid_ids = get_terms([
+        'taxonomy'   => 'job_sector',
+        'hide_empty' => false,
+        'include'    => $ids,
+        'fields'     => 'ids',
+    ]);
+
+    return is_wp_error($valid_ids)
+        ? []
+        : array_values(array_intersect($ids, array_map('absint', $valid_ids)));
+}
+
+function sj_get_job_company_sector_ids($company_term_id) {
+    $ids = get_term_meta((int) $company_term_id, '_sj_job_sector_ids', true);
+    return sj_normalize_job_sector_ids(is_array($ids) ? $ids : []);
+}
+
+function sj_get_job_sector_terms_by_ids($ids) {
+    $ids = sj_normalize_job_sector_ids($ids);
+    if (empty($ids)) {
+        return [];
+    }
+
+    $terms = get_terms([
+        'taxonomy'   => 'job_sector',
+        'hide_empty' => false,
+        'include'    => $ids,
+        'orderby'    => 'include',
+    ]);
+
+    return is_wp_error($terms) ? [] : $terms;
+}
+
+function sj_get_job_listing_sector_ids_from_companies($job_id, &$has_company_config = null) {
+    $has_company_config = false;
+    $company_terms = get_the_terms((int) $job_id, 'job_company');
+    if (is_wp_error($company_terms) || empty($company_terms)) {
+        return [];
+    }
+
+    $sector_ids = [];
+    foreach ($company_terms as $company_term) {
+        if (metadata_exists('term', $company_term->term_id, '_sj_job_sector_ids')) {
+            $has_company_config = true;
+        }
+
+        $sector_ids = array_merge(
+            $sector_ids,
+            sj_get_job_company_sector_ids($company_term->term_id)
+        );
+    }
+
+    return sj_normalize_job_sector_ids($sector_ids);
+}
+
+function sj_get_job_listing_sector_terms($job_id) {
+    $current_terms = get_the_terms((int) $job_id, 'job_sector');
+    $current_ids = is_wp_error($current_terms) || empty($current_terms)
+        ? []
+        : wp_list_pluck($current_terms, 'term_id');
+
+    $inherited_ids = sj_get_job_listing_sector_ids_from_companies($job_id);
+    $sector_ids = sj_normalize_job_sector_ids(array_merge($current_ids, $inherited_ids));
+
+    return sj_get_job_sector_terms_by_ids($sector_ids);
+}
+
+function sj_render_company_logo_field($logo_id = 0) {
+    $logo_id = absint($logo_id);
+    $image = $logo_id ? wp_get_attachment_image($logo_id, 'thumbnail', false, ['class' => 'sj-company-logo-preview__image']) : '';
+
+    wp_nonce_field('sj_save_job_company_logo', 'sj_company_logo_nonce');
+    ?>
+    <div class="sj-company-logo-field">
+        <input type="hidden" name="sj_company_logo_id" class="sj-company-logo-id" value="<?php echo esc_attr($logo_id); ?>">
+        <div class="sj-company-logo-preview" style="margin:0 0 8px;">
+            <?php echo $image ?: '<span class="description">Nog geen logo gekozen.</span>'; ?>
+        </div>
+        <button type="button" class="button sj-company-logo-select">Logo kiezen</button>
+        <button type="button" class="button sj-company-logo-remove" <?php disabled(!$logo_id); ?>>Logo verwijderen</button>
+    </div>
+    <?php
+}
+
+function sj_render_organisatie_type_checkboxes($selected_ids = []) {
+    $selected_ids = sj_normalize_organisatie_type_ids($selected_ids);
+    $terms = sj_get_all_organisatie_type_terms();
+
+    wp_nonce_field('sj_save_job_company_organisatie_types', 'sj_organisatie_type_nonce');
+
+    if (empty($terms)) {
+        echo '<p class="description">Maak eerst type organisaties aan. Daarna kun je ze hier aan organisaties koppelen.</p>';
+        return;
+    }
+
+    echo '<fieldset>';
+    foreach ($terms as $term) {
+        echo '<label style="display:block;margin:0 0 6px;">';
+        echo '<input type="checkbox" name="sj_organisatie_type_ids[]" value="' . esc_attr($term->term_id) . '" ' . checked(in_array((int) $term->term_id, $selected_ids, true), true, false) . '> ';
+        echo esc_html($term->name);
+        echo '</label>';
+    }
+    echo '</fieldset>';
+}
+
+function sj_render_job_sector_checkboxes($selected_ids = []) {
+    $selected_ids = sj_normalize_job_sector_ids($selected_ids);
+    $terms = sj_get_all_job_sector_terms();
+
+    wp_nonce_field('sj_save_job_company_sectors', 'sj_job_sector_nonce');
+
+    if (empty($terms)) {
+        echo '<p class="description">Maak eerst sectoren aan. Daarna kun je ze hier aan organisaties koppelen.</p>';
+        return;
+    }
+
+    echo '<fieldset>';
+    foreach ($terms as $term) {
+        echo '<label style="display:block;margin:0 0 6px;">';
+        echo '<input type="checkbox" name="sj_job_sector_ids[]" value="' . esc_attr($term->term_id) . '" ' . checked(in_array((int) $term->term_id, $selected_ids, true), true, false) . '> ';
+        echo esc_html($term->name);
+        echo '</label>';
+    }
+    echo '</fieldset>';
+}
+
+function sj_render_job_company_logo_add_field() {
+    ?>
+    <div class="form-field term-sj-company-logo-wrap">
+        <label>Organisatielogo</label>
+        <?php sj_render_company_logo_field(); ?>
+        <p class="description">Dit logo wordt automatisch gebruikt bij vacatures van deze organisatie als de vacature zelf geen logo heeft.</p>
+    </div>
+    <?php
+}
+add_action('job_company_add_form_fields', 'sj_render_job_company_logo_add_field');
+
+function sj_render_job_company_logo_edit_field($term) {
+    ?>
+    <tr class="form-field term-sj-company-logo-wrap">
+        <th scope="row">
+            <label>Organisatielogo</label>
+        </th>
+        <td>
+            <?php sj_render_company_logo_field(sj_get_job_company_logo_id($term->term_id)); ?>
+            <p class="description">Dit logo wordt automatisch gebruikt bij vacatures van deze organisatie als de vacature zelf geen logo heeft.</p>
+        </td>
+    </tr>
+    <?php
+}
+add_action('job_company_edit_form_fields', 'sj_render_job_company_logo_edit_field');
+
+function sj_render_job_company_organisatie_types_add_field() {
+    ?>
+    <div class="form-field term-sj-organisation-types-wrap">
+        <label>Type organisatie</label>
+        <?php sj_render_organisatie_type_checkboxes(); ?>
+        <p class="description">Kies een of meerdere types. Deze worden automatisch toegepast op alle vacatures van deze organisatie.</p>
+    </div>
+    <?php
+}
+add_action('job_company_add_form_fields', 'sj_render_job_company_organisatie_types_add_field');
+
+function sj_render_job_company_organisatie_types_edit_field($term) {
+    ?>
+    <tr class="form-field term-sj-organisation-types-wrap">
+        <th scope="row">
+            <label>Type organisatie</label>
+        </th>
+        <td>
+            <?php sj_render_organisatie_type_checkboxes(sj_get_job_company_organisatie_type_ids($term->term_id)); ?>
+            <p class="description">Kies een of meerdere types. Deze worden automatisch getoond en gefilterd bij alle vacatures van deze organisatie.</p>
+        </td>
+    </tr>
+    <?php
+}
+add_action('job_company_edit_form_fields', 'sj_render_job_company_organisatie_types_edit_field');
+
+function sj_render_job_company_sectors_add_field() {
+    ?>
+    <div class="form-field term-sj-job-sectors-wrap">
+        <label>Basis sectoren</label>
+        <?php sj_render_job_sector_checkboxes(); ?>
+        <p class="description">Deze sectoren worden automatisch toegepast op alle vacatures van deze organisatie. Extra sectoren kun je nog per vacature aanvinken.</p>
+    </div>
+    <?php
+}
+add_action('job_company_add_form_fields', 'sj_render_job_company_sectors_add_field');
+
+function sj_render_job_company_sectors_edit_field($term) {
+    ?>
+    <tr class="form-field term-sj-job-sectors-wrap">
+        <th scope="row">
+            <label>Basis sectoren</label>
+        </th>
+        <td>
+            <?php sj_render_job_sector_checkboxes(sj_get_job_company_sector_ids($term->term_id)); ?>
+            <p class="description">Deze sectoren worden automatisch getoond en gefilterd bij alle vacatures van deze organisatie. Extra sectoren kun je nog per vacature aanvinken, bijvoorbeeld IT.</p>
+        </td>
+    </tr>
+    <?php
+}
+add_action('job_company_edit_form_fields', 'sj_render_job_company_sectors_edit_field');
+
+add_filter('manage_edit-job_company_columns', function ($columns) {
+    $new_columns = [];
+
+    foreach ($columns as $key => $label) {
+        $new_columns[$key] = $label;
+
+        if ($key === 'name') {
+            $new_columns['sj_company_logo'] = 'Logo';
+            $new_columns['sj_organisatie_types'] = 'Type organisatie';
+            $new_columns['sj_job_sectors'] = 'Sectoren';
+        }
+    }
+
+    return $new_columns;
+});
+
+add_filter('manage_job_company_custom_column', function ($content, $column_name, $term_id) {
+    if ($column_name === 'sj_company_logo') {
+        $logo_id = sj_get_job_company_logo_id((int) $term_id);
+        return $logo_id
+            ? wp_get_attachment_image($logo_id, 'thumbnail', false, ['style' => 'width:40px;height:40px;object-fit:contain;'])
+            : '&mdash;';
+    }
+
+    if ($column_name === 'sj_organisatie_types') {
+        $terms = sj_get_organisatie_type_terms_by_ids(
+            sj_get_job_company_organisatie_type_ids((int) $term_id)
+        );
+
+        return empty($terms)
+            ? '&mdash;'
+            : esc_html(implode(', ', wp_list_pluck($terms, 'name')));
+    }
+
+    if ($column_name === 'sj_job_sectors') {
+        $terms = sj_get_job_sector_terms_by_ids(
+            sj_get_job_company_sector_ids((int) $term_id)
+        );
+
+        return empty($terms)
+            ? '&mdash;'
+            : esc_html(implode(', ', wp_list_pluck($terms, 'name')));
+    }
+
+    return $content;
+}, 10, 3);
+
+function sj_sync_organisatie_types_for_job($job_id, $force = false) {
+    $job_id = (int) $job_id;
+    if (get_post_type($job_id) !== 'job_listing') {
+        return;
+    }
+
+    $has_company_config = false;
+    $type_ids = sj_get_job_listing_organisatie_type_ids_from_companies($job_id, $has_company_config);
+
+    if (!$force && !$has_company_config) {
+        return;
+    }
+
+    wp_set_object_terms($job_id, $type_ids, 'organisatie_type', false);
+}
+
+function sj_sync_sectors_for_job($job_id, $force = false) {
+    $job_id = (int) $job_id;
+    if (get_post_type($job_id) !== 'job_listing') {
+        return;
+    }
+
+    $previous_inherited_ids = sj_normalize_job_sector_ids(
+        get_post_meta($job_id, '_sj_inherited_job_sector_ids', true)
+    );
+
+    $has_company_config = false;
+    $inherited_ids = sj_get_job_listing_sector_ids_from_companies($job_id, $has_company_config);
+
+    if (!$force && !$has_company_config && empty($previous_inherited_ids)) {
+        return;
+    }
+
+    $current_ids = wp_get_object_terms($job_id, 'job_sector', ['fields' => 'ids']);
+    $current_ids = is_wp_error($current_ids) ? [] : array_map('absint', $current_ids);
+    $direct_ids = array_values(array_diff($current_ids, $previous_inherited_ids));
+    $merged_ids = sj_normalize_job_sector_ids(array_merge($direct_ids, $inherited_ids));
+
+    wp_set_object_terms($job_id, $merged_ids, 'job_sector', false);
+
+    if (!empty($inherited_ids)) {
+        update_post_meta($job_id, '_sj_inherited_job_sector_ids', $inherited_ids);
+    } else {
+        delete_post_meta($job_id, '_sj_inherited_job_sector_ids');
+    }
+}
+
+function sj_get_job_ids_for_company($company_term_id) {
+    return get_posts([
+        'post_type'      => 'job_listing',
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+        'tax_query'      => [
+            [
+                'taxonomy'         => 'job_company',
+                'field'            => 'term_id',
+                'terms'            => [(int) $company_term_id],
+                'include_children' => false,
+            ],
+        ],
+    ]);
+}
+
+function sj_sync_organisatie_types_for_company($company_term_id) {
+    foreach (sj_get_job_ids_for_company((int) $company_term_id) as $job_id) {
+        sj_sync_organisatie_types_for_job((int) $job_id, true);
+    }
+}
+
+function sj_sync_sectors_for_company($company_term_id) {
+    foreach (sj_get_job_ids_for_company((int) $company_term_id) as $job_id) {
+        sj_sync_sectors_for_job((int) $job_id, true);
+    }
+}
+
+function sj_save_job_company_logo($term_id) {
+    if (
+        !isset($_POST['sj_company_logo_nonce']) ||
+        !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['sj_company_logo_nonce'])), 'sj_save_job_company_logo')
+    ) {
+        return;
+    }
+
+    if (!current_user_can('manage_categories')) {
+        return;
+    }
+
+    $logo_id = isset($_POST['sj_company_logo_id'])
+        ? absint(wp_unslash($_POST['sj_company_logo_id']))
+        : 0;
+
+    if ($logo_id) {
+        update_term_meta((int) $term_id, '_sj_company_logo_id', $logo_id);
+    } else {
+        delete_term_meta((int) $term_id, '_sj_company_logo_id');
+    }
+}
+add_action('created_job_company', 'sj_save_job_company_logo');
+add_action('edited_job_company', 'sj_save_job_company_logo');
+
+function sj_save_job_company_organisatie_types($term_id) {
+    if (
+        !isset($_POST['sj_organisatie_type_nonce']) ||
+        !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['sj_organisatie_type_nonce'])), 'sj_save_job_company_organisatie_types')
+    ) {
+        return;
+    }
+
+    if (!current_user_can('manage_categories')) {
+        return;
+    }
+
+    $type_ids = isset($_POST['sj_organisatie_type_ids'])
+        ? sj_normalize_organisatie_type_ids(wp_unslash($_POST['sj_organisatie_type_ids']))
+        : [];
+
+    if (!empty($type_ids)) {
+        update_term_meta((int) $term_id, '_sj_organisatie_type_ids', $type_ids);
+    } else {
+        delete_term_meta((int) $term_id, '_sj_organisatie_type_ids');
+    }
+
+    sj_sync_organisatie_types_for_company((int) $term_id);
+}
+add_action('created_job_company', 'sj_save_job_company_organisatie_types');
+add_action('edited_job_company', 'sj_save_job_company_organisatie_types');
+
+function sj_save_job_company_sectors($term_id) {
+    if (
+        !isset($_POST['sj_job_sector_nonce']) ||
+        !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['sj_job_sector_nonce'])), 'sj_save_job_company_sectors')
+    ) {
+        return;
+    }
+
+    if (!current_user_can('manage_categories')) {
+        return;
+    }
+
+    $sector_ids = isset($_POST['sj_job_sector_ids'])
+        ? sj_normalize_job_sector_ids(wp_unslash($_POST['sj_job_sector_ids']))
+        : [];
+
+    if (!empty($sector_ids)) {
+        update_term_meta((int) $term_id, '_sj_job_sector_ids', $sector_ids);
+    } else {
+        delete_term_meta((int) $term_id, '_sj_job_sector_ids');
+    }
+
+    sj_sync_sectors_for_company((int) $term_id);
+}
+add_action('created_job_company', 'sj_save_job_company_sectors');
+add_action('edited_job_company', 'sj_save_job_company_sectors');
+
+add_action('save_post_job_listing', function ($post_id) {
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+
+    sj_sync_organisatie_types_for_job((int) $post_id);
+    sj_sync_sectors_for_job((int) $post_id);
+}, 100);
+
+add_action('set_object_terms', function ($object_id, $terms, $tt_ids, $taxonomy) {
+    if ($taxonomy !== 'job_company' || get_post_type((int) $object_id) !== 'job_listing') {
+        return;
+    }
+
+    sj_sync_organisatie_types_for_job((int) $object_id);
+    sj_sync_sectors_for_job((int) $object_id);
+}, 10, 4);
+
+function sj_backfill_job_company_organisatie_type_meta() {
+    if (get_option('sj_organisatie_type_sync_version') === SJ_ORGANISATIE_TYPE_SYNC_VERSION) {
+        return;
+    }
+
+    $job_ids = get_posts([
+        'post_type'      => 'job_listing',
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+    ]);
+
+    foreach ($job_ids as $job_id) {
+        $company_terms = get_the_terms((int) $job_id, 'job_company');
+        $type_terms = get_the_terms((int) $job_id, 'organisatie_type');
+
+        if (is_wp_error($company_terms) || empty($company_terms) || is_wp_error($type_terms) || empty($type_terms)) {
+            continue;
+        }
+
+        $type_ids = wp_list_pluck($type_terms, 'term_id');
+        foreach ($company_terms as $company_term) {
+            $existing_ids = sj_get_job_company_organisatie_type_ids($company_term->term_id);
+            $merged_ids = sj_normalize_organisatie_type_ids(array_merge($existing_ids, $type_ids));
+
+            if (!empty($merged_ids)) {
+                update_term_meta((int) $company_term->term_id, '_sj_organisatie_type_ids', $merged_ids);
+            }
+        }
+    }
+
+    foreach ($job_ids as $job_id) {
+        sj_sync_organisatie_types_for_job((int) $job_id);
+    }
+
+    update_option('sj_organisatie_type_sync_version', SJ_ORGANISATIE_TYPE_SYNC_VERSION, false);
+}
+add_action('admin_init', 'sj_backfill_job_company_organisatie_type_meta');
+
+function sj_backfill_job_company_sector_terms() {
+    if (get_option('sj_company_sector_sync_version') === SJ_COMPANY_SECTOR_SYNC_VERSION) {
+        return;
+    }
+
+    $job_ids = get_posts([
+        'post_type'      => 'job_listing',
+        'post_status'    => 'any',
+        'posts_per_page' => -1,
+        'fields'         => 'ids',
+    ]);
+
+    foreach ($job_ids as $job_id) {
+        sj_sync_sectors_for_job((int) $job_id);
+    }
+
+    update_option('sj_company_sector_sync_version', SJ_COMPANY_SECTOR_SYNC_VERSION, false);
+}
+add_action('admin_init', 'sj_backfill_job_company_sector_terms');
+
+add_action('admin_enqueue_scripts', function () {
+    $screen = function_exists('get_current_screen') ? get_current_screen() : null;
+    if (!$screen || $screen->taxonomy !== 'job_company') {
+        return;
+    }
+
+    wp_enqueue_media();
+    wp_add_inline_script('media-editor', "
+        document.addEventListener('click', function(event) {
+            const selectButton = event.target.closest('.sj-company-logo-select');
+            const removeButton = event.target.closest('.sj-company-logo-remove');
+
+            if (selectButton) {
+                event.preventDefault();
+                const field = selectButton.closest('.sj-company-logo-field');
+                const input = field.querySelector('.sj-company-logo-id');
+                const preview = field.querySelector('.sj-company-logo-preview');
+                const remove = field.querySelector('.sj-company-logo-remove');
+                const frame = wp.media({
+                    title: 'Organisatielogo kiezen',
+                    button: { text: 'Logo gebruiken' },
+                    library: { type: 'image' },
+                    multiple: false
+                });
+
+                frame.on('select', function() {
+                    const attachment = frame.state().get('selection').first().toJSON();
+                    const imageUrl = attachment.sizes && attachment.sizes.thumbnail ? attachment.sizes.thumbnail.url : attachment.url;
+                    input.value = attachment.id;
+                    preview.innerHTML = '<img src=\"' + imageUrl + '\" class=\"sj-company-logo-preview__image\" style=\"max-width:80px;height:auto;object-fit:contain;\" alt=\"\">';
+                    remove.disabled = false;
+                });
+
+                frame.open();
+                return;
+            }
+
+            if (removeButton) {
+                event.preventDefault();
+                const field = removeButton.closest('.sj-company-logo-field');
+                field.querySelector('.sj-company-logo-id').value = '';
+                field.querySelector('.sj-company-logo-preview').innerHTML = '<span class=\"description\">Nog geen logo gekozen.</span>';
+                removeButton.disabled = true;
+            }
+        });
+    ");
+
+    wp_add_inline_style('common', '
+        .sj-company-logo-preview__image {
+            max-width: 80px;
+            height: auto;
+            object-fit: contain;
+            display: block;
+            padding: 6px;
+            background: #fff;
+            border: 1px solid #dcdcde;
+            border-radius: 4px;
+        }
+    ');
 });
 
 

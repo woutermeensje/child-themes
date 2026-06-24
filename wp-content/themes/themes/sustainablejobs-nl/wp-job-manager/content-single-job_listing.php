@@ -20,7 +20,9 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     $job_company_term   = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0] : null;
     $job_company_slug   = $job_company_term ? $job_company_term->slug : '';
     $job_company_url    = $job_company_slug ? home_url('/vacatures/' . $job_company_slug . '/') : '';
-    $company_logo       = has_post_thumbnail($post_id) ? get_the_post_thumbnail($post_id, 'thumbnail') : '';
+    $company_logo       = function_exists('sj_get_company_logo_html')
+        ? sj_get_company_logo_html($post_id, 'thumbnail')
+        : (has_post_thumbnail($post_id) ? get_the_post_thumbnail($post_id, 'thumbnail') : '');
 
     $vacancy_count = 0;
     if ($job_company_term) {
@@ -300,6 +302,36 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                     <div class="sj-sidebar__detail-row">
                         <span class="sj-sidebar__detail-label">Uren/week</span>
                         <span class="sj-sidebar__detail-value"><?php echo esc_html($hours); ?></span>
+                    </div>
+                    <?php endif; ?>
+                    <?php
+                    $sectors = function_exists('sj_get_job_listing_sector_terms')
+                        ? sj_get_job_listing_sector_terms($post_id)
+                        : get_the_terms($post_id, 'job_sector');
+                    if (!is_wp_error($sectors) && !empty($sectors)):
+                    ?>
+                    <div class="sj-sidebar__detail-row">
+                        <span class="sj-sidebar__detail-label">Sector</span>
+                        <span class="sj-sidebar__detail-value">
+                            <?php foreach ($sectors as $sector): ?>
+                            <span class="sj-sidebar__chip"><?php echo esc_html($sector->name); ?></span>
+                            <?php endforeach; ?>
+                        </span>
+                    </div>
+                    <?php endif; ?>
+                    <?php
+                    $org_types = function_exists('sj_get_job_listing_organisatie_type_terms')
+                        ? sj_get_job_listing_organisatie_type_terms($post_id)
+                        : get_the_terms($post_id, 'organisatie_type');
+                    if (!is_wp_error($org_types) && !empty($org_types)):
+                    ?>
+                    <div class="sj-sidebar__detail-row">
+                        <span class="sj-sidebar__detail-label">Type organisatie</span>
+                        <span class="sj-sidebar__detail-value">
+                            <?php foreach ($org_types as $org_type): ?>
+                            <span class="sj-sidebar__chip"><?php echo esc_html($org_type->name); ?></span>
+                            <?php endforeach; ?>
+                        </span>
                     </div>
                     <?php endif; ?>
                 </div>
