@@ -92,6 +92,8 @@ define( 'WP_DEBUG_DISPLAY', true );
 /* Add any custom values between this line and the "stop editing" line. */
 define( 'WP_MEMORY_LIMIT', '256M' );
 define( 'WP_MAX_MEMORY_LIMIT', '512M' );
+define("SJ_LARAVEL_VACANCY_WEBHOOK_URL", "https://platform.sustainablejobs.nl/api/wordpress/vacancies/published");
+define("SJ_LARAVEL_WEBHOOK_SECRET", "c104f8c174b9da3349c77fdaf6ca0a7edf7f1b8204048b697d226bd0f7d29aca");
 
 
 

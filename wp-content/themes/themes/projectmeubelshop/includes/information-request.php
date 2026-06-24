@@ -8,7 +8,7 @@ defined( 'ABSPATH' ) || exit;
 add_action( 'init', 'pms_register_information_request_post_type' );
 function pms_register_information_request_post_type(): void {
 	register_post_type(
-		'pms_information_request',
+		'pms_info_request',
 		array(
 			'labels' => array(
 				'name'               => 'Informatieaanvragen',
@@ -38,7 +38,7 @@ function pms_register_information_request_post_type(): void {
 	);
 }
 
-add_filter( 'manage_pms_information_request_posts_columns', 'pms_information_request_columns' );
+add_filter( 'manage_pms_info_request_posts_columns', 'pms_information_request_columns' );
 function pms_information_request_columns( array $columns ): array {
 	return array(
 		'cb'         => $columns['cb'] ?? '<input type="checkbox" />',
@@ -50,7 +50,7 @@ function pms_information_request_columns( array $columns ): array {
 	);
 }
 
-add_action( 'manage_pms_information_request_posts_custom_column', 'pms_information_request_column_content', 10, 2 );
+add_action( 'manage_pms_info_request_posts_custom_column', 'pms_information_request_column_content', 10, 2 );
 function pms_information_request_column_content( string $column, int $post_id ): void {
 	switch ( $column ) {
 		case 'pms_email':
@@ -75,7 +75,7 @@ function pms_information_request_meta_box(): void {
 		'pms-information-request-details',
 		'Informatieaanvraag details',
 		'pms_render_information_request_meta_box',
-		'pms_information_request',
+		'pms_info_request',
 		'normal',
 		'high'
 	);
@@ -128,7 +128,7 @@ function pms_store_information_request( array $data ): int {
 
 	$post_id = wp_insert_post(
 		array(
-			'post_type'   => 'pms_information_request',
+			'post_type'   => 'pms_info_request',
 			'post_status' => 'publish',
 			'post_title'  => $name ?: 'Nieuwe informatieaanvraag',
 		),
@@ -256,7 +256,7 @@ function pms_information_request_shortcode( array $atts = array() ): string {
 		&& isset( $_POST['pms_information_action'] )
 		&& 'submit_information_request' === $_POST['pms_information_action']
 		&& isset( $_POST['pms_information_nonce'] )
-		&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pms_information_nonce'] ) ), 'pms_information_request' )
+		&& wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['pms_information_nonce'] ) ), 'pms_info_request' )
 	) {
 		$values['firstname'] = sanitize_text_field( wp_unslash( $_POST['pms_information_firstname'] ?? '' ) );
 		$values['lastname']  = sanitize_text_field( wp_unslash( $_POST['pms_information_lastname'] ?? '' ) );
@@ -517,7 +517,7 @@ function pms_information_request_shortcode( array $atts = array() ): string {
 
 		<form method="post" novalidate id="<?php echo esc_attr( $form_id ); ?>">
 			<div class="pms-info-form__body">
-				<?php wp_nonce_field( 'pms_information_request', 'pms_information_nonce' ); ?>
+				<?php wp_nonce_field( 'pms_info_request', 'pms_information_nonce' ); ?>
 				<input type="hidden" name="pms_information_action" value="submit_information_request">
 
 				<div class="pms-info-form__grid">
