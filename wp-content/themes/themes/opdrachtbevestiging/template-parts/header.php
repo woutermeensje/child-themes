@@ -249,7 +249,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
         <!-- CTA knoppen -->
         <div class="rn-header__cta">
-            <a href="<?php echo esc_url( home_url( '/account-aanmaken/' ) ); ?>" class="rn-btn rn-btn--accent">
+            <a href="https://platform.opdrachtbevestiging.nl" class="rn-btn rn-btn--accent" target="_blank" rel="noopener noreferrer">
                 Account aanmaken
             </a>
         </div>
@@ -281,8 +281,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="https://itproject.nl/informatie-aanvragen/" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
-                Project bespreken
+            <a href="https://platform.opdrachtbevestiging.nl" class="rn-btn rn-btn--accent rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
+                Account aanmaken
             </a>
         </div>
     </div>

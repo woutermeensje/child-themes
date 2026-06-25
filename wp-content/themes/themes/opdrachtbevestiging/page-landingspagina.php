@@ -26,7 +26,7 @@ get_header();
             <div class="fondsen-job-hero__title-wrap">
                 <h1 class="fondsen-job-hero__title">Professionele opdrachtbevestigingen in <span class="fondsen-job-hero__count">één platform</span>.</h1>
                 <p class="fondsen-job-hero__subtitle">Stel in minuten een juridisch correcte opdrachtbevestiging op, verstuur hem digitaal en houd alle bevestigingen overzichtelijk bij.</p>
-                <a href="#gratis-proberen" class="fondsen-lp__btn">Gratis proberen</a>
+                <a href="#gratis-proberen" class="fondsen-lp__btn">Opdrachtbevestiging opstellen</a>
             </div>
         </div>
     </div>
