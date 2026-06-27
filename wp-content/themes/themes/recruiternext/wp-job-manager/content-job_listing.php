@@ -9,19 +9,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-global $post, $rn_loop_count, $rn_marketing_bg_url;
-if ( ! isset( $rn_loop_count ) ) $rn_loop_count = 0;
-$rn_loop_count++;
-
-if ( ! isset( $rn_marketing_bg_url ) ) {
-    $bg_posts = get_posts([
-        'post_type'      => 'attachment',
-        'post_status'    => 'inherit',
-        'posts_per_page' => 1,
-        'title'          => 'sustainablejobs-marketing-blok',
-    ]);
-    $rn_marketing_bg_url = ! empty( $bg_posts ) ? wp_get_attachment_url( $bg_posts[0]->ID ) : '';
-}
+global $post;
 
 $post_id = $post ? (int) $post->ID : get_the_ID();
 $has_company_logo = has_post_thumbnail($post_id);
@@ -214,32 +202,6 @@ $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat'
     </div>
 </li>
 
-<?php if ( $rn_loop_count % 5 === 0 ) : ?>
-<?php
-$rn_bg_inline = $rn_marketing_bg_url
-    ? 'background-image:url(\'' . esc_url( $rn_marketing_bg_url ) . '\');background-size:cover;background-position:center;'
-    : '';
-?>
-<li class="rn-marketing-block">
-    <div class="rn-marketing-card">
-        <div class="rn-marketing-card__bg" style="<?php echo $rn_bg_inline; ?>"></div>
-        <div class="rn-marketing-card__overlay"></div>
-        <div class="rn-marketing-card__badge">Aanbevolen</div>
-        <div class="rn-marketing-card__body">
-            <div class="rn-marketing-card__icon" aria-hidden="true">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 8v4l2 2"/><path d="M18 2v6h6"/><path d="M22 6c-1.5 3-4 5-8 5"/></svg>
-            </div>
-            <div class="rn-marketing-card__text">
-                <p class="rn-marketing-card__name">Sustainablejobs.nl</p>
-                <p class="rn-marketing-card__desc">De grootste duurzame vacaturesite van Nederland. Ontdek honderden vacatures bij werkgevers die het verschil maken voor mens en planeet.</p>
-            </div>
-            <div class="rn-marketing-card__cta">
-                <a href="https://sustainablejobs.nl" target="_blank" rel="noopener noreferrer" class="rn-marketing-card__btn">Bekijken</a>
-            </div>
-        </div>
-    </div>
-</li>
-<?php endif; ?>
 
 <style>
 ul.job_listings {
@@ -848,181 +810,9 @@ input[type='text']::placeholder {
     font-size: 13px;
 }
 
-/* ── Marketing blok ────────────────────────────────────────── */
-li.rn-marketing-block {
-    list-style: none !important;
-    margin: 15px 30px;
-    padding: 0 !important;
-    border-bottom: none !important;
-    overflow: hidden;
-}
-
-.rn-marketing-card {
-    position: relative;
-    background: linear-gradient(135deg, #1a6e3c 0%, #2d9e5f 100%);
-    border-radius: 6px;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-.rn-marketing-card__bg {
-    position: absolute;
-    inset: 0;
-    background-repeat: no-repeat;
-}
-
-.rn-marketing-card__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(26,110,60,0.88) 0%, rgba(45,158,95,0.65) 100%);
-}
-
-.rn-marketing-card__badge {
-    display: inline-block;
-    position: absolute;
-    top: 14px;
-    right: 16px;
-    z-index: 2;
-    background: rgba(255,255,255,0.18);
-    color: rgba(255,255,255,0.85);
-    font-family: 'Poppins', sans-serif;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: .04em;
-    text-transform: uppercase;
-    padding: 3px 10px;
-    border-radius: 999px;
-}
-
-.rn-marketing-card__body {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    gap: 24px;
-    padding: 24px 32px;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-.rn-marketing-card__icon {
-    flex: 0 0 auto;
-    color: rgba(255,255,255,0.85);
-}
-
-.rn-marketing-card__text {
-    flex: 1 1 auto;
-    min-width: 0;
-}
-
-.rn-marketing-card__name {
-    font-family: 'Poppins', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    color: #ffffff;
-    margin: 0 0 6px !important;
-    line-height: 1.2;
-}
-
-.rn-marketing-card__desc {
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: rgba(255,255,255,0.88);
-    margin: 0 !important;
-    line-height: 1.6;
-}
-
-.rn-marketing-card__cta {
-    flex: 0 0 auto;
-}
-
-.rn-marketing-card__btn {
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 28px !important;
-    background: #ffffff !important;
-    color: #1a6e3c !important;
-    border: 2px solid #ffffff !important;
-    border-radius: 4px !important;
-    font-family: 'Poppins', sans-serif !important;
-    font-size: 15px !important;
-    font-weight: 700 !important;
-    text-decoration: none !important;
-    white-space: nowrap;
-    transition: background .15s ease, color .15s ease;
-    box-shadow: none !important;
-}
-
-.rn-marketing-card__btn:hover {
-    background: transparent !important;
-    color: #ffffff !important;
-}
-
-@media (max-width: 960px) {
-    li.rn-marketing-block {
-        margin: 0 12px;
-        height: auto !important;
-    }
-    .rn-marketing-card__body {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 14px;
-        padding: 18px 20px;
-    }
-    .rn-marketing-card__icon {
-        display: none;
-    }
-    .rn-marketing-card__cta {
-        width: 100%;
-    }
-    .rn-marketing-card__btn {
-        width: 100%;
-        justify-content: center;
-    }
-}
 </style>
 
 <script>
-(function () {
-    function rnSyncMarketingHeight() {
-        document.querySelectorAll('li.rn-marketing-block').forEach(function (block) {
-            if (window.innerWidth <= 960) { block.style.height = ''; return; }
-            var prev = block.previousElementSibling;
-            while (prev && prev.classList.contains('rn-marketing-block')) {
-                prev = prev.previousElementSibling;
-            }
-            if (prev) {
-                var card = prev.querySelector('.job-card');
-                if (card) block.style.height = card.offsetHeight + 'px';
-            }
-        });
-    }
-
-    if (!window.__rnMarketingHeightInit) {
-        window.__rnMarketingHeightInit = true;
-        function runSync() { requestAnimationFrame(rnSyncMarketingHeight); }
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', runSync);
-        } else {
-            runSync();
-        }
-        window.addEventListener('resize', rnSyncMarketingHeight);
-
-        var list = document.querySelector('ul.job_listings');
-        if (list) {
-            new MutationObserver(function (muts) {
-                for (var i = 0; i < muts.length; i++) {
-                    if (muts[i].addedNodes.length || muts[i].removedNodes.length) { runSync(); break; }
-                }
-            }).observe(list, { childList: true });
-        }
-    }
-}());
-
 (function () {
     if (!window.__rnJobCardLinkGuard) {
         window.__rnJobCardLinkGuard = true;
