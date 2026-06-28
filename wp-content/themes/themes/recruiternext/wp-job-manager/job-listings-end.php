@@ -5,13 +5,29 @@ $banner_posts = get_posts([
     'post_type'      => 'attachment',
     'post_status'    => 'inherit',
     'posts_per_page' => 1,
-    'title'          => 'recruiternext-marketing-blok',
+    'title'          => 'recruiternext-recruitment-vacatures',
 ]);
+
+if (empty($banner_posts)) {
+    $banner_posts = get_posts([
+        'post_type'      => 'attachment',
+        'post_status'    => 'inherit',
+        'posts_per_page' => 1,
+        'meta_query'     => [
+            [
+                'key'     => '_wp_attached_file',
+                'value'   => 'recruiternext-recruitment-vacatures',
+                'compare' => 'LIKE',
+            ],
+        ],
+    ]);
+}
+
 $banner_url = !empty($banner_posts) ? wp_get_attachment_url($banner_posts[0]->ID) : '';
 
 $bg_style = $banner_url
-    ? 'background-image:url(\'' . esc_url($banner_url) . '\');background-size:cover;background-position:center;'
-    : 'background:linear-gradient(135deg,#0458ab 0%,#2f7fd6 100%);';
+    ? 'background-color:#0458ab;background-image:url(\'' . esc_url($banner_url) . '\');background-size:cover;background-position:center;'
+    : 'background:#0458ab;';
 
 $banner_html = '
 <div class="rn-banner">
@@ -19,12 +35,12 @@ $banner_html = '
     <div class="rn-banner__overlay"></div>
     <div class="rn-banner__content">
         <div class="rn-banner__text">
-            <span class="rn-banner__eyebrow">Recruiternext.nl</span>
-            <h2 class="rn-banner__title">Vind opdrachten als<br>freelance recruiter.</h2>
-            <p class="rn-banner__desc">Dé plek waar opdrachtgevers en freelance recruiters elkaar vinden. Maak een gratis profiel aan en word gevonden.</p>
+            <span class="rn-banner__eyebrow">Maandelijkse vacature update</span>
+            <h2 class="rn-banner__title">De nieuwste recruitment vacatures in je inbox.</h2>
+            <p class="rn-banner__desc">Ontvang iedere maand een selectie van actuele vacatures, opdrachten en kansen binnen recruitment.</p>
         </div>
-        <a href="' . esc_url(home_url('/account-aanmaken/')) . '" class="rn-banner__btn">
-            Profiel aanmaken
+        <a href="' . esc_url(home_url('/nieuwsbrief/')) . '" class="rn-banner__btn">
+            Aanmelden
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
     </div>
@@ -136,9 +152,9 @@ li.rn-marketing-block {
     inset: 0;
     background: linear-gradient(
         115deg,
-        rgba(4, 88, 171, 0.92) 0%,
-        rgba(3, 68, 131, 0.78) 55%,
-        rgba(3, 68, 131, 0.55) 100%
+        rgba(4, 88, 171, 0.96) 0%,
+        rgba(4, 88, 171, 0.9) 58%,
+        rgba(4, 88, 171, 0.78) 100%
     );
 }
 
@@ -165,7 +181,7 @@ li.rn-marketing-block {
     font-weight: 600 !important;
     letter-spacing: .12em;
     text-transform: uppercase;
-    color: var(--color-secondary, #FFFACD) !important;
+    color: rgba(255, 255, 255, 0.78) !important;
     margin-bottom: 12px;
 }
 
@@ -193,7 +209,7 @@ li.rn-marketing-block {
     display: inline-flex;
     align-items: center;
     gap: 10px;
-    background: var(--color-secondary, #FFFACD) !important;
+    background: #ffffff !important;
     color: #0458ab !important;
     border: none !important;
     border-radius: 6px !important;
@@ -210,7 +226,7 @@ li.rn-marketing-block {
 .rn-banner__btn:hover {
     opacity: 0.9;
     transform: translateY(-1px);
-    background: var(--color-secondary, #FFFACD) !important;
+    background: #ffffff !important;
     color: #0458ab !important;
 }
 

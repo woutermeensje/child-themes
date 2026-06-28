@@ -572,7 +572,7 @@ jQuery(function($) {
   width: 100%;
   padding: 13px 14px 13px 40px;
   font-size: 15px;
-  border: 1px solid #dedede;
+  border: 1px solid var(--color-primary, #0458ab);
   border-radius: 6px;
   background-color: #ffffff;
   color: #333;
@@ -585,7 +585,7 @@ jQuery(function($) {
 
 .rn-search-basic input[type="text"]:focus {
   outline: none;
-  border-color: #dedede;
+  border-color: var(--color-primary, #0458ab);
   box-shadow: none;
 }
 
@@ -657,7 +657,7 @@ select.sj-hidden-select {
   justify-content: space-between;
   white-space: nowrap;
   border-radius: 999px;
-  border: 1px solid #E0E0E0 !important;
+  border: 1px solid var(--color-primary, #0458ab) !important;
   background-color: white !important;
   padding: 12px 12px;
   min-height: 44px;
@@ -701,7 +701,7 @@ select.sj-hidden-select {
   width: 24px;
   height: 24px;
   border-radius: 999px;
-  border: 1px solid #E0E0E0;
+  border: 1px solid var(--color-primary, #0458ab);
   background: #fff;
   line-height: 1;
   font-size: 16px;
@@ -728,7 +728,7 @@ select.sj-hidden-select {
   min-width: 100%;
   margin-top: 10px;
   background: #fff;
-  border: 1px solid #E0E0E0;
+  border: 1px solid var(--color-primary, #0458ab);
   border-radius: 8px;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   padding: 8px;
@@ -777,7 +777,7 @@ select.sj-hidden-select {
   border-radius: 8px;
   cursor: pointer;
 }
-.sj-option:hover { background: #f2f2f2; }
+.sj-option:hover { background: rgba(4, 88, 171, 0.08); }
 
 .sj-option.is-selected .sj-option-text { color: var(--color-primary, #0458ab); font-weight: 700; }
 
@@ -1171,11 +1171,11 @@ form.job_filters {
   margin-bottom: 40px !important;
   min-height: 100px !important;
   padding: 0 !important;
-  background-color: #edf4fb !important;
+  background-color: rgba(4, 88, 171, 0.08) !important;
   background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff) !important;
   border: none;
-  border-bottom: 1px solid #d9e4f2 !important;
-  border-bottom-color: color-mix(in srgb, var(--color-primary, #0458ab) 18%, #ffffff) !important;
+  border-bottom: 1px solid var(--color-primary, #0458ab) !important;
+  border-bottom-color: var(--color-primary, #0458ab) !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   box-sizing: border-box;
@@ -1225,7 +1225,7 @@ form.job_filters .rn-active-filters {
   width: 100%;
   padding: 11px 14px 11px 40px;
   font-size: 15px;
-  border: 1px solid #d9e4f2;
+  border: 1px solid var(--color-primary, #0458ab);
   border-radius: 8px;
   background-color: #ffffff;
   color: var(--color-text);
@@ -1291,7 +1291,7 @@ form.job_filters .rn-active-filters {
   justify-content: space-between;
   white-space: nowrap;
   border-radius: 999px;
-  border: 1px solid #d9e4f2 !important;
+  border: 1px solid var(--color-primary, #0458ab) !important;
   background-color: #ffffff !important;
   padding: 12px;
   min-height: 44px;
@@ -1370,7 +1370,7 @@ form.job_filters .rn-active-filters {
   min-width: 100%;
   margin-top: 10px;
   background: #fff;
-  border: 1px solid #d9e4f2;
+  border: 1px solid var(--color-primary, #0458ab);
   border-radius: 8px;
   box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.12);
   padding: 8px;
@@ -1394,7 +1394,7 @@ form.job_filters .rn-active-filters {
 .sj-search-input {
   width: 100%;
   min-width: 220px;
-  border: 1px solid #d9e4f2;
+  border: 1px solid var(--color-primary, #0458ab);
   border-radius: 8px;
   padding: 11px 12px;
   font-family: 'Poppins', sans-serif;
@@ -1424,7 +1424,7 @@ form.job_filters .rn-active-filters {
 }
 
 .sj-option:hover {
-  background: #edf4fb;
+  background: rgba(4, 88, 171, 0.08);
   background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff);
 }
 
@@ -1525,7 +1525,7 @@ form.job_filters span.active-filter {
 
 span.active-filter:hover,
 form.job_filters span.active-filter:hover {
-  background: #edf4fb;
+  background: rgba(4, 88, 171, 0.08);
   background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff);
   border-color: var(--color-primary, #0458ab);
   transform: translateY(-1px);
@@ -1622,9 +1622,9 @@ form.job_filters span.active-filter:hover {
 
 /* Screenshot-style filter controls */
 form.job_filters {
-  background-color: #edf4fb !important;
+  background-color: rgba(4, 88, 171, 0.08) !important;
   background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff) !important;
-  border-bottom: 1px solid #DDE8C5 !important;
+  border-bottom: 1px solid var(--color-primary, #0458ab) !important;
 }
 
 form.job_filters .filter-row,
@@ -1641,7 +1641,7 @@ form.job_filters .filter-row input[type="text"],
 form.job_filters .rn-filter-row input[type="text"] {
   min-height: 44px;
   padding: 11px 18px 11px 52px;
-  border: 1px solid #DDE8C5 !important;
+  border: 1px solid var(--color-primary, #0458ab) !important;
   border-radius: 8px !important;
   background: #ffffff !important;
   box-shadow: none;
@@ -1652,8 +1652,8 @@ form.job_filters .rn-filter-row input[type="text"] {
 
 form.job_filters .filter-row input[type="text"]:focus,
 form.job_filters .rn-filter-row input[type="text"]:focus {
-  border-color: #168AAD !important;
-  box-shadow: 0 0 0 3px rgba(22, 138, 173, 0.15);
+  border-color: var(--color-primary, #0458ab) !important;
+  box-shadow: 0 0 0 3px rgba(4, 88, 171, 0.15);
 }
 
 form.job_filters .search_keywords input::placeholder,
@@ -1672,17 +1672,17 @@ form.job_filters .search_location::before {
 }
 
 form.job_filters .search_keywords::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") !important;
 }
 
 form.job_filters .search_location::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E") !important;
 }
 
 form.job_filters .sj-select-btn {
   min-height: 44px;
   padding: 11px 18px 11px 52px !important;
-  border: 1px solid #DDE8C5 !important;
+  border: 1px solid var(--color-primary, #0458ab) !important;
   border-radius: 999px !important;
   background: #ffffff !important;
   box-shadow: none;
@@ -1692,8 +1692,8 @@ form.job_filters .sj-select-btn {
 
 form.job_filters .sj-select-btn:focus,
 form.job_filters .sj-select.active .sj-select-btn {
-  border-color: #DDE8C5 !important;
-  box-shadow: 0 0 0 3px rgba(22, 138, 173, 0.15);
+  border-color: var(--color-primary, #0458ab) !important;
+  box-shadow: 0 0 0 3px rgba(4, 88, 171, 0.15);
 }
 
 form.job_filters .sj-placeholder {
@@ -1723,34 +1723,34 @@ form.job_filters .organization_type .sj-select-btn::before {
 }
 
 form.job_filters .job_type .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E") !important;
 }
 
 form.job_filters .job_sector .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E") !important;
 }
 
 form.job_filters .job_company .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E") !important;
 }
 
 form.job_filters .organization_type .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/%3E%3Cline x1='8' y1='2' x2='8' y2='18'/%3E%3Cline x1='16' y1='6' x2='16' y2='22'/%3E%3C/svg%3E") !important;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230458ab' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6'/%3E%3Cline x1='8' y1='2' x2='8' y2='18'/%3E%3Cline x1='16' y1='6' x2='16' y2='22'/%3E%3C/svg%3E") !important;
 }
 
 form.job_filters .sj-options,
 form.job_filters .sj-search-input {
-  border-color: #DDE8C5;
+  border-color: var(--color-primary, #0458ab);
 }
 
 form.job_filters .sj-option:hover {
-  background: #edf4fb;
+  background: rgba(4, 88, 171, 0.08);
   background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff);
 }
 
 form.job_filters .sj-option.is-selected .sj-option-text,
 form.job_filters .sj-option.is-selected .sj-option-count {
-  color: #168AAD;
+  color: var(--color-primary, #0458ab);
 }
 
 @media (max-width: 960px) {

@@ -20,9 +20,39 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style', 'work-sans-font'], filemtime(get_stylesheet_directory() . '/css/header.css'));
     wp_enqueue_style('rn-shortcodes', get_stylesheet_directory_uri() . '/css/shortcodes.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/shortcodes.css'));
     wp_enqueue_style('rn-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
+
+    if (
+        ( is_home() || is_category() || is_tag() || is_date() || is_author() || is_singular( 'post' ) ) &&
+        file_exists( get_stylesheet_directory() . '/css/blog.css' )
+    ) {
+        wp_enqueue_style(
+            'rn-blog',
+            get_stylesheet_directory_uri() . '/css/blog.css',
+            ['child-style'],
+            filemtime( get_stylesheet_directory() . '/css/blog.css' )
+        );
+    }
 });
 
 add_theme_support('job-manager-templates');
+
+add_action('pre_get_posts', function ($query) {
+    if ( is_admin() || ! $query->is_main_query() ) {
+        return;
+    }
+
+    $raw_search = isset( $_GET['rn_s'] ) ? wp_unslash( $_GET['rn_s'] ) : '';
+    $search     = is_array( $raw_search ) ? '' : sanitize_text_field( $raw_search );
+
+    if (
+        '' === $search ||
+        ! ( $query->is_home() || $query->is_category() || $query->is_tag() || $query->is_date() || $query->is_author() )
+    ) {
+        return;
+    }
+
+    $query->set( 's', $search );
+});
 
 
 // =========================================================
@@ -459,6 +489,7 @@ require_once get_stylesheet_directory() . '/inc/shortcode-newsletter.php';
 require_once get_stylesheet_directory() . '/inc/job-alerts-cron.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-job-alerts.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-plaatsen.php';
+require_once get_stylesheet_directory() . '/inc/blog-meta.php';
 
 
 // =========================================================
