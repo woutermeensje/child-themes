@@ -97,6 +97,13 @@ endif;
 // Nav menu locaties registreren
 // =========================================================
 add_action('after_setup_theme', function() {
+    add_theme_support('custom-logo', [
+        'height'      => 88,
+        'width'       => 320,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ]);
+
     register_nav_menus([
         'primary_nav' => 'Primaire navigatie',
         'footer_nav'  => 'Footer navigatie',

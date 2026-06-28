@@ -572,7 +572,7 @@ jQuery(function($) {
   width: 100%;
   padding: 13px 14px 13px 40px;
   font-size: 15px;
-  border: 1px solid var(--color-primary, #0458ab);
+  border: 1px solid var(--color-border, #e0e0e0);
   border-radius: 6px;
   background-color: #ffffff;
   color: #333;
@@ -585,7 +585,7 @@ jQuery(function($) {
 
 .rn-search-basic input[type="text"]:focus {
   outline: none;
-  border-color: var(--color-primary, #0458ab);
+  border-color: var(--color-border, #e0e0e0);
   box-shadow: none;
 }
 
@@ -657,7 +657,7 @@ select.sj-hidden-select {
   justify-content: space-between;
   white-space: nowrap;
   border-radius: 999px;
-  border: 1px solid var(--color-primary, #0458ab) !important;
+  border: 1px solid var(--color-border, #e0e0e0) !important;
   background-color: white !important;
   padding: 12px 12px;
   min-height: 44px;
@@ -701,7 +701,7 @@ select.sj-hidden-select {
   width: 24px;
   height: 24px;
   border-radius: 999px;
-  border: 1px solid var(--color-primary, #0458ab);
+  border: 1px solid var(--color-border, #e0e0e0);
   background: #fff;
   line-height: 1;
   font-size: 16px;
@@ -728,7 +728,7 @@ select.sj-hidden-select {
   min-width: 100%;
   margin-top: 10px;
   background: #fff;
-  border: 1px solid var(--color-primary, #0458ab);
+  border: 1px solid var(--color-border, #e0e0e0);
   border-radius: 8px;
   box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
   padding: 8px;
@@ -790,7 +790,7 @@ select.sj-hidden-select {
 /* Focus ring */
 .sj-select-btn:focus {
   outline: none;
-  border-color: var(--color-primary, #0458ab);
+  border-color: var(--color-border, #e0e0e0);
   box-shadow: 0 0 0 2px rgba(4, 88, 171, 0.2);
 }
 
@@ -830,7 +830,7 @@ span.active-filter {
   cursor: pointer;
 }
 
-span.active-filter:hover { border-color: var(--color-primary, #0458ab); }
+span.active-filter:hover { border-color: var(--color-border, #e0e0e0); }
 
 .active-filter-text { color: #333333; }
 
@@ -1174,8 +1174,8 @@ form.job_filters {
   background-color: rgba(4, 88, 171, 0.08) !important;
   background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff) !important;
   border: none;
-  border-bottom: 1px solid var(--color-primary, #0458ab) !important;
-  border-bottom-color: var(--color-primary, #0458ab) !important;
+  border-bottom: 1px solid var(--color-border, #e0e0e0) !important;
+  border-bottom-color: var(--color-border, #e0e0e0) !important;
   border-radius: 0 !important;
   box-shadow: none !important;
   box-sizing: border-box;
@@ -1225,7 +1225,7 @@ form.job_filters .rn-active-filters {
   width: 100%;
   padding: 11px 14px 11px 40px;
   font-size: 15px;
-  border: 1px solid var(--color-primary, #0458ab);
+  border: 1px solid var(--color-border, #e0e0e0);
   border-radius: 8px;
   background-color: #ffffff;
   color: var(--color-text);
@@ -1238,7 +1238,7 @@ form.job_filters .rn-active-filters {
 .filter-row input[type="text"]:focus,
 .rn-filter-row input[type="text"]:focus {
   outline: none;
-  border-color: var(--color-primary, #0458ab);
+  border-color: var(--color-border, #e0e0e0);
   box-shadow: 0 0 0 3px rgba(4, 88, 171, 0.15);
 }
 
@@ -1291,7 +1291,7 @@ form.job_filters .rn-active-filters {
   justify-content: space-between;
   white-space: nowrap;
   border-radius: 999px;
-  border: 1px solid var(--color-primary, #0458ab) !important;
+  border: 1px solid var(--color-border, #e0e0e0) !important;
   background-color: #ffffff !important;
   padding: 12px;
   min-height: 44px;
@@ -1306,7 +1306,7 @@ form.job_filters .rn-active-filters {
 .sj-select-btn:focus,
 .sj-select.active .sj-select-btn {
   outline: none;
-  border-color: var(--color-primary, #0458ab) !important;
+  border-color: var(--color-border, #e0e0e0) !important;
   box-shadow: 0 0 0 2px rgba(4, 88, 171, 0.18);
   background: #ffffff !important;
   color: #111111 !important;
@@ -1370,7 +1370,7 @@ form.job_filters .rn-active-filters {
   min-width: 100%;
   margin-top: 10px;
   background: #fff;
-  border: 1px solid var(--color-primary, #0458ab);
+  border: 1px solid var(--color-border, #e0e0e0);
   border-radius: 8px;
   box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.12);
   padding: 8px;
@@ -1394,7 +1394,7 @@ form.job_filters .rn-active-filters {
 .sj-search-input {
   width: 100%;
   min-width: 220px;
-  border: 1px solid var(--color-primary, #0458ab);
+  border: 1px solid var(--color-border, #e0e0e0);
   border-radius: 8px;
   padding: 11px 12px;
   font-family: 'Poppins', sans-serif;
@@ -1408,7 +1408,7 @@ form.job_filters .rn-active-filters {
 
 .sj-search-input:focus {
   outline: none;
-  border-color: var(--color-primary, #0458ab);
+  border-color: var(--color-border, #e0e0e0);
   box-shadow: 0 0 0 2px rgba(4, 88, 171, 0.16);
 }
 
@@ -1512,7 +1512,7 @@ form.job_filters span.active-filter {
   align-items: center;
   gap: 6px;
   background: #ffffff;
-  border: 1px solid var(--color-primary, #0458ab);
+  border: 1px solid var(--color-border, #e0e0e0);
   border-radius: 999px;
   box-shadow: 0 10px 24px -18px rgba(4, 88, 171, 0.38);
   padding: 8px 12px;
@@ -1527,7 +1527,7 @@ span.active-filter:hover,
 form.job_filters span.active-filter:hover {
   background: rgba(4, 88, 171, 0.08);
   background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff);
-  border-color: var(--color-primary, #0458ab);
+  border-color: var(--color-border, #e0e0e0);
   transform: translateY(-1px);
 }
 
@@ -1624,7 +1624,7 @@ form.job_filters span.active-filter:hover {
 form.job_filters {
   background-color: rgba(4, 88, 171, 0.08) !important;
   background: color-mix(in srgb, var(--color-primary, #0458ab) 8%, #ffffff) !important;
-  border-bottom: 1px solid var(--color-primary, #0458ab) !important;
+  border-bottom: 1px solid var(--color-border, #e0e0e0) !important;
 }
 
 form.job_filters .filter-row,
@@ -1641,7 +1641,7 @@ form.job_filters .filter-row input[type="text"],
 form.job_filters .rn-filter-row input[type="text"] {
   min-height: 44px;
   padding: 11px 18px 11px 52px;
-  border: 1px solid var(--color-primary, #0458ab) !important;
+  border: 1px solid var(--color-border, #e0e0e0) !important;
   border-radius: 8px !important;
   background: #ffffff !important;
   box-shadow: none;
@@ -1652,7 +1652,7 @@ form.job_filters .rn-filter-row input[type="text"] {
 
 form.job_filters .filter-row input[type="text"]:focus,
 form.job_filters .rn-filter-row input[type="text"]:focus {
-  border-color: var(--color-primary, #0458ab) !important;
+  border-color: var(--color-border, #e0e0e0) !important;
   box-shadow: 0 0 0 3px rgba(4, 88, 171, 0.15);
 }
 
@@ -1682,7 +1682,7 @@ form.job_filters .search_location::before {
 form.job_filters .sj-select-btn {
   min-height: 44px;
   padding: 11px 18px 11px 52px !important;
-  border: 1px solid var(--color-primary, #0458ab) !important;
+  border: 1px solid var(--color-border, #e0e0e0) !important;
   border-radius: 999px !important;
   background: #ffffff !important;
   box-shadow: none;
@@ -1692,7 +1692,7 @@ form.job_filters .sj-select-btn {
 
 form.job_filters .sj-select-btn:focus,
 form.job_filters .sj-select.active .sj-select-btn {
-  border-color: var(--color-primary, #0458ab) !important;
+  border-color: var(--color-border, #e0e0e0) !important;
   box-shadow: 0 0 0 3px rgba(4, 88, 171, 0.15);
 }
 
@@ -1740,7 +1740,7 @@ form.job_filters .organization_type .sj-select-btn::before {
 
 form.job_filters .sj-options,
 form.job_filters .sj-search-input {
-  border-color: var(--color-primary, #0458ab);
+  border-color: var(--color-border, #e0e0e0);
 }
 
 form.job_filters .sj-option:hover {

@@ -3,6 +3,36 @@
  * Recruiternext – Custom header template
  */
 if ( ! defined( 'ABSPATH' ) ) exit;
+
+$rn_custom_logo_id = get_theme_mod( 'custom_logo' );
+$rn_logo_alt       = get_bloginfo( 'name', 'display' );
+$rn_fallback_logo  = get_stylesheet_directory_uri() . '/site-logo/recruiternext-site-logo.png';
+$rn_desktop_logo   = $rn_custom_logo_id
+    ? wp_get_attachment_image(
+        $rn_custom_logo_id,
+        'full',
+        false,
+        [
+            'class'    => 'rn-header__logo',
+            'alt'      => $rn_logo_alt,
+            'loading'  => false,
+            'decoding' => 'async',
+        ]
+    )
+    : '';
+$rn_mobile_logo    = $rn_custom_logo_id
+    ? wp_get_attachment_image(
+        $rn_custom_logo_id,
+        'full',
+        false,
+        [
+            'class'    => 'rn-header__mobile-logo',
+            'alt'      => $rn_logo_alt,
+            'loading'  => false,
+            'decoding' => 'async',
+        ]
+    )
+    : '';
 ?>
 
 <style>
@@ -25,13 +55,45 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /* ---- Main nav bar ---- */
 #rn-header .rn-header__inner {
   width: min(100% - 96px, 1840px) !important; margin: 0 auto !important; padding: 0 !important;
-  height: 68px; display: flex; align-items: center; gap: 24px;
+  height: 84px; display: flex; align-items: center; gap: 24px;
 }
 
 /* ---- Brand / Logo ---- */
 #rn-header .rn-header__brand { flex: 0 0 auto; display: flex; align-items: center; }
 #rn-header .rn-header__brand a { display: block; text-decoration: none !important; }
-#rn-header .rn-header__logo { display: block; height: 44px; width: auto; }
+#rn-header .rn-header__logo { display: block; height: 64px; width: auto; }
+#rn-header .rn-header__mobile-left,
+#rn-header .rn-header__mobile-brand,
+#rn-header .rn-header__mobile-right { display: none; }
+#rn-header .rn-header__mobile-logo {
+  display: block;
+  width: auto;
+  max-width: 164px;
+  height: 46px;
+  object-fit: contain;
+}
+#rn-header .rn-mobile-icon-link {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  color: #0458ab !important;
+  text-decoration: none !important;
+  background: transparent !important;
+  transition: color .18s ease, background .18s ease;
+}
+#rn-header .rn-mobile-icon-link:hover,
+#rn-header .rn-mobile-icon-link:focus {
+  color: #034483 !important;
+  background: rgba(4, 88, 171, 0.08) !important;
+}
+#rn-header .rn-mobile-icon-link svg {
+  width: 25px;
+  height: 25px;
+  fill: currentColor;
+}
 
 /* ---- Desktop nav ---- */
 #rn-header .rn-header__nav { flex: 1 1 auto; display: flex; align-items: center; justify-content: flex-end; }
@@ -45,7 +107,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   color: #333333 !important;
   text-decoration: none !important;
   border-radius: 6px; white-space: nowrap;
-  height: 68px;
+  height: 84px;
   transition: color .15s ease;
   background: transparent !important;
   box-shadow: none !important;
@@ -115,7 +177,13 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   border: 1.5px solid #e8ecf0 !important; border-radius: 6px;
   cursor: pointer; padding: 8px; margin-left: auto; flex-shrink: 0;
 }
-#rn-header .rn-header__hamburger:hover { background: #fff !important; border-color: #e8ecf0 !important; }
+#rn-header .rn-header__hamburger:hover,
+#rn-header .rn-header__hamburger:focus,
+#rn-header .rn-header__hamburger:active {
+  background: transparent !important;
+  border-color: #0458ab !important;
+  box-shadow: none !important;
+}
 #rn-header .rn-hamburger__bar { display: block; width: 100%; height: 2px; background: #333333; border-radius: 2px; transition: transform .25s ease, opacity .25s ease; }
 #rn-header .rn-header__hamburger.is-open .rn-hamburger__bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 #rn-header .rn-header__hamburger.is-open .rn-hamburger__bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
@@ -144,11 +212,31 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /* Close button */
 .rn-mobile-nav__close {
   position: absolute; top: 16px; right: 16px;
-  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+  width: 52px !important; height: 52px !important; min-width: 52px !important; min-height: 52px !important;
+  display: flex !important; align-items: center; justify-content: center;
+  padding: 0 !important;
   background: transparent !important; border: 1px solid #e5e7eb !important;
-  border-radius: 8px; cursor: pointer; color: #333;
+  border-radius: 8px !important; cursor: pointer; color: #333 !important;
+  box-shadow: none !important;
+  appearance: none;
+  transition: background .18s ease, border-color .18s ease, color .18s ease;
 }
-.rn-mobile-nav__close:hover { background: #f3f4f6 !important; }
+.rn-mobile-nav__close svg {
+  display: block;
+  width: 36px !important;
+  height: 36px !important;
+  stroke-width: 3.8 !important;
+  flex-shrink: 0;
+}
+.rn-mobile-nav__close:hover,
+.rn-mobile-nav__close:focus,
+.rn-mobile-nav__close:active {
+  background: rgba(4, 88, 171, 0.08) !important;
+  border-color: #0458ab !important;
+  color: #0458ab !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
 
 /* Nav links */
 .rn-mobile-nav__list,
@@ -157,8 +245,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 .rn-mobile-nav__list li:last-child { border-bottom: none; }
 .rn-mobile-nav__list a {
   display: block !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 16px !important; font-weight: 400 !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px !important; font-weight: 500 !important;
   color: #111827 !important; padding: 14px 4px !important;
   text-decoration: none !important; box-shadow: none !important;
   background: transparent !important;
@@ -169,28 +257,86 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 /* Submenu mobile */
 .rn-mobile-nav__list ul {
   border-left: 3px solid #e5e7eb !important; padding: 0 0 8px 12px !important;
-  background: transparent !important; position: static !important; box-shadow: none !important;
+  background: transparent !important; position: static !important; box-shadow: none !important; border-radius: 0 !important;
 }
 .rn-mobile-nav__list ul li { border-bottom: none !important; }
-.rn-mobile-nav__list ul a { font-size: 14px !important; padding: 8px 4px !important; color: #6b7280 !important; }
+.rn-mobile-nav__list ul a { font-size: 15px !important; padding: 8px 4px !important; color: #6b7280 !important; }
 
 /* Divider + CTA knoppen */
 .rn-mobile-nav__divider { height: 1px; background: #e5e7eb; margin: 14px 0; }
 .rn-mobile-nav__ctas { display: flex !important; flex-direction: column; gap: 10px; }
-.rn-mobile-nav__cta { width: 100%; justify-content: center; font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important; font-size: 16px !important; font-weight: 800 !important; padding: 10px 14px !important; border-radius: 8px !important; }
+.rn-mobile-nav .rn-btn {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  text-decoration: none !important;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.rn-mobile-nav .rn-btn--outline {
+  background: transparent !important;
+  color: #0458ab !important;
+  border: 2px solid #0458ab !important;
+}
+.rn-mobile-nav .rn-btn--outline:hover {
+  background: #0458ab !important;
+  color: #fff !important;
+}
+.rn-mobile-nav .rn-btn--accent {
+  background: #2f7fd6 !important;
+  color: #fff !important;
+  border: 5px solid #2f7fd6 !important;
+  border-radius: 5px !important;
+  box-shadow: 0 2px 8px rgba(47, 127, 214, 0.3) !important;
+}
+.rn-mobile-nav .rn-btn--accent:hover {
+  background: #2f7fd6 !important;
+  border-color: #2f7fd6 !important;
+  color: #fff !important;
+}
+.rn-mobile-nav__cta { width: 100%; justify-content: center; font-size: 15px !important; font-weight: 600 !important; padding: 13px 16px !important; border-radius: 8px !important; }
 
 /* ---- Responsive ---- */
 @media (max-width: 960px) {
+  #rn-header .rn-header__inner {
+    width: calc(100% - 48px) !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0 !important;
+    height: 64px;
+  }
+  #rn-header .rn-header__brand,
   #rn-header .rn-header__nav,
   #rn-header .rn-header__cta { display: none !important; }
-  #rn-header .rn-header__hamburger { display: flex !important; }
+  #rn-header .rn-header__mobile-left,
+  #rn-header .rn-header__mobile-brand,
+  #rn-header .rn-header__mobile-right {
+    display: flex !important;
+    align-items: center;
+  }
+  #rn-header .rn-header__mobile-left {
+    justify-self: start;
+    gap: 8px;
+  }
+  #rn-header .rn-header__mobile-brand {
+    justify-self: center;
+    text-decoration: none !important;
+  }
+  #rn-header .rn-header__mobile-right {
+    justify-self: end;
+    gap: 4px;
+  }
+  #rn-header .rn-header__hamburger { display: flex !important; margin: 0 !important; align-self: center; }
   .rn-mobile-nav { display: block; }
 }
 @media (min-width: 961px) {
   .rn-mobile-nav { display: none !important; }
 }
 @media (max-width: 480px) {
-  #rn-header .rn-header__inner { width: min(100% - 32px, 1840px) !important; gap: 12px; }
+  #rn-header .rn-header__inner { width: calc(100% - 32px) !important; }
+  #rn-header .rn-header__mobile-logo { max-width: 136px; height: 42px; }
 }
 </style>
 
@@ -202,9 +348,17 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <!-- Logo -->
         <div class="rn-header__brand">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-                <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/site-logo/recruiternext-site-logo.png' ); ?>"
-                     alt="<?php bloginfo( 'name' ); ?>"
-                     class="rn-header__logo">
+                <?php
+                if ( $rn_desktop_logo ) {
+                    echo $rn_desktop_logo;
+                } else {
+                    ?>
+                    <img src="<?php echo esc_url( $rn_fallback_logo ); ?>"
+                         alt="<?php echo esc_attr( $rn_logo_alt ); ?>"
+                         class="rn-header__logo">
+                    <?php
+                }
+                ?>
             </a>
         </div>
 
@@ -228,12 +382,33 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             </a>
         </div>
 
-        <!-- Hamburger (mobile) -->
-        <button class="rn-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="rn-mobile-nav">
-            <span class="rn-hamburger__bar"></span>
-            <span class="rn-hamburger__bar"></span>
-            <span class="rn-hamburger__bar"></span>
-        </button>
+        <div class="rn-header__mobile-left">
+            <button class="rn-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="rn-mobile-nav">
+                <span class="rn-hamburger__bar"></span>
+                <span class="rn-hamburger__bar"></span>
+                <span class="rn-hamburger__bar"></span>
+            </button>
+        </div>
+
+        <a class="rn-header__mobile-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="<?php echo esc_attr( $rn_logo_alt ); ?>">
+            <?php
+            if ( $rn_mobile_logo ) {
+                echo $rn_mobile_logo;
+            } else {
+                ?>
+                <img src="<?php echo esc_url( $rn_fallback_logo ); ?>"
+                     alt="<?php echo esc_attr( $rn_logo_alt ); ?>"
+                     class="rn-header__mobile-logo">
+                <?php
+            }
+            ?>
+        </a>
+
+        <div class="rn-header__mobile-right">
+            <a class="rn-mobile-icon-link rn-mobile-icon-link--account" href="<?php echo esc_url( home_url( '/profiel-aanmaken/' ) ); ?>" aria-label="Profiel aanmaken">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.76-3.58-5-8-5Z"/></svg>
+            </a>
+        </div>
 
     </div><!-- /.rn-header__inner -->
 
@@ -244,7 +419,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 <div id="rn-mobile-nav" class="rn-mobile-nav" aria-hidden="true">
     <div class="rn-mobile-nav__panel">
         <button class="rn-mobile-nav__close" aria-label="Menu sluiten">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" width="36" height="36" aria-hidden="true"><line x1="19" y1="5" x2="5" y2="19"/><line x1="5" y1="5" x2="19" y2="19"/></svg>
         </button>
         <?php
         wp_nav_menu([
@@ -256,6 +431,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
+            <a href="<?php echo esc_url( home_url( '/profiel-aanmaken/' ) ); ?>" class="rn-btn rn-btn--outline rn-mobile-nav__cta">
+                Profiel aanmaken
+            </a>
             <a href="<?php echo esc_url( home_url( '/vacature-plaatsen/' ) ); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
                 Vacature Plaatsen
             </a>
