@@ -27,8 +27,8 @@ if ( $zoekterm !== '' ) {
     $top_posts = [];
     $list_rows = $posts_all;
 } else {
-    $top_posts = array_slice( $posts_all, 0, 3 );
-    $list_rows = array_slice( $posts_all, 3 );
+    $top_posts = array_slice( $posts_all, 0, 2 );
+    $list_rows = array_slice( $posts_all, 2 );
 }
 ?>
 
@@ -45,22 +45,19 @@ if ( $zoekterm !== '' ) {
         // --------------------------------------------------------------------
         if ( ! empty( $top_posts ) ) :
         ?>
-        <?php
-        $hero_main = isset( $top_posts[0] ) ? $top_posts[0] : null;
-        $hero_side = array_slice( $top_posts, 1, 2 );
-        ?>
         <div class="sj-blog__heroes">
-
-            <?php if ( $hero_main ) :
-                $link    = get_permalink( $hero_main );
-                $title   = get_the_title( $hero_main );
-                $date    = get_the_date( 'd F Y', $hero_main );
-                $cats    = get_the_category( $hero_main );
-                $cat_lbl = $cats ? esc_html( $cats[0]->name ) : '';
-                $thumb   = get_the_post_thumbnail( $hero_main, 'full' );
-                $auteur  = get_post_meta( $hero_main->ID, '_sj_artikel_auteur', true );
+            <?php foreach ( $top_posts as $post ) :
+                $link    = get_permalink( $post );
+                $title   = get_the_title( $post );
+                $date    = get_the_date( 'd F Y', $post );
+                $cats    = get_the_category( $post );
+                $cat     = $cats ? $cats[0] : null;
+                $cat_lbl = $cat ? esc_html( $cat->name ) : '';
+                $cat_style = ( $cat && function_exists( 'sj_get_blog_category_style' ) ) ? sj_get_blog_category_style( $cat ) : '';
+                $thumb   = get_the_post_thumbnail( $post, 'full' );
+                $auteur  = get_post_meta( $post->ID, '_sj_artikel_auteur', true );
             ?>
-            <a href="<?php echo esc_url( $link ); ?>" class="sj-blog__hero sj-blog__hero--main" aria-label="<?php echo esc_attr( $title ); ?>">
+            <a href="<?php echo esc_url( $link ); ?>" class="sj-blog__hero" aria-label="<?php echo esc_attr( $title ); ?>"<?php echo $cat_style ? ' style="' . esc_attr( $cat_style ) . '"' : ''; ?>>
                 <?php if ( $thumb ) : ?>
                     <?php echo str_replace( '<img ', '<img class="sj-blog__hero-img" ', $thumb ); ?>
                 <?php else : ?>
@@ -68,44 +65,10 @@ if ( $zoekterm !== '' ) {
                 <?php endif; ?>
                 <div class="sj-blog__hero-overlay"></div>
                 <div class="sj-blog__hero-body">
-                    <?php if ( $cat_lbl ) : ?>
-                        <span class="sj-blog__hero-cat"><?php echo $cat_lbl; ?></span>
-                    <?php endif; ?>
-                    <h2 class="sj-blog__hero-title sj-blog__heading"><?php echo esc_html( $title ); ?></h2>
-                    <span class="sj-blog__hero-meta">
-                        <?php if ( $auteur ) : ?>
-                            <span class="sj-blog__hero-auteur"><?php echo esc_html( $auteur ); ?></span>
-                            <span class="sj-blog__meta-sep" aria-hidden="true">·</span>
-                        <?php endif; ?>
-                        <?php echo esc_html( $date ); ?>
-                    </span>
-                </div>
-            </a>
-            <?php endif; ?>
-
-            <?php if ( ! empty( $hero_side ) ) : ?>
-            <div class="sj-blog__heroes-side">
-                <?php foreach ( $hero_side as $post ) :
-                    $link    = get_permalink( $post );
-                    $title   = get_the_title( $post );
-                    $date    = get_the_date( 'd F Y', $post );
-                    $cats    = get_the_category( $post );
-                    $cat_lbl = $cats ? esc_html( $cats[0]->name ) : '';
-                    $thumb   = get_the_post_thumbnail( $post, 'full' );
-                    $auteur  = get_post_meta( $post->ID, '_sj_artikel_auteur', true );
-                ?>
-                <a href="<?php echo esc_url( $link ); ?>" class="sj-blog__hero sj-blog__hero--side" aria-label="<?php echo esc_attr( $title ); ?>">
-                    <?php if ( $thumb ) : ?>
-                        <?php echo str_replace( '<img ', '<img class="sj-blog__hero-img" ', $thumb ); ?>
-                    <?php else : ?>
-                        <div class="sj-blog__hero-placeholder"><?php echo $img_icon; ?></div>
-                    <?php endif; ?>
-                    <div class="sj-blog__hero-overlay"></div>
-                    <div class="sj-blog__hero-body">
+                    <div class="sj-blog__hero-topline">
                         <?php if ( $cat_lbl ) : ?>
                             <span class="sj-blog__hero-cat"><?php echo $cat_lbl; ?></span>
                         <?php endif; ?>
-                        <h2 class="sj-blog__hero-title sj-blog__heading"><?php echo esc_html( $title ); ?></h2>
                         <span class="sj-blog__hero-meta">
                             <?php if ( $auteur ) : ?>
                                 <span class="sj-blog__hero-auteur"><?php echo esc_html( $auteur ); ?></span>
@@ -114,11 +77,10 @@ if ( $zoekterm !== '' ) {
                             <?php echo esc_html( $date ); ?>
                         </span>
                     </div>
-                </a>
-                <?php endforeach; ?>
-            </div>
-            <?php endif; ?>
-
+                    <h2 class="sj-blog__hero-title"><span class="sj-blog__title-marker"><?php echo esc_html( $title ); ?></span></h2>
+                </div>
+            </a>
+            <?php endforeach; ?>
         </div>
         <?php endif; ?>
 
@@ -169,11 +131,13 @@ if ( $zoekterm !== '' ) {
                         $excerpt = get_the_excerpt( $post );
                         $date    = get_the_date( 'd F Y', $post );
                         $cats    = get_the_category( $post );
-                        $cat_lbl = $cats ? esc_html( $cats[0]->name ) : '';
+                        $cat     = $cats ? $cats[0] : null;
+                        $cat_lbl = $cat ? esc_html( $cat->name ) : '';
+                        $cat_style = ( $cat && function_exists( 'sj_get_blog_category_style' ) ) ? sj_get_blog_category_style( $cat ) : '';
                         $thumb   = get_the_post_thumbnail( $post, 'thumbnail' );
                         $auteur  = get_post_meta( $post->ID, '_sj_artikel_auteur', true );
                     ?>
-                    <a href="<?php echo esc_url( $link ); ?>" class="sj-blog__row">
+                    <a href="<?php echo esc_url( $link ); ?>" class="sj-blog__row"<?php echo $cat_style ? ' style="' . esc_attr( $cat_style ) . '"' : ''; ?>>
                         <div class="sj-blog__row-img-wrap">
                             <?php if ( $thumb ) : ?>
                                 <?php echo str_replace( '<img ', '<img class="sj-blog__row-img" ', $thumb ); ?>

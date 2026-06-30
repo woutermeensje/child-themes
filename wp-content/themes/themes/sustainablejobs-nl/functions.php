@@ -32,6 +32,60 @@ add_filter('wp_mail_from_name', function ($from_name) {
     return 'Sustainablejobs.nl';
 });
 
+if (!function_exists('sj_get_blog_category_colors')) {
+    function sj_get_blog_category_colors($category) {
+        $slug = '';
+
+        if ($category instanceof WP_Term) {
+            $slug = $category->slug;
+        } elseif (is_numeric($category)) {
+            $term = get_term((int) $category, 'category');
+            $slug = ($term && !is_wp_error($term)) ? $term->slug : '';
+        } elseif (is_string($category)) {
+            $slug = $category;
+        }
+
+        $slug = sanitize_title($slug);
+
+        $fixed_colors = [
+            'event'         => ['bg' => '#FDE2DF', 'marker' => '#FFC9C3', 'text' => '#A92720', 'border' => '#F8B9B3'],
+            'events'        => ['bg' => '#FDE2DF', 'marker' => '#FFC9C3', 'text' => '#A92720', 'border' => '#F8B9B3'],
+            'interview'     => ['bg' => '#DDF2FF', 'marker' => '#BAE5FF', 'text' => '#075985', 'border' => '#A9D8F5'],
+            'nieuws'        => ['bg' => '#DDF7E7', 'marker' => '#BDF3D0', 'text' => '#086A3A', 'border' => '#AAE4BE'],
+            'promotie'      => ['bg' => '#FFF0D8', 'marker' => '#FFDFA6', 'text' => '#9A4A00', 'border' => '#F7C982'],
+            'werken'        => ['bg' => '#EDE9FE', 'marker' => '#DCD3FF', 'text' => '#5B21B6', 'border' => '#C9BDFB'],
+            'uncategorized' => ['bg' => '#DDEB9A', 'marker' => '#CFE57C', 'text' => '#073D4F', 'border' => '#C5D77F'],
+        ];
+
+        if (isset($fixed_colors[$slug])) {
+            return $fixed_colors[$slug];
+        }
+
+        $hue = $slug !== '' ? abs(crc32($slug)) % 360 : 188;
+
+        return [
+            'bg'     => sprintf('hsl(%d, 78%%, 91%%)', $hue),
+            'marker' => sprintf('hsl(%d, 84%%, 84%%)', $hue),
+            'text'   => sprintf('hsl(%d, 70%%, 28%%)', $hue),
+            'border' => sprintf('hsl(%d, 68%%, 78%%)', $hue),
+        ];
+    }
+}
+
+if (!function_exists('sj_get_blog_category_style')) {
+    function sj_get_blog_category_style($category) {
+        $colors = sj_get_blog_category_colors($category);
+
+        return sprintf(
+            '--sj-cat-bg:%s;--sj-cat-marker:%s;--sj-cat-text:%s;--sj-cat-border:%s;',
+            esc_attr($colors['bg']),
+            esc_attr($colors['marker'] ?? $colors['bg']),
+            esc_attr($colors['text']),
+            esc_attr($colors['border'])
+        );
+    }
+}
+
 /**
  * Sta meerdere job types per vacature toe in WP Job Manager.
  */
@@ -83,6 +137,7 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@500;700&display=swap', [], null);
+    wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@700&display=swap', [], null);
 
     // Custom fonts
     wp_enqueue_style(

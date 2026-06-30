@@ -42,8 +42,10 @@ while ( have_posts() ) :
     endif;
 
     $cats      = get_the_category();
-    $cat_lbl   = $cats ? esc_html( $cats[0]->name ) : '';
-    $cat_url   = $cats ? esc_url( get_category_link( $cats[0]->term_id ) ) : '';
+    $cat       = $cats ? $cats[0] : null;
+    $cat_lbl   = $cat ? esc_html( $cat->name ) : '';
+    $cat_url   = $cat ? esc_url( get_category_link( $cat->term_id ) ) : '';
+    $cat_style = ( $cat && function_exists( 'sj_get_blog_category_style' ) ) ? sj_get_blog_category_style( $cat ) : '';
     $date      = get_the_date( 'd F Y' );
     $auteur    = get_post_meta( get_the_ID(), '_sj_artikel_auteur', true );
     $thumb     = get_the_post_thumbnail( get_the_ID(), 'full' );
@@ -61,7 +63,7 @@ while ( have_posts() ) :
     <article <?php post_class( 'sj-single__article' ); ?>>
 
         <?php if ( $cat_lbl ) : ?>
-            <a href="<?php echo $cat_url; ?>" class="sj-single__cat"><?php echo $cat_lbl; ?></a>
+            <a href="<?php echo $cat_url; ?>" class="sj-single__cat"<?php echo $cat_style ? ' style="' . esc_attr( $cat_style ) . '"' : ''; ?>><?php echo $cat_lbl; ?></a>
         <?php endif; ?>
 
         <h1 class="sj-single__title"><?php the_title(); ?></h1>
@@ -128,7 +130,9 @@ while ( have_posts() ) :
                     $r_thumb  = get_the_post_thumbnail( get_the_ID(), 'thumbnail' );
                     $r_date   = get_the_date( 'd M Y' );
                     $r_cats   = get_the_category();
-                    $r_cat    = $r_cats ? esc_html( $r_cats[0]->name ) : '';
+                    $r_cat_term = $r_cats ? $r_cats[0] : null;
+                    $r_cat      = $r_cat_term ? esc_html( $r_cat_term->name ) : '';
+                    $r_cat_style = ( $r_cat_term && function_exists( 'sj_get_blog_category_style' ) ) ? sj_get_blog_category_style( $r_cat_term ) : '';
             ?>
             <a href="<?php the_permalink(); ?>" class="sj-recent__item">
                 <div class="sj-recent__img-wrap">
@@ -142,7 +146,7 @@ while ( have_posts() ) :
                 </div>
                 <div class="sj-recent__body">
                     <?php if ( $r_cat ) : ?>
-                        <span class="sj-recent__cat"><?php echo $r_cat; ?></span>
+                        <span class="sj-recent__cat"<?php echo $r_cat_style ? ' style="' . esc_attr( $r_cat_style ) . '"' : ''; ?>><?php echo $r_cat; ?></span>
                     <?php endif; ?>
                     <h4 class="sj-recent__title"><?php the_title(); ?></h4>
                     <span class="sj-recent__date"><?php echo esc_html( $r_date ); ?></span>

@@ -34758,3 +34758,24 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 [24-Jun-2026 05:47:43 UTC]   Automatic plugin updates starting...
 [24-Jun-2026 05:47:43 UTC]   Automatic plugin updates complete.
 [24-Jun-2026 05:47:43 UTC] Automatic updates complete.
+[30-Jun-2026 09:55:03 UTC] PHP Warning:  require_once(/Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-content/db.php): Failed to open stream: Undefined error: 0 in /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-includes/load.php on line 712
+[30-Jun-2026 09:55:03 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-content/db.php' (include_path='.:') in /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-includes/load.php:712
+Stack trace:
+#0 /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-settings.php(136): require_wp_db()
+#1 /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-config.php(108): require_once('/Users/wouterme...')
+#2 /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-load.php(50): require_once('/Users/wouterme...')
+#3 Command line code(1): require('/Users/wouterme...')
+#4 {main}
+  thrown in /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-includes/load.php on line 712
+[30-Jun-2026 10:05:50 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-06-30 10:05:50","event":"ensure_session_wc_missing","host":"localhost:8881","request_uri":"\/","referer":"","session_id":"","has_session":false,"item_count":null}
+[30-Jun-2026 10:08:03 UTC] Cron reschedule event error for hook: rn_newsletter_weekly, Error code: invalid_schedule, Error message: Event schedule does not exist., Data: {"schedule":"rn_biweekly","args":[],"interval":1209600}
+[30-Jun-2026 10:08:03 UTC] Cron reschedule event error for hook: sj_newsletter_weekly, Error code: invalid_schedule, Error message: Event schedule does not exist., Data: {"schedule":"biweekly","args":[],"interval":1209600}
+[30-Jun-2026 10:08:03 UTC] Cron reschedule event error for hook: fn_newsletter_biweekly, Error code: invalid_schedule, Error message: Event schedule does not exist., Data: {"schedule":"fn_biweekly","args":[],"interval":1209600}
+[30-Jun-2026 10:08:21 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-06-30 10:08:21","event":"ensure_session_wc_missing","host":"localhost:8881","request_uri":"\/","referer":"","session_id":"","has_session":false,"item_count":null}
+[30-Jun-2026 10:41:12 UTC] PHP Fatal error:  Out of memory (allocated 4194304) (tried to allocate 4194304 bytes) in /var/www/html/wp-admin/includes/class-wp-privacy-policy-content.php on line 628
+[30-Jun-2026 10:41:19 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 572
+[30-Jun-2026 10:41:29 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 607
+[30-Jun-2026 10:42:19 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 608
+[30-Jun-2026 10:42:30 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 562
+[30-Jun-2026 10:43:07 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 607
+[30-Jun-2026 10:43:37 UTC] PHP Fatal error:  Out of memory (allocated 2097152) (tried to allocate 2097152 bytes) in /var/www/html/wp-content/plugins/gravityforms/form_detail.php on line 607

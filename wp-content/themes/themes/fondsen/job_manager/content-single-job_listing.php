@@ -534,6 +534,81 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
 
 .fn-single-content p { margin: 0 0 14px; }
 
+.fn-single-card .fn-single-content > *:first-child {
+    margin-top: 0;
+}
+
+.fn-single-card .fn-single-content > *:last-child {
+    margin-bottom: 0;
+}
+
+.fn-single-card .fn-single-content h2,
+.fn-single-card .fn-single-content h3,
+.fn-single-card .fn-single-content h4 {
+    margin: 1.65em 0 0.55em;
+    font-family: Inter, Poppins, system-ui, sans-serif;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--fn-ink);
+}
+
+.fn-single-card .fn-single-content h2 {
+    font-size: 22px;
+}
+
+.fn-single-card .fn-single-content h3 {
+    font-size: 19px;
+}
+
+.fn-single-card .fn-single-content h4 {
+    font-size: 17px;
+}
+
+.fn-single-card .fn-single-content > h2:first-child,
+.fn-single-card .fn-single-content > h3:first-child,
+.fn-single-card .fn-single-content > h4:first-child {
+    margin-top: 0;
+}
+
+.fn-single-card .fn-single-content ul,
+.fn-single-card .fn-single-content ol {
+    margin: 0 0 18px 0;
+    padding-left: 1.35rem;
+}
+
+.fn-single-card .fn-single-content ul {
+    list-style: disc;
+}
+
+.fn-single-card .fn-single-content ol {
+    list-style: decimal;
+}
+
+.fn-single-card .fn-single-content li {
+    margin: 0 0 8px;
+    padding-left: 0.2rem;
+}
+
+.fn-single-card .fn-single-content li::marker {
+    color: var(--color-secondary);
+    font-weight: 700;
+}
+
+.fn-single-card .fn-single-content li > p {
+    margin: 0 0 8px;
+}
+
+.fn-single-card .fn-single-content li > p:last-child,
+.fn-single-card .fn-single-content li:last-child {
+    margin-bottom: 0;
+}
+
+.fn-single-card .fn-single-content li ul,
+.fn-single-card .fn-single-content li ol {
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
 /* ── Solliciteer knop ── */
 .fn-single-actions { margin-top: 20px; }
 
