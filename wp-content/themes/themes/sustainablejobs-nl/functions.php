@@ -1337,6 +1337,270 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
 }, 10, 2);
 
 
+/**
+ * ✅ Locatie zoeken op straal (radius search)
+ * Zoeken op "Amsterdam" toont ook vacatures in bv. Zaandam/Haarlem binnen X km,
+ * naast WPJM's eigen exacte tekst-match op locatie (die blijft als fallback bestaan).
+ *
+ * Geocoding loopt via PDOK Locatieserver (gratis, geen API-key, Kadaster/overheidsdienst,
+ * toegespitst op NL adressen) in plaats van WP Job Manager's ingebouwde Google Maps
+ * koppeling. We geocoden zelf zowel vacature-adressen als de gezochte plaats.
+ */
+add_filter('job_manager_geolocation_enabled', '__return_false');
+
+if (!function_exists('sj_pdok_geocode')) {
+    function sj_pdok_geocode($query_text, $type_filter = null) {
+        $query_text = trim((string) $query_text);
+        if ($query_text === '') {
+            return false;
+        }
+
+        $url = add_query_arg([
+            'q'    => rawurlencode($query_text),
+            'rows' => 1,
+        ], 'https://api.pdok.nl/bzk/locatieserver/search/v3_1/free');
+
+        if ($type_filter) {
+            $url = add_query_arg('fq', 'type:' . rawurlencode($type_filter), $url);
+        }
+
+        $response = wp_remote_get($url, ['timeout' => 5]);
+        if (is_wp_error($response) || 200 !== wp_remote_retrieve_response_code($response)) {
+            return false;
+        }
+
+        $body = json_decode(wp_remote_retrieve_body($response), true);
+        $doc  = $body['response']['docs'][0] ?? null;
+        if (!$doc || empty($doc['centroide_ll']) || !preg_match('/POINT\(([\-0-9.]+) ([\-0-9.]+)\)/', $doc['centroide_ll'], $m)) {
+            return false;
+        }
+
+        return [
+            'lat'               => (float) $m[2],
+            'lng'               => (float) $m[1],
+            'formatted_address' => $doc['weergavenaam'] ?? '',
+            'city'              => $doc['woonplaatsnaam'] ?? '',
+            'state_long'        => $doc['provincienaam'] ?? '',
+            'postcode'          => $doc['postcode'] ?? '',
+        ];
+    }
+}
+
+if (!function_exists('sj_geocode_job_search_location')) {
+    function sj_geocode_job_search_location($location) {
+        $location = trim((string) $location);
+        if ($location === '') {
+            return false;
+        }
+
+        $cache_key = 'sj_geo_center_' . md5(strtolower($location));
+        $cached    = get_transient($cache_key);
+        if (is_array($cached)) {
+            return empty($cached['failed']) ? $cached : false;
+        }
+
+        // Eerst proberen als plaatsnaam (woonplaats), anders vrij zoeken (postcode/straat).
+        $data = sj_pdok_geocode($location, 'woonplaats') ?: sj_pdok_geocode($location);
+        if (!$data) {
+            set_transient($cache_key, ['failed' => true], HOUR_IN_SECONDS);
+            return false;
+        }
+
+        $center = [
+            'lat' => $data['lat'],
+            'lng' => $data['lng'],
+        ];
+
+        set_transient($cache_key, $center, WEEK_IN_SECONDS);
+        return $center;
+    }
+}
+
+/**
+ * Geocodet een vacature-adres via PDOK en slaat geolocation_* meta op,
+ * zodat de straal-zoekfunctie hierboven er iets mee kan.
+ */
+if (!function_exists('sj_pdok_geolocate_job')) {
+    function sj_pdok_geolocate_job($job_id, $raw_address) {
+        $raw_address = trim((string) $raw_address);
+        if ($raw_address === '') {
+            return false;
+        }
+
+        $data = sj_pdok_geocode($raw_address);
+        if (!$data) {
+            return false;
+        }
+
+        update_post_meta($job_id, 'geolocation_lat', $data['lat']);
+        update_post_meta($job_id, 'geolocation_long', $data['lng']);
+
+        foreach (['formatted_address', 'city', 'state_long', 'postcode'] as $field) {
+            if (!empty($data[$field])) {
+                update_post_meta($job_id, 'geolocation_' . $field, $data[$field]);
+            }
+        }
+
+        update_post_meta($job_id, 'geolocated', 1);
+        return true;
+    }
+}
+
+add_action('job_manager_update_job_data', function ($job_id, $values) {
+    if (!empty($values['job']['job_location'])) {
+        sj_pdok_geolocate_job($job_id, $values['job']['job_location']);
+    }
+}, 20, 2);
+
+add_action('job_manager_job_location_edited', function ($job_id, $new_location) {
+    sj_pdok_geolocate_job($job_id, $new_location);
+}, 20, 2);
+
+/**
+ * ✅ Eenmalige backfill: bestaande vacatures zonder geo-data alsnog geocoden via PDOK.
+ * Beheerpagina onder Vacatures > Geocoding backfill. Verwerkt telkens een batch van 100
+ * (met een korte pauze per verzoek) zodat het request niet timeout en PDOK niet gebombardeerd wordt.
+ */
+if (!function_exists('sj_pdok_jobs_missing_geo_query')) {
+    function sj_pdok_jobs_missing_geo_query($posts_per_page) {
+        return new WP_Query([
+            'post_type'      => 'job_listing',
+            'post_status'    => 'any',
+            'posts_per_page' => $posts_per_page,
+            'fields'         => 'ids',
+            'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query
+                [
+                    'key'     => 'geolocated',
+                    'compare' => 'NOT EXISTS',
+                ],
+            ],
+        ]);
+    }
+}
+
+add_action('admin_menu', function () {
+    add_submenu_page(
+        'edit.php?post_type=job_listing',
+        'Geocoding backfill (PDOK)',
+        'Geocoding backfill',
+        'manage_options',
+        'sj-pdok-geocode-backfill',
+        function () {
+            if (!current_user_can('manage_options')) {
+                wp_die('Geen toegang.');
+            }
+
+            $result = null;
+            if (isset($_POST['sj_pdok_backfill_nonce']) && wp_verify_nonce($_POST['sj_pdok_backfill_nonce'], 'sj_pdok_backfill')) {
+                $geocoded = 0;
+                $failed   = 0;
+
+                foreach (sj_pdok_jobs_missing_geo_query(100)->posts as $job_id) {
+                    $location = get_post_meta($job_id, '_job_location', true);
+                    if (sj_pdok_geolocate_job($job_id, $location)) {
+                        $geocoded++;
+                    } else {
+                        $failed++;
+                    }
+                    usleep(200000);
+                }
+
+                $result = ['geocoded' => $geocoded, 'failed' => $failed];
+            }
+
+            $missing_count = sj_pdok_jobs_missing_geo_query(-1)->found_posts;
+            ?>
+            <div class="wrap">
+                <h1>Vacature-locaties geocoden (PDOK)</h1>
+                <p>Vacatures zonder locatiegegevens: <strong><?php echo esc_html($missing_count); ?></strong>.</p>
+                <?php if (null !== $result) : ?>
+                    <div class="notice notice-success">
+                        <p>
+                            <?php echo esc_html($result['geocoded']); ?> vacature(s) gegeocodet,
+                            <?php echo esc_html($result['failed']); ?> mislukt of overgeslagen (geen bruikbaar adres).
+                        </p>
+                    </div>
+                <?php endif; ?>
+                <form method="post">
+                    <?php wp_nonce_field('sj_pdok_backfill', 'sj_pdok_backfill_nonce'); ?>
+                    <?php submit_button('Start backfill (max. 100 per keer)'); ?>
+                </form>
+                <p class="description">Zijn er meer dan 100 vacatures zonder locatiegegevens? Klik gewoon nogmaals op de knop om de volgende batch te verwerken.</p>
+            </div>
+            <?php
+        }
+    );
+});
+
+add_filter('get_job_listings_query_args', function ($query_args, $args) {
+    $location = isset($args['search_location']) ? trim((string) $args['search_location']) : '';
+    if ($location === '') {
+        return $query_args;
+    }
+
+    // WPJM's eigen exacte tekst-match op locatie eruit halen: die zetten we hieronder
+    // (via posts_clauses) terug samen met de straal-match, met een OR ertussen.
+    if (!empty($query_args['meta_query'][0]['relation'])) {
+        array_shift($query_args['meta_query']);
+    }
+
+    $query_args['sj_geo_search_location'] = $location;
+
+    $center = sj_geocode_job_search_location($location);
+    if ($center) {
+        $query_args['sj_geo_lat']    = $center['lat'];
+        $query_args['sj_geo_lng']    = $center['lng'];
+        $query_args['sj_geo_radius'] = apply_filters('sj_job_location_radius_km', 50);
+    }
+
+    return $query_args;
+}, 20, 2);
+
+add_filter('posts_clauses', function ($clauses, $query) {
+    $location = $query->get('sj_geo_search_location');
+    if (empty($location) || 'job_listing' !== $query->get('post_type')) {
+        return $clauses;
+    }
+
+    global $wpdb;
+
+    $text_conditions = [];
+    foreach (['_job_location', 'geolocation_formatted_address', 'geolocation_state_long'] as $i => $meta_key) {
+        $alias              = "sj_loc_{$i}";
+        $clauses['join']   .= " LEFT JOIN {$wpdb->postmeta} {$alias} ON {$alias}.post_id = {$wpdb->posts}.ID AND {$alias}.meta_key = '{$meta_key}'";
+        $text_conditions[]  = $wpdb->prepare("{$alias}.meta_value LIKE %s", '%' . $wpdb->esc_like($location) . '%');
+    }
+
+    $match_conditions = ['(' . implode(' OR ', $text_conditions) . ')'];
+
+    $lat = $query->get('sj_geo_lat');
+    $lng = $query->get('sj_geo_lng');
+    if ('' !== $lat && '' !== $lng) {
+        $radius = (float) $query->get('sj_geo_radius');
+
+        $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} sj_geo_lat ON sj_geo_lat.post_id = {$wpdb->posts}.ID AND sj_geo_lat.meta_key = 'geolocation_lat'";
+        $clauses['join'] .= " LEFT JOIN {$wpdb->postmeta} sj_geo_lng ON sj_geo_lng.post_id = {$wpdb->posts}.ID AND sj_geo_lng.meta_key = 'geolocation_long'";
+
+        $distance_sql = $wpdb->prepare(
+            '(6371 * acos( LEAST(1, cos(radians(%f)) * cos(radians(sj_geo_lat.meta_value)) * cos(radians(sj_geo_lng.meta_value) - radians(%f)) + sin(radians(%f)) * sin(radians(sj_geo_lat.meta_value)) ) ))',
+            $lat,
+            $lng,
+            $lat
+        );
+
+        $match_conditions[] = $wpdb->prepare(
+            "(sj_geo_lat.meta_value IS NOT NULL AND sj_geo_lng.meta_value IS NOT NULL AND {$distance_sql} <= %f)",
+            $radius
+        );
+
+        $clauses['orderby'] = "{$distance_sql} ASC" . ($clauses['orderby'] ? ", {$clauses['orderby']}" : '');
+    }
+
+    $clauses['where'] .= ' AND (' . implode(' OR ', $match_conditions) . ')';
+
+    return $clauses;
+}, 10, 2);
+
 // Add custom default attributes to the jobs shortcode
 add_filter('job_manager_output_jobs_defaults', function($defaults) {
     $defaults['job_company'] = '';
