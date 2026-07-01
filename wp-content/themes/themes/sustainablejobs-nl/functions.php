@@ -335,6 +335,17 @@ add_filter('job_manager_locate_template', function ($template, $template_name) {
     return (in_array($template_name, $custom_templates) && file_exists($custom_path)) ? $custom_path : $template;
 }, 10, 2);
 
+/**
+ * ✅ Verlopen vacatures écht offline: nooit in overzichten/zoekresultaten, en op de
+ * losse vacaturepagina altijd de "verlopen"-pagina (content-single-job_listing.php)
+ * i.p.v. de volledige inhoud. Dit staat vast in code i.p.v. af te hangen van de
+ * WPJM instellingen "Hide expired listings/content" (die konden per ongeluk uitstaan).
+ */
+add_filter('option_job_manager_hide_expired', '__return_true');
+add_filter('default_option_job_manager_hide_expired', '__return_true');
+add_filter('option_job_manager_hide_expired_content', '__return_true');
+add_filter('default_option_job_manager_hide_expired_content', '__return_true');
+
 if (!function_exists('sj_get_open_job_listing_count')) {
     function sj_get_open_job_listing_count($args = []) {
         if (!function_exists('get_job_listings')) {
