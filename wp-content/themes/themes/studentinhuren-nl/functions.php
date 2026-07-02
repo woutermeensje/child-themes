@@ -128,6 +128,7 @@ require_once get_stylesheet_directory() . '/inc/shortcode-latest-opdrachten.php'
 require_once get_stylesheet_directory() . '/inc/shortcode-opdracht-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-plaatsen.php';
+require_once get_stylesheet_directory() . '/inc/split-hero-meta.php';
 
 /**
  * ✅ CUSTOM HEADER: geregeld via child theme header.php (overschrijft Hello Elementor).
@@ -258,6 +259,12 @@ add_action('wp_enqueue_scripts', function () {
     // Landing page CSS
     if (file_exists(get_stylesheet_directory() . '/css/landing.css')) {
         wp_enqueue_style('studentinhuren-landing', get_stylesheet_directory_uri() . '/css/landing.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/landing.css'));
+    }
+
+    // Split hero page template CSS
+    if (is_page_template('page-split-hero.php') && file_exists(get_stylesheet_directory() . '/css/split-hero.css')) {
+        wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;800;900&display=swap', [], null);
+        wp_enqueue_style('studentinhuren-split-hero', get_stylesheet_directory_uri() . '/css/split-hero.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/split-hero.css'));
     }
 
     // Homepage hero CSS

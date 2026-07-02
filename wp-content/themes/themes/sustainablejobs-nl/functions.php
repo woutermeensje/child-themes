@@ -1658,6 +1658,31 @@ add_action( 'pre_get_posts', function ( WP_Query $q ) {
     }
 } );
 
+/**
+ * ✅ Artikelen verbergen uit het nieuwsoverzicht, zonder ze offline te halen.
+ * Geef een artikel de tag "verborgen-overzicht" om het uit te sluiten van de
+ * blog-homepage en categorie-/tag-/datumarchieven. Het artikel blijft gewoon
+ * live en gewoon bereikbaar via de eigen URL (bijv. voor een betaalde backlink).
+ */
+add_action( 'pre_get_posts', function ( WP_Query $q ) {
+    if ( is_admin() || ! $q->is_main_query() ) {
+        return;
+    }
+
+    if ( ! $q->is_home() && ! $q->is_category() && ! $q->is_tag() && ! $q->is_date() ) {
+        return;
+    }
+
+    $tax_query   = (array) $q->get( 'tax_query' );
+    $tax_query[] = [
+        'taxonomy' => 'post_tag',
+        'field'    => 'slug',
+        'terms'    => [ 'verborgen-overzicht' ],
+        'operator' => 'NOT IN',
+    ];
+    $q->set( 'tax_query', $tax_query );
+} );
+
 /** Import functions */
 
 require_once get_stylesheet_directory() . '/inc/bowers-import.php';
