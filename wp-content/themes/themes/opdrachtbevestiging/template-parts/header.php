@@ -231,7 +231,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         <!-- Logo -->
         <div class="rn-header__brand">
             <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-                <span class="rn-header__wordmark">Opdrachtbevestiging.nl</span>
+                <?php if ( has_custom_logo() ) :
+                    $custom_logo_id = get_theme_mod( 'custom_logo' );
+                    echo wp_get_attachment_image( $custom_logo_id, 'full', false, [
+                        'class' => 'rn-header__logo',
+                        'alt'   => esc_attr( get_bloginfo( 'name' ) ),
+                    ] );
+                else : ?>
+                    <span class="rn-header__wordmark"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
+                <?php endif; ?>
             </a>
         </div>
 
