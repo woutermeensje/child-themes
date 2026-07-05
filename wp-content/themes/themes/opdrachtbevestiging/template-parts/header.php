@@ -40,7 +40,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 }
 
 /* ---- Desktop nav ---- */
-#rn-header .rn-header__nav { flex: 1 1 auto; display: flex; align-items: center; justify-content: flex-end; }
+#rn-header .rn-header__nav { flex: 1 1 auto; display: flex; align-items: center; justify-content: flex-start; margin-left: 32px; }
 #rn-header .rn-nav__list { list-style: none !important; margin: 0 !important; padding: 0 !important; display: flex !important; align-items: center; gap: 2px; }
 #rn-header .rn-nav__item { position: relative; list-style: none !important; margin: 0 !important; padding: 0 !important; }
 #rn-header .rn-nav__link {
@@ -101,24 +101,25 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 }
 
 /* ---- CTA knoppen ---- */
-#rn-header .rn-header__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
+#rn-header .rn-header__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; }
 #rn-header .rn-btn {
   display: inline-flex !important; align-items: center; justify-content: center;
   font-family: 'Balgin-Bold', serif !important;
   font-weight: 700 !important; font-size: 14px !important;
-  padding: 9px 20px !important; border-radius: 8px !important;
+  line-height: 1 !important;
+  padding: 12px 22px !important; border-radius: 8px !important;
   white-space: nowrap; cursor: pointer;
   text-decoration: none !important;
-  transition: background .15s ease, color .15s ease, transform .15s ease;
+  transition: background .15s ease, color .15s ease, border-color .15s ease, transform .15s ease;
 }
 #rn-header .rn-btn--outline {
   background: transparent !important; color: var(--color-primary) !important;
-  border: 2px solid var(--color-primary) !important;
+  border: 1.5px solid var(--color-border, #e0e0e0) !important;
 }
-#rn-header .rn-btn--outline:hover { background: var(--color-primary) !important; color: #fff !important; }
+#rn-header .rn-btn--outline:hover { background: #faf9ff !important; border-color: var(--color-primary) !important; }
 #rn-header .rn-btn--accent {
   background: var(--color-primary) !important; color: #fff !important;
-  border: 2px solid var(--color-primary) !important;
+  border: 1.5px solid var(--color-primary) !important;
   box-shadow: 0 2px 8px rgba(124,92,250,0.22) !important;
 }
 #rn-header .rn-btn--accent:hover {
@@ -249,8 +250,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
         <!-- CTA knoppen -->
         <div class="rn-header__cta">
-            <a href="https://platform.opdrachtbevestiging.nl" class="rn-btn rn-btn--accent" target="_blank" rel="noopener noreferrer">
-                Account aanmaken
+            <a href="https://platform.opdrachtbevestiging.nl/inloggen" class="rn-btn rn-btn--outline" target="_blank" rel="noopener noreferrer">
+                Inloggen
+            </a>
+            <a href="https://platform.opdrachtbevestiging.nl/aanmelden/" class="rn-btn rn-btn--accent" target="_blank" rel="noopener noreferrer">
+                Aanmelden
             </a>
         </div>
 
@@ -281,8 +285,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="https://platform.opdrachtbevestiging.nl" class="rn-btn rn-btn--accent rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
-                Account aanmaken
+            <a href="https://platform.opdrachtbevestiging.nl/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
+                Inloggen
+            </a>
+            <a href="https://platform.opdrachtbevestiging.nl/aanmelden/" class="rn-btn rn-btn--accent rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
+                Aanmelden
             </a>
         </div>
     </div>
