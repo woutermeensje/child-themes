@@ -100,22 +100,29 @@
 /* ── Hero knop ── */
 
 .fondsen-lp__btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     margin-top: 20px;
-    padding: 12px 28px;
+    padding: 12px 22px;
     background: var(--color-primary, #FF8C2C);
     color: #ffffff !important;
-    font-family: "Work Sans", sans-serif;
-    font-size: 15px;
-    font-weight: 800;
+    font-family: 'Balgin-Bold', serif !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    line-height: 1;
     text-decoration: none !important;
-    border-radius: 4px;
-    transition: background 0.15s;
+    border-radius: 8px;
+    border: 1.5px solid var(--color-primary, #FF8C2C);
+    box-shadow: 0 2px 8px rgba(124,92,250,0.22);
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
 .fondsen-lp__btn:hover {
-    background: #e67c1f;
+    background: var(--color-primary-dk, #e67c1f);
+    border-color: var(--color-primary-dk, #e67c1f);
     color: #ffffff !important;
+    transform: translateY(-1px);
 }
 
 .fondsen-lp__btn--secondary {
