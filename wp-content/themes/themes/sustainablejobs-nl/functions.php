@@ -290,6 +290,27 @@ class SJ_Nav_Walker extends Walker_Nav_Menu {
 }
 endif;
 
+add_filter('wp_nav_menu_objects', function ($items, $args) {
+    if (empty($args->theme_location) || 'primary_nav' !== $args->theme_location) {
+        return $items;
+    }
+
+    foreach ($items as $item) {
+        if ('Inloggen' !== trim(wp_strip_all_tags($item->title))) {
+            continue;
+        }
+
+        $item->title  = 'CV Database';
+        $item->target = '_blank';
+
+        $rel_parts = preg_split('/\s+/', (string) $item->xfn, -1, PREG_SPLIT_NO_EMPTY);
+        $rel_parts = array_unique(array_merge($rel_parts, ['noopener', 'noreferrer']));
+        $item->xfn = implode(' ', $rel_parts);
+    }
+
+    return $items;
+}, 10, 2);
+
 /**
  * Theme setup: logo support, menu registratie
  */
