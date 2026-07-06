@@ -258,10 +258,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
         <!-- CTA knoppen -->
         <div class="rn-header__cta">
-            <a href="https://platform.opdrachtbevestiging.nl/inloggen" class="rn-btn rn-btn--outline" target="_blank" rel="noopener noreferrer">
+            <a href="https://beheer.opdrachtbevestiging.nl/inloggen" class="rn-btn rn-btn--outline" target="_blank" rel="noopener noreferrer">
                 Inloggen
             </a>
-            <a href="https://platform.opdrachtbevestiging.nl/aanmelden/" class="rn-btn rn-btn--accent" target="_blank" rel="noopener noreferrer">
+            <a href="https://beheer.opdrachtbevestiging.nl/aanmelden/" class="rn-btn rn-btn--accent" target="_blank" rel="noopener noreferrer">
                 Aanmelden
             </a>
         </div>
@@ -293,10 +293,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="https://platform.opdrachtbevestiging.nl/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
+            <a href="https://beheer.opdrachtbevestiging.nl/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
                 Inloggen
             </a>
-            <a href="https://platform.opdrachtbevestiging.nl/aanmelden/" class="rn-btn rn-btn--accent rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
+            <a href="https://beheer.opdrachtbevestiging.nl/aanmelden/" class="rn-btn rn-btn--accent rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
                 Aanmelden
             </a>
         </div>
