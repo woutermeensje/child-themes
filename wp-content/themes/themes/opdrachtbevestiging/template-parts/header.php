@@ -261,7 +261,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             <a href="https://beheer.opdrachtbevestiging.nl/inloggen" class="rn-btn rn-btn--outline" target="_blank" rel="noopener noreferrer">
                 Inloggen
             </a>
-            <a href="https://beheer.opdrachtbevestiging.nl/aanmelden/" class="rn-btn rn-btn--accent" target="_blank" rel="noopener noreferrer">
+            <a href="https://beheer.opdrachtbevestiging.nl/registreren" class="rn-btn rn-btn--accent" target="_blank" rel="noopener noreferrer">
                 Aanmelden
             </a>
         </div>
@@ -296,7 +296,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
             <a href="https://beheer.opdrachtbevestiging.nl/inloggen" class="rn-btn rn-btn--outline rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
                 Inloggen
             </a>
-            <a href="https://beheer.opdrachtbevestiging.nl/aanmelden/" class="rn-btn rn-btn--accent rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
+            <a href="https://beheer.opdrachtbevestiging.nl/registreren" class="rn-btn rn-btn--accent rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">
                 Aanmelden
             </a>
         </div>
