@@ -1,186 +1,353 @@
 /* =========================================================
-   Opdrachtbevestiging Landingspagina — hero block
+   Opdrachtbevestiging Homepage-template
    ========================================================= */
 
-.fondsen-lp {
-    margin: 0;
-    padding: 0;
+.ob-home {
+    background: #ffffff;
+    overflow: hidden;
 }
 
-.fondsen-job-hero {
+.ob-home-hero {
     position: relative;
-    width: 100%;
-    height: 400px;
-    background-color: var(--color-tertiary);
-    background-size: cover;
-    background-position: center;
+    min-height: clamp(560px, calc(100vh - 128px), 760px);
+    display: flex;
+    align-items: center;
     overflow: hidden;
     isolation: isolate;
-    display: flex;
+    background: var(--color-bg-light);
+    box-sizing: border-box;
+    padding: 88px 0 76px;
+}
+
+.ob-home-hero::before {
+    content: '';
+    position: absolute;
+    top: -12%;
+    right: -12%;
+    bottom: -12%;
+    width: 56%;
+    background: var(--color-accent);
+    border-radius: 48% 52% 55% 45% / 55% 45% 58% 42%;
+    z-index: -2;
+}
+
+.ob-home-hero::after {
+    content: '';
+    position: absolute;
+    left: -370px;
+    bottom: -520px;
+    width: 760px;
+    height: 760px;
+    border: 2px solid color-mix(in srgb, var(--color-primary) 10%, transparent);
+    border-radius: 50%;
+    z-index: -1;
+}
+
+.ob-home-hero__inner {
+    width: 100%;
+    max-width: 1760px;
+    margin: 0 auto;
+    padding: 0 clamp(24px, 6vw, 128px);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(420px, 0.78fr);
+    gap: clamp(54px, 7vw, 118px);
     align-items: center;
     box-sizing: border-box;
 }
 
-.fondsen-job-hero::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(5, 93, 146, 0.70);
-    z-index: 1;
-    pointer-events: none;
+.ob-home-hero:not(.ob-home-hero--has-image) .ob-home-hero__inner {
+    grid-template-columns: minmax(0, 900px);
 }
 
-.fondsen-job-hero__inner {
-    position: relative;
-    z-index: 2;
-    max-width: 1200px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 24px;
+.ob-home-hero__content {
+    max-width: 900px;
+    min-width: 0;
 }
 
-.fondsen-job-hero__eyebrow {
+.ob-home-hero__eyebrow {
     display: inline-block;
-    margin: 0 0 14px;
-    padding-bottom: 6px;
-    border-bottom: 3px solid var(--color-bg-filter, #FFE0C0);
+    margin: 0 0 30px;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background-image: linear-gradient(120deg, rgba(134, 239, 172, 0.55) 0%, rgba(134, 239, 172, 0.55) 100%);
+    background-repeat: no-repeat;
+    background-size: 100% 42%;
+    background-position: 0 82%;
+    color: var(--color-text);
     font-family: 'Poppins', sans-serif;
     font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.88);
+    line-height: 1.4;
 }
 
-.fondsen-job-hero__title-wrap {
-    margin: 0 0 18px;
-    max-width: 75%;
-}
-
-.fondsen-job-hero__title {
-    font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-    font-weight: 800 !important;
-    font-size: clamp(24px, 3vw, 36px) !important;
-    line-height: 1.2 !important;
-    color: #ffffff !important;
+.ob-home-hero__title {
     margin: 0 !important;
+    color: var(--color-text) !important;
+    font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 46px !important;
+    font-weight: 800 !important;
+    line-height: 1.02 !important;
+    letter-spacing: 0 !important;
+    max-width: 860px;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
-.fondsen-job-hero__subtitle {
-    margin: 10px 0 0;
-    font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 16px;
-    font-weight: 600;
-    color: #ffffff;
+.ob-home-hero__title span {
+    color: var(--color-primary);
 }
 
-.fondsen-job-hero__count {
-    color: var(--color-bg-filter, #FFE0C0);
+.ob-home-hero__title-highlight {
+    color: var(--color-primary-mid);
 }
 
-.fondsen-job-hero__link {
-    color: var(--color-bg-filter, #FFE0C0) !important;
-    text-decoration: none !important;
-}
-
-.fondsen-job-hero__link:hover {
-    color: #fff3e6 !important;
-}
-
-.fondsen-job-hero__description {
-    margin: 0;
+.ob-home-hero__subtitle {
+    margin: 24px 0 0;
+    max-width: 620px;
+    color: #333;
     font-family: 'Poppins', sans-serif;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 400;
     line-height: 1.65;
-    color: rgba(255, 255, 255, 0.88);
-    max-width: 50ch;
 }
 
-/* ── Hero knop ── */
+.ob-home-hero__actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 34px;
+}
 
-.fondsen-lp__btn {
+.ob-home-hero__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin-top: 20px;
     padding: 12px 22px;
-    background: var(--color-primary, #FF8C2C);
-    color: #ffffff !important;
+    border-radius: 8px;
     font-family: 'Balgin-Bold', serif !important;
     font-size: 14px !important;
     font-weight: 700 !important;
-    line-height: 1;
+    line-height: 1 !important;
     text-decoration: none !important;
-    border-radius: 8px;
-    border: 1.5px solid var(--color-primary, #FF8C2C);
-    box-shadow: 0 2px 8px rgba(124,92,250,0.22);
-    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
 }
 
-.fondsen-lp__btn:hover {
-    background: var(--color-primary-dk, #e67c1f);
-    border-color: var(--color-primary-dk, #e67c1f);
+.ob-home-hero__btn--primary {
+    background: var(--color-primary);
+    border: 1.5px solid var(--color-primary);
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--color-primary) 22%, transparent);
+}
+
+.ob-home-hero__btn--primary:hover {
+    background: var(--color-primary-dk);
+    border-color: var(--color-primary-dk);
     color: #ffffff !important;
     transform: translateY(-1px);
 }
 
-.fondsen-lp__btn--secondary {
+.ob-home-hero__btn--secondary {
     background: transparent;
-    border: 2px solid #ffffff;
-    color: #ffffff !important;
-    margin-left: 12px;
+    border: 1.5px solid var(--color-border, #e0e0e0);
+    color: var(--color-primary) !important;
 }
 
-.fondsen-lp__btn--secondary:hover {
-    background: rgba(255, 255, 255, 0.15);
+.ob-home-hero__btn--secondary:hover {
+    background: #faf9ff;
+    border-color: var(--color-primary);
+    color: var(--color-primary) !important;
 }
 
-/* ── Landingspagina body styling ── */
-
-.fondsen-lp__content {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 60px 24px;
+.ob-home-hero__features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
 }
 
-/* ── Responsive ── */
+.ob-home-hero__feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #333;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+}
 
-@media (max-width: 960px) {
-    .fondsen-job-hero {
-        height: 280px;
+.ob-home-hero__feature svg {
+    flex-shrink: 0;
+    color: var(--color-primary);
+}
+
+.ob-home-hero__visual {
+    position: relative;
+    justify-self: end;
+    width: min(100%, 640px);
+    padding: 0 0 38px;
+}
+
+.ob-home-hero__image-wrap {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1;
+    border: 1px solid #dedede;
+    border-radius: 5px;
+    background: #f2f4f7;
+    box-shadow: 0 30px 70px rgba(7, 13, 63, 0.16);
+}
+
+.ob-home-hero__image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ob-home-hero__pager {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transform: translateX(-50%);
+}
+
+.ob-home-hero__pager span {
+    display: block;
+    width: 56px;
+    height: 6px;
+    border-radius: 999px;
+    background: #e2e3e5;
+}
+
+.ob-home-hero__pager span:nth-child(2) {
+    width: 14px;
+    background: var(--color-primary);
+}
+
+.ob-home-hero__pager span:nth-child(3) {
+    width: 44px;
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+}
+
+@media (max-width: 1280px) {
+    .ob-home-hero__inner {
+        grid-template-columns: minmax(0, 1fr) minmax(360px, 0.76fr);
+        gap: 62px;
+    }
+}
+
+@media (max-width: 1080px) {
+    .ob-home-hero {
+        min-height: auto;
+        padding: 74px 0 64px;
+    }
+
+    .ob-home-hero::before {
+        left: -8%;
+        right: -8%;
+        width: auto;
+        height: 46%;
+        top: auto;
+        bottom: -14%;
+        border-radius: 55% 45% 0 0 / 100% 100% 0 0;
+    }
+
+    .ob-home-hero__inner {
+        grid-template-columns: 1fr;
+        gap: 56px;
+    }
+
+    .ob-home-hero__content {
+        max-width: 760px;
+    }
+
+    .ob-home-hero__visual {
+        justify-self: center;
+        width: min(100%, 620px);
+    }
+}
+
+@media (max-width: 720px) {
+    .ob-home-hero {
+        padding: 48px 0 46px;
+    }
+
+    .ob-home-hero::after {
+        left: -440px;
+        bottom: -560px;
+    }
+
+    .ob-home-hero__inner {
+        padding: 0 20px;
+        gap: 40px;
+    }
+
+    .ob-home-hero__title-break {
+        display: none;
+    }
+
+    .ob-home-hero__title {
+        font-size: 30px !important;
+        line-height: 1.15 !important;
+        max-width: 100%;
+    }
+
+    .ob-home-hero__eyebrow {
+        font-size: 12px;
+    }
+
+    .ob-home-hero__subtitle {
+        font-size: 16px;
+        line-height: 1.55;
+        margin-top: 18px;
+    }
+
+    .ob-home-hero__actions {
+        align-items: stretch;
+        gap: 12px;
+        margin-top: 26px;
+    }
+
+    .ob-home-hero__btn {
+        min-height: 52px;
+        padding: 0 22px;
+        font-size: 16px !important;
+    }
+
+    .ob-home-hero__visual {
+        padding-bottom: 28px;
+    }
+
+    .ob-home-hero__image-wrap {
+        border-width: 1px;
+        border-radius: 5px;
+    }
+
+    .ob-home-hero__pager span {
+        width: 38px;
+        height: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ob-home-hero__actions {
+        flex-direction: column;
+    }
+
+    .ob-home-hero__btn {
         width: 100%;
     }
 
-    .fondsen-job-hero__inner {
-        max-width: none;
-        padding: 0 16px;
-        box-sizing: border-box;
-    }
-
-    .fondsen-job-hero__title-wrap {
-        width: 100%;
-        max-width: 100%;
-        margin-bottom: 0;
-    }
-
-    .fondsen-job-hero__title {
-        font-size: clamp(24px, 7vw, 32px) !important;
-        line-height: 1.12 !important;
-    }
-
-    .fondsen-job-hero__subtitle {
-        max-width: 100%;
-        font-size: 14px;
-        line-height: 1.45;
-    }
-
-    .fondsen-job-hero__description {
-        font-size: 14px;
-        max-width: 100%;
-    }
-
-    .fondsen-lp__content {
-        padding: 40px 16px;
+    .ob-home-hero__pager {
+        display: none;
     }
 }
