@@ -91,7 +91,6 @@
     letter-spacing: 0 !important;
     max-width: 860px;
     overflow-wrap: break-word;
-    word-break: break-word;
 }
 
 .ob-home-hero__title span {
@@ -321,6 +320,10 @@
         min-height: 52px;
         padding: 0 22px;
         font-size: 16px !important;
+    }
+
+    .ob-home-hero__btn--secondary {
+        background: #ffffff;
     }
 
     .ob-home-hero__visual {

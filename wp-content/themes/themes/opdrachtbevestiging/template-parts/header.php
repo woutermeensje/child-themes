@@ -15,14 +15,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   position: sticky !important;
   top: 0 !important;
   z-index: 9000 !important;
-  background: #ffffff !important;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08) !important;
+  background: var(--color-bg-light) !important;
+  box-shadow: none !important;
   width: 100% !important;
 }
 
 /* ---- Main nav bar ---- */
 #rn-header .rn-header__inner {
-  max-width: 1200px; margin: 0 auto; padding: 0 24px;
+  max-width: 1760px; margin: 0 auto; padding: 0 clamp(24px, 6vw, 128px);
   height: 68px; display: flex; align-items: center; gap: 24px;
 }
 
@@ -37,6 +37,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   color: var(--color-primary);
   letter-spacing: -0.02em;
   white-space: nowrap;
+}
+#rn-header .rn-header__favicon {
+  display: none;
+  height: 36px;
+  width: 36px;
+  border: 5px solid #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 /* ---- Desktop nav ---- */
@@ -212,6 +220,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
   #rn-header .rn-header__hamburger { display: flex !important; }
   .rn-mobile-nav { display: block; }
   #rn-header .rn-topbar { display: none !important; }
+  #rn-header .rn-header__logo,
+  #rn-header .rn-header__wordmark { display: none !important; }
+  #rn-header .rn-header__favicon { display: block !important; }
 }
 @media (min-width: 961px) {
   .rn-mobile-nav { display: none !important; }
@@ -239,6 +250,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
                     ] );
                 else : ?>
                     <span class="rn-header__wordmark"><?php echo esc_html( get_bloginfo( 'name' ) ); ?></span>
+                <?php endif; ?>
+                <?php if ( has_site_icon() ) : ?>
+                    <img src="<?php echo esc_url( get_site_icon_url( 72 ) ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name' ) ); ?>" class="rn-header__favicon">
                 <?php endif; ?>
             </a>
         </div>
