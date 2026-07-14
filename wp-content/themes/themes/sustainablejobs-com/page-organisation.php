@@ -8,5 +8,5 @@ if (!defined('ABSPATH')) {
 }
 
 get_header();
-include get_stylesheet_directory() . '/template-parts/landing-organisation.php';
+include get_stylesheet_directory() . '/template-parts/landing-organisatie.php';
 get_footer();

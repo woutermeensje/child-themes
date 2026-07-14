@@ -12,7 +12,7 @@ function sc_pricing_shortcode(): string {
 
     $cards = [
         [
-            'modifier'    => ' sj-tarieven__card--place',
+            'modifier'    => ' sj-pricing__card--place',
             'title'       => 'Job Posting',
             'description' => 'Post a standard job listing to find your next sustainable colleague!',
             'price'       => '€275,-',
@@ -30,7 +30,7 @@ function sc_pricing_shortcode(): string {
             ],
         ],
         [
-            'modifier'    => ' sj-tarieven__card--featured',
+            'modifier'    => ' sj-pricing__card--featured',
             'title'       => 'Spotlight Job',
             'description' => 'Get maximum visibility and the best results from your job posting!',
             'price'       => '€375,-',
@@ -52,7 +52,7 @@ function sc_pricing_shortcode(): string {
             ],
         ],
         [
-            'modifier'    => ' sj-tarieven__card--membership',
+            'modifier'    => ' sj-pricing__card--membership',
             'title'       => 'Membership',
             'description' => 'A full year of all Sustainablejobs.com benefits!',
             'price'       => '€1,750,-',
@@ -73,30 +73,30 @@ function sc_pricing_shortcode(): string {
 
     ob_start();
     ?>
-    <section class="sj-tarieven" aria-label="Pricing">
-        <div class="sj-tarieven__grid">
+    <section class="sj-pricing" aria-label="Pricing">
+        <div class="sj-pricing__grid">
             <?php foreach ($cards as $card) : ?>
-                <article class="sj-tarieven__card<?php echo esc_attr($card['modifier']); ?>">
-                    <div class="sj-tarieven__icon" aria-hidden="true">
+                <article class="sj-pricing__card<?php echo esc_attr($card['modifier']); ?>">
+                    <div class="sj-pricing__icon" aria-hidden="true">
                         <svg viewBox="0 0 24 24" focusable="false">
                             <path d="<?php echo esc_attr($card['icon']); ?>" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
                     </div>
 
-                    <h2 class="sj-tarieven__title"><?php echo esc_html($card['title']); ?></h2>
-                    <p class="sj-tarieven__description"><?php echo esc_html($card['description']); ?></p>
+                    <h2 class="sj-pricing__title"><?php echo esc_html($card['title']); ?></h2>
+                    <p class="sj-pricing__description"><?php echo esc_html($card['description']); ?></p>
 
-                    <div class="sj-tarieven__price"><?php echo esc_html($card['price']); ?></div>
-                    <p class="sj-tarieven__period"><?php echo esc_html($card['period']); ?></p>
+                    <div class="sj-pricing__price"><?php echo esc_html($card['price']); ?></div>
+                    <p class="sj-pricing__period"><?php echo esc_html($card['period']); ?></p>
 
-                    <a class="sj-tarieven__button" href="<?php echo esc_url($card['button_url']); ?>">
+                    <a class="sj-pricing__button" href="<?php echo esc_url($card['button_url']); ?>">
                         <?php echo esc_html($card['button_text']); ?>
                     </a>
 
-                    <ul class="sj-tarieven__list">
+                    <ul class="sj-pricing__list">
                         <?php foreach ($card['features'] as $feature) : ?>
                             <li>
-                                <span class="sj-tarieven__check" aria-hidden="true"><?php echo $check_icon; ?></span>
+                                <span class="sj-pricing__check" aria-hidden="true"><?php echo $check_icon; ?></span>
                                 <span><?php echo esc_html($feature); ?></span>
                             </li>
                         <?php endforeach; ?>

@@ -107,6 +107,138 @@ add_action('pre_get_posts', function ($query) {
     $query->set('orderby', 'meta_value');
 });
 
+// ── Mail opdrachtgever zodra de verlooptermijn is bereikt ───────────────────
+if (!function_exists('sj_job_expiry_date_has_passed')) {
+    function sj_job_expiry_date_has_passed($post_id) {
+        $expires = get_post_meta($post_id, '_job_expires', true);
+        if (!$expires) {
+            return false;
+        }
+
+        $expires_ts = strtotime($expires);
+        if (!$expires_ts) {
+            return false;
+        }
+
+        return date('Y-m-d', $expires_ts) < current_time('Y-m-d');
+    }
+}
+
+if (!function_exists('sj_get_job_expiry_notice_recipient')) {
+    function sj_get_job_expiry_notice_recipient($post_id) {
+        $recipient = '';
+
+        foreach (['_job_contact_email', '_company_email', '_application'] as $meta_key) {
+            $candidate = trim((string) get_post_meta($post_id, $meta_key, true));
+
+            if ($meta_key === '_application' && stripos($candidate, 'mailto:') === 0) {
+                $candidate = strtok(substr($candidate, 7), '?');
+            }
+
+            if (is_email($candidate)) {
+                $recipient = sanitize_email($candidate);
+                break;
+            }
+        }
+
+        $recipient = apply_filters('sj_job_expiry_notice_recipient', $recipient, $post_id);
+        return is_email($recipient) ? sanitize_email($recipient) : '';
+    }
+}
+
+if (!function_exists('sj_get_job_expiry_notice_name')) {
+    function sj_get_job_expiry_notice_name($post_id) {
+        $firstname = trim((string) get_post_meta($post_id, '_job_contact_firstname', true));
+        $lastname  = trim((string) get_post_meta($post_id, '_job_contact_lastname', true));
+        $name      = trim($firstname . ' ' . $lastname);
+
+        return $name ?: 'contactpersoon';
+    }
+}
+
+if (!function_exists('sj_build_job_expiry_notice_body')) {
+    function sj_build_job_expiry_notice_body($post_id) {
+        $title      = wp_specialchars_decode(get_the_title($post_id), ENT_QUOTES);
+        $expires    = get_post_meta($post_id, '_job_expires', true);
+        $expires_ts = $expires ? strtotime($expires) : false;
+        $date_label = $expires_ts ? date_i18n(get_option('date_format'), $expires_ts) : '';
+        $name       = sj_get_job_expiry_notice_name($post_id);
+
+        $body  = "Beste {$name},\n\n";
+        $body .= "De verlooptermijn van jouw vacature is bereikt. De vacature staat daarom niet langer open op Sustainablejobs.nl.\n\n";
+        $body .= "Vacature: {$title}\n";
+        if ($date_label) {
+            $body .= "Einddatum: {$date_label}\n";
+        }
+        $body .= "\n";
+        $body .= "Wil je de vacature langer openhouden of opnieuw laten plaatsen? Laat het ons dan weten door op deze e-mail te reageren.\n\n";
+        $body .= "Met vriendelijke groet,\n";
+        $body .= "Sustainablejobs.nl\n";
+        $body .= "support@sustainablejobs.nl";
+
+        return apply_filters('sj_job_expiry_notice_body', $body, $post_id);
+    }
+}
+
+if (!function_exists('sj_send_job_expiry_notice')) {
+    function sj_send_job_expiry_notice($post_id) {
+        $post = get_post($post_id);
+        if (!$post || $post->post_type !== 'job_listing') {
+            return false;
+        }
+
+        if (get_post_meta($post_id, '_sj_expiry_notice_sent', true)) {
+            return false;
+        }
+
+        if (!sj_job_expiry_date_has_passed($post_id)) {
+            return false;
+        }
+
+        $recipient = sj_get_job_expiry_notice_recipient($post_id);
+        if (!$recipient) {
+            return false;
+        }
+
+        $title   = wp_specialchars_decode(get_the_title($post_id), ENT_QUOTES);
+        $subject = sprintf('Verlooptermijn bereikt: %s', $title);
+        $headers = [
+            'Content-Type: text/plain; charset=UTF-8',
+            'Reply-To: Sustainablejobs.nl <support@sustainablejobs.nl>',
+        ];
+
+        $sent = wp_mail(
+            $recipient,
+            $subject,
+            sj_build_job_expiry_notice_body($post_id),
+            apply_filters('sj_job_expiry_notice_headers', $headers, $post_id)
+        );
+
+        if ($sent) {
+            update_post_meta($post_id, '_sj_expiry_notice_sent', current_time('mysql'));
+            update_post_meta($post_id, '_sj_expiry_notice_recipient', $recipient);
+        }
+
+        return $sent;
+    }
+}
+
+add_action('transition_post_status', function ($new_status, $old_status, $post) {
+    if (!$post || $post->post_type !== 'job_listing') {
+        return;
+    }
+
+    if ($new_status === 'expired' && $old_status !== 'expired') {
+        sj_send_job_expiry_notice($post->ID);
+        return;
+    }
+
+    if ($new_status === 'publish' && $old_status === 'expired') {
+        delete_post_meta($post->ID, '_sj_expiry_notice_sent');
+        delete_post_meta($post->ID, '_sj_expiry_notice_recipient');
+    }
+}, 20, 3);
+
 // ── Cron: dagelijks verlopen vacatures offline zetten ────────────────────────
 add_action('init', function () {
     if (!wp_next_scheduled('sj_expire_job_listings')) {
@@ -115,7 +247,7 @@ add_action('init', function () {
 });
 
 add_action('sj_expire_job_listings', function () {
-    $today = date('Y-m-d');
+    $today = current_time('Y-m-d');
 
     $ids = get_posts([
         'post_type'      => 'job_listing',
@@ -132,5 +264,6 @@ add_action('sj_expire_job_listings', function () {
 
     foreach ($ids as $id) {
         wp_update_post(['ID' => $id, 'post_status' => 'expired']);
+        sj_send_job_expiry_notice($id);
     }
 });

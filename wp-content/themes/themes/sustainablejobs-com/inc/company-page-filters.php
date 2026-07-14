@@ -119,7 +119,7 @@ function filter_company_pages_ajax() {
 
     ob_start();
     if ($query->have_posts()) {
-        echo "<div class='bedrijf-grid'>";
+        echo "<div class='company-grid'>";
         while ($query->have_posts()) : $query->the_post();
             $title     = get_the_title();
             $permalink = get_permalink();
@@ -128,17 +128,17 @@ function filter_company_pages_ajax() {
             $countries = wp_get_post_terms(get_the_ID(), 'job_country', ['fields' => 'names']);
             $tags     = wp_get_post_terms(get_the_ID(), 'job_tag',     ['fields' => 'names']);
 
-            echo "<a href='{$permalink}' class='bedrijf-item'>";
-                echo "<h3 class='bedrijf-title'>{$title}</h3>";
-                echo "<div class='bedrijf-taxonomies'>";
+            echo "<a href='{$permalink}' class='company-item'>";
+                echo "<h3 class='company-title'>{$title}</h3>";
+                echo "<div class='company-taxonomies'>";
                 if (!empty($sectors)) {
-                    echo "<span class='bedrijf-sector'>" . implode(', ', $sectors) . "</span><br />";
+                    echo "<span class='company-sector'>" . implode(', ', $sectors) . "</span><br />";
                 }
                 if (!empty($countries)) {
-                    echo "<span class='bedrijf-certificering'>" . implode(', ', $countries) . "</span><br />";
+                    echo "<span class='company-certificering'>" . implode(', ', $countries) . "</span><br />";
                 }
                 if (!empty($tags)) {
-                    echo "<span class='bedrijf-tags'>" . implode(', ', $tags) . "</span>";
+                    echo "<span class='company-tags'>" . implode(', ', $tags) . "</span>";
                 }
                 echo "</div>";
             echo "</a>";

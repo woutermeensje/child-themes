@@ -1,21 +1,21 @@
 <?php
 /**
- * Custom meta box: "Posted by"
- * Allows setting a display name per article
- * (e.g. "Editorial team", "Research team", "Sustainability desk").
+ * Custom meta box: "Geplaatst door"
+ * Hiermee kan per artikel een weergavenaam worden ingesteld
+ * (bijv. "Redactie", "Onderzoeksteam", "Duurzaamheidsdesk").
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
 /**
- * Register the meta box on the post edit screen.
+ * Registreer de meta box op het post edit-scherm.
  */
 add_action( 'add_meta_boxes', function () {
     add_meta_box(
         'sj_artikel_auteur',
-        'Posted by',
-        'sc_render_author_meta_box',
+        'Geplaatst door',
+        'sj_render_auteur_meta_box',
         'post',
         'side',
         'high'
@@ -23,38 +23,38 @@ add_action( 'add_meta_boxes', function () {
 } );
 
 /**
- * Render the field in the meta box.
+ * Render het veld in de meta box.
  */
-function sc_render_author_meta_box( $post ) {
-    $value = get_post_meta( $post->ID, '_sj_artikel_auteur', true );
-    wp_nonce_field( 'sc_author_save', 'sc_author_nonce' );
+function sj_render_auteur_meta_box( $post ) {
+    $waarde = get_post_meta( $post->ID, '_sj_artikel_auteur', true );
+    wp_nonce_field( 'sj_auteur_opslaan', 'sj_auteur_nonce' );
     ?>
     <p style="margin-top:0;">
         <label for="sj_artikel_auteur" style="display:block;font-weight:600;margin-bottom:6px;">
-            Author display name
+            Weergavenaam auteur
         </label>
         <input
             type="text"
             id="sj_artikel_auteur"
             name="sj_artikel_auteur"
-            value="<?php echo esc_attr( $value ); ?>"
-            placeholder="e.g. Editorial team, Research team…"
+            value="<?php echo esc_attr( $waarde ); ?>"
+            placeholder="bijv. Redactie, Onderzoeksteam…"
             style="width:100%;"
         >
         <span style="display:block;margin-top:6px;font-size:12px;color:#666;">
-            Leave empty to hide the author.
+            Laat leeg om geen auteur te tonen.
         </span>
     </p>
     <?php
 }
 
 /**
- * Save the value when the post is saved.
+ * Sla de waarde op bij het opslaan van het bericht.
  */
 add_action( 'save_post', function ( $post_id ) {
     if (
-        ! isset( $_POST['sc_author_nonce'] ) ||
-        ! wp_verify_nonce( $_POST['sc_author_nonce'], 'sc_author_save' )
+        ! isset( $_POST['sj_auteur_nonce'] ) ||
+        ! wp_verify_nonce( $_POST['sj_auteur_nonce'], 'sj_auteur_opslaan' )
     ) {
         return;
     }
@@ -68,7 +68,7 @@ add_action( 'save_post', function ( $post_id ) {
     }
 
     if ( isset( $_POST['sj_artikel_auteur'] ) ) {
-        $value = sanitize_text_field( $_POST['sj_artikel_auteur'] );
-        update_post_meta( $post_id, '_sj_artikel_auteur', $value );
+        $waarde = sanitize_text_field( $_POST['sj_artikel_auteur'] );
+        update_post_meta( $post_id, '_sj_artikel_auteur', $waarde );
     }
 } );

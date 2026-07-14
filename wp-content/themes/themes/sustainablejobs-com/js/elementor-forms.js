@@ -1,18 +1,19 @@
 /**
  * Elementor Forms – Rich Text Editor via Quill.js
  *
- * Usage: give the Textarea field in Elementor the
- * extra CSS class "rich-editor" via the field settings.
+ * Gebruik: geef het Textarea-veld in Elementor de
+ * extra CSS-klasse "rich-editor" via de veld-instellingen.
  *
- * Quill is loaded via CDN (see functions.php enqueue).
+ * Quill wordt geladen via CDN (zie functions.php enqueue).
  */
 
 document.addEventListener('DOMContentLoaded', function () {
 
-  // Find all textareas with class .rich-editor within an Elementor form
+  // Search alle textarea's met klasse .rich-editor binnen een Elementor form
+  // Selector werkt op beide niveaus: widget-wrapper én veld-niveau
   document.querySelectorAll('.rich-editor textarea, textarea.rich-editor').forEach(function (textarea) {
 
-    // Create a wrapper + container for Quill
+    // Maak een wrapper + container voor Quill
     var wrapper = document.createElement('div');
     wrapper.className = 'ql-wrapper';
 
@@ -20,13 +21,13 @@ document.addEventListener('DOMContentLoaded', function () {
     container.id = 'ql-editor-' + Math.random().toString(36).substr(2, 6);
     wrapper.appendChild(container);
 
-    // Insert wrapper before the textarea
+    // Voeg wrapper in vóór de textarea
     textarea.parentNode.insertBefore(wrapper, textarea);
 
-    // Initialise Quill
+    // Initialiseer Quill
     var quill = new Quill(container, {
       theme: 'snow',
-      placeholder: textarea.getAttribute('placeholder') || 'Write your message here…',
+      placeholder: textarea.getAttribute('placeholder') || 'Schrijf hier je bericht…',
       modules: {
         toolbar: [
           ['bold', 'italic', 'underline'],
@@ -37,12 +38,12 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
 
-    // Set initial value if textarea already has content
+    // Zet initiële waarde als textarea al inhoud heeft
     if (textarea.value) {
       quill.root.innerHTML = textarea.value;
     }
 
-    // Sync Quill content back to the original textarea on submit
+    // Sync Quill inhoud terug naar de originele textarea bij submit
     var form = textarea.closest('form');
     if (form) {
       form.addEventListener('submit', function () {
@@ -50,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // Also sync live for Elementor's own validation
+    // Ook live syncen voor Elementor's eigen validatie
     quill.on('text-change', function () {
       textarea.value = quill.root.innerHTML;
     });

@@ -8,5 +8,5 @@ if (!defined('ABSPATH')) {
 }
 
 get_header();
-include get_stylesheet_directory() . '/template-parts/landing-jobseeker.php';
+include get_stylesheet_directory() . '/template-parts/landing-werkzoekende.php';
 get_footer();

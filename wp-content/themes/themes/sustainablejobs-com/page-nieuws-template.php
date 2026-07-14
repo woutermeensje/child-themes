@@ -6,8 +6,8 @@
 get_header(); ?>
 
 <div class="nieuws-hero">
-    <h1>Laatste nieuws</h1>
-    <p>Lees hier de nieuwste berichten en updates.</p>
+    <h1>Latest news</h1>
+    <p>Read the latest articles and updates here.</p>
 </div>
 
 <div class="nieuws-grid">
@@ -31,7 +31,7 @@ get_header(); ?>
                     <div class="nieuws-content">
                         <h2><?php the_title(); ?></h2>
                         <p><?php echo wp_trim_words(get_the_excerpt(), 20); ?></p>
-                        <span class="lees-meer">Lees meer →</span>
+                        <span class="lees-meer">Read more →</span>
                     </div>
                 </a>
             </article>
@@ -45,7 +45,7 @@ get_header(); ?>
             ?>
         </div>
     <?php else : ?>
-        <p>Er zijn nog geen berichten.</p>
+        <p>There are no posts yet.</p>
     <?php endif;
     wp_reset_postdata();
     ?>

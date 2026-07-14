@@ -1,7 +1,7 @@
 <?php
 /**
- * Template Name: bedrijven-template
- * Description: Template voor de bedrijven pagina
+ * Template Name: companies-template
+ * Description: Template for the company page
  */
 
 get_header(); ?>
@@ -66,16 +66,16 @@ get_header(); ?>
 
 <div class="company-page-wrapper">
 
-    <!-- Dynamische paginatitel als bedrijfsnaam -->
+    <!-- Dynamic page title as company name. -->
     <h1><?php the_title(); ?></h1>
 
-    <!-- Bedrijfsgegevens -->
+    <!-- Company details. -->
     <div class="company-section" id="company-info">
         <h2>About <?php the_title(); ?></h2>
         <?php the_content(); ?>
     </div>
 
-    <!-- Openstaande vacatures via shortcode -->
+    <!-- Open jobs via shortcode. -->
     <div class="company-section" id="company-jobs">
         <h2>Open Positions</h2>
         <?php
@@ -84,12 +84,12 @@ get_header(); ?>
         ?>
     </div>
 
-    <!-- Laatste nieuwsberichten voor dit bedrijf -->
+    <!-- Latest news posts for this company. -->
     <div class="company-section" id="company-news">
         <h2>Latest News</h2>
         <ul>
         <?php
-        // Je kunt nieuws koppelen via categorie-slug op basis van paginatitel (slug match)
+        // News can be linked via category slug based on the page title.
         $news_query = new WP_Query([
             'post_type' => 'post',
             'posts_per_page' => 3,
@@ -111,7 +111,7 @@ get_header(); ?>
         </ul>
     </div>
 
-    <!-- Job alert formulier -->
+    <!-- Job alert form. -->
     <div class="company-section" id="job-alert">
         <h2>Stay updated</h2>
         <p>Receive an email when new jobs are published for <?php the_title(); ?>.</p>
@@ -123,7 +123,7 @@ get_header(); ?>
         <?php
         if (isset($_POST['submit_alert']) && is_email($_POST['job_alert_email'])) {
             $email = sanitize_email($_POST['job_alert_email']);
-            // Hier zou je e-mailadres kunnen opslaan in een opt-in systeem of mailchimp
+            // This could be stored in an opt-in system or Mailchimp.
             echo "<p>✅ You're now subscribed to job alerts for " . get_the_title() . ".</p>";
         }
         ?>

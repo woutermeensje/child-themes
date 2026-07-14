@@ -1,7 +1,7 @@
 <?php
 /**
- * Template Name: vacature-categorie-template
- * Description: Template voor de bedrijven pagina
+ * Template Name: job-category-template
+ * Description: Template for a job category page
  */
 
 get_header();
@@ -87,7 +87,7 @@ get_header();
         <h1><?php the_title(); ?></h1>
         <div class="hero-buttons">
             <a href="/job-alerts">📬 Job Alerts</a>
-            <a href="/vacature-plaatsen">📢 Vacature plaatsen</a>
+            <a href="/post-a-job">Post a Job</a>
         </div>
     </div>
 </section>
@@ -96,7 +96,7 @@ get_header();
 <section class="content-section">
     <?php while (have_posts()) : the_post(); ?>
         <div class="page-content">
-            <?php the_content(); ?> <!-- [jobs] shortcode wordt hier geladen -->
+            <?php the_content(); ?> <!-- The [jobs] shortcode is loaded here. -->
         </div>
     <?php endwhile; ?>
 </section>
@@ -105,19 +105,19 @@ get_header();
 <section class="content-section">
     <div class="content-blocks">
         <div class="content-block">
-            <img src="https://via.placeholder.com/400x200" alt="Foto 1">
-            <h3>Werken aan een duurzame toekomst</h3>
-            <p>Lees hoe jij kunt bijdragen aan de energietransitie met jouw talenten.</p>
+            <img src="https://via.placeholder.com/400x200" alt="Sustainable future">
+            <h3>Work on a sustainable future</h3>
+            <p>Read how your talents can contribute to the energy transition.</p>
         </div>
         <div class="content-block">
-            <img src="https://via.placeholder.com/400x200" alt="Foto 2">
-            <h3>Projecten in jouw regio</h3>
-            <p>Ontdek duurzame vacatures bij organisaties bij jou in de buurt.</p>
+            <img src="https://via.placeholder.com/400x200" alt="Regional projects">
+            <h3>Projects in your region</h3>
+            <p>Discover sustainable jobs at organizations near you.</p>
         </div>
         <div class="content-block">
-            <img src="https://via.placeholder.com/400x200" alt="Foto 3">
-            <h3>Tips voor werkzoekenden</h3>
-            <p>Handige artikelen en advies voor wie zoekt naar impactvol werk.</p>
+            <img src="https://via.placeholder.com/400x200" alt="Jobseeker tips">
+            <h3>Tips for jobseekers</h3>
+            <p>Useful articles and advice for anyone looking for impactful work.</p>
         </div>
     </div>
 </section>

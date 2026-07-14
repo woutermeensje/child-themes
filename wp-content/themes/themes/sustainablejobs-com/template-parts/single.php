@@ -1,8 +1,8 @@
 <?php
 /**
- * Single blog post — Sustainablejobs COM child theme
+ * Single blogpost — Sustainablejobs NL child theme
  *
- * Layout: article (left, wide) + recent posts sidebar (right)
+ * Layout: artikel (links, breed) + recente berichten sidebar (rechts)
  */
 if ( ! defined( 'ABSPATH' ) ) {
     exit;
@@ -42,13 +42,15 @@ while ( have_posts() ) :
     endif;
 
     $cats      = get_the_category();
-    $cat_lbl   = $cats ? esc_html( $cats[0]->name ) : '';
-    $cat_url   = $cats ? esc_url( get_category_link( $cats[0]->term_id ) ) : '';
-    $date      = get_the_date( 'F j, Y' );
+    $cat       = $cats ? $cats[0] : null;
+    $cat_lbl   = $cat ? esc_html( $cat->name ) : '';
+    $cat_url   = $cat ? esc_url( get_category_link( $cat->term_id ) ) : '';
+    $cat_style = ( $cat && function_exists( 'sj_get_blog_category_style' ) ) ? sj_get_blog_category_style( $cat ) : '';
+    $date      = get_the_date( 'd F Y' );
     $auteur    = get_post_meta( get_the_ID(), '_sj_artikel_auteur', true );
     $thumb     = get_the_post_thumbnail( get_the_ID(), 'full' );
 
-    // Reading time estimate
+    // Leestijd schatting
     $content    = get_the_content();
     $word_count = str_word_count( wp_strip_all_tags( $content ) );
     $read_time  = max( 1, round( $word_count / 200 ) );
@@ -57,11 +59,11 @@ while ( have_posts() ) :
 <main id="content" class="site-main sj-single-page">
 <div class="sj-single__wrap">
 
-    <!-- ── Article ─────────────────────────────────────── -->
+    <!-- ── Artikel ─────────────────────────────────────── -->
     <article <?php post_class( 'sj-single__article' ); ?>>
 
         <?php if ( $cat_lbl ) : ?>
-            <a href="<?php echo $cat_url; ?>" class="sj-single__cat"><?php echo $cat_lbl; ?></a>
+            <a href="<?php echo $cat_url; ?>" class="sj-single__cat"<?php echo $cat_style ? ' style="' . esc_attr( $cat_style ) . '"' : ''; ?>><?php echo $cat_lbl; ?></a>
         <?php endif; ?>
 
         <h1 class="sj-single__title"><?php the_title(); ?></h1>
@@ -79,7 +81,7 @@ while ( have_posts() ) :
             </span>
             <span class="sj-single__readtime">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                <?php echo $read_time; ?> min read
+                <?php echo $read_time; ?> min leestijd
             </span>
         </div>
 
@@ -100,7 +102,7 @@ while ( have_posts() ) :
             </div>
         <?php endif; ?>
 
-        <nav class="sj-single__nav" aria-label="Article navigation">
+        <nav class="sj-single__nav" aria-label="Artikelnavigatie">
             <div class="sj-single__nav-prev">
                 <?php previous_post_link( '%link', '&larr; %title' ); ?>
             </div>
@@ -111,7 +113,7 @@ while ( have_posts() ) :
 
     </article>
 
-    <!-- ── Sidebar: recent articles ──────────────────── -->
+    <!-- ── Sidebar: recente berichten ──────────────────── -->
     <aside class="sj-single__sidebar">
 
         <div class="sj-single__recent">
@@ -126,9 +128,11 @@ while ( have_posts() ) :
             if ( $recent->have_posts() ) :
                 while ( $recent->have_posts() ) : $recent->the_post();
                     $r_thumb  = get_the_post_thumbnail( get_the_ID(), 'thumbnail' );
-                    $r_date   = get_the_date( 'j M Y' );
+                    $r_date   = get_the_date( 'd M Y' );
                     $r_cats   = get_the_category();
-                    $r_cat    = $r_cats ? esc_html( $r_cats[0]->name ) : '';
+                    $r_cat_term = $r_cats ? $r_cats[0] : null;
+                    $r_cat      = $r_cat_term ? esc_html( $r_cat_term->name ) : '';
+                    $r_cat_style = ( $r_cat_term && function_exists( 'sj_get_blog_category_style' ) ) ? sj_get_blog_category_style( $r_cat_term ) : '';
             ?>
             <a href="<?php the_permalink(); ?>" class="sj-recent__item">
                 <div class="sj-recent__img-wrap">
@@ -136,13 +140,13 @@ while ( have_posts() ) :
                         <?php echo str_replace( '<img ', '<img class="sj-recent__img" ', $r_thumb ); ?>
                     <?php else : ?>
                         <div class="sj-recent__img-placeholder">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#0A6B8D" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 9 4-4 4 4 4-4 4 4"/><circle cx="8.5" cy="14.5" r="1.5"/><path d="m21 15-5-5-5 5"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#168AAD" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="m3 9 4-4 4 4 4-4 4 4"/><circle cx="8.5" cy="14.5" r="1.5"/><path d="m21 15-5-5-5 5"/></svg>
                         </div>
                     <?php endif; ?>
                 </div>
                 <div class="sj-recent__body">
                     <?php if ( $r_cat ) : ?>
-                        <span class="sj-recent__cat"><?php echo $r_cat; ?></span>
+                        <span class="sj-recent__cat"<?php echo $r_cat_style ? ' style="' . esc_attr( $r_cat_style ) . '"' : ''; ?>><?php echo $r_cat; ?></span>
                     <?php endif; ?>
                     <h4 class="sj-recent__title"><?php the_title(); ?></h4>
                     <span class="sj-recent__date"><?php echo esc_html( $r_date ); ?></span>
@@ -157,8 +161,8 @@ while ( have_posts() ) :
 
         <div class="sj-sidebar-newsletter" style="margin-top:24px;">
             <div class="sj-sidebar-newsletter__body">
-                <p class="sj-sidebar-newsletter__label">Stay up to date</p>
-                <h3 class="sj-sidebar-newsletter__title">Sustainable jobs news straight to your inbox</h3>
+                <p class="sj-sidebar-newsletter__label">Blijf op de hoogte</p>
+                <h3 class="sj-sidebar-newsletter__title">News about sustainable jobs directly in your inbox</h3>
                 <a href="/newsletter/" class="sj-sidebar-newsletter__btn">
                     Newsletter
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clip-rule="evenodd"/></svg>

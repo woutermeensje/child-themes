@@ -1,9 +1,9 @@
 <?php
 /**
- * Template Name: Vacature Plaatsen Formulier
+ * Template Name: Post a Job Form
  */
 
-// Verwerk formulier vóór enige output
+// Process form before any output.
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verzenden'])) {
     $first_name = sanitize_text_field($_POST['first_name']);
     $last_name = sanitize_text_field($_POST['last_name']);
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verzenden'])) {
 
     $attachments = [];
 
-    // ✅ Verwerk bestand als media item
+    // Process file as media item.
     if (!empty($_FILES['company_logo']['tmp_name'])) {
         require_once(ABSPATH . 'wp-admin/includes/file.php');
         require_once(ABSPATH . 'wp-admin/includes/media.php');
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verzenden'])) {
         }
     }
 
-    // ✅ Stel bericht op
+    // Build message.
     $message = "New job submitted via the website:\n\n";
     $message .= "Job title: $title\n";
     $message .= "First name: $first_name\n";
@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verzenden'])) {
 
     $headers = ['Content-Type: text/plain; charset=UTF-8'];
 
-    $to = 'support@sustainablejobs.nl'; // testadres dat je in Mailtrap accepteert
+    $to = 'support@sustainablejobs.com';
     $subject = 'New job submitted via form';
     $headers = ['Content-Type: text/plain; charset=UTF-8'];
     
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['verzenden'])) {
     }
     
 
-    wp_redirect('https://www.sustainablejobs.nl/contact/');
+    wp_redirect('https://www.sustainablejobs.com/contact/');
     exit;
 }
 
@@ -79,7 +79,7 @@ body {
     margin: 40px auto;
     padding: 40px 30px;
     background: #fff;
-    border: 1px solid #0a6b8d;
+    border: 1px solid #168AAD;
     box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
 }
 
@@ -95,7 +95,7 @@ body {
     font-weight: 600;
     margin-top: 30px; 
     margin-bottom: 30px; 
-    color: #0a6b8d;
+    color: #168AAD;
     border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
     font-family: Balgin bold; 
@@ -144,7 +144,7 @@ body {
 }
 
 .form-wrapper input[type="submit"] {
-    background-color: #0a6b8d;
+    background-color: #168AAD;
     color: #fff;
     padding: 14px;
     border: none;
@@ -159,15 +159,15 @@ body {
 }
 
 .form-wrapper input[type="submit"]:hover {
-    background-color: #0884CC;
+    background-color: #2C8FAF;
 }
 </style>
 
 <div class="form-wrapper">
-    <h1>🚀 Plaats een vacature!</h1>
-    <p>📝 Vul hieronder de gegevens in die betrekking hebben op je vacature! Je ontvangt pas een factuur per e-mail nadat de vacature is gepubliceerd.</p>
-    <p><strong>⏱️ Geen tijd?</strong></p>
-    <p>📎 Je kunt de vacaturetekst ook als link, PDF of Word-bestand sturen naar <a href="mailto:support@sustainablejobs.nl">support@sustainablejobs.nl</a>.</p>
+    <h1>🚀 Post a Job!</h1>
+    <p>Fill in the details for your job below. You will receive an invoice by email only after the job has been published.</p>
+    <p><strong>No time?</strong></p>
+    <p>You can also send the job text as a link, PDF or Word file to <a href="mailto:support@sustainablejobs.com">support@sustainablejobs.com</a>.</p>
 
     <form method="post" action="" enctype="multipart/form-data">
 

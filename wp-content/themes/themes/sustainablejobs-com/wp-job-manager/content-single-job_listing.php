@@ -6,38 +6,54 @@ global $post;
 $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 ?>
 
-<!-- TOP SECTION -->
-<div class="update-header">
-  <div class="opdrachten-update">
-    <p>Stay up to date with the latest jobs!</p>
-    <a href="/job-alerts/" class="update-link">Job Alert</a>
-  </div>
-</div>
-
 <?php if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
 
     $salary    = get_post_meta($post_id, '_job_salary_range', true);
     $hours     = get_post_meta($post_id, '_job_hours_per_week', true);
     $location  = get_post_meta($post_id, '_job_location', true);
-    $cover_image = get_post_meta($post_id, '_cover_image', true);
     $company   = get_the_company_name();
     $con_first = get_post_meta($post_id, '_job_contact_firstname', true);
     $con_last  = get_post_meta($post_id, '_job_contact_lastname', true);
     $con_email = get_post_meta($post_id, '_job_contact_email', true);
 
-    /* ── Ask a question: form processing ── */
+    $job_company_terms  = get_the_terms($post_id, 'job_company');
+    $job_company_term   = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0] : null;
+    $job_company_slug   = $job_company_term ? $job_company_term->slug : '';
+    $job_company_url    = $job_company_slug ? home_url('/jobs/' . $job_company_slug . '/') : '';
+    $company_logo       = function_exists('sj_get_company_logo_html')
+        ? sj_get_company_logo_html($post_id, 'thumbnail')
+        : (has_post_thumbnail($post_id) ? get_the_post_thumbnail($post_id, 'thumbnail') : '');
+
+    $vacancy_count = 0;
+    if ($job_company_term) {
+        $vacancy_q     = new WP_Query([
+            'post_type'      => 'job_listing',
+            'post_status'    => 'publish',
+            'posts_per_page' => -1,
+            'fields'         => 'ids',
+            'tax_query'      => [[
+                'taxonomy' => 'job_company',
+                'field'    => 'term_id',
+                'terms'    => $job_company_term->term_id,
+            ]],
+        ]);
+        $vacancy_count = $vacancy_q->found_posts;
+        wp_reset_postdata();
+    }
+
+    /* Question form handling. */
     $vraag_success = false;
     $vraag_error   = '';
     if (
         $_SERVER['REQUEST_METHOD'] === 'POST' &&
-        isset($_POST['sc_vraag_nonce']) &&
-        wp_verify_nonce($_POST['sc_vraag_nonce'], 'sc_ask_question_' . $post_id)
+        isset($_POST['sj_vraag_nonce']) &&
+        wp_verify_nonce($_POST['sj_vraag_nonce'], 'sj_stel_vraag_' . $post_id)
     ) {
-        $v_first   = sanitize_text_field($_POST['vraag_firstname']  ?? '');
-        $v_last    = sanitize_text_field($_POST['vraag_lastname']   ?? '');
+        $v_naam    = sanitize_text_field($_POST['vraag_voornaam']   ?? '');
+        $v_ach     = sanitize_text_field($_POST['vraag_achternaam'] ?? '');
         $v_email   = sanitize_email($_POST['vraag_email']           ?? '');
-        $v_phone   = sanitize_text_field($_POST['vraag_phone']      ?? '');
-        $v_message = sanitize_textarea_field($_POST['vraag_tekst']  ?? '');
+        $v_tel     = sanitize_text_field($_POST['vraag_telefoon']   ?? '');
+        $v_vraag   = sanitize_textarea_field($_POST['vraag_tekst']  ?? '');
         $to        = $con_email ?: 'support@sustainablejobs.com';
 
         $attachments = [];
@@ -52,14 +68,14 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
             }
         }
 
-        if ($v_first && is_email($v_email) && $v_message) {
+        if ($v_naam && is_email($v_email) && $v_vraag) {
             $subject = 'Question about job: ' . get_the_title($post_id);
-            $body    = "Question via the job listing page:\n\nFrom: $v_first $v_last <$v_email>";
-            if ($v_phone) $body .= "\nPhone: $v_phone";
-            $body   .= "\n\n$v_message";
+            $body    = "Question via the job page:\n\nFrom: $v_naam $v_ach <$v_email>";
+            if ($v_tel) $body .= "\nPhone: $v_tel";
+            $body   .= "\n\n$v_vraag";
             wp_mail($to, $subject, $body, [
                 'Content-Type: text/plain; charset=UTF-8',
-                "Reply-To: $v_first $v_last <$v_email>",
+                "Reply-To: $v_naam $v_ach <$v_email>",
                 'Bcc: support@sustainablejobs.com',
             ], $attachments);
             $vraag_success = true;
@@ -71,13 +87,45 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 
     <div class="sj-single-layout">
 
-        <!-- Left column: job content -->
+        <!-- Main column: job content. -->
         <div class="sj-single-layout__main">
             <div class="single_job_listing">
                 <?php if ( get_option( 'job_manager_hide_expired_content', 1 ) && 'expired' === $post->post_status ) : ?>
 
-                    <div class="job-manager-info">
-                        <?php _e( 'This listing has expired.', 'wp-job-manager' ); ?>
+                    <div class="sj-expired">
+                        <div class="sj-expired__notice">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                            This job has expired
+                        </div>
+
+                        <h1 class="sj-expired__title"><?php echo esc_html(get_the_title($post_id)); ?></h1>
+
+                        <?php if ($company || $location): ?>
+                        <p class="sj-expired__meta">
+                            <?php echo implode(' &nbsp;·&nbsp; ', array_filter([esc_html($company), esc_html($location)])); ?>
+                        </p>
+                        <?php endif; ?>
+
+                        <p class="sj-expired__intro">Unfortunately this job is no longer available. Set up a job alert and receive similar jobs directly in your inbox as soon as they are posted.</p>
+
+                        <div class="sj-expired__alert">
+                            <?php echo do_shortcode('[job-alerts]'); ?>
+                        </div>
+
+                        <div class="sj-expired__all-link">
+                            <a href="<?php echo esc_url(home_url('/jobs/')); ?>">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" aria-hidden="true"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+                                View all open jobs
+                            </a>
+                        </div>
+                    </div>
+
+                <?php elseif ('expired' === $post->post_status): ?>
+
+                    <div class="sj-expired-banner">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Please note: this job has expired and may no longer be open.
+                        <a href="<?php echo esc_url(home_url('/jobs/')); ?>">View current jobs →</a>
                     </div>
 
                 <?php else : ?>
@@ -85,18 +133,9 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                     <div class="content-part-job-description">
                         <div class="top-div">
 
-                            <?php if ( ! empty( $cover_image ) ) : ?>
-                            <div class="sj-single-featured-image">
-                                <img
-                                    src="<?php echo esc_url( $cover_image ); ?>"
-                                    alt="<?php echo esc_attr( wpjm_get_the_job_title( $post_id ) ); ?>"
-                                    class="sj-single-featured-image__img"
-                                >
-                            </div>
-                            <?php endif; ?>
-
-                            <div class="job-title">
+                            <div class="job-title sj-single-title-row">
                                 <h1><?php wpjm_the_job_title(); ?></h1>
+                                <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'single']); ?>
                             </div>
 
                             <div class="job_description">
@@ -121,34 +160,33 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 
                 <?php endif; ?>
             </div>
-
-            <!-- Ask a question block -->
-            <div class="sj-vraag-blok">
-                <h3 class="sj-vraag-blok__title">Ask a question to the contact person of this job listing.</h3>
+            <!-- Question block. -->
+            <div class="sj-vraag-blok" id="sj-vraag">
+                <h3 class="sj-vraag-blok__title">Ask the contact person a question about this job.</h3>
 
                 <?php if ($vraag_success): ?>
-                    <p class="sj-sidebar__vraag-success">Your question has been sent! We will get back to you as soon as possible.</p>
+                    <p class="sj-sidebar__vraag-success">Your question has been sent. We will contact you as soon as possible.</p>
                 <?php else: ?>
                     <?php if ($vraag_error): ?>
                     <p class="sj-sidebar__vraag-error"><?php echo esc_html($vraag_error); ?></p>
                     <?php endif; ?>
                     <form method="post" class="sj-vraag-blok__form" enctype="multipart/form-data" novalidate>
-                        <?php wp_nonce_field('sc_ask_question_' . $post_id, 'sc_vraag_nonce'); ?>
+                        <?php wp_nonce_field('sj_stel_vraag_' . $post_id, 'sj_vraag_nonce'); ?>
 
                         <div class="sj-vraag-blok__row">
                             <div class="sj-vraag-blok__field">
-                                <label class="sj-vraag-blok__label" for="vraag_firstname">First name <span class="sj-vraag-req">*</span></label>
-                                <input type="text" name="vraag_firstname" id="vraag_firstname"
+                                <label class="sj-vraag-blok__label" for="vraag_voornaam">First name <span class="sj-vraag-req">*</span></label>
+                                <input type="text" name="vraag_voornaam" id="vraag_voornaam"
                                        class="sj-vraag-blok__input"
                                        placeholder="First name" required
-                                       value="<?php echo esc_attr($_POST['vraag_firstname'] ?? ''); ?>">
+                                       value="<?php echo esc_attr($_POST['vraag_voornaam'] ?? ''); ?>">
                             </div>
                             <div class="sj-vraag-blok__field">
-                                <label class="sj-vraag-blok__label" for="vraag_lastname">Last name</label>
-                                <input type="text" name="vraag_lastname" id="vraag_lastname"
+                                <label class="sj-vraag-blok__label" for="vraag_achternaam">Last name</label>
+                                <input type="text" name="vraag_achternaam" id="vraag_achternaam"
                                        class="sj-vraag-blok__input"
                                        placeholder="Last name"
-                                       value="<?php echo esc_attr($_POST['vraag_lastname'] ?? ''); ?>">
+                                       value="<?php echo esc_attr($_POST['vraag_achternaam'] ?? ''); ?>">
                             </div>
                         </div>
 
@@ -161,20 +199,20 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                                        value="<?php echo esc_attr($_POST['vraag_email'] ?? ''); ?>">
                             </div>
                             <div class="sj-vraag-blok__field">
-                                <label class="sj-vraag-blok__label" for="vraag_phone">Phone number</label>
-                                <input type="tel" name="vraag_phone" id="vraag_phone"
+                                <label class="sj-vraag-blok__label" for="vraag_telefoon">Phone number</label>
+                                <input type="tel" name="vraag_telefoon" id="vraag_telefoon"
                                        class="sj-vraag-blok__input"
-                                       placeholder="+44 7700 900000"
-                                       value="<?php echo esc_attr($_POST['vraag_phone'] ?? ''); ?>">
+                                       placeholder="+31 6 12345678"
+                                       value="<?php echo esc_attr($_POST['vraag_telefoon'] ?? ''); ?>">
                             </div>
                         </div>
 
                         <div class="sj-vraag-blok__field">
-                            <label class="sj-vraag-blok__label">Your question or motivation <span class="sj-vraag-req">*</span></label>
+                            <label class="sj-vraag-blok__label">Message to contact person <span class="sj-vraag-req">*</span></label>
                             <div class="sj-vraag-blok__quill-wrap">
-                                <div id="sc_vraag_quill" style="min-height:160px;"></div>
+                                <div id="sj_vraag_quill" style="min-height:160px;"></div>
                             </div>
-                            <textarea name="vraag_tekst" id="sc_vraag_hidden" class="sj-vraag-blok__hidden" aria-hidden="true"><?php echo esc_textarea($_POST['vraag_tekst'] ?? ''); ?></textarea>
+                            <textarea name="vraag_tekst" id="sj_vraag_hidden" class="sj-vraag-blok__hidden" aria-hidden="true"><?php echo esc_textarea($_POST['vraag_tekst'] ?? ''); ?></textarea>
                         </div>
 
                         <div class="sj-vraag-blok__field">
@@ -182,10 +220,10 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                             <label class="sj-vraag-blok__upload" for="vraag_cv">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M213.66,82.34l-56-56A8,8,0,0,0,152,24H56A16,16,0,0,0,40,40V216a16,16,0,0,0,16,16H200a16,16,0,0,0,16-16V88A8,8,0,0,0,213.66,82.34ZM160,51.31,188.69,80H160ZM200,216H56V40h88V88a8,8,0,0,0,8,8h48V216Zm-72-96a8,8,0,0,1,8,8v16h16a8,8,0,0,1,0,16H136v16a8,8,0,0,1-16,0V160H104a8,8,0,0,1,0-16h16V128A8,8,0,0,1,128,120Z"/></svg>
                                 <span class="sj-vraag-blok__upload-label">Choose your CV</span>
-                                <span class="sj-vraag-blok__upload-name" id="sc_vraag_cv_name">No file chosen</span>
+                                <span class="sj-vraag-blok__upload-name" id="sj_vraag_cv_name">No file selected</span>
                                 <input type="file" name="vraag_cv" id="vraag_cv" accept=".pdf,.doc,.docx"
                                        class="sj-vraag-blok__upload-input"
-                                       onchange="document.getElementById('sc_vraag_cv_name').textContent = this.files[0]?.name || 'No file chosen'">
+                                       onchange="document.getElementById('sj_vraag_cv_name').textContent = this.files[0]?.name || 'No file selected'">
                             </label>
                             <span class="sj-vraag-blok__hint">PDF, Word. Max. 5 MB.</span>
                         </div>
@@ -196,10 +234,36 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
             </div>
         </div>
 
-        <!-- Right column: sidebar -->
+        <!-- Sidebar. -->
         <aside class="sj-single-layout__sidebar">
 
-            <!-- Block 1: Job details -->
+            <?php if ($company || $company_logo): ?>
+            <!-- Company block. -->
+            <div class="sj-single-sidebar">
+                <p class="sj-sidebar__block-title">About the company</p>
+                <div class="sj-company-blok">
+                    <?php if ($company_logo): ?>
+                    <div class="sj-company-blok__logo">
+                        <?php echo $company_logo; ?>
+                    </div>
+                    <?php endif; ?>
+                    <div class="sj-company-blok__info">
+                        <?php if ($job_company_url && $company): ?>
+                            <a href="<?php echo esc_url($job_company_url); ?>" class="sj-company-blok__name"><?php echo esc_html($company); ?></a>
+                        <?php elseif ($company): ?>
+                            <span class="sj-company-blok__name"><?php echo esc_html($company); ?></span>
+                        <?php endif; ?>
+                        <?php if ($vacancy_count > 0): ?>
+                            <a href="<?php echo esc_url($job_company_url); ?>" class="sj-company-blok__count">
+                                <?php echo $vacancy_count; ?> open <?php echo $vacancy_count === 1 ? 'job' : 'jobs'; ?>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            <?php endif; ?>
+
+            <!-- Job details block. -->
             <div class="sj-single-sidebar">
                 <p class="sj-sidebar__block-title">Job details</p>
                 <div class="sj-sidebar__details">
@@ -241,28 +305,45 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                     </div>
                     <?php endif; ?>
                     <?php
-                    $sectors = wp_get_post_terms($post_id, 'job_sector', ['fields' => 'names']);
-                    if (!empty($sectors) && !is_wp_error($sectors)):
+                    $sectors = function_exists('sj_get_job_listing_sector_terms')
+                        ? sj_get_job_listing_sector_terms($post_id)
+                        : get_the_terms($post_id, 'job_sector');
+                    if (!is_wp_error($sectors) && !empty($sectors)):
                     ?>
                     <div class="sj-sidebar__detail-row">
                         <span class="sj-sidebar__detail-label">Sector</span>
-                        <span class="sj-sidebar__detail-value"><?php echo esc_html(implode(', ', $sectors)); ?></span>
+                        <span class="sj-sidebar__detail-value">
+                            <?php foreach ($sectors as $sector): ?>
+                            <span class="sj-sidebar__chip"><?php echo esc_html($sector->name); ?></span>
+                            <?php endforeach; ?>
+                        </span>
                     </div>
                     <?php endif; ?>
                     <?php
-                    $countries = wp_get_post_terms($post_id, 'job_country', ['fields' => 'names']);
-                    if (!empty($countries) && !is_wp_error($countries)):
+                    $org_types = function_exists('sj_get_job_listing_organisatie_type_terms')
+                        ? sj_get_job_listing_organisatie_type_terms($post_id)
+                        : get_the_terms($post_id, 'organisatie_type');
+                    if (!is_wp_error($org_types) && !empty($org_types)):
                     ?>
                     <div class="sj-sidebar__detail-row">
-                        <span class="sj-sidebar__detail-label">Country / Region</span>
-                        <span class="sj-sidebar__detail-value"><?php echo esc_html(implode(', ', $countries)); ?></span>
+                        <span class="sj-sidebar__detail-label">Organization type</span>
+                        <span class="sj-sidebar__detail-value">
+                            <?php foreach ($org_types as $org_type): ?>
+                            <span class="sj-sidebar__chip"><?php echo esc_html($org_type->name); ?></span>
+                            <?php endforeach; ?>
+                        </span>
                     </div>
                     <?php endif; ?>
                 </div>
             </div>
 
+            <div class="sj-single-sidebar">
+                <p class="sj-sidebar__block-title">Job alert</p>
+                <?php echo do_shortcode('[sj-job-alerts-sidebar]'); ?>
+            </div>
+
             <?php if ($con_first || $con_last || $con_email): ?>
-            <!-- Block 2: Contact person -->
+            <!-- Contact person block. -->
             <div class="sj-single-sidebar">
                 <p class="sj-sidebar__block-title">Contact person</p>
                 <div class="sj-sidebar__contact">
@@ -286,14 +367,14 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 
 <?php endif; ?>
 
-<!-- Sticky bottom bar -->
+<!-- Sticky bottom bar. -->
 <div class="sj-vp-snel" id="sj-profiel-balk">
     <div class="sj-vp-snel__text">
-        <h2 class="sj-vp-snel__title">Create a profile</h2>
-        <p class="sj-vp-snel__desc">Did you know that with a profile on our platform you can also be approached by employers?</p>
+        <h2 class="sj-vp-snel__title">Create Profile</h2>
+        <p class="sj-vp-snel__desc">Did you know that with a profile on our platform, employers can also approach you?</p>
     </div>
     <div class="sj-vp-snel__contact">
-        <a href="https://platform.sustainablejobs.com/sign-up" class="sj-vp-snel__btn">Create a profile</a>
+        <a href="https://platform.sustainablejobs.com/register-jobseeker" class="sj-vp-snel__btn">Create Profile</a>
     </div>
     <button class="sj-vp-snel__close" aria-label="Close" onclick="document.getElementById('sj-profiel-balk').classList.add('is-hidden')">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
@@ -310,7 +391,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     gap: 24px;
     max-width: 1100px;
     width: 100%;
-    margin: 24px auto;
+    margin: 56px auto 24px;
     padding: 0 24px;
     box-sizing: border-box;
 }
@@ -319,31 +400,16 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     min-width: 0;
 }
 
-/* ── Featured image ──────────────────────────────────────── */
-.sj-single-featured-image {
-    margin: -24px -24px 20px;
-    overflow: hidden;
-    border-radius: 5px 5px 0 0;
-}
-
-.sj-single-featured-image__img {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-height: 360px;
-    object-fit: cover;
-}
-
-/* ── Main job block ──────────────────────────────────────── */
+/* ── Hoofd job blok ─────────────────────────────────── */
 .single_job_listing {
     background: #fff;
     border-radius: 5px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     border: 1px solid #DEDEDE;
     padding: 24px;
 }
 
-/* ── Sidebar column ──────────────────────────────────────── */
+/* ── Sidebar kolom ───────────────────────────────────────── */
 .sj-single-layout__sidebar {
     display: flex;
     flex-direction: column;
@@ -353,11 +419,11 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     align-self: start;
 }
 
-/* ── Sidebar blocks ──────────────────────────────────────── */
+/* ── Sidebar blokken ─────────────────────────────────────── */
 .sj-single-sidebar {
     background: #fff;
     border-radius: 5px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     border: 1px solid #DEDEDE;
     padding: 20px;
 }
@@ -372,7 +438,65 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     border-bottom: 1px solid #DEDEDE;
 }
 
-/* ── Block 1: details ────────────────────────────────────── */
+/* ── Blok 0: company ─────────────────────────────────────── */
+.sj-company-blok {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.sj-company-blok__logo {
+    flex: 0 0 auto;
+}
+
+.sj-company-blok__logo img {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    border-radius: 50%;
+    border: 1px solid var(--color-border-light);
+    padding: 5px;
+    background: #fff;
+    display: block;
+}
+
+.sj-company-blok__info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.sj-company-blok__name {
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--color-midnight-blue);
+    text-decoration: none;
+    display: block;
+    overflow-wrap: anywhere;
+}
+
+a.sj-company-blok__name:hover {
+    color: var(--color-primary);
+    text-decoration: underline;
+}
+
+.sj-company-blok__count {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--color-primary);
+    text-decoration: none;
+    display: block;
+}
+
+.sj-company-blok__count:hover {
+    text-decoration: underline;
+    color: var(--color-primary-hover);
+}
+
+/* ── Blok 1: details ─────────────────────────────────────── */
 .sj-sidebar__details {
     display: flex;
     flex-direction: column;
@@ -404,17 +528,17 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 .sj-sidebar__chip {
     display: inline-block;
     padding: 3px 10px;
-    background: #EEF3F0;
-    border: 1px solid #c8ddd4;
+    background: #F3F7E4;
+    border: 1px solid #DDE8C5;
     border-radius: 999px;
     font-size: 12px;
     font-weight: 700;
     font-family: 'Poppins', sans-serif;
-    color: #0A6B8D;
+    color: #168AAD;
     margin-right: 4px;
 }
 
-/* ── Block 2: contact person ─────────────────────────────── */
+/* ── Blok 2: contact person ──────────────────────────────── */
 .sj-sidebar__contact-name {
     font-family: 'Poppins', sans-serif;
     font-size: 15px;
@@ -427,60 +551,124 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     font-family: 'Poppins', sans-serif;
     font-size: 13px;
     font-weight: 400;
-    color: #0A6B8D;
+    color: #168AAD;
     text-decoration: none;
 }
 
 .sj-sidebar__contact-email:hover { text-decoration: underline; }
 
-/* ── Top banner ──────────────────────────────────────────── */
-.update-header {
-    max-width: 1100px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 0 24px;
-    box-sizing: border-box;
+/* ── Blok 3: stel een vraag ──────────────────────────────── */
+.sj-sidebar__vraag-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
-.opdrachten-update {
-    padding: 24px;
-    margin: 24px 0;
+.sj-sidebar__field { display: flex; flex-direction: column; }
+
+.sj-sidebar__input {
+    width: 100%;
+    padding: 8px 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #111827;
+    background: #fff;
     border: 1px solid #DEDEDE;
     border-radius: 5px;
-    box-shadow: 0px 10px 40px -5px rgba(0,0,0,0.15);
-    background-color: #ffffff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+    outline: none;
+    box-shadow: none;
+    transition: border-color .2s ease;
     box-sizing: border-box;
 }
 
-.opdrachten-update p {
-    color: #333;
-    margin: 0;
-    font-weight: 700;
-    font-size: 18px;
+.sj-sidebar__input:focus { border-color: #168AAD; }
+
+.sj-sidebar__input::placeholder {
+    color: #9ca3af;
+    font-weight: 300;
 }
 
-.update-link {
-    color: #0A6B8D !important;
-    background: #E0D0E1;
-    font-family: Poppins;
-    font-weight: 700;
-    padding: 8px;
-    border: 1px solid #0A6B8D !important;
+.sj-sidebar__textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.sj-sidebar__submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Balgin-Bold', serif;
+    font-size: 14px;
+    background-color: #C5D77F;
+    border: 2px solid #C5D77F;
+    color: #168AAD;
+    padding: 9px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color .15s ease;
+}
+
+.sj-sidebar__submit:hover {
+    background-color: #8FC689;
+    border-color: #8FC689;
+}
+
+.sj-sidebar__vraag-success {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #065f46;
+    background: #ecfdf5;
+    border: 1px solid #6ee7b7;
     border-radius: 5px;
-    text-decoration: none !important;
-    white-space: nowrap;
+    padding: 10px 14px;
+    margin: 0;
 }
 
-.update-link:hover {
-    background: #0A6B8D !important;
-    color: #B9D1B3 !important;
+.sj-sidebar__vraag-error {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #991b1b;
+    background: #fef2f2;
+    border: 1px solid #fca5a5;
+    border-radius: 5px;
+    padding: 8px 12px;
+    margin: 0 0 8px;
 }
 
-/* ── Job title ───────────────────────────────────────────── */
+
+/* ── Meta pills ──────────────────────────────────────────── */
+.meta-information-single {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.meta-information-single p {
+    font-family: Poppins !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: #333;
+    border: 1px solid #DEDEDE;
+    background-color: white;
+    border-radius: 999px;
+    padding: 10px 14px;
+    margin: 0;
+    box-shadow: none;
+    display: inline-block;
+    width: auto;
+}
+
+.meta-information-mobile {
+    display: none;
+    font-size: 16px;
+    font-family: Poppins;
+    font-weight: 400;
+}
+
+/* ── Titel ───────────────────────────────────────────────── */
 .job-title h1 {
     padding-bottom: 10px;
     border-bottom: 1px solid #DEDEDE;
@@ -490,14 +678,14 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     padding-top: 20px;
 }
 
-/* ── Description ─────────────────────────────────────────── */
+/* ── Beschrijving ────────────────────────────────────────── */
 .job_description {
     font-family: Poppins;
     font-size: 14px;
     font-weight: 400;
     line-height: 1.6;
     color: var(--color-text);
-    margin-top: 20px;
+    margin-top: 28px;
 }
 
 .job-manager-info {
@@ -511,7 +699,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     font-weight: 600;
 }
 
-/* ── Apply button ────────────────────────────────────────── */
+/* ── Solliciteer knop ────────────────────────────────────── */
 .job-apply-button a {
     padding: 12px;
     color: var(--color-bg);
@@ -530,7 +718,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     border: 1px solid var(--color-primary);
 }
 
-/* ── Job card (list view) ────────────────────────────────── */
+/* ── Overige job listing stijlen ─────────────────────────── */
 .job-listing-simple {
     display: flex;
     align-items: center;
@@ -540,7 +728,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     border: 1px solid var(--color-bg);
     background-color: var(--color-bg);
     border-radius: 5px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     transition: all 0.2s ease-in-out;
 }
 
@@ -562,7 +750,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     object-fit: contain;
     border-radius: 5px;
     padding: 6px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     border: 1px solid var(--color-border);
     transition: all 0.2s ease-in-out;
     background-color: var(--color-bg);
@@ -658,13 +846,14 @@ a.google_map_link {
 
 h1.entry-title { display: none; }
 
-/* ── Ask a question block ────────────────────────────────── */
+/* ── Stel een vraag blok ─────────────────────────────────── */
 .sj-vraag-blok {
+    scroll-margin-top: 100px;
     margin-top: 20px;
     background: #fff;
     border: 1px solid #DEDEDE;
     border-radius: 5px;
-    box-shadow: 0 10px 40px -5px rgba(0,0,0,0.15);
+    box-shadow: none;
     padding: 28px;
 }
 
@@ -705,7 +894,7 @@ h1.entry-title { display: none; }
     line-height: 1.4;
 }
 
-.sj-vraag-req { color: var(--color-primary, #0A6B8D); margin-left: 2px; }
+.sj-vraag-req { color: var(--color-primary, #168AAD); margin-left: 2px; }
 
 .sj-vraag-blok__input {
     width: 100% !important;
@@ -726,8 +915,8 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__input:focus {
-    border-color: var(--color-primary, #0A6B8D) !important;
-    box-shadow: 0 0 0 3px rgba(10,107,141,.15) !important;
+    border-color: var(--color-primary, #168AAD) !important;
+    box-shadow: 0 0 0 3px rgba(22,138,173,.15) !important;
 }
 
 .sj-vraag-blok__input::placeholder {
@@ -747,14 +936,14 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__quill-wrap:focus-within {
-    border-color: var(--color-primary, #0A6B8D);
-    box-shadow: 0 0 0 3px rgba(10,107,141,.15);
+    border-color: var(--color-primary, #168AAD);
+    box-shadow: 0 0 0 3px rgba(22,138,173,.15);
 }
 
 .sj-vraag-blok__quill-wrap .ql-toolbar {
     border: none !important;
     border-bottom: 1px solid #DEDEDE !important;
-    background: var(--color-bg-filter, #EEF3F0);
+    background: var(--color-bg-filter, #F3F7E4);
     padding: 8px 12px !important;
 }
 
@@ -777,11 +966,11 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__quill-wrap .ql-toolbar button:hover,
-.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active { color: var(--color-primary, #0A6B8D) !important; }
+.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active { color: var(--color-primary, #168AAD) !important; }
 .sj-vraag-blok__quill-wrap .ql-toolbar button:hover .ql-stroke,
-.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-stroke { stroke: var(--color-primary, #0A6B8D) !important; }
+.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-stroke { stroke: var(--color-primary, #168AAD) !important; }
 .sj-vraag-blok__quill-wrap .ql-toolbar button:hover .ql-fill,
-.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-fill { fill: var(--color-primary, #0A6B8D) !important; }
+.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-fill { fill: var(--color-primary, #168AAD) !important; }
 
 /* CV Upload */
 .sj-vraag-blok__upload {
@@ -793,8 +982,8 @@ h1.entry-title { display: none; }
     width: 100%;
     min-height: 110px;
     padding: 24px 20px;
-    background: #f0f7fb;
-    border: 2px dashed var(--color-primary, #0A6B8D);
+    background: var(--color-bg-filter, #F3F7E4);
+    border: 2px dashed var(--color-primary, #168AAD);
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
@@ -804,12 +993,12 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__upload:hover {
-    border-color: var(--color-secondary, #92E9AB);
-    background: #e4f0f5;
+    border-color: var(--color-secondary, #C5D77F);
+    background: var(--color-bg-light, #F7FAEF);
 }
 
 .sj-vraag-blok__upload svg {
-    color: var(--color-primary, #0A6B8D);
+    color: var(--color-primary, #168AAD);
     flex-shrink: 0;
 }
 
@@ -817,7 +1006,7 @@ h1.entry-title { display: none; }
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-primary, #0A6B8D);
+    color: var(--color-primary, #168AAD);
 }
 
 .sj-vraag-blok__upload-name {
@@ -853,9 +1042,9 @@ h1.entry-title { display: none; }
     font-family: 'Balgin-Bold', serif;
     font-size: 15px;
     font-weight: 600;
-    background-color: var(--color-secondary, #92E9AB);
-    border: 2px solid var(--color-secondary, #92E9AB);
-    color: var(--color-primary, #0A6B8D) !important;
+    background-color: var(--color-secondary, #C5D77F);
+    border: 2px solid var(--color-secondary, #C5D77F);
+    color: var(--color-primary, #168AAD) !important;
     padding: 10px 28px;
     border-radius: 4px;
     cursor: pointer;
@@ -864,35 +1053,131 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__submit:hover {
-    background-color: var(--color-accent, #b9d1b3);
-    border-color: var(--color-accent, #b9d1b3);
-}
-
-.sj-sidebar__vraag-success {
-    font-family: 'Poppins', sans-serif;
-    font-size: 14px;
-    color: #065f46;
-    background: #ecfdf5;
-    border: 1px solid #6ee7b7;
-    border-radius: 5px;
-    padding: 10px 14px;
-    margin: 0;
-}
-
-.sj-sidebar__vraag-error {
-    font-family: 'Poppins', sans-serif;
-    font-size: 13px;
-    color: #991b1b;
-    background: #fef2f2;
-    border: 1px solid #fca5a5;
-    border-radius: 5px;
-    padding: 8px 12px;
-    margin: 0 0 8px;
+    background-color: var(--color-accent, #8FC689);
+    border-color: var(--color-accent, #8FC689);
 }
 
 @media (max-width: 640px) {
     .sj-vraag-blok__row { grid-template-columns: 1fr; }
     .sj-vraag-blok__submit { width: 100%; align-self: stretch; }
+}
+
+/* ── Expired job ───────────────────────────────────── */
+.sj-expired {
+    padding: 32px 28px 28px;
+}
+
+.sj-expired__notice {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 999px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #C2410C;
+    margin-bottom: 24px;
+}
+
+.sj-expired__notice svg {
+    flex-shrink: 0;
+    color: #C2410C;
+}
+
+.sj-expired__title {
+    font-family: 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-midnight-blue, #254F6E);
+    margin: 0 0 10px;
+    line-height: 1.3;
+}
+
+.sj-expired__meta {
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #6b7280;
+    margin: 0 0 20px;
+}
+
+.sj-expired__intro {
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: #374151;
+    line-height: 1.65;
+    margin: 0 0 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid #DEDEDE;
+}
+
+.sj-expired__alert {
+    margin-bottom: 24px;
+}
+
+.sj-expired__all-link {
+    margin-top: 8px;
+}
+
+.sj-expired__all-link a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-primary, #2C8FAF);
+    text-decoration: none;
+    transition: color .18s ease;
+}
+
+.sj-expired__all-link a:hover {
+    color: var(--color-primary-hover, #2B6E8F);
+    text-decoration: underline;
+}
+
+.sj-expired__all-link a svg {
+    flex-shrink: 0;
+    color: currentColor;
+}
+
+/* ── Expired banner (content zichtbaar) ─────────────────── */
+.sj-expired-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    background: #FFF7ED;
+    border: 1px solid #FED7AA;
+    border-radius: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #92400E;
+    flex-wrap: wrap;
+}
+
+.sj-expired-banner svg {
+    flex-shrink: 0;
+    color: #C2410C;
+}
+
+.sj-expired-banner a {
+    margin-left: auto;
+    font-weight: 600;
+    color: var(--color-primary, #2C8FAF);
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.sj-expired-banner a:hover {
+    text-decoration: underline;
+    color: var(--color-primary-hover, #2B6E8F);
 }
 
 /* ── Responsive ──────────────────────────────────────────── */
@@ -917,27 +1202,21 @@ h1.entry-title { display: none; }
         margin: 16px auto;
     }
 
-    .update-header {
-        padding: 0 12px;
+
+    .meta-information-single {
+        flex-wrap: wrap;
+        gap: 5px;
     }
 
-    .opdrachten-update {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 16px;
-        padding: 20px;
-        text-align: left;
-        margin: 16px 0;
-    }
-
-    .opdrachten-update p { font-size: 16px; line-height: 1.4; }
-
-    .update-link {
-        display: block;
-        width: 100%;
-        text-align: center;
-        padding: 12px 16px;
-        font-size: 16px;
+    .meta-information-single p {
+        padding: 10px 14px;
+        font-size: 14px;
+        line-height: 1.2;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        flex: 0 0 auto;
     }
 }
 
@@ -948,10 +1227,10 @@ h1.entry-title { display: none; }
     function initVraagQuill() {
         if (typeof Quill === 'undefined') { setTimeout(initVraagQuill, 80); return; }
 
-        var hidden = document.getElementById('sc_vraag_hidden');
+        var hidden = document.getElementById('sj_vraag_hidden');
         if (!hidden) return;
 
-        var quill = new Quill('#sc_vraag_quill', {
+        var quill = new Quill('#sj_vraag_quill', {
             theme: 'snow',
             placeholder: 'Ask your question or write a short motivation...',
             modules: { toolbar: [['bold','italic','underline'], [{'list':'ordered'},{'list':'bullet'}], ['link'], ['clean']] }
