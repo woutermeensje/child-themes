@@ -34871,3 +34871,42 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 #7 /var/www/html/wp-cron.php(191): do_action_ref_array('wpseo_start_cle...', Array)
 #8 {main}</pre>
  for query DELETE FROM wp_yoast_indexable WHERE object_type = 'post' AND object_sub_type = 'shop_order' ORDER BY id LIMIT 1000 made by do_action_ref_array('wpseo_start_cleanup_indexables'), WP_Hook->do_action, WP_Hook->apply_filters, Yoast\WP\SEO\Integrations\Cleanup_Integration->run_cleanup, Yoast\WP\SEO\Integrations\Cleanup_Integration->Yoast\WP\SEO\Integrations\{closure}, Yoast\WP\SEO\Repositories\Indexable_Cleanup_Repository->clean_indexables_with_object_type_and_object_sub_type, WP_SQLite_DB->query, WP_SQLite_DB->print_error
+[14-Jul-2026 14:10:34 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[14-Jul-2026 14:10:34 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[14-Jul-2026 14:11:12 UTC] Automatic updates starting...
+[14-Jul-2026 14:11:12 UTC]   Automatic plugin updates starting...
+[14-Jul-2026 14:11:12 UTC]   Automatic plugin updates complete.
+[14-Jul-2026 14:11:12 UTC] Automatic updates complete.
+[14-Jul-2026 14:11:13 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[14-Jul-2026 14:11:13 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[14-Jul-2026 14:11:15 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[14-Jul-2026 14:11:15 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[14-Jul-2026 14:11:23 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[14-Jul-2026 14:11:23 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args
+[14-Jul-2026 14:11:30 UTC] 🧩 Parsed form_data: Array
+(
+    [search_keywords] => 
+    [search_location] => 
+)
+
+[14-Jul-2026 14:11:30 UTC] 📭 Geen tax_query aanwezig in get_job_listings_query_args

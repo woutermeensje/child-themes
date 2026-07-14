@@ -1,6 +1,6 @@
 /* ================================================
    Studentinhuren.nl — Header & Navigation
-   Hardcoded kleuren: primair #3A89FF, secundair #FF8200
+   Hardcoded kleuren: primair #3f7296 (platform blauw), hover #2f5f80
    ================================================ */
 
 .rn-header,
@@ -77,7 +77,7 @@
   font-family: 'Poppins', sans-serif;
   font-size: 22px;
   font-weight: 700;
-  color: #3A89FF !important;
+  color: #3f7296 !important;
   line-height: 1;
   text-decoration: none !important;
 }
@@ -124,7 +124,7 @@
 
 .rn-nav__link:hover,
 .rn-nav__link.is-active {
-  color: #3A89FF !important;
+  color: #3f7296 !important;
 }
 
 .rn-nav__link.is-active {
@@ -181,8 +181,8 @@
 }
 
 .rn-nav__dropdown .rn-nav__link:hover {
-  background: rgba(58, 137, 255, 0.06);
-  color: #3A89FF !important;
+  background: rgba(63, 114, 150, 0.06);
+  color: #3f7296 !important;
 }
 
 /* ── Divider ── */
@@ -200,7 +200,7 @@
   width: 44px;
   height: 44px;
   border-radius: 999px;
-  color: #3A89FF !important;
+  color: #3f7296 !important;
   background: transparent;
   border: 1px solid transparent;
   text-decoration: none !important;
@@ -210,9 +210,9 @@
 
 .rn-account-link:hover,
 .rn-account-link:focus {
-  color: #1a6fe0 !important;
-  background: rgba(58, 137, 255, 0.08);
-  border-color: rgba(58, 137, 255, 0.16);
+  color: #2f5f80 !important;
+  background: rgba(63, 114, 150, 0.08);
+  border-color: rgba(63, 114, 150, 0.16);
 }
 
 .rn-account-link svg {
@@ -250,30 +250,30 @@
 }
 
 .rn-btn--outline {
-  color: #3A89FF !important;
-  border-color: #D9DEE7;
+  color: #3f7296 !important;
+  border-color: #3f7296;
   background: #ffffff;
   box-shadow: none;
 }
 
 .rn-btn--outline:hover {
-  color: #3A89FF !important;
-  border-color: #3A89FF;
+  color: #3f7296 !important;
+  border-color: #3f7296;
   background: #ffffff;
   box-shadow: none;
 }
 
 .rn-btn--accent {
   color: #fff !important;
-  border-color: #FF8200;
-  background: #FF8200;
+  border-color: #3f7296;
+  background: #3f7296;
   box-shadow: none;
 }
 
 .rn-btn--accent:hover {
   color: #fff !important;
-  background: #e87300;
-  border-color: #e87300;
+  background: #2f5f80;
+  border-color: #2f5f80;
   box-shadow: none;
   transform: translateY(-1px);
 }
@@ -297,10 +297,10 @@
   min-height: 40px !important;
   width: auto !important;
   padding: 10px 16px !important;
-  border: 1px solid #D9DEE7 !important;
+  border: 1px solid #3f7296 !important;
   border-radius: 5px !important;
   background: #ffffff !important;
-  color: #3A89FF !important;
+  color: #3f7296 !important;
   box-shadow: none !important;
   text-shadow: none !important;
   font-family: 'Inter', sans-serif !important;
@@ -323,9 +323,9 @@
 .rn-mobile-nav .rn-info-menu--mobile > .rn-info-menu__toggle.rn-btn:hover,
 .rn-mobile-nav .rn-info-menu--mobile > .rn-info-menu__toggle.rn-btn:focus,
 .rn-mobile-nav .rn-info-menu--mobile.is-open > .rn-info-menu__toggle.rn-btn {
-  border-color: #3A89FF !important;
+  border-color: #3f7296 !important;
   background: #ffffff !important;
-  color: #3A89FF !important;
+  color: #3f7296 !important;
   box-shadow: none !important;
 }
 
@@ -333,9 +333,9 @@
 .rn-mobile-nav .rn-btn--accent.rn-mobile-nav__cta {
   min-height: 40px !important;
   padding: 10px 16px !important;
-  border: 1px solid #FF8200 !important;
+  border: 1px solid #3f7296 !important;
   border-radius: 5px !important;
-  background: #FF8200 !important;
+  background: #3f7296 !important;
   color: #ffffff !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 16px !important;
@@ -348,8 +348,8 @@
 #rn-header .rn-header__cta > .rn-btn--accent:focus,
 .rn-mobile-nav .rn-btn--accent.rn-mobile-nav__cta:hover,
 .rn-mobile-nav .rn-btn--accent.rn-mobile-nav__cta:focus {
-  border-color: #e87300 !important;
-  background: #e87300 !important;
+  border-color: #2f5f80 !important;
+  background: #2f5f80 !important;
   color: #ffffff !important;
   box-shadow: none !important;
 }
@@ -418,14 +418,14 @@
 }
 
 .rn-info-menu__item:hover {
-  background: rgba(58, 137, 255, 0.06);
-  color: #3A89FF !important;
+  background: rgba(63, 114, 150, 0.06);
+  color: #3f7296 !important;
 }
 
 #rn-header .rn-info-menu__item:hover,
 .rn-mobile-nav .rn-info-menu__item:hover {
-  background: rgba(58, 137, 255, 0.06) !important;
-  color: #3A89FF !important;
+  background: rgba(63, 114, 150, 0.06) !important;
+  color: #3f7296 !important;
 }
 
 /* ── Hamburger ── */
@@ -549,7 +549,7 @@
 }
 
 .rn-mobile-nav__list a:hover {
-  color: #3A89FF !important;
+  color: #3f7296 !important;
 }
 
 .rn-mobile-nav__list .rn-nav__chev {
@@ -600,9 +600,9 @@
 
 .rn-account-link--mobile:hover,
 .rn-account-link--mobile:focus {
-  border-color: #3A89FF;
+  border-color: #3f7296;
   background: #ffffff;
-  box-shadow: 0 6px 16px rgba(58, 137, 255, 0.14);
+  box-shadow: 0 6px 16px rgba(63, 114, 150, 0.14);
 }
 
 .rn-account-link--mobile svg {
