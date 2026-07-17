@@ -69,7 +69,7 @@ ul {
 }
 
 h1, h2, h3, h4, h5 {
-    font-family: 'Balgin Bold';
+    font-family: 'Work Sans', sans-serif;
     color: var(--color-text);
     line-height: 0.8;
     margin-top: 15px;

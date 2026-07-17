@@ -1,14 +1,5 @@
 /* Gravity Forms custom styling for Sustainablejobs.nl */
 
-@font-face {
-  font-family: 'Balgin-Bold';
-  src: url('/wp-content/themes/studentinhuren-nl/fonts/Balgin-Bold.woff2') format('woff2'),
-       url('/wp-content/themes/studentinhuren-nl/fonts/Balgin-Bold.woff') format('woff');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
 :root {
   /* 🔁 Verwisselbaar kleurenpalet voor branding */
   --color-primary: #2f5f80;
@@ -49,7 +40,7 @@ label.gfield_label.gform-field-label {
   border-radius: 5px !important;
   cursor: pointer !important;
   width: 100% !important;
-  font-family: "Balgin Bold", sans-serif !important;
+  font-family: "Work Sans", sans-serif !important;
 }
 
 .gform_wrapper input[type="submit"]:hover {
@@ -88,7 +79,7 @@ label.gfield_label.gform-field-label {
   font-size: 1.5rem;
   color: #333333;
   margin-bottom: 20px;
-  font-family: 'Balgin Bold';
+  font-family: 'Work Sans', sans-serif !important;
   padding-bottom: 5px;
 }
 

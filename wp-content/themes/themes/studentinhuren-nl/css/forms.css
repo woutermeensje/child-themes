@@ -146,7 +146,7 @@
 .si-ia__quill-wrap .ql-editor a {
     display: inline-block;
     text-align: left;
-    font-family: 'Balgin Bold', 'Poppins', sans-serif !important;
+    font-family: 'Work Sans', 'Poppins', sans-serif !important;
     font-weight: 700 !important;
     background: var(--color-accent, #80D424);
     color: #ffffff !important;
