@@ -192,6 +192,13 @@ function si_informatie_aanvragen_shortcode(): string {
                 si_admin_mail_headers($email)
             );
 
+            si_ac_subscribe_contact_to_list(STUDENTINHUREN_AC_AANVRAGEN_LIST_ID, [
+                'email'      => $email,
+                'first_name' => $voornaam,
+                'last_name'  => $achternaam,
+                'phone'      => $telefoon,
+            ]);
+
             si_redirect_or_fallback(home_url('/bedankt-informatie-aanvraag/'));
         }
     }

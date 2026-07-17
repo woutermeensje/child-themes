@@ -1,0 +1,507 @@
+/* =========================================================
+   Job Alerts — [fondsen-job-alerts]
+   ========================================================= */
+
+/* Notices */
+.fn-ja-notice {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 20px 24px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    max-width: 600px;
+}
+
+.fn-ja-notice--success {
+    background: #E7F4FB;
+    border: 1px solid #0884CC;
+    color: #0884CC;
+}
+
+.fn-ja-notice--success strong { color: #0884CC; }
+
+.fn-ja-notice--error {
+    background: #fff3f3;
+    border: 1px solid #d63638;
+    color: #d63638;
+}
+
+.fn-ja-notice--error strong { color: #d63638; }
+
+.fn-ja-notice svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.fn-ja-notice p,
+.fn-ja-notice ul {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.fn-ja-notice ul {
+    padding-left: 18px;
+}
+
+/* Card */
+.fn-ja {
+    width: 600px;
+    max-width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.fn-ja__block {
+    background: #ffffff !important;
+    border: 1px solid #dedede;
+    border-radius: 5px;
+    padding: 56px 32px;
+}
+
+/* Header */
+.fn-ja__header {
+    margin-bottom: 24px;
+}
+
+.fn-ja__title {
+    margin: 0 0 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+}
+
+.fn-ja__subtitle {
+    margin: 0 0 24px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Fields grid */
+.fn-ja__fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.fn-ja__field--full {
+    grid-column: 1 / -1;
+}
+
+/* Label */
+.fn-ja__label {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    margin-bottom: 6px;
+    color: #333;
+}
+
+.fn-ja__req {
+    color: #d63638;
+}
+
+.fn-ja__optional {
+    color: #9ca3af;
+    font-size: 13px;
+}
+
+/* Input with icon */
+.fn-ja__input-wrap {
+    position: relative;
+}
+
+.fn-ja__icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+}
+
+.fn-ja__input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dedede !important;
+    border-radius: 5px !important;
+    font-size: 14px;
+    box-sizing: border-box;
+    color: #333;
+    background: #fff;
+    transition: border-color 0.15s;
+}
+
+.fn-ja__input:focus {
+    outline: none;
+    border-color: #0884CC;
+    box-shadow: 0 0 0 3px rgba(8, 132, 204, 0.1);
+}
+
+/* Active sector chips */
+.fn-ja-active-filters {
+    display: none;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.fn-ja-active-filters.has-items {
+    display: flex;
+}
+
+.fn-ja-chip {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    background: #ffffff !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    border-radius: 999px !important;
+    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15) !important;
+    padding: 8px 12px !important;
+    font-size: 15px !important;
+    color: #111 !important;
+    font-weight: 700 !important;
+    cursor: default !important;
+}
+
+.fn-ja-chip:hover {
+    border-color: #0884CC !important;
+}
+
+.fn-ja-chip__remove {
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    cursor: pointer !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    line-height: 1 !important;
+    color: #0884CC !important;
+    margin-left: 6px !important;
+}
+
+.fn-ja-chip__remove:hover {
+    color: #055D92 !important;
+}
+
+/* Footer / submit */
+.fn-ja__footer {
+    margin-top: 8px;
+}
+
+.fn-ja__submit {
+    display: inline-block;
+    padding: 11px 24px;
+    background: #FF8C2C !important;
+    color: #fff !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 15px;
+    font-weight: 700 !important;
+    border: 1px solid #FF8C2C !important;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.fn-ja__submit:hover {
+    background: #e67c1f;
+}
+
+/* =========================================================
+   Custom multiselect dropdown (fn-select)
+   Gebaseerd op sj-select styling uit job-filters.php
+   ========================================================= */
+
+.fn-hidden-select {
+    display: none !important;
+}
+
+.fn-select-wrap,
+.fn-select {
+    position: relative;
+    width: 100%;
+}
+
+/* Trigger button — pill shape, zoals sj-select-btn */
+.fn-select-btn {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+    border-radius: 5px;
+    border: 1px solid #dedede;
+    background-color: #ffffff;
+    padding: 8px 16px;
+    min-height: 38px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    user-select: none;
+    font-weight: 700;
+    font-size: 15px;
+    color: #111111;
+    box-sizing: border-box;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.fn-select-btn:hover,
+.fn-select.active .fn-select-btn {
+    border-color: #0884CC;
+}
+
+.fn-select-btn:focus {
+    outline: none;
+    border-color: #0884CC;
+    box-shadow: 0 0 0 2px rgba(8, 132, 204, 0.18);
+}
+
+.fn-btn-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+
+.fn-placeholder {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 700;
+    color: #111;
+    font-size: 15px;
+}
+
+.fn-actions {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 10px;
+}
+
+.fn-clear {
+    display: none !important;
+}
+
+/* Chevron — border-rotatie zoals sj-chev */
+.fn-chev {
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #111;
+    border-bottom: 2px solid #111;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.fn-select.active .fn-chev {
+    transform: rotate(-135deg);
+}
+
+/* Dropdown lijst — zwevend, niet aangehecht */
+.fn-options {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: auto;
+    width: max-content;
+    min-width: 100%;
+    margin-top: 10px;
+    background: #fff;
+    border: 1px solid #dedede;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
+    padding: 8px;
+    max-height: 280px;
+    overflow: auto;
+    z-index: 9999;
+}
+
+.fn-select.active .fn-options {
+    display: block;
+}
+
+/* Zoekbalk */
+.fn-search {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #ffffff;
+    padding: 4px 4px 10px;
+}
+
+.fn-search-input {
+    width: 100%;
+    min-width: 220px;
+    border: 1px solid #dedede;
+    border-radius: 8px;
+    padding: 11px 12px;
+    font-size: 14px;
+    color: #333;
+    background: #ffffff;
+    box-sizing: border-box;
+}
+
+.fn-search-input::placeholder {
+    color: #7c7c7c;
+}
+
+.fn-search-input:focus {
+    outline: none;
+    border-color: #0884CC;
+    box-shadow: 0 0 0 2px rgba(8, 132, 204, 0.16);
+}
+
+/* Opties */
+.fn-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.fn-option:hover {
+    background: #f8f8f8;
+}
+
+.fn-option.is-selected .fn-option-text {
+    color: #0884CC;
+    font-weight: 700;
+}
+
+.fn-option-text {
+    font-weight: 600;
+    color: #333;
+}
+
+/* =========================================================
+   Nieuwsbrief — [fondsen-nieuwsbrief]
+   ========================================================= */
+
+.fn-nl__label {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    font-size: 15px;
+    font-weight: 300;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+/* =========================================================
+   Job Alerts Sidebar — [fondsen-job-alerts-sidebar]
+   ========================================================= */
+
+.fn-ja-sb__subtitle {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #6B7280;
+    margin: -8px 0 16px;
+}
+
+.fn-ja-sb__errors {
+    background: #fff3f3;
+    border: 1px solid #fca5a5;
+    border-radius: 5px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+}
+
+.fn-ja-sb__errors p {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #991b1b;
+}
+
+.fn-ja-sb__form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.fn-ja-sb__field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.fn-ja-sb__label {
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+.fn-ja-sb__req {
+    color: #d63638;
+}
+
+.fn-ja-sb__input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #dedede !important;
+    border-radius: 5px !important;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #333;
+    background: #fff;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+}
+
+.fn-ja-sb__input:focus {
+    outline: none;
+    border-color: #0884CC !important;
+    box-shadow: 0 0 0 3px rgba(8, 132, 204, 0.1);
+}
+
+/* Compact overrides voor de select-widget in de sidebar */
+.fn-ja-sb__field .fn-select-btn {
+    padding: 7px 12px;
+    font-size: 13px;
+    min-height: 34px;
+}
+
+.fn-ja-sb__field .fn-placeholder {
+    font-size: 13px;
+}
+
+.fn-ja-sb__submit {
+    width: 100%;
+    padding: 10px 16px;
+    background: #FF8C2C !important;
+    color: #fff !important;
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px;
+    font-weight: 700 !important;
+    border: 1px solid #FF8C2C !important;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.fn-ja-sb__submit:hover {
+    background: #e67c1f !important;
+    border-color: #e67c1f !important;
+}
+
+.fn-ja-sb__success {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 14px;
+    background: #E7F4FB;
+    border: 1px solid #0884CC;
+    border-radius: 5px;
+    color: #0884CC;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+}
