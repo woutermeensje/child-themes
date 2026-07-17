@@ -52,16 +52,16 @@ if (!function_exists('si_admin_email_value')) {
         }
 
         if ($type === 'email' && is_email($value)) {
-            return '<a href="mailto:' . esc_attr($value) . '" style="color:#2563eb;text-decoration:none;">' . esc_html($value) . '</a>';
+            return '<a href="mailto:' . esc_attr($value) . '" style="color:#2f5f80;text-decoration:none;">' . esc_html($value) . '</a>';
         }
 
         if ($type === 'tel') {
             $tel = preg_replace('/[^\d+]/', '', $value);
-            return '<a href="tel:' . esc_attr($tel) . '" style="color:#2563eb;text-decoration:none;">' . esc_html($value) . '</a>';
+            return '<a href="tel:' . esc_attr($tel) . '" style="color:#2f5f80;text-decoration:none;">' . esc_html($value) . '</a>';
         }
 
         if ($type === 'url') {
-            return '<a href="' . esc_url($value) . '" style="color:#2563eb;text-decoration:none;">' . esc_html($value) . '</a>';
+            return '<a href="' . esc_url($value) . '" style="color:#2f5f80;text-decoration:none;">' . esc_html($value) . '</a>';
         }
 
         return esc_html($value);
@@ -96,7 +96,7 @@ if (!function_exists('si_build_admin_email')) {
         if ($post_id > 0) {
             $admin_link = '
                 <p style="margin:22px 0 0;">
-                    <a href="' . esc_url(admin_url('post.php?post=' . $post_id . '&action=edit')) . '" style="display:inline-block;padding:10px 14px;border-radius:6px;background:#3A89FF;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;">Bekijk in WordPress</a>
+                    <a href="' . esc_url(admin_url('post.php?post=' . $post_id . '&action=edit')) . '" style="display:inline-block;padding:10px 14px;border-radius:6px;background:#2f5f80;color:#ffffff;text-decoration:none;font-size:14px;font-weight:700;">Bekijk in WordPress</a>
                 </p>';
         }
 
@@ -105,7 +105,7 @@ if (!function_exists('si_build_admin_email')) {
 <body style="margin:0;padding:0;background:#f3f4f6;font-family:Inter,Arial,sans-serif;color:#111827;">
     <div style="padding:28px 16px;">
         <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e5e7eb;border-radius:10px;overflow:hidden;">
-            <div style="padding:22px 26px;background:#3A89FF;color:#ffffff;">
+            <div style="padding:22px 26px;background:#2f5f80;color:#ffffff;">
                 <p style="margin:0 0 6px;font-size:13px;font-weight:700;letter-spacing:.02em;text-transform:uppercase;">Studentinhuren.nl</p>
                 <h1 style="margin:0;font-size:22px;line-height:1.25;color:#ffffff;">' . esc_html($title) . '</h1>
             </div>

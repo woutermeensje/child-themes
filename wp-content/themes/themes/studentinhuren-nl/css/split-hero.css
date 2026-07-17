@@ -19,7 +19,7 @@
   display: flex;
   align-items: center;
   overflow: hidden;
-  background-color: var(--color-primary, #3A89FF);
+  background-color: var(--color-primary, #2f5f80);
   background-size: cover;
   background-position: center top;
   box-sizing: border-box;
@@ -100,8 +100,8 @@
   justify-content: center;
   padding: 10px 24px;
   border-radius: 5px;
-  border: 2px solid var(--color-accent, #80D424);
-  background: var(--color-accent, #80D424);
+  border: 2px solid #2f5f80;
+  background: #2f5f80;
   font-family: 'Work Sans', sans-serif;
   font-size: 15px;
   font-weight: 700;
@@ -113,8 +113,8 @@
 }
 
 .si-split-hero__personnel-btn:hover {
-  background: var(--color-accent-dk, #6db81e);
-  border-color: var(--color-accent-dk, #6db81e);
+  background: #2f5f80;
+  border-color: #2f5f80;
   color: #ffffff !important;
   transform: translateY(-1px);
 }

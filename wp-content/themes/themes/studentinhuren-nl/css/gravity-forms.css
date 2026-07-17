@@ -11,10 +11,10 @@
 
 :root {
   /* 🔁 Verwisselbaar kleurenpalet voor branding */
-  --color-primary: #3a89ff;
+  --color-primary: #2f5f80;
   --color-secondary: #FF8200;
-  --color-tertiary: #3a89ff;
-  --color-accent: #3a89ff;
+  --color-tertiary: #2f5f80;
+  --color-accent: #2f5f80;
 
   /* 🧱 Vaste kleuren voor tekst en contrast */
   --color-text: #333333;

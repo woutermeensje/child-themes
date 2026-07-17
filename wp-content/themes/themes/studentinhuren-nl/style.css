@@ -14,9 +14,10 @@ Text Domain: Studentinhuren
 @import url("../hello-elementor/style.css");
 
 :root {
-  /* ── Merkkleur primair: blauw ── */
-  --color-primary:      #3A89FF;
-  --color-primary-dk:   #1a6fe0;
+  /* ── Merkkleur primair: platform blauw ── */
+  --color-primary:      #2f5f80;
+  --color-primary-dk:   #2f5f80;
+  --color-primary-rgb:  47, 95, 128;
 
   /* ── Merkkleur secundair: oranje ── */
   --color-secondary:    #FF8200;

@@ -429,7 +429,7 @@ body .filter-header a.unstyled-newsletter-link:hover {
 .search-basic input[type="text"]:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(58, 137, 255, 0.18);
+  box-shadow: 0 0 0 3px rgba(47, 95, 128, 0.18);
 }
 
 .search_keywords input::placeholder,
@@ -606,7 +606,7 @@ select.sj-hidden-select {
 .sj-search-input:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(58, 137, 255, 0.16);
+  box-shadow: 0 0 0 2px rgba(47, 95, 128, 0.16);
 }
 
 .sj-option {
@@ -665,7 +665,7 @@ select.sj-hidden-select {
 .sj-select-btn:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(58, 137, 255, 0.18);
+  box-shadow: 0 0 0 2px rgba(47, 95, 128, 0.18);
 }
 
 .active-filters {

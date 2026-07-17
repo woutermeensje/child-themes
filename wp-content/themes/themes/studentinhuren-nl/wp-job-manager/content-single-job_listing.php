@@ -249,7 +249,7 @@ html, body {
   justify-content: center;
   padding: 10px 14px;
   border-radius: 8px;
-  background: rgba(58, 137, 255, 0.12);
+  background: rgba(47, 95, 128, 0.12);
   color: var(--color-primary) !important;
   border: 1px solid var(--color-primary);
   text-decoration: none !important;
@@ -306,7 +306,7 @@ html, body {
 }
 
 .sj-chip--link:hover {
-  border-color: rgba(58, 137, 255, 0.35);
+  border-color: rgba(47, 95, 128, 0.35);
 }
 
 /* Header */
@@ -362,7 +362,7 @@ html, body {
   justify-content: center;
   padding: 10px 14px;
   border-radius: 10px;
-  background: rgba(58, 137, 255, 0.12);
+  background: rgba(47, 95, 128, 0.12);
   color: var(--color-primary) !important;
   text-decoration: none !important;
   border: 1px solid var(--color-primary);
@@ -474,7 +474,7 @@ h2.sj-contact-title {
 
 .sj-recent-item:hover {
   transform: translateY(-3px);
-  border-color: rgba(58, 137, 255, 0.35);
+  border-color: rgba(47, 95, 128, 0.35);
   box-shadow: 0 18px 44px rgba(16,24,40,.14);
 }
 
