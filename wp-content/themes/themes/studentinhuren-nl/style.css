@@ -116,7 +116,7 @@ h4, h5 {
 
 .simple-job h3 {
     margin: 0 0 10px;
-    font-family: 'Balgin Bold', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 18px;
 }
 
@@ -144,4 +144,15 @@ h4, h5 {
 ul {
     margin: 20px 0px;
 	font-size: 15px
+}
+
+.job-manager-form h2,
+#job_preview .job_listing_preview_title h2,
+#job_preview .job_listing_preview h1,
+.job_summary_title,
+.job_listings .position h3,
+.job-widget-title,
+.jm-dashboard .job_title,
+.jm-notice__title {
+    font-family: 'Work Sans', sans-serif !important;
 }

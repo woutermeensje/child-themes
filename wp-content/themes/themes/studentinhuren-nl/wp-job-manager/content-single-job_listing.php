@@ -320,7 +320,7 @@ html, body {
 
 .sj-title {
   margin: 0;
-  font-family: Inter, system-ui, sans-serif;
+  font-family: 'Work Sans', system-ui, sans-serif !important;
   font-size: 26px;
   line-height: 1.15;
   font-weight: 800;
@@ -386,7 +386,7 @@ h1.entry-title { display: none; }
 }
 
 h2.sj-contact-title {
-  font-family: Poppins;
+  font-family: 'Work Sans', system-ui, sans-serif !important;
   font-weight: 600;
   font-size: 20px;
   color: #333;
@@ -441,7 +441,7 @@ h2.sj-contact-title {
 
 .sj-recent-title {
   margin: 0;
-  font-family: Poppins;
+  font-family: 'Work Sans', system-ui, sans-serif !important;
   font-weight: 700;
   font-size: 20px;
   color: var(--sj-ink);
@@ -525,7 +525,7 @@ h2.sj-contact-title {
 
 h3.sj-recent-jobtitle {
   margin: 0;
-  font-family: Poppins;
+  font-family: 'Work Sans', system-ui, sans-serif !important;
   font-size: 16px;
   font-weight: 700;
   line-height: 1.25;

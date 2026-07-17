@@ -20,11 +20,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<?php if ( isset( $show_logo ) && $show_logo ) { ?>
 		<div class="image">
 			<?php the_company_logo(); ?>
-		</div>
-		<?php } ?>
+			</div>
+			<?php } ?>
 		<div class="content">
 			<div class="position">
-				<h3><?php wpjm_the_job_title(); ?></h3>
+				<h3 class="job-widget-title"><?php wpjm_the_job_title(); ?></h3>
 			</div>
 			<ul class="meta">
 				<li class="location"><?php the_job_location( false ); ?></li>

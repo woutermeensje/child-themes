@@ -312,7 +312,7 @@ a.title-link {
 
 .job_listing .job_listing_content h2 {
     margin: 0 0 5px 0;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Work Sans', sans-serif !important;
     font-size: 20px;
     font-weight: 700;
     overflow-wrap: anywhere;
@@ -459,7 +459,7 @@ a.title-link {
 
 .job-mobile__title {
     margin: 4px 0 0 0 !important;
-    font-family: 'Poppins', sans-serif !important;
+    font-family: 'Work Sans', sans-serif !important;
     font-weight: 700 !important;
     font-size: 18px !important;
     line-height: 1.25 !important;

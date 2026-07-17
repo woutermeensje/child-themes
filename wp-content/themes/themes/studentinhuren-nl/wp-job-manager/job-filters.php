@@ -371,7 +371,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 .filter-header h2 {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Work Sans', sans-serif !important;
   font-size: 28px;
   line-height: 1.1;
   font-weight: 700;

@@ -250,6 +250,7 @@ add_action('wp_enqueue_scripts', function () {
     // Fonts
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
+    wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@600;700;800;900&display=swap', [], null);
     wp_enqueue_style('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
 
@@ -280,7 +281,6 @@ add_action('wp_enqueue_scripts', function () {
 
     // Split hero page template CSS
     if (is_page_template('page-split-hero.php') && file_exists(get_stylesheet_directory() . '/css/split-hero.css')) {
-        wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;800;900&display=swap', [], null);
         wp_enqueue_style('studentinhuren-split-hero', get_stylesheet_directory_uri() . '/css/split-hero.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/split-hero.css'));
     }
 
