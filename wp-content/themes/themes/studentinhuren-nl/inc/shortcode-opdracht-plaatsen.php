@@ -200,10 +200,7 @@ function si_opdracht_plaatsen_shortcode(): string {
                 get_option('admin_email'),
                 "Nieuwe opdracht van $voornaam $achternaam",
                 $body,
-                [
-                    'Content-Type: text/html; charset=UTF-8',
-                    'Reply-To: ' . $email,
-                ]
+                si_admin_mail_headers($email)
             );
 
             si_redirect_or_fallback(home_url('/bedankt-opdracht-plaatsen/'));

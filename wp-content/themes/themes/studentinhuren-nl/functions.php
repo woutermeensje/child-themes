@@ -43,6 +43,22 @@ if (!function_exists('si_is_duplicate_form_submission')) {
     }
 }
 
+if (!function_exists('si_admin_mail_headers')) {
+    function si_admin_mail_headers(string $reply_to = ''): array {
+        $headers = [
+            'Content-Type: text/html; charset=UTF-8',
+            'From: support@studentinhuren.nl',
+        ];
+
+        $reply_to = sanitize_email($reply_to);
+        if ($reply_to && is_email($reply_to)) {
+            $headers[] = 'Reply-To: ' . $reply_to;
+        }
+
+        return $headers;
+    }
+}
+
 if (!function_exists('si_admin_email_value')) {
     function si_admin_email_value(string $value, string $type = 'text'): string {
         $value = trim($value);
