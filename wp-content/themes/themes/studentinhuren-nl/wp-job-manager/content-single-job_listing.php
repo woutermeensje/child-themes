@@ -178,7 +178,7 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
   --sj-muted: #6B7280;
   --sj-border: #DEDEDE;
   --sj-card: #FFFFFF;
-  --sj-blue: var(--color-primary);
+  --sj-blue: #3A89FF;
   --sj-radius: 12px;
   --sj-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
 }
@@ -249,9 +249,9 @@ html, body {
   justify-content: center;
   padding: 10px 14px;
   border-radius: 8px;
-  background: rgba(47, 95, 128, 0.12);
-  color: var(--color-primary) !important;
-  border: 1px solid var(--color-primary);
+  background: rgba(58, 137, 255, 0.12) !important;
+  color: #3A89FF !important;
+  border: 1px solid #3A89FF !important;
   text-decoration: none !important;
   font-family: Poppins, system-ui, sans-serif;
   font-weight: 600;
@@ -306,7 +306,7 @@ html, body {
 }
 
 .sj-chip--link:hover {
-  border-color: rgba(47, 95, 128, 0.35);
+  border-color: rgba(58, 137, 255, 0.35) !important;
 }
 
 /* Header */
@@ -337,7 +337,7 @@ html, body {
   font-family: Poppins, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: var(--color-primary);
+  color: #3A89FF !important;
 }
 
 /* Content */
@@ -362,10 +362,10 @@ html, body {
   justify-content: center;
   padding: 10px 14px;
   border-radius: 10px;
-  background: rgba(47, 95, 128, 0.12);
-  color: var(--color-primary) !important;
+  background: rgba(58, 137, 255, 0.12) !important;
+  color: #3A89FF !important;
   text-decoration: none !important;
-  border: 1px solid var(--color-primary);
+  border: 1px solid #3A89FF !important;
   font-family: Poppins, system-ui, sans-serif;
   font-weight: 700;
   font-size: 14px;
@@ -422,7 +422,7 @@ h2.sj-contact-title {
 }
 
 .sj-contact-link {
-  color: var(--color-primary) !important;
+  color: #3A89FF !important;
   text-decoration: none !important;
 }
 
@@ -474,7 +474,7 @@ h2.sj-contact-title {
 
 .sj-recent-item:hover {
   transform: translateY(-3px);
-  border-color: rgba(47, 95, 128, 0.35);
+  border-color: rgba(58, 137, 255, 0.35) !important;
   box-shadow: 0 18px 44px rgba(16,24,40,.14);
 }
 
@@ -520,7 +520,7 @@ h2.sj-contact-title {
   font-family: Poppins, system-ui, sans-serif;
   font-size: 13px;
   font-weight: 700;
-  color: var(--color-primary);
+  color: #3A89FF !important;
 }
 
 h3.sj-recent-jobtitle {
@@ -549,7 +549,7 @@ h3.sj-recent-jobtitle {
 }
 
 .sj-recent-item:hover .sj-recent-jobtitle {
-  color: var(--color-primary);
+  color: #3A89FF !important;
 }
 
 @media (max-width: 768px) {

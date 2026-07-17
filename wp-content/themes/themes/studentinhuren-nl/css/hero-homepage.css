@@ -14,8 +14,8 @@
 
 /* ── Left: blauwe zijde met schuine clip ── */
 .welcome-v2__hero-left {
-  background: #2f5f80;
-  color: #fff;
+  background: #3A89FF !important;
+  color: #fff !important;
   position: relative;
   z-index: 2;
   height: 100%;
@@ -49,11 +49,11 @@
 .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-left {
   background: linear-gradient(
     180deg,
-    #2f5f80 0%,
-    #2f5f80 80%,
+    #3A89FF 0%,
+    #3A89FF 80%,
     #ffffff 80%,
     #ffffff 100%
-  );
+  ) !important;
 }
 
 .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-copy {
@@ -162,13 +162,13 @@
 }
 
 .welcome-v2__hero-contact-item i {
-  color: #FF8200;
+  color: #FF8200 !important;
   font-size: 22px;
   flex: 0 0 auto;
 }
 
 .welcome-v2__hero-contact-item:hover {
-  color: #2f5f80 !important;
+  color: #3A89FF !important;
 }
 
 /* ── Rechterkant: achtergrondafbeelding ── */
@@ -189,7 +189,7 @@
   .welcome-v2__hero {
     height: auto;
     display: grid;
-    background: #2f5f80;
+    background: #3A89FF !important;
   }
 
   .welcome-v2__hero-left {
@@ -197,7 +197,7 @@
     min-height: auto;
     clip-path: none;
     order: 1;
-    background: #2f5f80;
+    background: #3A89FF !important;
   }
 
   .welcome-v2__hero-content {
@@ -225,7 +225,7 @@
   }
 
   .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-left {
-    background: #2f5f80;
+    background: #3A89FF !important;
   }
 
   .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-copy {

@@ -199,8 +199,8 @@ ul.job_listings li.job_listing {
 }
 
 .job-card:hover {
-    border-color: #2f5f80;
-    box-shadow: 0 4px 24px rgba(47, 95, 128, 0.14);
+    border-color: #3A89FF !important;
+    box-shadow: 0 4px 24px rgba(58, 137, 255, 0.14);
 }
 
 .job-card,
@@ -241,7 +241,7 @@ ul.job_listings li.job_listing {
 }
 
 .background-inner--empty {
-    background: #2f5f80;
+    background: #3A89FF !important;
     opacity: 0.15;
 }
 
@@ -250,7 +250,7 @@ ul.job_listings li.job_listing {
     width: 100%;
     height: 100%;
     top: 0;
-    background-color: #2f5f80;
+    background-color: #3A89FF !important;
     opacity: 0.30;
 }
 
@@ -321,7 +321,7 @@ a.title-link {
 }
 
 .job-card:hover a.title-link h2 {
-    color: #2f5f80;
+    color: #3A89FF !important;
 }
 
 /* ---- Excerpt ---- */
@@ -358,7 +358,7 @@ a.title-link {
     display: flex;
     align-items: center;
     flex-shrink: 0;
-    color: #2f5f80;
+    color: #3A89FF !important;
 }
 
 .job-card-meta__text,
@@ -496,7 +496,7 @@ a.title-link {
     display: flex;
     align-items: center;
     flex: 0 0 auto;
-    color: #2f5f80;
+    color: #3A89FF !important;
 }
 
 .job-mobile__text {
@@ -511,8 +511,8 @@ a.title-link {
 .job-mobile__cta {
     display: inline-block;
     margin-top: 18px;
-    background: #FF8200;
-    color: #fff;
+    background: #FF8200 !important;
+    color: #fff !important;
     padding: 10px 22px;
     border-radius: 4px;
     font-family: 'Poppins', sans-serif;

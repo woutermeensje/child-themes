@@ -11,7 +11,7 @@
   margin-bottom: 72px;
   overflow: hidden;
   display: flex;
-  background-color: var(--color-primary);
+  background-color: #3A89FF !important;
   border-bottom: 1px solid #dedede;
 }
 
@@ -24,8 +24,8 @@
 
 .fnd-hero__left-main {
   flex: 4;
-  background-color: var(--color-primary);
-  color: #ffffff;
+  background-color: #3A89FF !important;
+  color: #ffffff !important;
   padding: clamp(32px, 5vw, 56px) clamp(24px, 5vw, 56px);
   display: flex;
   flex-direction: column;
@@ -89,14 +89,14 @@
 }
 
 .fnd-hero__btn--primary {
-  background-color: #2f5f80;
-  border: 2px solid #2f5f80;
+  background-color: #80D424 !important;
+  border: 2px solid #80D424 !important;
   color: #ffffff !important;
 }
 
 .fnd-hero__btn--primary:hover {
-  background-color: #2f5f80;
-  border-color: #2f5f80;
+  background-color: #6db81e !important;
+  border-color: #6db81e !important;
   transform: translateY(-1px);
 }
 
@@ -133,11 +133,11 @@
 }
 
 .fnd-hero__contact-item svg {
-  color: var(--color-primary);
+  color: #3A89FF !important;
   flex-shrink: 0;
 }
 
-.fnd-hero__contact-item:hover { color: var(--color-primary) !important; }
+.fnd-hero__contact-item:hover { color: #3A89FF !important; }
 
 /* Afbeelding rechts met schuine scheiding */
 .fnd-hero__right {
@@ -153,7 +153,7 @@
 }
 
 .fnd-hero__right--placeholder {
-  background: linear-gradient(135deg, rgba(var(--color-primary-rgb, 47, 95, 128), 0.4), rgba(var(--color-primary-rgb, 47, 95, 128), 0.6));
+  background: linear-gradient(135deg, rgba(58, 137, 255, 0.4), rgba(58, 137, 255, 0.6)) !important;
 }
 
 @media (max-width: 768px) {
