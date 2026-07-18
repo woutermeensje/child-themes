@@ -98,6 +98,93 @@ class RN_Nav_Walker extends Walker_Nav_Menu {
 }
 endif;
 
+if (!function_exists('inhuren_build_primary_nav_item')) {
+    function inhuren_build_primary_nav_item(int $id, string $title, string $url, int $parent_id = 0, array $classes = []): WP_Post {
+        $item = new stdClass();
+        $item->ID = $id;
+        $item->db_id = $id;
+        $item->menu_item_parent = $parent_id;
+        $item->object_id = $id;
+        $item->object = 'custom';
+        $item->type = 'custom';
+        $item->type_label = 'Custom Link';
+        $item->title = $title;
+        $item->url = $url;
+        $item->target = '';
+        $item->attr_title = '';
+        $item->description = '';
+        $item->classes = array_merge(['menu-item', 'menu-item-type-custom', 'menu-item-object-custom'], $classes);
+        $item->xfn = '';
+        $item->current = false;
+        $item->current_item_ancestor = false;
+        $item->current_item_parent = false;
+        $item->menu_order = abs($id);
+
+        return new WP_Post($item);
+    }
+}
+
+add_filter('wp_nav_menu_objects', function ($items, $args) {
+    if (empty($args->theme_location) || $args->theme_location !== 'primary_nav') {
+        return $items;
+    }
+
+    $parent_id = -21000;
+
+    foreach ($items as $item) {
+        if ((int) $item->menu_item_parent !== 0 || trim(wp_strip_all_tags($item->title)) !== 'Inhuren') {
+            continue;
+        }
+
+        $parent_id = (int) $item->ID;
+        if (!in_array('menu-item-has-children', (array) $item->classes, true)) {
+            $item->classes[] = 'menu-item-has-children';
+        }
+        break;
+    }
+
+    if ($parent_id === -21000) {
+        $items[] = inhuren_build_primary_nav_item(
+            $parent_id,
+            'Inhuren',
+            '#',
+            0,
+            ['menu-item-has-children']
+        );
+    }
+
+    $existing_child_urls = [];
+    foreach ($items as $item) {
+        if ((int) $item->menu_item_parent === $parent_id && !empty($item->url)) {
+            $existing_child_urls[] = untrailingslashit((string) $item->url);
+        }
+    }
+
+    $inhuren_links = [
+        'Verhuizers'              => '/verhuizers-inhuren/',
+        'Monteurs'                => '/monteur-inhuren/',
+        'Bijrijders'              => '/bijrijder-inhuren/',
+        'Vrachtwagenchauffeurs'   => '/vrachtwagenchauffeur-inhuren/',
+        'Logistiek medewerkers'   => '/logistiek-medewerker/',
+        'Reachtruckchauffeurs'    => '/reachtruckchauffeur-inhuren/',
+        'Heftruckchauffeurs'      => '/heftruckchauffeur/',
+        'Sjouwers'                => '/sjouwers-inhuren/',
+    ];
+
+    $child_id = -21001;
+    foreach ($inhuren_links as $title => $path) {
+        $url = home_url($path);
+        if (in_array(untrailingslashit($url), $existing_child_urls, true)) {
+            continue;
+        }
+
+        $items[] = inhuren_build_primary_nav_item($child_id, $title, $url, $parent_id);
+        $child_id--;
+    }
+
+    return $items;
+}, 10, 2);
+
 add_action('after_setup_theme', function () {
     register_nav_menus([
         'primary_nav' => 'Primaire navigatie',

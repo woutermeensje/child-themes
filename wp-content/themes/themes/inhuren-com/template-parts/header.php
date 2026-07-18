@@ -194,7 +194,14 @@ if (!$mobile_logo_url) {
     if (!e.target.closest('.rn-mobile-nav__panel')) closeMenu();
   });
 
-  mobileNav.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  mobileNav.querySelectorAll('a').forEach((link) => link.addEventListener('click', (event) => {
+    if (link.getAttribute('href') === '#') {
+      event.preventDefault();
+      return;
+    }
+
+    closeMenu();
+  }));
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
