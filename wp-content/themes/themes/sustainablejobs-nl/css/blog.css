@@ -421,7 +421,7 @@ body:not([class*=elementor-page-]) .sj-single-page {
     padding: 10px 20px;
     background: var(--color-secondary, #C5D77F);
     border-radius: 4px;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 15px;
     font-weight: 600;
     color: #073d4f !important;

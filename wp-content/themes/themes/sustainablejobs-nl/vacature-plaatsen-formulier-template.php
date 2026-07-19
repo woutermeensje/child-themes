@@ -98,7 +98,7 @@ body {
     color: #168AAD;
     border-bottom: 1px solid #ddd;
     padding-bottom: 5px;
-    font-family: Balgin bold; 
+    font-family: 'Work Sans', sans-serif; 
 }
 
 .form-grid {
@@ -155,7 +155,7 @@ body {
     margin-top: 20px;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    font-family: Balgin bold; 
+    font-family: 'Work Sans', sans-serif; 
 }
 
 .form-wrapper input[type="submit"]:hover {

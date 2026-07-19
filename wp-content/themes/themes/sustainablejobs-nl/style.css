@@ -13,15 +13,6 @@ Text Domain: sustainablejobs-nl
 
 @import url("../hello-elementor/style.css");
 
-@font-face {
-    font-family: 'Balgin-Bold';
-    src: url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff2') format('woff2'),
-         url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
 :root {
   /* Sustainablejobs brand palette */
   --color-fresh-leaf:    #9BCB86;
@@ -133,7 +124,7 @@ html, body {
 }
 
 .fnd-hero .fnd-hero__title {
-  font-family: 'Balgin-Bold', serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 24px;
   line-height: 1.05;
   color: #ffffff;
@@ -162,9 +153,9 @@ html, body {
   align-items: center;
   justify-content: center;
   padding: 6px 14px;
-  font-family: 'Balgin-Bold', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   border-radius: 4px;
-  font-family: 'Balgin-Bold', serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 15px;
   text-decoration: none !important;
   transition: background .15s ease, border-color .15s ease;
@@ -329,7 +320,7 @@ ul {
 }
 
 h1, h2, h3, h4, h5 {
-    font-family: 'Balgin Bold';
+    font-family: 'Work Sans', sans-serif;
     color: var(--color-text);
     line-height: 0.8;
     margin-top: 15px;
@@ -376,7 +367,7 @@ h4, h5 {
 
 .simple-job h3 {
     margin: 0 0 10px;
-    font-family: 'Balgin Bold', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 18px;
 }
 
@@ -605,7 +596,7 @@ form.company_filter-form {
 }
 
 .bedrijf-title {
-    font-family: 'Balgin Bold', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 20px;
     color: var(--color-primary);
     margin-bottom: 10px;
@@ -748,7 +739,7 @@ form.company_filter-form {
 
 .sj-tarieven__title {
     margin: 0 0 10px;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 36px;
     line-height: 1;
     color: #2c2f33;
@@ -764,7 +755,7 @@ form.company_filter-form {
 
 .sj-tarieven__price {
     margin-bottom: 8px;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 48px;
     line-height: 0.95;
     color: var(--color-primary);
@@ -790,7 +781,7 @@ form.company_filter-form {
     background: linear-gradient(135deg, var(--color-primary), #2C8FAF);
     border: 2px solid transparent;
     color: #ffffff !important;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 15px;
     text-decoration: none !important;
     box-shadow: 0 16px 28px rgba(22, 138, 173, 0.2);

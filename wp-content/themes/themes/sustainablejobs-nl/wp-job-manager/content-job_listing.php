@@ -485,7 +485,7 @@ a.title-link {
     padding: 0 !important;
     color: var(--color-text);
     text-decoration: none;
-    font-family: Balgin-Bold, serif !important;
+    font-family: 'Work Sans', sans-serif !important;
 }
 
 a.title-link:hover h2 {

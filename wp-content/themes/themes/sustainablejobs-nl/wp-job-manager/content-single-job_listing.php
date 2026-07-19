@@ -598,7 +598,7 @@ a.sj-company-blok__name:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 14px;
     background-color: #C5D77F;
     border: 2px solid #C5D77F;
@@ -705,7 +705,7 @@ a.sj-company-blok__name:hover {
     color: var(--color-bg);
     background-color: var(--color-primary);
     border-radius: 5px;
-    font-family: Balgin-Bold;
+    font-family: 'Work Sans', sans-serif;
     text-decoration: none;
     display: inline-block;
     margin-top: 20px;
@@ -1039,7 +1039,7 @@ h1.entry-title { display: none; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 15px;
     font-weight: 600;
     background-color: var(--color-secondary, #C5D77F);

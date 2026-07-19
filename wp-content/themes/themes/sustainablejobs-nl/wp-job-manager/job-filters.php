@@ -172,11 +172,19 @@ $hero_job_count = function_exists( 'sj_get_open_job_listing_count' ) ? sj_get_op
 
 <div class="sj-job-hero"<?php if ( $hero_image ) : ?> style="background-image: url('<?php echo esc_url( $hero_image ); ?>');"<?php endif; ?>>
     <div class="sj-job-hero__inner">
-        <span class="sj-job-hero__eyebrow">Sustainablejobs.nl</span>
-        <div class="sj-job-hero__title-wrap">
-            <h1 class="sj-job-hero__title">Vacaturesite binnen de duurzaamheid, energietransitie, ecologie en banen met een positieve impact.</h1>
+        <div class="sj-job-hero__pane sj-job-hero__pane--content">
+            <div class="sj-job-hero__card">
+                <div class="sj-job-hero__title-wrap">
+                    <h1 class="sj-job-hero__title">De #1 Duurzame Vacaturebank van Nederland!</h1>
+                </div>
+                <p class="sj-job-hero__subtitle">Vacatures, opdachten, stages, vrijwilligerswerk en traineeships binnen de duurzaamheid, energietransitie, ecologie en banen met een positieve impact. Bekijk alle <a href="#job_listings" class="sj-job-hero__vacatures-link"><span class="sj-hero-job-count sj-job-hero__accent"><?php echo esc_html( number_format_i18n( $hero_job_count ) ); ?></span> vacatures</a> of meld je direct aan voor onze <a href="/nieuwsbrief/" class="sj-job-hero__link">vacature nieuwsbrief</a>.</p>
+                <div class="sj-job-hero__actions" aria-label="Snel naar">
+                    <a class="sj-job-hero__button sj-job-hero__button--primary" href="https://sustainablejobs.nl/job-alerts/">Job alerts</a>
+                    <a class="sj-job-hero__button sj-job-hero__button--secondary" href="https://sustainablejobs.nl/tarieven/">Tarieven</a>
+                </div>
+            </div>
         </div>
-        <p class="sj-job-hero__subtitle">Bekijk alle <a href="#job_listings" class="sj-job-hero__vacatures-link"><span class="sj-hero-job-count sj-job-hero__accent"><?php echo esc_html( number_format_i18n( $hero_job_count ) ); ?></span> vacatures</a> of meld je direct aan voor onze <a href="/nieuwsbrief/" class="sj-job-hero__link">vacature nieuwsbrief</a>.</p>
+        <div class="sj-job-hero__pane sj-job-hero__pane--visual" aria-hidden="true"></div>
     </div>
 </div>
 
@@ -576,7 +584,7 @@ jQuery(function($) {
   content: '';
   position: absolute;
   inset: 0;
-  background: rgba(37, 79, 110, 0.70);
+  background: rgba(37, 79, 110, 0.18);
   z-index: 1;
   pointer-events: none;
 }
@@ -584,93 +592,183 @@ jQuery(function($) {
 .sj-job-hero__inner {
   position: relative;
   z-index: 2;
-  max-width: 1200px;
-  width: 100%;
+  width: min(100%, 1200px);
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+  box-sizing: border-box;
 }
 
-.sj-job-hero__eyebrow {
-  display: inline-block;
-  margin: 0 0 14px;
-  padding-bottom: 6px;
-  border-bottom: 3px solid #9BCB86;
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.88);
+.sj-job-hero__pane {
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.sj-job-hero__card {
+  width: calc(100% - 48px);
+  margin: 24px;
+  padding: 24px;
+  background: #ffffff;
+  border: 1px solid #168AAD;
+  border-radius: 5px;
+  box-shadow: 0 18px 45px rgba(13, 35, 45, 0.16);
+  box-sizing: border-box;
 }
 
 .sj-job-hero__title-wrap {
   margin: 0 0 18px;
-  max-width: 75%;
+  max-width: 100%;
 }
 
 .sj-job-hero__title {
   font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
   font-weight: 800 !important;
-  font-size: clamp(20px, calc(3vw - 4px), 32px) !important;
+  font-size: 24px !important;
   line-height: 1.2 !important;
-  color: #ffffff !important;
+  color: #27323A !important;
   margin: 0 !important;
 }
 
+.sj-job-hero__actions {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 28px 0 0 !important;
+}
+
+.sj-job-hero__button {
+  flex: 1 1 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: 42px !important;
+  padding: 14px 28px !important;
+  border: 1.5px solid transparent !important;
+  border-radius: 5px !important;
+  font-family: 'Work Sans', sans-serif !important;
+  font-size: 17px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  text-transform: none !important;
+  white-space: nowrap !important;
+  box-shadow: none !important;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease !important;
+}
+
+.sj-job-hero__button--primary {
+  background: #168AAD !important;
+  border-color: #168AAD !important;
+  color: #ffffff !important;
+}
+
+.sj-job-hero__button--primary:hover,
+.sj-job-hero__button--primary:focus {
+  background: #0F789A !important;
+  border-color: #0F789A !important;
+  color: #ffffff !important;
+}
+
+.sj-job-hero__button--secondary {
+  background: #9BCB86 !important;
+  border-color: #9BCB86 !important;
+  color: #ffffff !important;
+}
+
+.sj-job-hero__button--secondary:hover,
+.sj-job-hero__button--secondary:focus {
+  background: #86BA72 !important;
+  border-color: #86BA72 !important;
+  color: #ffffff !important;
+}
+
 .sj-job-hero__subtitle {
-  margin: 10px 0 0;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
+  margin: 0 !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  letter-spacing: 0 !important;
+  color: #3C4650 !important;
 }
 
 .sj-job-hero__accent {
-  color: #9BCB86;
+  color: #168AAD !important;
 }
 
-.sj-job-hero__vacatures-link {
-  color: #ffffff !important;
+.sj-job-hero__subtitle .sj-job-hero__vacatures-link,
+.sj-job-hero__subtitle .sj-job-hero__link {
+  font-family: 'Poppins', sans-serif !important;
+  font-size: inherit !important;
+  font-weight: 600 !important;
+  line-height: inherit !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+.sj-job-hero__subtitle .sj-job-hero__vacatures-link {
+  color: #168AAD !important;
   text-decoration: none !important;
 }
 
-.sj-job-hero__vacatures-link:hover {
-  color: rgba(255, 255, 255, 0.8) !important;
+.sj-job-hero__subtitle .sj-job-hero__vacatures-link:hover {
+  color: #0F789A !important;
 }
 
-.sj-job-hero__vacatures-link .sj-job-hero__accent {
-  color: #9BCB86 !important;
+.sj-job-hero__subtitle .sj-job-hero__vacatures-link .sj-job-hero__accent {
+  font-family: inherit !important;
+  font-size: inherit !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+  color: #168AAD !important;
 }
 
-.sj-job-hero__link {
-  color: #9BCB86 !important;
+.sj-job-hero__subtitle .sj-job-hero__link {
+  color: #168AAD !important;
   text-decoration: none !important;
 }
 
-.sj-job-hero__link:hover {
-  color: #57AE94 !important;
+.sj-job-hero__subtitle .sj-job-hero__link:hover {
+  color: #0F789A !important;
 }
 
 @media (max-width: 960px) {
   .sj-job-hero {
-    height: 280px;
+    height: auto;
+    min-height: 360px;
     left: 0;
     right: auto;
     margin-left: 0;
     margin-right: 0;
     width: 100%;
+    padding: 28px 0;
   }
 
   .sj-job-hero__inner {
-    max-width: none;
-    padding: 0 16px;
+    width: 100%;
+    grid-template-columns: 1fr;
+    padding: 0;
     box-sizing: border-box;
+  }
+
+  .sj-job-hero__pane--visual {
+    display: none;
+  }
+
+  .sj-job-hero__card {
+    width: calc(100% - 48px);
+    padding: 24px;
   }
 
   .sj-job-hero__title-wrap {
     width: 100%;
     max-width: 100%;
-    margin-bottom: 0;
+    margin-bottom: 14px;
   }
 
   .sj-job-hero__title {
@@ -678,10 +776,22 @@ jQuery(function($) {
     text-wrap: balance;
   }
 
+  .sj-job-hero__actions {
+    gap: 8px !important;
+    margin-top: 22px !important;
+  }
+
+  .sj-job-hero__button {
+    flex: 1 1 150px !important;
+    min-height: 40px !important;
+    padding: 12px 20px !important;
+    font-size: 17px !important;
+  }
+
   .sj-job-hero__subtitle {
     max-width: 100%;
-    font-size: 14px;
-    line-height: 1.45;
+    font-size: 14px !important;
+    line-height: 1.45 !important;
   }
 }
 

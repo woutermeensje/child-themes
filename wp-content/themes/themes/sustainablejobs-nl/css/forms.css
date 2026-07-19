@@ -490,7 +490,7 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 15px;
     font-weight: 600;
     background-color: var(--color-primary-dk, #254F6E);
@@ -615,7 +615,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 15px;
     font-weight: 600;
     background-color: var(--color-secondary, #C5D77F);
