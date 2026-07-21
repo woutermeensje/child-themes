@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Fondsen Werkgever Landing
+Template Name: Impact Vacatures Werkgever Landing
 */
 
 if (!defined('ABSPATH')) {

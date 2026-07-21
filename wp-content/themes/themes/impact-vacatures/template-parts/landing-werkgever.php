@@ -14,8 +14,9 @@ $primary_url    = get_post_meta($page_id, 'landing_primary_button_url', true)  ?
 $eyebrow        = get_post_meta($page_id, 'landing_eyebrow', true) ?: 'Werkgever';
 
 if (!$hero_image) {
-    $attachment = get_page_by_path('fondsen-org-non-profit-vacaturesite-en-platform', OBJECT, 'attachment');
-    $hero_image = $attachment ? wp_get_attachment_url($attachment->ID) : '';
+    $hero_image = function_exists('impact_vacatures_get_default_hero_image_url')
+        ? impact_vacatures_get_default_hero_image_url()
+        : '';
 }
 
 $bg_style = $hero_image ? ' style="background-image: url(\'' . esc_url($hero_image) . '\');"' : '';

@@ -130,7 +130,8 @@ function si_informatie_aanvragen_shortcode(): string {
         $achternaam = sanitize_text_field($_POST['achternaam'] ?? '');
         $email      = sanitize_email($_POST['email']           ?? '');
         $telefoon   = sanitize_text_field($_POST['telefoon']   ?? '');
-        $bericht    = wp_kses_post($_POST['bericht']           ?? '');
+        $bericht_raw = sanitize_textarea_field(wp_unslash($_POST['bericht'] ?? ''));
+        $bericht     = wpautop($bericht_raw);
 
         if (!si_rich_text_has_content($bericht)) {
             $bericht = '';
@@ -259,11 +260,8 @@ function si_informatie_aanvragen_shortcode(): string {
 
                 <div class="si-ia__grid si-ia__grid--1">
                     <div class="si-ia__field">
-                        <label class="si-ia__label" for="si_bericht_hidden">Bericht <span class="si-ia__req">*</span></label>
-                        <div class="si-ia__quill-wrap">
-                            <div id="si_quill_bericht" class="si-ia__quill-editor" style="min-height:200px;"></div>
-                        </div>
-                        <textarea name="bericht" id="si_bericht_hidden" class="si-ia__quill-hidden" aria-hidden="true"><?php echo esc_textarea($_POST['bericht'] ?? ''); ?></textarea>
+                        <label class="si-ia__label" for="si_bericht">Bericht <span class="si-ia__req">*</span></label>
+                        <textarea name="bericht" id="si_bericht" class="si-ia__input si-ia__textarea" required><?php echo esc_textarea(wp_unslash($_POST['bericht'] ?? '')); ?></textarea>
                     </div>
                 </div>
 
@@ -275,57 +273,6 @@ function si_informatie_aanvragen_shortcode(): string {
 
         </div>
     </div>
-
-    <script>
-    (function () {
-        function initQuill() {
-            if (typeof Quill === 'undefined') { setTimeout(initQuill, 80); return; }
-
-            var toolbarOptions = [
-                ['bold', 'italic', 'underline'],
-                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                ['link'],
-                ['clean']
-            ];
-
-            var berichtHidden = document.getElementById('si_bericht_hidden');
-            var quillBericht  = new Quill('#si_quill_bericht', {
-                theme: 'snow',
-                modules: { toolbar: toolbarOptions }
-            });
-
-            if (berichtHidden && berichtHidden.value) {
-                quillBericht.clipboard.dangerouslyPasteHTML(berichtHidden.value);
-            }
-
-            quillBericht.on('text-change', function () {
-                if (berichtHidden) berichtHidden.value = quillBericht.root.innerHTML;
-            });
-
-            var form = berichtHidden ? berichtHidden.closest('form') : null;
-            if (form) {
-                form.addEventListener('submit', function (event) {
-                    if (form.dataset.siSubmitting === '1') {
-                        event.preventDefault();
-                        return;
-                    }
-
-                    if (berichtHidden) berichtHidden.value = quillBericht.root.innerHTML;
-                    form.dataset.siSubmitting = '1';
-
-                    form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(function (button) {
-                        button.disabled = true;
-                        if (button.tagName === 'BUTTON') {
-                            button.textContent = 'Bezig met versturen...';
-                        }
-                    });
-                });
-            }
-        }
-        initQuill();
-    })();
-    </script>
-
     <?php
     return ob_get_clean();
 }

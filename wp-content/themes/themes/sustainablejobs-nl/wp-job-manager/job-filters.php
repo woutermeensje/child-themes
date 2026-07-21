@@ -111,85 +111,13 @@ $job_type_counts         = sj_get_open_job_filter_counts( 'job_listing_type' );
 $job_sector_counts       = sj_get_open_job_filter_counts( 'job_sector' );
 $organisatie_type_counts = sj_get_open_job_filter_counts( 'organisatie_type' );
 $job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
-
-if ( ! function_exists( 'sj_get_named_upload_image_url' ) ) {
-  function sj_get_named_upload_image_url( $basename ) {
-    $basename = sanitize_title( $basename );
-    if ( ! $basename ) return '';
-
-    $attachment = get_page_by_path( $basename, OBJECT, 'attachment' );
-    if ( $attachment instanceof WP_Post ) {
-      $url = wp_get_attachment_image_url( $attachment->ID, 'full' );
-      if ( $url ) return $url;
-    }
-
-    global $wpdb;
-    $like_with_dir = '%/' . $wpdb->esc_like( $basename . '.' ) . '%';
-    $like_filename = $wpdb->esc_like( $basename . '.' ) . '%';
-    $attachment_id = (int) $wpdb->get_var(
-      $wpdb->prepare(
-        "SELECT post_id FROM {$wpdb->postmeta}
-         WHERE meta_key = '_wp_attached_file'
-           AND (meta_value LIKE %s OR meta_value LIKE %s)
-         ORDER BY post_id DESC
-         LIMIT 1",
-        $like_with_dir,
-        $like_filename
-      )
-    );
-
-    if ( $attachment_id ) {
-      $url = wp_get_attachment_image_url( $attachment_id, 'full' );
-      if ( $url ) return $url;
-    }
-
-    $upload_dir = wp_get_upload_dir();
-    if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) || empty( $upload_dir['baseurl'] ) ) return '';
-
-    foreach ( [ 'jpg', 'jpeg', 'png', 'webp' ] as $extension ) {
-      $relative_path = '2026/06/' . $basename . '.' . $extension;
-      $absolute_path = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
-      if ( file_exists( $absolute_path ) ) {
-        return trailingslashit( $upload_dir['baseurl'] ) . $relative_path;
-      }
-    }
-
-    return '';
-  }
-}
-
-$hero_image = sj_get_named_upload_image_url( 'sustainablejobs-nl-duurzame-vacaturesite' );
-$hero_count_args = [
-  'search_keywords' => is_scalar( $keywords ) ? sanitize_text_field( wp_unslash( (string) $keywords ) ) : '',
-  'search_location' => is_scalar( $location ) ? sanitize_text_field( wp_unslash( (string) $location ) ) : '',
-];
-$hero_job_count = function_exists( 'sj_get_open_job_listing_count' ) ? sj_get_open_job_listing_count( $hero_count_args ) : 0;
 ?>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Work+Sans:wght@700;800;900&display=swap" rel="stylesheet">
-
-<div class="sj-job-hero"<?php if ( $hero_image ) : ?> style="background-image: url('<?php echo esc_url( $hero_image ); ?>');"<?php endif; ?>>
-    <div class="sj-job-hero__inner">
-        <div class="sj-job-hero__pane sj-job-hero__pane--content">
-            <div class="sj-job-hero__card">
-                <div class="sj-job-hero__title-wrap">
-                    <h1 class="sj-job-hero__title">De #1 Duurzame Vacaturebank van Nederland!</h1>
-                </div>
-                <p class="sj-job-hero__subtitle">Vacatures, opdachten, stages, vrijwilligerswerk en traineeships binnen de duurzaamheid, energietransitie, ecologie en banen met een positieve impact. Bekijk alle <a href="#job_listings" class="sj-job-hero__vacatures-link"><span class="sj-hero-job-count sj-job-hero__accent"><?php echo esc_html( number_format_i18n( $hero_job_count ) ); ?></span> vacatures</a> of meld je direct aan voor onze <a href="/nieuwsbrief/" class="sj-job-hero__link">vacature nieuwsbrief</a>.</p>
-                <div class="sj-job-hero__actions" aria-label="Snel naar">
-                    <a class="sj-job-hero__button sj-job-hero__button--primary" href="https://sustainablejobs.nl/job-alerts/">Job alerts</a>
-                    <a class="sj-job-hero__button sj-job-hero__button--secondary" href="https://sustainablejobs.nl/tarieven/">Tarieven</a>
-                </div>
-            </div>
-        </div>
-        <div class="sj-job-hero__pane sj-job-hero__pane--visual" aria-hidden="true"></div>
-    </div>
-</div>
 
 <form class="job_filters">
   <?php do_action( 'job_manager_job_filters_start', $atts ); ?>
+
+  <h2 class="filter-title">Doorzoek alle Duurzame Vacatures.</h2>
+  <p class="filter-subtitle">Of maak direct een account aan in onze <a href="https://platform.sustainablejobs.nl/aanmelden/werkzoekende" target="_blank" rel="noopener">community</a>.</p>
 
   <div class="filter-row">
     <?php do_action( 'job_manager_job_filters_search_jobs_start', $atts ); ?>
@@ -336,7 +264,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    activeFiltersEl.style.display = activeFiltersEl.children.length ? "flex" : "none";
+    const hasActiveFilters = activeFiltersEl.children.length > 0;
+    activeFiltersEl.style.display = hasActiveFilters ? "flex" : "none";
+    form.classList.toggle("has-active-filters", hasActiveFilters);
   };
 
   const buildSelect = (select) => {
@@ -561,240 +491,6 @@ jQuery(function($) {
 </script>
 
 <style>
-/* ── Hero section ── */
-.sj-job-hero {
-  position: relative;
-  width: 100vw;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  height: 400px;
-  background-color: #254F6E;
-  background-size: cover;
-  background-position: center;
-  overflow: hidden;
-  isolation: isolate;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-}
-
-.sj-job-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(37, 79, 110, 0.18);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.sj-job-hero__inner {
-  position: relative;
-  z-index: 2;
-  width: min(100%, 1200px);
-  margin: 0 auto;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-items: center;
-  box-sizing: border-box;
-}
-
-.sj-job-hero__pane {
-  min-width: 0;
-  box-sizing: border-box;
-}
-
-.sj-job-hero__card {
-  width: calc(100% - 48px);
-  margin: 24px;
-  padding: 24px;
-  background: #ffffff;
-  border: 1px solid #168AAD;
-  border-radius: 5px;
-  box-shadow: 0 18px 45px rgba(13, 35, 45, 0.16);
-  box-sizing: border-box;
-}
-
-.sj-job-hero__title-wrap {
-  margin: 0 0 18px;
-  max-width: 100%;
-}
-
-.sj-job-hero__title {
-  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-  font-weight: 800 !important;
-  font-size: 24px !important;
-  line-height: 1.2 !important;
-  color: #27323A !important;
-  margin: 0 !important;
-}
-
-.sj-job-hero__actions {
-  display: flex !important;
-  flex-wrap: wrap !important;
-  align-items: center !important;
-  gap: 10px !important;
-  margin: 28px 0 0 !important;
-}
-
-.sj-job-hero__button {
-  flex: 1 1 0 !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-height: 42px !important;
-  padding: 14px 28px !important;
-  border: 1.5px solid transparent !important;
-  border-radius: 5px !important;
-  font-family: 'Work Sans', sans-serif !important;
-  font-size: 17px !important;
-  font-weight: 700 !important;
-  line-height: 1.2 !important;
-  letter-spacing: 0 !important;
-  text-align: center !important;
-  text-decoration: none !important;
-  text-transform: none !important;
-  white-space: nowrap !important;
-  box-shadow: none !important;
-  transition: background-color .15s ease, border-color .15s ease, color .15s ease !important;
-}
-
-.sj-job-hero__button--primary {
-  background: #168AAD !important;
-  border-color: #168AAD !important;
-  color: #ffffff !important;
-}
-
-.sj-job-hero__button--primary:hover,
-.sj-job-hero__button--primary:focus {
-  background: #0F789A !important;
-  border-color: #0F789A !important;
-  color: #ffffff !important;
-}
-
-.sj-job-hero__button--secondary {
-  background: #9BCB86 !important;
-  border-color: #9BCB86 !important;
-  color: #ffffff !important;
-}
-
-.sj-job-hero__button--secondary:hover,
-.sj-job-hero__button--secondary:focus {
-  background: #86BA72 !important;
-  border-color: #86BA72 !important;
-  color: #ffffff !important;
-}
-
-.sj-job-hero__subtitle {
-  margin: 0 !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 15px !important;
-  font-weight: 400 !important;
-  line-height: 1.5 !important;
-  letter-spacing: 0 !important;
-  color: #3C4650 !important;
-}
-
-.sj-job-hero__accent {
-  color: #168AAD !important;
-}
-
-.sj-job-hero__subtitle .sj-job-hero__vacatures-link,
-.sj-job-hero__subtitle .sj-job-hero__link {
-  font-family: 'Poppins', sans-serif !important;
-  font-size: inherit !important;
-  font-weight: 600 !important;
-  line-height: inherit !important;
-  letter-spacing: 0 !important;
-  text-transform: none !important;
-}
-
-.sj-job-hero__subtitle .sj-job-hero__vacatures-link {
-  color: #168AAD !important;
-  text-decoration: none !important;
-}
-
-.sj-job-hero__subtitle .sj-job-hero__vacatures-link:hover {
-  color: #0F789A !important;
-}
-
-.sj-job-hero__subtitle .sj-job-hero__vacatures-link .sj-job-hero__accent {
-  font-family: inherit !important;
-  font-size: inherit !important;
-  font-weight: inherit !important;
-  line-height: inherit !important;
-  color: #168AAD !important;
-}
-
-.sj-job-hero__subtitle .sj-job-hero__link {
-  color: #168AAD !important;
-  text-decoration: none !important;
-}
-
-.sj-job-hero__subtitle .sj-job-hero__link:hover {
-  color: #0F789A !important;
-}
-
-@media (max-width: 960px) {
-  .sj-job-hero {
-    height: auto;
-    min-height: 360px;
-    left: 0;
-    right: auto;
-    margin-left: 0;
-    margin-right: 0;
-    width: 100%;
-    padding: 28px 0;
-  }
-
-  .sj-job-hero__inner {
-    width: 100%;
-    grid-template-columns: 1fr;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  .sj-job-hero__pane--visual {
-    display: none;
-  }
-
-  .sj-job-hero__card {
-    width: calc(100% - 48px);
-    padding: 24px;
-  }
-
-  .sj-job-hero__title-wrap {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 14px;
-  }
-
-  .sj-job-hero__title {
-    font-size: clamp(20px, 5vw, 28px) !important;
-    text-wrap: balance;
-  }
-
-  .sj-job-hero__actions {
-    gap: 8px !important;
-    margin-top: 22px !important;
-  }
-
-  .sj-job-hero__button {
-    flex: 1 1 150px !important;
-    min-height: 40px !important;
-    padding: 12px 20px !important;
-    font-size: 17px !important;
-  }
-
-  .sj-job-hero__subtitle {
-    max-width: 100%;
-    font-size: 14px !important;
-    line-height: 1.45 !important;
-  }
-}
-
 /* ── Filter bar ── */
 .job_filters {
   width: 100vw;
@@ -805,25 +501,75 @@ jQuery(function($) {
   margin-right: -50vw;
   margin-top: 0;
   margin-bottom: 40px !important;
-  min-height: 100px;
+  height: auto !important;
+  min-height: 200px;
   background: var(--color-bg-filter);
   border-bottom: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: visible;
   box-sizing: border-box;
   scroll-margin-top: 90px;
 }
 
+.job_filters.has-active-filters {
+  min-height: 0;
+  padding: 28px 0 34px;
+  justify-content: flex-start;
+}
+
+.filter-title,
+.filter-subtitle,
 .filter-row,
 .active-filters {
+  width: 100%;
   max-width: 1200px;
   margin-left: auto !important;
   margin-right: auto !important;
+  box-sizing: border-box;
+}
+
+.filter-title {
+  padding: 0 24px;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  color: #333333 !important;
+}
+
+.filter-subtitle {
+  padding: 0 24px;
+  margin-top: 8px !important;
+  margin-bottom: 0 !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  line-height: 1.45 !important;
+  letter-spacing: 0 !important;
+  color: #333333 !important;
+}
+
+.filter-subtitle a {
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.filter-subtitle a:hover,
+.filter-subtitle a:focus {
+  color: var(--color-primary-hover) !important;
 }
 
 .filter-row {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 28px 24px;
+  padding: 18px 24px 28px;
 }
 
 .search_keywords,
@@ -1120,6 +866,10 @@ select.sj-hidden-select {
   padding: 0 24px 28px;
 }
 
+.job_filters.has-active-filters .active-filters {
+  padding-bottom: 0;
+}
+
 span.active-filter {
   display: inline-flex;
   align-items: center;
@@ -1170,6 +920,15 @@ span.active-filter {
     padding: 16px !important;
     width: 100%;
     box-sizing: border-box;
+  }
+
+  .filter-title {
+    padding: 0 16px !important;
+    font-size: 22px !important;
+  }
+
+  .filter-subtitle {
+    padding: 0 16px !important;
   }
 
   .search_keywords,

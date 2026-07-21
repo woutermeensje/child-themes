@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Fondsen Non-profits Landing
+Template Name: Impact Vacatures Non-profits Landing
 */
 
 if (!defined('ABSPATH')) {

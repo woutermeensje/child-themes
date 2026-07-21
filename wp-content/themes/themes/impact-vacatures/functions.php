@@ -9,6 +9,43 @@
 
 if ( ! defined('ABSPATH') ) exit;
 
+if ( ! function_exists('impact_vacatures_get_default_hero_image_url') ) {
+    function impact_vacatures_get_default_hero_image_url( $fallback_post_id = null ) {
+        $attachment = get_page_by_path('impact-vacatures-non-profit-vacaturesite-en-platform', OBJECT, 'attachment');
+
+        if ( $attachment instanceof WP_Post ) {
+            $url = wp_get_attachment_url($attachment->ID);
+            if ( $url ) {
+                return $url;
+            }
+        }
+
+        foreach (['impact vacatures non profit vacaturesite platform', 'non profit vacaturesite platform'] as $search_term) {
+            $attachment_ids = get_posts([
+                'post_type'        => 'attachment',
+                'post_status'      => 'inherit',
+                'posts_per_page'   => 1,
+                'fields'           => 'ids',
+                's'                => $search_term,
+                'suppress_filters' => true,
+            ]);
+
+            if ( ! empty($attachment_ids[0]) ) {
+                $url = wp_get_attachment_url((int) $attachment_ids[0]);
+                if ( $url ) {
+                    return $url;
+                }
+            }
+        }
+
+        if ( $fallback_post_id ) {
+            return get_the_post_thumbnail_url((int) $fallback_post_id, 'full') ?: '';
+        }
+
+        return '';
+    }
+}
+
 require_once get_stylesheet_directory() . '/inc/job-favorites.php';
 require_once get_stylesheet_directory() . '/inc/job-expiry.php';
 require_once get_stylesheet_directory() . '/inc/uitgelichte-werkgever.php';

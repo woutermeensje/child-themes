@@ -4,11 +4,11 @@ if (!defined('ABSPATH')) exit;
 /**
  * Shortcode: [fn_hero]
  *
- * Renders the fondsen-job-hero block standalone, voor gebruik buiten de vacaturepagina.
+ * Renders the Impact Vacatures hero block standalone, voor gebruik buiten de vacaturepagina.
  *
  * Attributen:
  *   eyebrow  — kleine tekst boven de titel       (default: "Impact Vacatures")
- *   titel    — h1 tekst                          (default: "Vacaturesite en platform voor Non Profits!")
+ *   titel    — h1 tekst                          (default: "Impactvacatures.nl: Vacaturesite voor impact vacature en non profits.")
  *   subtitel — alinea onder de titel             (default: leeg)
  *   afbeelding — URL van de achtergrondafbeelding (default: zelfde afbeelding als vacaturepagina)
  */
@@ -17,15 +17,14 @@ add_shortcode('fn_hero', 'fn_hero_shortcode');
 function fn_hero_shortcode(array $atts): string {
     $atts = shortcode_atts([
         'eyebrow'     => 'Impact Vacatures',
-        'titel'       => 'Vacaturesite en platform voor <span class="fondsen-job-hero__count">Non Profits</span>!',
+        'titel'       => 'Impactvacatures.nl: Vacaturesite voor impact vacature en non profits.',
         'subtitel'    => '',
         'afbeelding'  => '',
     ], $atts, 'fn_hero');
 
     if (empty($atts['afbeelding'])) {
-        $attachment = get_page_by_path('fondsen-org-non-profit-vacaturesite-en-platform', OBJECT, 'attachment');
-        $atts['afbeelding'] = $attachment
-            ? wp_get_attachment_url($attachment->ID)
+        $atts['afbeelding'] = function_exists('impact_vacatures_get_default_hero_image_url')
+            ? impact_vacatures_get_default_hero_image_url(get_the_ID())
             : get_the_post_thumbnail_url(get_the_ID(), 'full');
     }
 

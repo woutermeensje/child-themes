@@ -551,7 +551,8 @@ add_action('init', function () {
         'hierarchical'      => true,
         'show_ui'           => true,
         'show_admin_column' => true,
-        'show_in_rest'      => true,
+        'show_in_rest'      => false,
+        'show_in_quick_edit' => false,
         'meta_box_cb'       => false,
         'rewrite'           => ['slug' => 'organisatie-type'],
     ]);
@@ -573,7 +574,7 @@ add_action('init', function () {
 // Organisatie term-meta: logo, type organisatie en basis sectoren
 // =========================================================
 if (!defined('SJ_ORGANISATIE_TYPE_SYNC_VERSION')) {
-    define('SJ_ORGANISATIE_TYPE_SYNC_VERSION', '2026-06-24-company-organisation-types');
+    define('SJ_ORGANISATIE_TYPE_SYNC_VERSION', '2026-07-19-company-organisation-types-v2');
 }
 
 if (!defined('SJ_COMPANY_SECTOR_SYNC_VERSION')) {

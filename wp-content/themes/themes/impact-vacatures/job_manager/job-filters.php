@@ -46,9 +46,8 @@ unset($value);
 <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
 
 <?php
-$hero_attachment = get_page_by_path('fondsen-org-non-profit-vacaturesite-en-platform', OBJECT, 'attachment');
-$hero_image = $hero_attachment
-    ? wp_get_attachment_url($hero_attachment->ID)
+$hero_image = function_exists('impact_vacatures_get_default_hero_image_url')
+    ? impact_vacatures_get_default_hero_image_url(get_the_ID())
     : get_the_post_thumbnail_url(get_the_ID(), 'full');
 $job_count  = count(get_posts([
     'post_type'        => 'job_listing',
@@ -62,7 +61,7 @@ $job_count  = count(get_posts([
     <div class="fondsen-job-hero__inner">
         <span class="fondsen-job-hero__eyebrow">Impact Vacatures</span>
         <div class="fondsen-job-hero__title-wrap">
-            <h1 class="fondsen-job-hero__title">Vacaturesite en platform voor <span class="fondsen-job-hero__count">Non Profits</span>!</h1>
+            <h1 class="fondsen-job-hero__title">Impactvacatures.nl: Vacaturesite voor impact vacature en non profits.</h1>
             <p class="fondsen-job-hero__subtitle">Bekijk alle <a href="#job_listings" class="fondsen-job-hero__vacatures-link"><span class="fondsen-hero-job-count fondsen-job-hero__count">–</span> vacatures</a> of meld je direct aan voor onze <a href="/nieuwsbrief/" class="fondsen-job-hero__link">vacature nieuwsbrief</a>.</p>
         </div>
     </div>

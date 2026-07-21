@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Fondsen Lidmaatschap
+Template Name: Impact Vacatures Lidmaatschap
 */
 
 if (!defined('ABSPATH')) {
@@ -10,8 +10,9 @@ if (!defined('ABSPATH')) {
 $hero_image = get_the_post_thumbnail_url(get_the_ID(), 'full');
 
 if (!$hero_image) {
-    $attachment = get_page_by_path('fondsen-org-non-profit-vacaturesite-en-platform', OBJECT, 'attachment');
-    $hero_image = $attachment ? wp_get_attachment_url($attachment->ID) : '';
+    $hero_image = function_exists('impact_vacatures_get_default_hero_image_url')
+        ? impact_vacatures_get_default_hero_image_url()
+        : '';
 }
 
 $bg_style = $hero_image ? ' style="background-image: url(\'' . esc_url($hero_image) . '\');"' : '';

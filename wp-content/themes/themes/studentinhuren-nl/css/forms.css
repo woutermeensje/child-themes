@@ -77,6 +77,11 @@
     line-height: 1.5 !important;
     height: auto !important;
 }
+
+.si-ia .si-ia__textarea {
+    min-height: 180px;
+    resize: vertical;
+}
 .si-ia .si-ia__input:focus {
     border-color: var(--color-primary, #2f5f80) !important;
     box-shadow: 0 0 0 3px rgba(47,95,128,.15) !important;
@@ -298,6 +303,11 @@
     appearance: none;
     line-height: 1.5 !important;
     height: auto !important;
+}
+
+.si-iac__textarea {
+    min-height: 140px;
+    resize: vertical;
 }
 
 .si-iac__input:focus {

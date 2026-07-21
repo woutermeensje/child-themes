@@ -3,13 +3,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$admin_email = sanitize_email(get_option('admin_email'));
-$logo_url = get_stylesheet_directory_uri() . '/site-logo/Logo-fondsen.png';
-
-$rn_mobile_logo_url = get_site_icon_url(96);
-if (!$rn_mobile_logo_url) {
-    $rn_mobile_logo_url = $logo_url;
-}
+$brand_name = 'Impact Vacatures';
 ?>
 
 <header id="rn-header" class="rn-header" role="banner">
@@ -28,8 +22,8 @@ if (!$rn_mobile_logo_url) {
 
     <div class="rn-header__inner">
         <div class="rn-header__brand">
-            <a href="<?php echo esc_url(home_url('/')); ?>">
-                <img src="<?php echo esc_url($logo_url); ?>" alt="<?php bloginfo('name'); ?>" class="rn-header__logo">
+            <a href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php echo esc_attr($brand_name); ?>">
+                <span class="rn-header__site-name"><?php echo esc_html($brand_name); ?></span>
             </a>
         </div>
 
@@ -61,8 +55,8 @@ if (!$rn_mobile_logo_url) {
             </button>
         </div>
 
-        <a class="rn-header__mobile-brand" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php echo esc_attr(get_bloginfo('name')); ?>">
-            <img src="<?php echo esc_url($rn_mobile_logo_url); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" class="rn-header__mobile-logo">
+        <a class="rn-header__mobile-brand" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php echo esc_attr($brand_name); ?>">
+            <span class="rn-header__site-name"><?php echo esc_html($brand_name); ?></span>
         </a>
 
         <div class="rn-header__mobile-right">

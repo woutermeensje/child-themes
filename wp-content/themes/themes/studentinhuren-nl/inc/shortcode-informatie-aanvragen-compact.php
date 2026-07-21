@@ -21,7 +21,8 @@ function si_informatie_aanvragen_compact_shortcode(): string {
         $achternaam = sanitize_text_field($_POST['iac_achternaam'] ?? '');
         $email      = sanitize_email($_POST['iac_email']           ?? '');
         $telefoon   = sanitize_text_field($_POST['iac_telefoon']   ?? '');
-        $bericht    = wp_kses_post($_POST['iac_bericht']           ?? '');
+        $bericht_raw = sanitize_textarea_field(wp_unslash($_POST['iac_bericht'] ?? ''));
+        $bericht     = wpautop($bericht_raw);
 
         if (!si_rich_text_has_content($bericht)) {
             $bericht = '';
@@ -138,11 +139,8 @@ function si_informatie_aanvragen_compact_shortcode(): string {
             </div>
 
             <div class="si-iac__field">
-                <label class="si-iac__label" for="iac_bericht_hidden">Bericht</label>
-                <div class="si-iac__quill-wrap si-ia__quill-wrap">
-                    <div id="si_iac_quill_bericht" class="si-iac__quill-editor si-ia__quill-editor" style="min-height:140px;"></div>
-                </div>
-                <textarea name="iac_bericht" id="iac_bericht_hidden" class="si-ia__quill-hidden" aria-hidden="true"><?php echo esc_textarea($_POST['iac_bericht'] ?? ''); ?></textarea>
+                <label class="si-iac__label" for="iac_bericht">Bericht</label>
+                <textarea name="iac_bericht" id="iac_bericht" class="si-iac__input si-iac__textarea"><?php echo esc_textarea(wp_unslash($_POST['iac_bericht'] ?? '')); ?></textarea>
             </div>
 
             <div class="si-iac__footer">
@@ -151,64 +149,6 @@ function si_informatie_aanvragen_compact_shortcode(): string {
 
         </form>
     </div>
-
-    <script>
-    (function () {
-        function initCompactQuill() {
-            if (typeof Quill === 'undefined') { setTimeout(initCompactQuill, 80); return; }
-
-            var target = document.getElementById('si_iac_quill_bericht');
-            var berichtHidden = document.getElementById('iac_bericht_hidden');
-            var form = berichtHidden ? berichtHidden.closest('form') : null;
-
-            if (!target || !berichtHidden || !form || target.dataset.quillReady === '1') {
-                return;
-            }
-
-            target.dataset.quillReady = '1';
-
-            var toolbarOptions = [
-                ['bold', 'italic', 'underline'],
-                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                ['link'],
-                ['clean']
-            ];
-
-            var quillBericht = new Quill(target, {
-                theme: 'snow',
-                modules: { toolbar: toolbarOptions }
-            });
-
-            if (berichtHidden.value) {
-                quillBericht.clipboard.dangerouslyPasteHTML(berichtHidden.value);
-            }
-
-            quillBericht.on('text-change', function () {
-                berichtHidden.value = quillBericht.root.innerHTML;
-            });
-
-            form.addEventListener('submit', function (event) {
-                if (form.dataset.siSubmitting === '1') {
-                    event.preventDefault();
-                    return;
-                }
-
-                berichtHidden.value = quillBericht.root.innerHTML;
-                form.dataset.siSubmitting = '1';
-
-                form.querySelectorAll('button[type="submit"], input[type="submit"]').forEach(function (button) {
-                    button.disabled = true;
-                    if (button.tagName === 'BUTTON') {
-                        button.textContent = 'Bezig met versturen...';
-                    }
-                });
-            });
-        }
-
-        initCompactQuill();
-    })();
-    </script>
-
     <?php
     return ob_get_clean();
 }

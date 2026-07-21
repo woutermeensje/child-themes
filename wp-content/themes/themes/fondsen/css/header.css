@@ -261,6 +261,16 @@
   transform: rotate(45deg);
 }
 
+/* Nested submenu (dropdown within a dropdown): flyout to the side instead of stacking below */
+.rn-nav__dropdown .rn-nav__dropdown {
+  top: -10px;
+  left: calc(100% + 8px);
+}
+
+.rn-nav__dropdown .rn-nav__dropdown::before {
+  display: none;
+}
+
 .rn-header__cta {
   flex: 0 0 auto;
 }

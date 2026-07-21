@@ -458,6 +458,7 @@ h2.job-card__title {
     text-decoration: none !important;
     font-family: "Work Sans", sans-serif !important;
     font-size: 15px;
+    font-weight: 600 !important;
     box-shadow: none;
     transition: background .18s ease, border-color .18s ease, color .18s ease;
     text-align: center;

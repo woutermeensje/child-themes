@@ -110,6 +110,14 @@
   white-space: nowrap;
 }
 
+.rn-header__mobile-brand .rn-header__site-name {
+  max-width: 140px;
+  font-size: 18px;
+  line-height: 1.05;
+  text-align: center;
+  white-space: normal;
+}
+
 .rn-header__mobile-left,
 .rn-header__mobile-brand,
 .rn-header__mobile-right {
