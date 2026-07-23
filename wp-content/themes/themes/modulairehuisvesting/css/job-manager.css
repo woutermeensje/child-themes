@@ -290,9 +290,10 @@ h3.sj-recent-jobtitle { margin: 0; font-family: 'Balgin-Bold', 'Balgin Bold', se
     color: var(--color-text-soft);
 }
 
-.search-basic {
-    display: grid;
-    grid-template-columns: minmax(220px, 1fr) minmax(220px, 1fr) minmax(220px, 280px);
+.search-basic,
+form.job_filters .mh-job-filter-row {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: stretch;
     gap: 16px;
     padding: 0 24px;
@@ -300,14 +301,25 @@ h3.sj-recent-jobtitle { margin: 0; font-family: 'Balgin-Bold', 'Balgin Bold', se
 
 .search_location,
 .search_keywords,
-.job_type {
+.job_type,
+form.job_filters .mh-job-filter-row > .search_keywords,
+form.job_filters .mh-job-filter-row > .search_location,
+form.job_filters .mh-job-filter-row > .job_type {
+    float: none !important;
+    clear: none !important;
+    width: auto !important;
+    max-width: none !important;
+    padding: 0 !important;
+    flex: none !important;
+    flex-basis: auto !important;
     min-width: 0;
     display: flex;
     align-items: center;
     position: relative;
 }
 
-.search-basic input[type="text"] {
+.search-basic input[type="text"],
+form.job_filters .mh-job-filter-row input[type="text"] {
     width: 100%;
     padding: 13px 14px 13px 40px;
     font-size: 15px;
@@ -319,6 +331,7 @@ h3.sj-recent-jobtitle { margin: 0; font-family: 'Balgin-Bold', 'Balgin Bold', se
     transition: border-color .2s ease;
     font-family: 'Poppins', sans-serif;
     font-weight: 400;
+    box-sizing: border-box;
 }
 
 .search-basic input[type="text"]:focus {
@@ -377,7 +390,10 @@ select.sj-hidden-select {
 
 .job_type .sj-select-wrap,
 .job_type .sj-select,
-.job_type .sj-select-btn {
+.job_type .sj-select-btn,
+form.job_filters .mh-job-filter-row .job_type .sj-select-wrap,
+form.job_filters .mh-job-filter-row .job_type .sj-select,
+form.job_filters .mh-job-filter-row .job_type .sj-select-btn {
     width: 100%;
 }
 
@@ -583,6 +599,7 @@ select.sj-hidden-select {
     padding: 13px 14px 13px 40px;
     border-radius: 8px;
     position: relative;
+    box-sizing: border-box;
 }
 
 .job_type .sj-select-btn::before {
@@ -638,7 +655,7 @@ span.active-filter {
     pointer-events: none;
 }
 
-@media (max-width: 960px) {
+@media (max-width: 767px) {
     form.job_filters {
         width: 100%;
         position: relative;
@@ -652,7 +669,8 @@ span.active-filter {
         padding: 0 16px 12px;
     }
 
-    .search-basic {
+    .search-basic,
+    form.job_filters .mh-job-filter-row {
         grid-template-columns: 1fr;
         gap: 10px;
         padding: 0 16px;

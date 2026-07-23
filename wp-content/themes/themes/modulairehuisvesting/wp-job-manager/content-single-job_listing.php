@@ -80,47 +80,64 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
     <?php endif; ?>
 
     <?php
-    $current_id = get_the_ID();
-    $recent_jobs = new WP_Query([
-      'post_type'      => 'job_listing',
-      'posts_per_page' => 6,
-      'orderby'        => 'date',
-      'order'          => 'DESC',
-      'post__not_in'   => [ $current_id ],
-      'post_status'    => 'publish',
-    ]);
+    $application_status = isset( $_GET['mh_job_application'] )
+      ? sanitize_key( wp_unslash( $_GET['mh_job_application'] ) )
+      : '';
     ?>
 
-    <?php if ( $recent_jobs->have_posts() ) : ?>
-      <section class="sj-recent sj-card">
-        <div class="sj-recent-head">
-          <h2 class="sj-recent-title">Andere openstaande functies</h2>
-          <p class="sj-recent-sub">Bekijk al onze vacatures bij Modulairehuisvesting.</p>
+    <section class="sj-application sj-card" id="solliciteren">
+      <h2 class="sj-application-title">Reageren op deze vacature/opdracht.</h2>
+
+      <?php if ( 'sent' === $application_status ) : ?>
+        <div class="sj-form-notice sj-form-notice--success">
+          Bedankt voor je reactie. We nemen zo snel mogelijk contact met je op.
         </div>
-        <ul class="sj-recent-grid">
-          <?php while ( $recent_jobs->have_posts() ) : $recent_jobs->the_post(); ?>
-            <?php
-              $rc_title   = function_exists('wpjm_get_the_job_title') ? wpjm_get_the_job_title() : get_the_title();
-              $rc_excerpt = wp_trim_words( get_the_excerpt(), 14, '…' );
-            ?>
-            <li class="sj-recent-item" <?php job_listing_class(); ?>>
-              <a class="sj-recent-link" href="<?php the_job_permalink(); ?>" aria-label="<?php echo esc_attr( $rc_title ); ?>">
-                <div class="sj-recent-logo">
-                  <?php the_company_logo(); ?>
-                </div>
-                <div class="sj-recent-body">
-                  <h3 class="sj-recent-jobtitle"><?php echo esc_html( $rc_title ); ?></h3>
-                  <?php if ( ! empty($rc_excerpt) ) : ?>
-                    <p class="sj-recent-excerpt"><?php echo esc_html( $rc_excerpt ); ?></p>
-                  <?php endif; ?>
-                </div>
-              </a>
-            </li>
-          <?php endwhile; ?>
-        </ul>
-        <?php wp_reset_postdata(); ?>
-      </section>
-    <?php endif; ?>
+      <?php elseif ( 'error' === $application_status ) : ?>
+        <div class="sj-form-notice sj-form-notice--error">
+          Het formulier kon niet worden verzonden. Controleer de velden en probeer het opnieuw.
+        </div>
+      <?php endif; ?>
+
+      <form class="sj-application-form" method="post" action="<?php echo esc_url( get_permalink( $post ) ); ?>" enctype="multipart/form-data">
+        <?php wp_nonce_field( 'mh_job_application_' . $post->ID, 'mh_job_application_nonce' ); ?>
+        <input type="hidden" name="mh_job_application_action" value="submit">
+        <input type="hidden" name="mh_job_application_job_id" value="<?php echo esc_attr( (string) $post->ID ); ?>">
+
+        <div class="sj-application-grid">
+          <label class="sj-application-field">
+            <span>Voornaam</span>
+            <input type="text" name="mh_job_application_first_name" autocomplete="given-name" required>
+          </label>
+
+          <label class="sj-application-field">
+            <span>Achternaam</span>
+            <input type="text" name="mh_job_application_last_name" autocomplete="family-name" required>
+          </label>
+
+          <label class="sj-application-field">
+            <span>E-mailadres</span>
+            <input type="email" name="mh_job_application_email" autocomplete="email" required>
+          </label>
+
+          <label class="sj-application-field">
+            <span>Telefoonnummer</span>
+            <input type="tel" name="mh_job_application_phone" autocomplete="tel" required>
+          </label>
+        </div>
+
+        <label class="sj-application-field sj-application-field--full">
+          <span>Bericht</span>
+          <textarea name="mh_job_application_message" rows="6" required></textarea>
+        </label>
+
+        <label class="sj-application-field sj-application-field--full">
+          <span>CV bijlage</span>
+          <input type="file" name="mh_job_application_cv" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
+        </label>
+
+        <button class="sj-application-submit" type="submit">Solliciteren</button>
+      </form>
+    </section>
 
   </div>
 
@@ -136,19 +153,18 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
   --sj-card: #FFFFFF;
   --sj-blue: var(--color-primary);
   --sj-radius: 12px;
-  --sj-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
 }
 
-.sj-wrap{ max-width:900px; width:100%; margin:20px auto; padding:0 16px; display:grid; gap:16px; }
+.sj-wrap{ max-width:900px; width:100%; margin:56px auto; padding:0 16px; display:grid; gap:16px; }
 .job_description,.sj-content{ overflow-wrap:anywhere; word-break:break-word; }
 
-.sj-card{ padding:24px; background:#ffffff; border:1px solid #DEDEDE; box-shadow:0px 10px 40px -5px rgba(0,0,0,0.15); border-radius:5px; }
+.sj-card{ padding:24px; background:#ffffff; border:1px solid #DEDEDE; border-radius:5px; }
 
 .single_job_listing{ padding:22px; }
 .job-manager-info{ padding:14px 16px; border:1px solid var(--sj-border); border-radius:10px; background:#fff; font-family:Poppins,system-ui,sans-serif; color:var(--sj-ink); }
 
 .sj-meta{ display:flex; flex-wrap:wrap; gap:10px; margin-bottom:14px; }
-.sj-chip{ display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px; border:1px solid #DEDEDE; background:#fff; color:#333; font-family:Poppins,system-ui,sans-serif; font-weight:700; font-size:14px; box-shadow:0 10px 40px -5px rgba(0,0,0,0.15); }
+.sj-chip{ display:inline-flex; align-items:center; gap:8px; padding:8px 10px; border-radius:999px; border:1px solid #DEDEDE; background:#fff; color:#333; font-family:Poppins,system-ui,sans-serif; font-weight:700; font-size:14px; }
 .sj-chip--link{ text-decoration:none; }
 .sj-chip--link:hover{ border-color:rgba(37,71,107,.35); }
 
@@ -160,7 +176,7 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
 .sj-content p{ margin:0 0 14px 0; }
 
 .sj-actions{ margin-top:18px; display:flex; }
-.sj-btn{ display:inline-flex; align-items:center; justify-content:center; padding:10px 14px; border-radius:10px; background:rgba(37,71,107,0.12); color:var(--color-primary); text-decoration:none; border:1px solid var(--color-primary); font-family:Poppins,system-ui,sans-serif; font-weight:700; font-size:14px; box-shadow:0 10px 40px -5px rgba(0,0,0,0.15); transition:transform .15s ease,filter .15s ease; }
+.sj-btn{ display:inline-flex; align-items:center; justify-content:center; padding:10px 14px; border-radius:10px; background:rgba(37,71,107,0.12); color:var(--color-primary); text-decoration:none; border:1px solid var(--color-primary); font-family:Poppins,system-ui,sans-serif; font-weight:700; font-size:14px; transition:transform .15s ease,filter .15s ease; }
 .sj-btn:hover{ transform:translateY(-1px); }
 
 .single-job_listing h1.entry-title{ display:none; }
@@ -174,29 +190,32 @@ h2.sj-contact-title{ font-family:Poppins; font-weight:600; font-size:20px; color
 .sj-contact-link{ color:var(--color-primary); text-decoration:none; }
 .sj-contact-link:hover{ text-decoration:underline; }
 
-.sj-recent{ padding:24px; }
-.sj-recent-head{ margin-bottom:18px; }
-.sj-recent-title{ margin:0; font-family:Poppins; font-weight:700; font-size:20px; color:var(--sj-ink); }
-.sj-recent-sub{ margin:6px 0 0 0; font-family:Poppins,system-ui,sans-serif; font-size:14px; color:var(--sj-muted); }
-.sj-recent-grid{ list-style:none; padding:0; margin:0; display:grid; grid-template-columns:repeat(3,1fr); gap:18px; }
-.sj-recent-item{ background:#fff; border:1px solid var(--sj-border); border-radius:5px; overflow:hidden; box-shadow:0 10px 40px -5px rgba(0,0,0,0.15); transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease; }
-.sj-recent-item:hover{ transform:translateY(-3px); border-color:rgba(37,71,107,.35); box-shadow:0 18px 44px rgba(16,24,40,.14); }
-.sj-recent-link{ display:flex; flex-direction:column; gap:14px; padding:18px; text-decoration:none; color:inherit; align-items:flex-start; }
-.sj-recent-logo{ display:block; padding:0; border:0; background:transparent; box-shadow:none; }
-.sj-recent-logo img,.sj-recent-logo .company_logo{ display:block; margin:0; }
-.sj-recent-logo img{ width:120px; height:auto; max-height:80px; object-fit:contain; }
-.sj-recent-body{ display:flex; flex-direction:column; gap:6px; min-width:0; }
-h3.sj-recent-jobtitle{ margin:0; font-family:Poppins; font-size:16px; font-weight:700; line-height:1.25; color:var(--sj-ink); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.sj-recent-excerpt{ margin:0; font-family:Poppins,system-ui,sans-serif; font-size:14px; line-height:1.5; color:var(--sj-muted); display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-.sj-recent-item:hover .sj-recent-jobtitle{ color:var(--sj-blue); }
+.sj-application{ padding:24px; }
+.sj-application-title{ margin:0 0 20px; font-family:Poppins,system-ui,sans-serif; font-weight:600; font-size:20px; line-height:1.25; color:#333; }
+.sj-application-form{ display:grid; gap:16px; }
+.sj-application-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.sj-application-field{ display:grid; gap:6px; min-width:0; font-family:Poppins,system-ui,sans-serif; color:#333; }
+.sj-application-field span{ font-size:15px; font-weight:600; line-height:1.4; }
+.sj-application-field input,
+.sj-application-field textarea{ width:100%; min-width:0; border:1px solid #DEDEDE; border-radius:5px; background:#fff; color:#333; font-family:Poppins,system-ui,sans-serif; font-size:15px; line-height:1.5; padding:10px 12px; box-sizing:border-box; }
+.sj-application-field input:focus,
+.sj-application-field textarea:focus{ outline:2px solid var(--color-focus-ring, rgba(85,158,163,.22)); outline-offset:2px; border-color:var(--color-secondary, #4188AA); }
+.sj-application-field textarea{ resize:vertical; }
+.sj-application-field input[type="file"]{ padding:9px 12px; }
+.sj-application-submit{ display:inline-flex; align-items:center; justify-content:center; justify-self:start; min-height:44px; padding:10px 28px; border:1px solid var(--color-primary, #25476B); border-radius:5px; background:var(--color-primary, #25476B); color:#fff; font-family:"Work Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; font-size:15px; font-weight:600; cursor:pointer; transition:background-color .15s ease,border-color .15s ease; }
+.sj-application-submit:hover,
+.sj-application-submit:focus{ background:var(--color-secondary, #4188AA); border-color:var(--color-secondary, #4188AA); outline:2px solid var(--color-focus-ring, rgba(85,158,163,.22)); outline-offset:2px; }
+.sj-form-notice{ padding:12px 14px; margin:0 0 18px; border:1px solid #DEDEDE; border-radius:5px; font-family:Poppins,system-ui,sans-serif; font-size:15px; line-height:1.5; }
+.sj-form-notice--success{ border-color:#75B77D; background:#F1F8EE; color:#234C2B; }
+.sj-form-notice--error{ border-color:#D77A7A; background:#FFF4F4; color:#7B1D1D; }
 
 @media (max-width:768px){
   *, *::before, *::after{ box-sizing:border-box; }
-  .sj-wrap,.single_job_listing,.sj-contact,.sj-recent,.sj-card{ width:100%; max-width:100%; box-sizing:border-box; }
+  .sj-wrap,.single_job_listing,.sj-contact,.sj-application,.sj-card{ width:100%; max-width:100%; box-sizing:border-box; }
   .sj-wrap{ padding:0 16px; }
-  .sj-meta,.sj-recent-grid,.sj-recent-link,.sj-contact-grid{ min-width:0; }
-  .sj-contact-grid{ grid-template-columns:1fr; gap:18px; }
-  .sj-recent-grid{ grid-template-columns:1fr; }
+  .sj-meta,.sj-contact-grid,.sj-application-grid{ min-width:0; }
+  .sj-contact-grid,.sj-application-grid{ grid-template-columns:1fr; gap:18px; }
+  .sj-application-submit{ width:100%; justify-self:stretch; }
   img{ max-width:100%; height:auto; }
 }
 </style>

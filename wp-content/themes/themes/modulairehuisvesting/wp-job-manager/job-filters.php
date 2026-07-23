@@ -76,7 +76,7 @@ $job_type_counts   = mh_get_open_job_filter_counts( 'job_listing_type' );
     <p>Bekijk onze openstaande vacatures en word onderdeel van ons team.</p>
   </div>
 
-  <div class="search-basic">
+  <div class="search-basic mh-job-filter-row">
     <?php do_action( 'job_manager_job_filters_search_jobs_start', $atts ); ?>
 
     <div class="search_keywords">

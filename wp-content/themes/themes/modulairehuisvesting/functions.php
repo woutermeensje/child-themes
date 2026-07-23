@@ -189,6 +189,204 @@ add_filter('register_taxonomy_job_listing_type_args', function ($args) {
 });
 
 /**
+ * WP Job Manager: vacatures verlopen niet automatisch.
+ *
+ * Een lege "Listing Duration" betekent in WP Job Manager dat vacatures geen
+ * verloopdatum krijgen. Daarnaast wissen we per-vacature verloopmeta zodat
+ * bestaande en handmatig opgeslagen vacatures online blijven tot ze handmatig
+ * offline worden gehaald.
+ */
+add_filter('pre_option_job_manager_submission_duration', '__return_empty_string');
+add_filter('pre_update_option_job_manager_submission_duration', '__return_empty_string');
+
+function mh_clear_job_listing_expiry_meta($job_id): void {
+    if ('job_listing' !== get_post_type($job_id)) {
+        return;
+    }
+
+    delete_post_meta($job_id, '_job_duration');
+    delete_post_meta($job_id, '_job_expires');
+}
+
+add_action('job_manager_save_job_listing', function ($post_id): void {
+    mh_clear_job_listing_expiry_meta($post_id);
+}, 99);
+
+add_action('save_post_job_listing', function ($post_id, $post, $update): void {
+    if (wp_is_post_revision($post_id) || (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)) {
+        return;
+    }
+
+    mh_clear_job_listing_expiry_meta($post_id);
+}, 99, 3);
+
+add_action('transition_post_status', function ($new_status, $old_status, $post): void {
+    if ($post instanceof WP_Post && 'job_listing' === $post->post_type) {
+        mh_clear_job_listing_expiry_meta($post->ID);
+    }
+}, 99, 3);
+
+add_action('init', function (): void {
+    $cleanup_version = '20260723-no-expiry';
+
+    if (get_option('mh_job_listing_no_expiry_cleanup_version') === $cleanup_version) {
+        return;
+    }
+
+    if (!post_type_exists('job_listing')) {
+        return;
+    }
+
+    $job_ids = get_posts([
+        'post_type'      => 'job_listing',
+        'post_status'    => 'any',
+        'fields'         => 'ids',
+        'posts_per_page' => -1,
+        'no_found_rows'  => true,
+        'meta_query'     => [
+            'relation' => 'OR',
+            [
+                'key'     => '_job_duration',
+                'compare' => 'EXISTS',
+            ],
+            [
+                'key'     => '_job_expires',
+                'compare' => 'EXISTS',
+            ],
+        ],
+    ]);
+
+    foreach ($job_ids as $job_id) {
+        mh_clear_job_listing_expiry_meta((int) $job_id);
+    }
+
+    update_option('mh_job_listing_no_expiry_cleanup_version', $cleanup_version, false);
+}, 20);
+
+/**
+ * WP Job Manager: sollicitatieformulier op single vacaturepagina.
+ */
+function mh_job_application_redirect($job_id, string $status): void {
+    $redirect = $job_id ? get_permalink((int) $job_id) : wp_get_referer();
+
+    if (!$redirect) {
+        $redirect = home_url('/');
+    }
+
+    $redirect = remove_query_arg('mh_job_application', $redirect);
+    $redirect = add_query_arg('mh_job_application', $status, $redirect);
+
+    wp_safe_redirect($redirect . '#solliciteren');
+    exit;
+}
+
+add_action('template_redirect', function (): void {
+    if (
+        'POST' !== ($_SERVER['REQUEST_METHOD'] ?? '')
+        || !isset($_POST['mh_job_application_action'])
+        || 'submit' !== $_POST['mh_job_application_action']
+    ) {
+        return;
+    }
+
+    $job_id = isset($_POST['mh_job_application_job_id'])
+        ? absint($_POST['mh_job_application_job_id'])
+        : 0;
+
+    if (!$job_id || 'job_listing' !== get_post_type($job_id)) {
+        mh_job_application_redirect($job_id, 'error');
+    }
+
+    $nonce = isset($_POST['mh_job_application_nonce'])
+        ? sanitize_text_field(wp_unslash($_POST['mh_job_application_nonce']))
+        : '';
+
+    if (!wp_verify_nonce($nonce, 'mh_job_application_' . $job_id)) {
+        mh_job_application_redirect($job_id, 'error');
+    }
+
+    $first_name = sanitize_text_field(wp_unslash($_POST['mh_job_application_first_name'] ?? ''));
+    $last_name  = sanitize_text_field(wp_unslash($_POST['mh_job_application_last_name'] ?? ''));
+    $email      = sanitize_email(wp_unslash($_POST['mh_job_application_email'] ?? ''));
+    $phone      = sanitize_text_field(wp_unslash($_POST['mh_job_application_phone'] ?? ''));
+    $message    = sanitize_textarea_field(wp_unslash($_POST['mh_job_application_message'] ?? ''));
+    $errors     = [];
+
+    if ('' === $first_name || '' === $last_name || '' === $phone || '' === $message || !is_email($email)) {
+        $errors[] = 'missing_fields';
+    }
+
+    $attachment_path = '';
+    $cv_file         = $_FILES['mh_job_application_cv'] ?? null;
+
+    if (!$cv_file || empty($cv_file['name']) || !empty($cv_file['error'])) {
+        $errors[] = 'missing_cv';
+    } elseif (!empty($cv_file['size']) && (int) $cv_file['size'] > 10 * 1024 * 1024) {
+        $errors[] = 'cv_too_large';
+    }
+
+    if (empty($errors)) {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+
+        $upload = wp_handle_upload($cv_file, [
+            'test_form' => false,
+            'mimes'     => [
+                'pdf'  => 'application/pdf',
+                'doc'  => 'application/msword',
+                'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            ],
+        ]);
+
+        if (!empty($upload['error']) || empty($upload['file'])) {
+            $errors[] = 'upload_failed';
+        } else {
+            $attachment_path = (string) $upload['file'];
+        }
+    }
+
+    if (!empty($errors)) {
+        if ($attachment_path) {
+            wp_delete_file($attachment_path);
+        }
+
+        mh_job_application_redirect($job_id, 'error');
+    }
+
+    $name      = trim($first_name . ' ' . $last_name);
+    $job_title = get_the_title($job_id);
+    $recipient = sanitize_email(get_post_meta($job_id, '_contact_email', true));
+
+    if (!is_email($recipient)) {
+        $recipient = get_option('admin_email');
+    }
+
+    $body  = "Nieuwe reactie op vacature/opdracht via Modulairehuisvesting.\n\n";
+    $body .= 'Vacature/opdracht: ' . $job_title . "\n";
+    $body .= 'Link: ' . get_permalink($job_id) . "\n\n";
+    $body .= 'Naam: ' . $name . "\n";
+    $body .= 'E-mailadres: ' . $email . "\n";
+    $body .= 'Telefoonnummer: ' . $phone . "\n\n";
+    $body .= "--- Bericht ---\n" . $message . "\n";
+
+    $sent = wp_mail(
+        $recipient,
+        'Nieuwe reactie op vacature/opdracht - ' . $job_title,
+        $body,
+        [
+            'Reply-To: ' . $name . ' <' . $email . '>',
+            'Content-Type: text/plain; charset=UTF-8',
+        ],
+        [$attachment_path]
+    );
+
+    if ($attachment_path) {
+        wp_delete_file($attachment_path);
+    }
+
+    mh_job_application_redirect($job_id, $sent ? 'sent' : 'error');
+});
+
+/**
  * Nav walker met dropdown-ondersteuning
  */
 if (!class_exists('MH_Nav_Walker')) :
