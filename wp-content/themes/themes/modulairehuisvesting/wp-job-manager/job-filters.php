@@ -8,23 +8,25 @@ $selected = [
   'job_types' => [],
 ];
 
-$shortcode_atts = shortcode_atts([
-  'job_listing_type' => '',
-], $atts);
+$job_type_sources = [
+  $_GET['filter_job_type'] ?? null,
+  $_GET['filter_job_types'] ?? null,
+  $_GET['job_types'] ?? null,
+  $_GET['search_job_type'] ?? null,
+  $_POST['filter_job_type'] ?? null,
+  $_POST['filter_job_types'] ?? null,
+  $_POST['job_types'] ?? null,
+];
 
-foreach ( $selected as $key => &$value ) {
-  $shortcode_key = ( $key === 'job_types' ) ? 'job_listing_type' : $key;
-  $filter_key    = 'filter_' . $key;
-
-  if      ( ! empty( $_GET[$key] ) )             $value = (array) $_GET[$key];
-  elseif  ( ! empty( $_GET[$filter_key] ) )      $value = (array) $_GET[$filter_key];
-  elseif  ( ! empty( $_POST[$filter_key] ) )     $value = (array) $_POST[$filter_key];
-  elseif  ( ! empty( $_POST[$key] ) )            $value = (array) $_POST[$key];
-  elseif  ( ! empty( $shortcode_atts[$shortcode_key] ) ) {
-    $value = array_filter( array_map( 'trim', explode( ',', sanitize_text_field( $shortcode_atts[$shortcode_key] ) ) ) );
+foreach ( $job_type_sources as $source ) {
+  if ( empty( $source ) ) {
+    continue;
   }
+
+  $source = is_array( $source ) ? $source : explode( ',', (string) $source );
+  $selected['job_types'] = array_values( array_filter( array_map( 'sanitize_title', wp_unslash( $source ) ) ) );
+  break;
 }
-unset( $value );
 
 $keywords = isset( $keywords ) ? $keywords : ( $_GET['search_keywords'] ?? '' );
 $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
@@ -62,7 +64,8 @@ if ( ! function_exists( 'mh_get_open_job_filter_counts' ) ) {
   }
 }
 
-$job_type_counts = mh_get_open_job_filter_counts( 'job_listing_type' );
+$job_listing_types = get_job_listing_types();
+$job_type_counts   = mh_get_open_job_filter_counts( 'job_listing_type' );
 ?>
 
 <form class="job_filters">
@@ -88,18 +91,14 @@ $job_type_counts = mh_get_open_job_filter_counts( 'job_listing_type' );
              value="<?php echo esc_attr( $location ); ?>" />
     </div>
 
-    <?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
-  </div>
-
-  <div class="filter-box">
-
     <!-- Dienstverband (MULTI) -->
     <div class="job_type">
-      <select name="filter_job_types[]" id="filter_job_types"
-              class="js-custom-select job_types"
+      <select name="filter_job_type[]" id="filter_job_types"
+              class="js-custom-select"
               data-placeholder="Dienstverband"
+              data-wpjm-filter="job_type"
               multiple>
-        <?php foreach ( get_job_listing_types() as $type ) :
+        <?php foreach ( $job_listing_types as $type ) :
           $count = $job_type_counts[ (int) $type->term_id ] ?? 0;
         ?>
           <option value="<?php echo esc_attr( $type->slug ); ?>"
@@ -110,251 +109,25 @@ $job_type_counts = mh_get_open_job_filter_counts( 'job_listing_type' );
           </option>
         <?php endforeach; ?>
       </select>
+
+      <div class="job_types mh-job-type-values" aria-hidden="true">
+        <?php
+        $sync_job_types = ! empty( $selected['job_types'] )
+          ? $selected['job_types']
+          : wp_list_pluck( $job_listing_types, 'slug' );
+        ?>
+        <?php foreach ( $sync_job_types as $job_type_slug ) : ?>
+          <input type="checkbox" name="filter_job_type[]" value="<?php echo esc_attr( $job_type_slug ); ?>" checked>
+        <?php endforeach; ?>
+      </div>
     </div>
 
+    <?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
   </div>
 
-  <!-- Active filters (chips below the filter-box) -->
+  <!-- Active filters (chips below the search row) -->
   <div class="active-filters" id="active-filters" aria-live="polite"></div>
 
 </form>
 
 <?php do_action( 'job_manager_job_filters_after', $atts ); ?>
-
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.querySelector("form.job_filters");
-  if (!form) return;
-
-  const wpjmFilter = () => {
-    if (window.job_manager_job_filters && typeof window.job_manager_job_filters.filter_jobs === "function") {
-      window.job_manager_job_filters.filter_jobs();
-    } else {
-      form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-    }
-  };
-
-  const debounce = (fn, delay = 250) => {
-    let t;
-    return () => { clearTimeout(t); t = setTimeout(fn, delay); };
-  };
-
-  const kw  = document.querySelector("#search_keywords");
-  const loc = document.querySelector("#search_location");
-  if (kw)  kw.addEventListener("input",  debounce(wpjmFilter, 250));
-  if (loc) loc.addEventListener("input", debounce(wpjmFilter, 250));
-
-  form.addEventListener("submit", (e) => {
-    e.preventDefault();
-    wpjmFilter();
-  });
-
-  const closeAll = () => {
-    document.querySelectorAll(".sj-select.active").forEach((el) => {
-      el.classList.remove("active");
-      const searchInput = el.querySelector(".sj-search-input");
-      if (searchInput) {
-        searchInput.value = "";
-        el.querySelectorAll(".sj-option").forEach((opt) => { opt.style.display = ""; });
-      }
-    });
-  };
-
-  const activeFiltersEl = document.getElementById("active-filters");
-
-  const renderActiveFilters = () => {
-    if (!activeFiltersEl) return;
-    activeFiltersEl.innerHTML = "";
-
-    document.querySelectorAll("select.js-custom-select").forEach((select) => {
-      [...select.options].filter(o => o.selected && o.value !== "").forEach((opt) => {
-        const chip = document.createElement("span");
-        chip.className = "active-filter";
-        chip.setAttribute("role", "button");
-        chip.setAttribute("title", "Verwijder filter");
-        chip.innerHTML = `<span class="active-filter-text"></span><span class="active-filter-x" aria-hidden="true">×</span>`;
-        chip.querySelector(".active-filter-text").textContent = opt.dataset.label || opt.textContent;
-        chip.addEventListener("click", (e) => {
-          e.preventDefault();
-          opt.selected = false;
-          select.dispatchEvent(new Event("change", { bubbles: true }));
-        });
-        activeFiltersEl.appendChild(chip);
-      });
-    });
-
-    activeFiltersEl.style.display = activeFiltersEl.children.length ? "flex" : "none";
-  };
-
-  const buildSelect = (select) => {
-    const isMultiple  = select.multiple === true;
-    const forceMode   = select.dataset.mode;
-    const isSingle    = forceMode === "single" ? true : !isMultiple;
-    const placeholder = select.dataset.placeholder || "Selecteer";
-
-    const wrap = document.createElement("div");
-    wrap.className = "sj-select-wrap";
-    select.parentNode.insertBefore(wrap, select);
-    wrap.appendChild(select);
-    select.classList.add("sj-hidden-select");
-
-    const root = document.createElement("div");
-    root.className = "sj-select";
-    root.dataset.type = isSingle ? "single" : "multi";
-
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "sj-select-btn";
-    btn.innerHTML = `
-      <span class="sj-btn-content">
-        <span class="sj-placeholder">${placeholder}</span>
-        <span class="sj-tags" aria-hidden="true"></span>
-      </span>
-      <span class="sj-select__actions">
-        <button type="button" class="sj-clear" aria-label="Wis selectie" title="Wis selectie">×</button>
-        <span class="sj-chev" aria-hidden="true"></span>
-      </span>
-    `;
-
-    const clearBtn = btn.querySelector(".sj-clear");
-    clearBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      e.preventDefault();
-      [...select.options].forEach(o => o.selected = false);
-      renderState();
-      select.dispatchEvent(new Event("change", { bubbles: true }));
-    });
-
-    const list = document.createElement("div");
-    list.className = "sj-options";
-    list.setAttribute("role", "listbox");
-    if (!isSingle) list.setAttribute("aria-multiselectable", "true");
-
-    let searchInput = null;
-    if (!isSingle) {
-      const searchWrap = document.createElement("div");
-      searchWrap.className = "sj-search";
-      searchWrap.innerHTML = `<input type="text" class="sj-search-input" placeholder="Zoek in ${placeholder.toLowerCase()}">`;
-      searchInput = searchWrap.querySelector(".sj-search-input");
-      list.appendChild(searchWrap);
-    }
-
-    const makeOptionRow = (opt) => {
-      const row = document.createElement("div");
-      row.className = "sj-option";
-      row.dataset.value = opt.value;
-      row.setAttribute("role", "option");
-      row.setAttribute("aria-selected", opt.selected ? "true" : "false");
-      const optionLabel = opt.dataset.label || opt.textContent.trim();
-      const optionCount = opt.dataset.count;
-      row.innerHTML = `<span class="sj-option-text"></span>${optionCount !== undefined ? '<span class="sj-option-count"></span>' : ''}`;
-      row.querySelector(".sj-option-text").textContent = optionLabel;
-      const countEl = row.querySelector(".sj-option-count");
-      if (countEl) countEl.textContent = optionCount;
-
-      const syncSelected = () => {
-        row.classList.toggle("is-selected", opt.selected);
-        row.setAttribute("aria-selected", opt.selected ? "true" : "false");
-      };
-      syncSelected();
-
-      row.addEventListener("click", (e) => {
-        e.preventDefault();
-        if (opt.disabled) return;
-        if (isSingle) {
-          [...select.options].forEach(o => o.selected = false);
-          opt.selected = true;
-          closeAll();
-          root.classList.remove("active");
-        } else {
-          opt.selected = !opt.selected;
-        }
-        renderState();
-        select.dispatchEvent(new Event("change", { bubbles: true }));
-      });
-
-      return { row, syncSelected };
-    };
-
-    const optionRows = [];
-    [...select.options].forEach((opt) => {
-      if (isSingle && opt.value === "") return;
-      const { row, syncSelected } = makeOptionRow(opt);
-      optionRows.push({ opt, row, syncSelected });
-      list.appendChild(row);
-    });
-
-    const filterOptionRows = () => {
-      if (!searchInput) return;
-      const term = searchInput.value.trim().toLowerCase();
-      optionRows.forEach(({ row, opt }) => {
-        const label = opt.dataset.label || opt.textContent;
-        row.style.display = label.toLowerCase().includes(term) ? "" : "none";
-      });
-    };
-
-    if (searchInput) {
-      searchInput.addEventListener("input", filterOptionRows);
-      searchInput.addEventListener("click", (e) => e.stopPropagation());
-      searchInput.addEventListener("keydown", (e) => e.stopPropagation());
-    }
-
-    const tagsEl        = btn.querySelector(".sj-tags");
-    const placeholderEl = btn.querySelector(".sj-placeholder");
-
-    const renderState = () => {
-      optionRows.forEach(({ syncSelected }) => syncSelected());
-      const selectedOptions = [...select.options].filter(o => o.selected && o.value !== "");
-      tagsEl.innerHTML = "";
-      if (selectedOptions.length === 0) {
-        placeholderEl.style.display = "inline";
-        tagsEl.style.display = "none";
-        clearBtn.style.display = "none";
-        return;
-      }
-      clearBtn.style.display = "inline-flex";
-      placeholderEl.textContent = placeholder;
-      placeholderEl.style.display = "inline";
-      tagsEl.style.display = "none";
-    };
-
-    renderState();
-
-    btn.addEventListener("click", (e) => {
-      if (e.target.closest(".sj-clear")) return;
-      e.preventDefault();
-      const wasOpen = root.classList.contains("active");
-      closeAll();
-      if (!wasOpen) {
-        root.classList.add("active");
-        if (searchInput) {
-          searchInput.value = "";
-          filterOptionRows();
-          window.setTimeout(() => searchInput.focus(), 10);
-        }
-      }
-    });
-
-    select.addEventListener("change", () => {
-      renderState();
-      renderActiveFilters();
-      wpjmFilter();
-    });
-
-    root.appendChild(btn);
-    root.appendChild(list);
-    wrap.appendChild(root);
-  };
-
-  document.querySelectorAll("select.js-custom-select").forEach(buildSelect);
-  renderActiveFilters();
-
-  document.addEventListener("click", (e) => {
-    if (!e.target.closest(".sj-select")) closeAll();
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape") closeAll();
-  });
-});
-</script>

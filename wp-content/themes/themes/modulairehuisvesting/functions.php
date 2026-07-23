@@ -94,6 +94,16 @@ add_action('wp_enqueue_scripts', function () {
         );
     }
 
+    if (file_exists(get_stylesheet_directory() . '/js/job-filters.js')) {
+        wp_enqueue_script(
+            'mh-job-filters',
+            get_stylesheet_directory_uri() . '/js/job-filters.js',
+            ['jquery'],
+            filemtime(get_stylesheet_directory() . '/js/job-filters.js'),
+            true
+        );
+    }
+
     if (file_exists(get_stylesheet_directory() . '/css/sectoren-carousel.css')) {
         wp_enqueue_style(
             'mh-sectoren-carousel',
@@ -158,6 +168,25 @@ add_filter('job_manager_locate_template', function ($template, $template_name) {
         ? $custom_path
         : $template;
 }, 10, 2);
+
+/**
+ * WP Job Manager: sta meerdere job types per vacature toe.
+ *
+ * WP Job Manager gebruikt standaard een single-select/radio metabox wanneer
+ * deze instelling uit staat. Via deze filter blijft de normale taxonomiebox
+ * met checkboxes beschikbaar, inclusief eigen job types toevoegen.
+ */
+add_filter('job_manager_multi_job_type', '__return_true');
+add_filter('pre_option_job_manager_multi_job_type', '__return_true');
+
+add_filter('register_taxonomy_job_listing_type_args', function ($args) {
+    $args['hierarchical']      = true;
+    $args['show_ui']           = true;
+    $args['show_admin_column'] = true;
+    $args['show_in_rest']      = true;
+
+    return $args;
+});
 
 /**
  * Nav walker met dropdown-ondersteuning
