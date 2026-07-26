@@ -35015,3 +35015,12 @@ Error occurred at line 4108 in Function <code>handle_error</code>. Error message
 [23-Jul-2026 06:07:30 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-07-23 06:07:30","event":"ensure_session_wc_missing","host":"localhost:8881","request_uri":"\/","referer":"","session_id":"","has_session":false,"item_count":null}
 [23-Jul-2026 06:10:54 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-07-23 06:10:54","event":"ensure_session_wc_missing","host":"localhost:8881","request_uri":"\/","referer":"","session_id":"","has_session":false,"item_count":null}
 [23-Jul-2026 06:11:58 UTC] PMS_QUOTE_DEBUG {"timestamp":"2026-07-23 06:11:58","event":"ensure_session_wc_missing","host":"localhost:8881","request_uri":"\/","referer":"","session_id":"","has_session":false,"item_count":null}
+[26-Jul-2026 08:20:01 UTC] PHP Warning:  require_once(/Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-content/db.php): Failed to open stream: Undefined error: 0 in /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-includes/load.php on line 712
+[26-Jul-2026 08:20:01 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-content/db.php' (include_path='.:') in /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-includes/load.php:712
+Stack trace:
+#0 /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-settings.php(136): require_wp_db()
+#1 /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-config.php(108): require_once('/Users/wouterme...')
+#2 /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-load.php(50): require_once('/Users/wouterme...')
+#3 Command line code(1): require('/Users/wouterme...')
+#4 {main}
+  thrown in /Users/woutermeens/Dev/Wordpress Projecten/child-themes-file/wp-includes/load.php on line 712

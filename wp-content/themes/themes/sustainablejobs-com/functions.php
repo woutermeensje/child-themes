@@ -565,6 +565,31 @@ add_action('init', function () {
         'rewrite' => ['slug' => 'sector'],
     ]);
 
+    register_taxonomy('job_country', 'job_listing', [
+        'label'             => 'Countries',
+        'labels'            => [
+            'name'                       => 'Countries',
+            'singular_name'              => 'Country',
+            'search_items'               => 'Search countries',
+            'popular_items'              => 'Popular countries',
+            'all_items'                  => 'All countries',
+            'edit_item'                  => 'Edit country',
+            'update_item'                => 'Update country',
+            'add_new_item'               => 'Add new country',
+            'new_item_name'              => 'New country name',
+            'separate_items_with_commas' => 'Separate countries with commas',
+            'add_or_remove_items'        => 'Add or remove countries',
+            'choose_from_most_used'      => 'Choose from the most used countries',
+            'not_found'                  => 'No countries found',
+            'menu_name'                  => 'Countries',
+        ],
+        'hierarchical'      => true,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'show_in_rest'      => true,
+        'rewrite'           => ['slug' => 'country'],
+    ]);
+
     register_taxonomy('organisatie_type', 'job_listing', [
         'label'             => 'Organization type',
         'labels'            => [
@@ -596,8 +621,18 @@ add_action('init', function () {
     register_taxonomy_for_object_type('job_company', 'page');
     register_taxonomy_for_object_type('job_tag', 'page');
     register_taxonomy_for_object_type('job_sector', 'page');
+    register_taxonomy_for_object_type('job_country', 'page');
     register_taxonomy_for_object_type('organisatie_type', 'page');
 });
+
+add_action('init', function () {
+    if (get_option('sj_job_country_rewrite_flush_version') === '2026-07-26-job-country') {
+        return;
+    }
+
+    flush_rewrite_rules(false);
+    update_option('sj_job_country_rewrite_flush_version', '2026-07-26-job-country', false);
+}, 100);
 
 // =========================================================
 // Organization term meta: logo, organization type and base sectors.
@@ -1286,6 +1321,7 @@ add_filter('job_manager_get_listings_shortcode_args', function($atts){
         'job_company'       => 'job_company',
         'job_tag'           => 'job_tag',
         'job_sector'        => 'job_sector',
+        'job_country'       => 'job_country',
         'organisatie_type'  => 'organisatie_type',
         'job_listing_type'  => 'job_listing_type',
     ];
@@ -1343,7 +1379,9 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
     $custom_taxonomies = [
         'filter_job_tag'       => 'job_tag',
         'filter_job_sector'    => 'job_sector',
+        'filter_job_country'   => 'job_country',
         'filter_job_company'   => 'job_company',
+        'filter_job_type'      => 'job_listing_type',
         'filter_job_types'     => 'job_listing_type',
         'filter_organisatie_type' => 'organisatie_type',
         'filter_job_listing_category' => 'job_listing_category',
@@ -1652,6 +1690,7 @@ add_filter('job_manager_output_jobs_defaults', function($defaults) {
     $defaults['job_company'] = '';
     $defaults['job_tag'] = '';
     $defaults['job_sector'] = '';
+    $defaults['job_country'] = '';
     $defaults['organisatie_type'] = '';
     $defaults['job_listing_type'] = '';
     

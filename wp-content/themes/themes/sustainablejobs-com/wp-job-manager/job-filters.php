@@ -6,6 +6,7 @@ do_action( 'job_manager_job_filters_before', $atts );
 
 $selected = [
   'job_company'      => [],
+  'job_country'      => [],
   'job_sector'       => [],
   'job_types'        => [],
   'organisatie_type' => [],
@@ -13,6 +14,7 @@ $selected = [
 
 $shortcode_atts = shortcode_atts([
   'job_company'      => '',
+  'job_country'      => '',
   'job_sector'       => '',
   'job_listing_type' => '',
   'organisatie_type' => '',
@@ -108,6 +110,7 @@ if ( ! function_exists( 'sj_sort_terms_by_open_job_count' ) ) {
 }
 
 $job_type_counts         = sj_get_open_job_filter_counts( 'job_listing_type' );
+$job_country_counts      = sj_get_open_job_filter_counts( 'job_country' );
 $job_sector_counts       = sj_get_open_job_filter_counts( 'job_sector' );
 $organisatie_type_counts = sj_get_open_job_filter_counts( 'organisatie_type' );
 $job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
@@ -212,6 +215,18 @@ $hero_job_count = function_exists( 'sj_get_open_job_listing_count' ) ? sj_get_op
       </select>
     </div>
 
+    <!-- Country -->
+    <div class="job_country">
+      <select name="filter_job_country[]" id="filter_job_country"
+              class="js-custom-select job_country"
+              data-placeholder="Country"
+              multiple>
+        <?php foreach ( sj_sort_terms_by_open_job_count( get_terms( [ 'taxonomy' => 'job_country', 'hide_empty' => true ] ), $job_country_counts ) as $term ) : ?>
+          <?php sj_render_filter_option_with_count( $term, $selected['job_country'], $job_country_counts ); ?>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
     <!-- Sector -->
     <div class="job_sector">
       <select name="filter_job_sector[]" id="filter_job_sector"
@@ -271,9 +286,18 @@ document.addEventListener("DOMContentLoaded", () => {
   const wpjmFilter = () => {
     if (window.job_manager_job_filters && typeof window.job_manager_job_filters.filter_jobs === "function") {
       window.job_manager_job_filters.filter_jobs();
-    } else {
-      form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
+      return;
     }
+
+    if (window.jQuery) {
+      const listings = form.closest("div.job_listings") || document.querySelector("div.job_listings");
+      if (listings) {
+        window.jQuery(listings).triggerHandler("update_results", [1, false]);
+        return;
+      }
+    }
+
+    HTMLFormElement.prototype.submit.call(form);
   };
 
   const debounce = (fn, delay = 250) => {
@@ -711,6 +735,7 @@ jQuery(function($) {
 
 .filter-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   padding: 28px 24px;
@@ -719,6 +744,7 @@ jQuery(function($) {
 .search_keywords,
 .search_location {
   flex: 1;
+  min-width: min(100%, 220px);
   display: flex;
   align-items: center;
   position: relative;
