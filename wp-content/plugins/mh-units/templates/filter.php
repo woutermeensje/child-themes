@@ -3,7 +3,6 @@
 <?php
 $search         = isset($search) ? (string) $search : '';
 $types_selected = isset($types_selected) && is_array($types_selected) ? $types_selected : [];
-$active_view    = isset($active_view) && in_array($active_view, ['new', 'used'], true) ? $active_view : 'new';
 
 $types = get_terms([
     'taxonomy'   => 'mh_unit_type',
@@ -11,38 +10,38 @@ $types = get_terms([
 ]);
 ?>
 
-<aside class="mh-catalog-sidebar mh-units-catalog__sidebar" aria-label="Unit filters" style="width:100%;min-width:0;">
-    <div class="mh-catalog-sidebar-inner mh-units-catalog__sidebar-inner" style="position:sticky;top:20px;background:#fff;border:1px solid #DEDEDE;border-radius:5px;padding:20px;box-sizing:border-box;">
+<aside class="mh-catalog-sidebar mh-units-catalog__sidebar" aria-label="Unit filters">
+    <div class="mh-catalog-sidebar-inner mh-units-catalog__sidebar-inner">
         <form class="mh-units-filter-form" method="get">
-            <input type="hidden" name="mh_units_state" value="<?php echo esc_attr($active_view); ?>">
+            <input type="hidden" name="mh_units_filter" value="1">
 
-            <div class="mh-catalog-block mh-units-catalog__filter-block" style="padding-bottom:16px;margin-bottom:16px;border-bottom:1px solid #EBEBEB;">
-                <label class="mh-units-filter-label" for="mh_search" style="display:block;margin:0 0 8px;color:var(--color-text, #25476B);font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;line-height:1.3;">Zoek</label>
+            <div class="mh-catalog-block mh-units-catalog__filter-block">
+                <label class="mh-units-filter-label screen-reader-text" for="mh_search">Zoek</label>
                 <input
                     id="mh_search"
                     name="mh_search"
                     type="text"
                     class="mh-units-catalog__search"
+                    aria-label="Zoek units"
                     placeholder="Zoek op naam, trefwoord..."
                     value="<?php echo esc_attr($search); ?>"
-                    style="width:100%;min-height:42px;padding:10px 14px;border:1px solid #DEDEDE;border-radius:8px;background:#fff;color:#333;font-family:'Poppins',sans-serif;font-size:14px;line-height:1.4;box-sizing:border-box;box-shadow:none;outline:none;"
                 >
             </div>
 
-            <fieldset class="mh-catalog-block mh-units-catalog__filter-block mh-units-filter-field--types" style="margin:0;padding:0 0 16px 0;border:0;border-bottom:1px solid #EBEBEB;margin-bottom:16px;">
-                <legend style="display:block;margin:0 0 10px;padding:0;color:#333;font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;line-height:1.2;">Type unit</legend>
+            <fieldset class="mh-catalog-block mh-units-catalog__filter-block mh-units-filter-field--types">
+                <legend class="mh-units-filter-legend screen-reader-text">Type unit</legend>
 
-                <div class="mh-units-catalog__select" data-name="mh_type[]" style="position:relative;width:100%;">
-                    <button type="button" class="mh-units-catalog__select-btn" aria-haspopup="listbox" aria-expanded="false" style="appearance:none;display:flex;align-items:center;justify-content:space-between;width:100%;min-height:42px;padding:9px 14px;border:1px solid #DEDEDE;border-radius:8px;background:#fff;color:#333;font-family:'Poppins',sans-serif;font-size:14px;cursor:pointer;gap:10px;box-sizing:border-box;box-shadow:none;text-decoration:none;">
-                        <span class="mh-units-catalog__select-label is-placeholder" style="min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:left;color:#9A9A9A;">Selecteer type unit</span>
-                        <svg class="mh-units-catalog__select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:15px;height:15px;color:#9A9A9A;flex:0 0 auto;transition:transform 0.2s ease;">
+                <div class="mh-units-catalog__select" data-name="mh_type[]">
+                    <button type="button" class="mh-units-catalog__select-btn" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="mh-units-catalog__select-label is-placeholder">Selecteer type unit</span>
+                        <svg class="mh-units-catalog__select-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <polyline points="6 9 12 15 18 9"></polyline>
                         </svg>
                     </button>
 
-                    <div class="mh-units-catalog__select-panel" role="listbox" aria-multiselectable="true" style="display:none;position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:50;max-height:280px;overflow-y:auto;padding:6px;border:1px solid #DEDEDE;border-radius:10px;background:#fff;box-shadow:0 8px 30px -4px rgba(0,0,0,0.12);box-sizing:border-box;">
-                        <div class="mh-units-catalog__select-search-wrap" style="position:sticky;top:0;z-index:1;padding:4px 2px 8px;background:#fff;">
-                            <input type="search" class="mh-units-catalog__select-search" placeholder="Zoek type unit..." style="appearance:none;width:100%;min-height:36px;padding:6px 10px;border:1px solid #DEDEDE;border-radius:5px;background:#f9f9f9;color:#333;font-family:'Poppins',sans-serif;font-size:13px;box-sizing:border-box;box-shadow:none;outline:none;">
+                    <div class="mh-units-catalog__select-panel" role="listbox" aria-multiselectable="true">
+                        <div class="mh-units-catalog__select-search-wrap">
+                            <input type="search" class="mh-units-catalog__select-search" placeholder="Zoek type unit...">
                         </div>
 
                         <div class="mh-units-catalog__select-options">
@@ -54,7 +53,6 @@ $types = get_terms([
                                         aria-selected="<?php echo in_array($type->slug, $types_selected, true) ? 'true' : 'false'; ?>"
                                         data-value="<?php echo esc_attr($type->slug); ?>"
                                         data-label="<?php echo esc_attr($type->name); ?>"
-                                        style="display:flex;align-items:center;padding:9px 10px;border-radius:6px;cursor:pointer;color:#333;font-family:'Poppins',sans-serif;font-size:14px;transition:background 0.12s;user-select:none;"
                                     >
                                         <span><?php echo esc_html($type->name); ?></span>
                                     </div>
@@ -62,18 +60,18 @@ $types = get_terms([
                             <?php endif; ?>
                         </div>
 
-                        <div class="mh-units-catalog__select-empty" style="display:none;padding:10px 12px;color:#8a8a8a;font-family:'Poppins',sans-serif;font-size:13px;line-height:1.4;">
+                        <div class="mh-units-catalog__select-empty">
                             Geen types gevonden.
                         </div>
                     </div>
 
-                    <div class="mh-units-catalog__select-tags" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;">
+                    <div class="mh-units-catalog__select-tags">
                         <?php if (!is_wp_error($types) && !empty($types)) : ?>
                             <?php foreach ($types as $type): ?>
                                 <?php if (!in_array($type->slug, $types_selected, true)) continue; ?>
-                                <span class="mh-units-catalog__select-tag" data-value="<?php echo esc_attr($type->slug); ?>" style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px 7px 16px;border:1px solid #DEDEDE;border-radius:999px;background:#fff;color:#333;font-family:'Poppins',sans-serif;font-size:13px;font-weight:700;line-height:1.3;box-shadow:0 4px 20px -4px rgba(0,0,0,0.08);">
+                                <span class="mh-units-catalog__select-tag" data-value="<?php echo esc_attr($type->slug); ?>">
                                     <span><?php echo esc_html($type->name); ?></span>
-                                    <button type="button" class="mh-units-catalog__select-tag-remove" data-value="<?php echo esc_attr($type->slug); ?>" aria-label="Verwijder <?php echo esc_attr($type->name); ?>" style="appearance:none;display:flex;align-items:center;justify-content:center;width:16px;height:16px;padding:0;margin:0;border:none;border-radius:50%;background:transparent;color:#999;font-size:17px;font-weight:700;line-height:1;cursor:pointer;">&times;</button>
+                                    <button type="button" class="mh-units-catalog__select-tag-remove" data-value="<?php echo esc_attr($type->slug); ?>" aria-label="Verwijder <?php echo esc_attr($type->name); ?>">&times;</button>
                                 </span>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -86,9 +84,8 @@ $types = get_terms([
                 </div>
             </fieldset>
 
-            <div class="mh-catalog-block mh-catalog-block--actions mh-units-catalog__actions" style="padding-bottom:0;margin-bottom:0;border-bottom:none;display:flex;flex-direction:column;align-items:stretch;gap:12px;">
-                <button type="submit" class="mh-units-catalog__submit" style="appearance:none;display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:42px;padding:10px 18px;border:1px solid var(--color-ocean, #4188AA);border-radius:5px;background:linear-gradient(135deg, var(--color-ocean, #4188AA) 0%, var(--color-secondary, #39749B) 100%);color:#fff;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;line-height:1;cursor:pointer;box-sizing:border-box;">Filters toepassen</button>
-                <a class="mh-units-catalog__reset" href="<?php echo esc_url(get_permalink()); ?>" style="display:inline-flex;align-items:center;justify-content:center;width:100%;min-height:42px;padding:10px 18px;border:1px solid #DEDEDE;border-radius:5px;background:#fff;color:var(--color-text-soft, #39749B);font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;line-height:1;text-decoration:none;box-sizing:border-box;">Filters wissen</a>
+            <div class="mh-catalog-block mh-catalog-block--actions mh-units-catalog__actions">
+                <button type="submit" class="mh-units-catalog__submit">Zoeken</button>
             </div>
         </form>
     </div>
@@ -96,15 +93,6 @@ $types = get_terms([
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  var toggleForm = document.querySelector('.mh-units-catalog__toggle-form');
-  if (toggleForm) {
-    toggleForm.querySelectorAll('.mh-units-catalog__toggle-input').forEach(function (input) {
-      input.addEventListener('change', function () {
-        toggleForm.submit();
-      });
-    });
-  }
-
   var filterForm = document.querySelector('.mh-units-filter-form');
   if (!filterForm) return;
 

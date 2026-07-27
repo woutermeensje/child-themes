@@ -103,7 +103,7 @@
   padding: 12px;
   border: 2px solid var(--mh-primary);
   border-radius: 0;
-  font-family: 'Balgin Bold', 'Balgin-Bold', serif;
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 18px;
   font-weight: 700;
   color: var(--mh-primary);
@@ -850,7 +850,7 @@
   padding: 12px !important;
   border: 2px solid var(--mh-primary) !important;
   border-radius: 0 !important;
-  font-family: 'Balgin Bold', 'Balgin-Bold', serif !important;
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
   font-size: 18px !important;
   font-weight: 700 !important;
   color: var(--mh-primary) !important;

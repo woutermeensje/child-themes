@@ -77,7 +77,7 @@
     font-weight: 400;
     line-height: 1.65;
     color: rgba(255, 255, 255, 0.88);
-    max-width: 52ch;
+    max-width: 68ch;
 }
 
 /* ── Hero knoppen ── */
@@ -260,7 +260,7 @@
     font-weight: 400 !important;
     line-height: 1.65 !important;
     color: rgba(255, 255, 255, 0.88) !important;
-    max-width: 52ch !important;
+    max-width: 68ch !important;
 }
 
 .mh-home-hero__actions {

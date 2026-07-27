@@ -56,7 +56,7 @@ if (!$excerpt) {
         </h3>
 
         <?php if ($excerpt): ?>
-            <p class="mh-unit-card__excerpt"><?php echo esc_html(wp_trim_words($excerpt, 18, '…')); ?></p>
+            <p class="mh-unit-card__excerpt"><?php echo esc_html(wp_trim_words($excerpt, 7, '…')); ?></p>
         <?php endif; ?>
 
         <?php if ((!is_wp_error($terms_type) && !empty($terms_type)) || (!is_wp_error($terms_conditie) && !empty($terms_conditie))): ?>

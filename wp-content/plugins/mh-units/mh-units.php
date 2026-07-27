@@ -27,6 +27,15 @@ add_action('wp_enqueue_scripts', function () {
         file_exists($script_path) ? filemtime($script_path) : '0.1.0',
         true
     );
+
+    $style_path = MH_UNITS_PATH . 'assets/css/units.css';
+
+    wp_enqueue_style(
+        'mh-units',
+        MH_UNITS_URL . 'assets/css/units.css',
+        [],
+        file_exists($style_path) ? filemtime($style_path) : '0.1.0'
+    );
 });
 
 

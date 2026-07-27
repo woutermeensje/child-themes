@@ -57,15 +57,6 @@ add_action('wp_enqueue_scripts', function () {
         );
     }
 
-    if (file_exists(get_stylesheet_directory() . '/css/mh-units.css')) {
-        wp_enqueue_style(
-            'mh-units-theme',
-            get_stylesheet_directory_uri() . '/css/mh-units.css',
-            ['child-style'],
-            filemtime(get_stylesheet_directory() . '/css/mh-units.css')
-        );
-    }
-
     if (file_exists(get_stylesheet_directory() . '/css/hero-homepage.css')) {
         wp_enqueue_style(
             'mh-hero-homepage',
@@ -148,6 +139,132 @@ add_action('wp_enqueue_scripts', function () {
             filemtime(get_stylesheet_directory() . '/js/sectoren-carousel.js'),
             true
         );
+    }
+});
+
+add_action('wp_footer', function (): void {
+    ?>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      document.querySelectorAll('.mh-units-catalog__submit').forEach(function (button) {
+        button.textContent = 'Zoeken';
+      });
+
+      document.querySelectorAll('.mh-units-catalog__reset, .mh-units-catalog__toggle').forEach(function (element) {
+        element.style.display = 'none';
+      });
+    });
+    </script>
+    <?php
+});
+
+/**
+ * Landingspagina-template velden
+ */
+add_action('init', function (): void {
+    register_post_meta('page', '_mh_landing_hero_title', [
+        'single'            => true,
+        'type'              => 'string',
+        'show_in_rest'      => true,
+        'sanitize_callback' => 'sanitize_text_field',
+        'auth_callback'     => function (): bool {
+            return current_user_can('edit_pages');
+        },
+    ]);
+
+    register_post_meta('page', '_mh_landing_hero_text', [
+        'single'            => true,
+        'type'              => 'string',
+        'show_in_rest'      => true,
+        'sanitize_callback' => 'sanitize_textarea_field',
+        'auth_callback'     => function (): bool {
+            return current_user_can('edit_pages');
+        },
+    ]);
+});
+
+add_action('add_meta_boxes_page', function (): void {
+    add_meta_box(
+        'mh_landing_page_fields',
+        'Landingspagina hero',
+        'mh_render_landing_page_meta_box',
+        'page',
+        'normal',
+        'high'
+    );
+});
+
+function mh_render_landing_page_meta_box(WP_Post $post): void {
+    wp_nonce_field('mh_landing_page_meta', 'mh_landing_page_meta_nonce');
+
+    $title = (string) get_post_meta($post->ID, '_mh_landing_hero_title', true);
+    $text  = (string) get_post_meta($post->ID, '_mh_landing_hero_text', true);
+    ?>
+    <p>Deze velden worden gebruikt door de template <strong>landingspagina-template</strong>. Leeg laten gebruikt de paginatitel en samenvatting.</p>
+    <p>
+        <label for="mh_landing_hero_title"><strong>Titel</strong></label><br>
+        <input
+            type="text"
+            id="mh_landing_hero_title"
+            name="mh_landing_hero_title"
+            value="<?php echo esc_attr($title); ?>"
+            style="width: 100%;"
+        >
+    </p>
+    <p>
+        <label for="mh_landing_hero_text"><strong>Tekst onder titel</strong></label><br>
+        <textarea
+            id="mh_landing_hero_text"
+            name="mh_landing_hero_text"
+            rows="4"
+            style="width: 100%;"
+        ><?php echo esc_textarea($text); ?></textarea>
+    </p>
+    <?php
+}
+
+add_action('save_post_page', function (int $post_id): void {
+    if (
+        wp_is_post_revision($post_id)
+        || (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
+    ) {
+        return;
+    }
+
+    if (!current_user_can('edit_page', $post_id)) {
+        return;
+    }
+
+    $nonce = isset($_POST['mh_landing_page_meta_nonce'])
+        ? sanitize_text_field(wp_unslash($_POST['mh_landing_page_meta_nonce']))
+        : '';
+
+    if (!wp_verify_nonce($nonce, 'mh_landing_page_meta')) {
+        return;
+    }
+
+    $fields = [
+        '_mh_landing_hero_title' => [
+            'input'    => 'mh_landing_hero_title',
+            'sanitize' => 'sanitize_text_field',
+        ],
+        '_mh_landing_hero_text' => [
+            'input'    => 'mh_landing_hero_text',
+            'sanitize' => 'sanitize_textarea_field',
+        ],
+    ];
+
+    foreach ($fields as $meta_key => $field) {
+        $value = isset($_POST[$field['input']])
+            ? call_user_func($field['sanitize'], wp_unslash($_POST[$field['input']]))
+            : '';
+
+        if ('' === $value) {
+            delete_post_meta($post_id, $meta_key);
+            continue;
+        }
+
+        update_post_meta($post_id, $meta_key, $value);
     }
 });
 
