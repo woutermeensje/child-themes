@@ -8,10 +8,10 @@ if (!defined('ABSPATH')) {
 }
 
 get_header();
-include get_stylesheet_directory() . '/template-parts/landing-werkzoekende.php';
 
 if ( have_posts() ) :
     while ( have_posts() ) : the_post();
+        include get_stylesheet_directory() . '/template-parts/landing-werkzoekende.php';
         the_content();
     endwhile;
 endif;
