@@ -54,7 +54,7 @@ $types = wpjm_get_the_job_types();
             ?>
                 <div class="ih-job__chips">
                     <?php if ( $types ) : foreach ( $types as $type ) : ?>
-                        <span class="ih-job__chip"><?php echo esc_html( $type->name ); ?></span>
+                        <span class="ih-job__chip ih-job__chip--type"><?php echo esc_html( $type->name ); ?></span>
                     <?php endforeach; endif; ?>
                     <?php foreach ( array_slice( $chips, 0, 4 ) as $chip ) : ?>
                         <span class="ih-job__chip"><?php echo esc_html( $chip->name ); ?></span>
@@ -108,12 +108,18 @@ ul.job_listings li.ih-job {
     box-shadow: none !important;
     outline: none !important;
     overflow: hidden;
-    transition: box-shadow .15s ease, border-color .15s ease;
+    transition: box-shadow .15s ease, border-color .15s ease, transform .15s ease;
 }
 
 .ih-job__card:hover {
     border-color: #c0c8d4 !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+    transform: translateY(-2px);
+}
+
+.ih-job__card:focus-visible {
+    outline: 2px solid var(--color-primary, #0458AB) !important;
+    outline-offset: 2px;
 }
 
 /* ---- Logo ---- */
@@ -124,7 +130,7 @@ ul.job_listings li.ih-job {
     border-radius: 0;
     border: none;
     border-right: 1px solid #dedede;
-    background: #fff;
+    background: #fafafa;
     box-shadow: none;
     display: flex;
     align-items: center;
@@ -139,6 +145,11 @@ ul.job_listings li.ih-job {
     padding: 0;
     border-radius: 0 !important;
     box-shadow: none !important;
+    transition: transform .2s ease;
+}
+
+.ih-job__card:hover .ih-job__logo img {
+    transform: scale(1.04);
 }
 
 /* ---- Links ---- */
@@ -152,8 +163,10 @@ ul.job_listings li.ih-job {
 
 .ih-job__company {
     font-family: 'Inter', sans-serif;
-    font-size: 13px;
-    font-weight: 400;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: .03em;
+    text-transform: uppercase;
     color: #9ca3af;
     line-height: 1.3;
 }
@@ -223,6 +236,17 @@ ul.job_listings li.ih-job {
     border-radius: 999px;
     white-space: nowrap;
     line-height: 1.5;
+    transition: border-color .15s ease, background .15s ease;
+}
+
+.ih-job__chip--type {
+    color: var(--color-primary, #0458AB);
+    background: rgba(4, 88, 171, 0.08);
+    border-color: rgba(4, 88, 171, 0.25);
+}
+
+.ih-job__card:hover .ih-job__chip {
+    border-color: #c0c8d4;
 }
 
 /* ---- Mobiel ---- */
