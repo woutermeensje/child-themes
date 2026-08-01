@@ -3,18 +3,23 @@ if (!defined('ABSPATH')) exit;
 
 add_shortcode('sj_vacature_directory', 'sj_vacature_directory_shortcode');
 add_shortcode('sj_vacature_categorieen', 'sj_vacature_directory_shortcode');
+add_shortcode('sj_vacature_directory-organisaties', 'sj_vacature_directory_shortcode');
+add_shortcode('sj_vacature_directory_organisaties', 'sj_vacature_directory_shortcode');
 
 function sj_vacature_directory_bool($value): bool {
     return in_array(strtolower((string) $value), ['1', 'true', 'yes', 'ja'], true);
 }
 
-function sj_vacature_directory_shortcode($atts = []): string {
+function sj_vacature_directory_shortcode($atts = [], $content = null, $shortcode_tag = 'sj_vacature_directory'): string {
+    $atts = is_array($atts) ? $atts : [];
+    $is_organisaties_shortcode = in_array($shortcode_tag, ['sj_vacature_directory-organisaties', 'sj_vacature_directory_organisaties'], true);
+
     $atts = shortcode_atts([
-        'taxonomies' => 'job_sector,job_company,organisatie_type',
+        'taxonomies' => $is_organisaties_shortcode ? 'job_company' : 'job_sector,job_company,organisatie_type',
         'hide_empty' => '0',
-        'orderby'    => 'count',
-        'order'      => 'DESC',
-    ], $atts, 'sj_vacature_directory');
+        'orderby'    => $is_organisaties_shortcode ? 'name' : 'count',
+        'order'      => $is_organisaties_shortcode ? 'ASC' : 'DESC',
+    ], $atts, $shortcode_tag ?: 'sj_vacature_directory');
 
     $taxonomy_labels = [
         'job_sector'        => 'Sectoren',
@@ -28,6 +33,7 @@ function sj_vacature_directory_shortcode($atts = []): string {
     $orderby              = in_array($atts['orderby'], ['name', 'slug', 'count'], true) ? $atts['orderby'] : 'count';
     $order                = strtoupper((string) $atts['order']) === 'ASC' ? 'ASC' : 'DESC';
     $sections             = [];
+    $is_organisaties_directory = count($requested_taxonomies) === 1 && reset($requested_taxonomies) === 'job_company';
 
     foreach ($requested_taxonomies as $taxonomy) {
         if (!taxonomy_exists($taxonomy)) {
@@ -58,24 +64,34 @@ function sj_vacature_directory_shortcode($atts = []): string {
     }
 
     $instance_id = wp_unique_id('sj_directory_');
+    $header_title = $is_organisaties_directory ? 'Zoek in alle organisaties' : 'Zoek in alle vacaturecategorieën';
+    $header_text = $is_organisaties_directory
+        ? 'Vind duurzame werkgevers en organisaties binnen Sustainablejobs.nl.'
+        : 'Filter op sectoren, organisaties en andere categorieën binnen Sustainablejobs.nl.';
+    $search_label = $is_organisaties_directory ? 'Zoeken in organisaties' : 'Zoeken in categorieën';
+    $search_placeholder = $is_organisaties_directory ? 'Zoek organisatie..' : 'Zoek sector, organisatie of onderwerp..';
+    $empty_title = $is_organisaties_directory ? 'Geen organisaties gevonden.' : 'Geen categorieën gevonden.';
+    $empty_text = $is_organisaties_directory
+        ? 'Pas je zoekopdracht aan om meer organisaties te zien.'
+        : 'Pas je zoekopdracht of filter aan om meer resultaten te zien.';
 
     ob_start();
     ?>
-    <div class="sj-vacature-directory" data-sj-directory>
+    <div class="sj-vacature-directory<?php echo $is_organisaties_directory ? ' sj-vacature-directory--organisaties' : ''; ?>" data-sj-directory>
         <form class="sj-directory-filter" data-sj-directory-filter>
             <div class="filter-header">
-                <h2>Zoek in alle vacaturecategorieën</h2>
-                <p>Filter op sectoren, organisaties en andere categorieën binnen Sustainablejobs.nl.</p>
+                <h2><?php echo esc_html($header_title); ?></h2>
+                <p><?php echo esc_html($header_text); ?></p>
             </div>
 
             <div class="search-basic">
                 <div class="search_keywords sj-directory-search">
-                    <label class="sj-directory-filter__sr" for="<?php echo esc_attr($instance_id); ?>search">Zoeken in categorieën</label>
+                    <label class="sj-directory-filter__sr" for="<?php echo esc_attr($instance_id); ?>search"><?php echo esc_html($search_label); ?></label>
                     <input
                         type="text"
                         name="sj_directory_search"
                         id="<?php echo esc_attr($instance_id); ?>search"
-                        placeholder="Zoek sector, organisatie of onderwerp.."
+                        placeholder="<?php echo esc_attr($search_placeholder); ?>"
                         data-sj-directory-search
                     >
                 </div>
@@ -155,8 +171,8 @@ function sj_vacature_directory_shortcode($atts = []): string {
             <?php endforeach; ?>
 
             <div class="sj-vacature-directory__empty" data-sj-directory-empty hidden>
-                <h2>Geen categorieën gevonden.</h2>
-                <p>Pas je zoekopdracht of filter aan om meer resultaten te zien.</p>
+                <h2><?php echo esc_html($empty_title); ?></h2>
+                <p><?php echo esc_html($empty_text); ?></p>
             </div>
         </div>
     </div>

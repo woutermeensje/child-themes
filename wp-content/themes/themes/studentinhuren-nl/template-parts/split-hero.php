@@ -13,7 +13,7 @@ $title_html = function_exists('studentinhuren_split_hero_highlight')
     ? studentinhuren_split_hero_highlight($title_raw, $accent_terms)
     : esc_html($title_raw);
 
-$description_link_style = 'color: #8FC0FF !important; font-weight: 600 !important; text-decoration: none !important;';
+$description_link_style = 'color: #e5f0f7 !important; font-weight: 600 !important; text-decoration: none !important;';
 $personnel_button_style = "font-family: 'Work Sans', sans-serif !important; font-weight: 700 !important;";
 
 $description_html = esc_html($description);

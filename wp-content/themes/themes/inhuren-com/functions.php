@@ -186,6 +186,13 @@ add_filter('wp_nav_menu_objects', function ($items, $args) {
 }, 10, 2);
 
 add_action('after_setup_theme', function () {
+    add_theme_support('custom-logo', [
+        'height'      => 40,
+        'width'       => 220,
+        'flex-height' => true,
+        'flex-width'  => true,
+    ]);
+
     register_nav_menus([
         'primary_nav' => 'Primaire navigatie',
         'footer_nav'  => 'Footer navigatie',

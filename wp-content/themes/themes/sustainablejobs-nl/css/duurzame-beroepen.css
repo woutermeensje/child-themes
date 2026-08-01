@@ -1,0 +1,139 @@
+.sj-duurzame-beroepen-template {
+  background: var(--color-bg-light);
+}
+
+.sj-duurzame-beroepen-template__content {
+  width: 100%;
+}
+
+.sj-job-hero {
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 400px;
+  background-color: #254F6E;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.sj-job-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(37, 79, 110, 0.70);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.sj-job-hero__inner {
+  position: relative;
+  z-index: 2;
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.sj-job-hero__eyebrow {
+  display: inline-block;
+  margin: 0 0 14px;
+  padding-bottom: 6px;
+  border-bottom: 3px solid #9BCB86;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.sj-job-hero__title-wrap {
+  margin: 0 0 18px;
+  max-width: 75%;
+}
+
+.sj-job-hero__title {
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-weight: 800 !important;
+  font-size: clamp(20px, calc(3vw - 4px), 32px) !important;
+  line-height: 1.2 !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+.sj-job-hero__subtitle {
+  margin: 10px 0 0;
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #ffffff;
+}
+
+.sj-job-hero__accent {
+  color: #9BCB86;
+}
+
+.sj-job-hero__vacatures-link {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
+.sj-job-hero__vacatures-link:hover {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.sj-job-hero__vacatures-link .sj-job-hero__accent {
+  color: #9BCB86 !important;
+}
+
+.sj-job-hero__link {
+  color: #9BCB86 !important;
+  text-decoration: none !important;
+}
+
+.sj-job-hero__link:hover {
+  color: #57AE94 !important;
+}
+
+@media (max-width: 960px) {
+  .sj-job-hero {
+    height: 280px;
+    left: 0;
+    right: auto;
+    margin-left: 0;
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .sj-job-hero__inner {
+    max-width: none;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  .sj-job-hero__title-wrap {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 0;
+  }
+
+  .sj-job-hero__title {
+    font-size: clamp(20px, 5vw, 28px) !important;
+    text-wrap: balance;
+  }
+
+  .sj-job-hero__subtitle {
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 1.45;
+  }
+}
