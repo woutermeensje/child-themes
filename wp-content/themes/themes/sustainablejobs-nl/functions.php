@@ -22,6 +22,7 @@ require_once get_stylesheet_directory() . '/inc/uitgelichte-werkgever.php';
 require_once get_stylesheet_directory() . '/inc/laravel-vacancy-sync.php';
 require_once get_stylesheet_directory() . '/inc/duurzame-beroepen-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-duurzame-beroepen.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-recente-vacatures.php';
 
 /**
  * Centrale afzender voor uitgaande mails vanuit het thema.
