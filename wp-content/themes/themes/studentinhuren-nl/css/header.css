@@ -34,6 +34,7 @@
 
 .rn-topbar__inner {
   width: min(100% - 64px, 1320px);
+  height: 30px;
   min-height: 30px;
   margin: 0 auto;
   display: flex;
@@ -46,12 +47,24 @@
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  height: 30px;
   min-width: 0;
+  font-size: 0;
 }
 
-#rn-header .rn-topbar .rn-topbar__link {
+body #rn-header.rn-header .rn-topbar a.rn-topbar__link,
+body #rn-header.rn-header .rn-topbar a.rn-topbar__link:visited {
+  display: inline-flex !important;
+  align-items: center !important;
+  height: 30px !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
   color: rgba(255, 255, 255, 0.86) !important;
-  font-family: 'Roboto', sans-serif !important;
+  font: normal 500 12px/1.2 'Roboto', sans-serif !important;
   font-size: 12px !important;
   font-weight: 500 !important;
   line-height: 1.2 !important;
@@ -62,17 +75,23 @@
   transition: color .15s ease, opacity .15s ease;
 }
 
-#rn-header .rn-topbar .rn-topbar__link:hover,
-#rn-header .rn-topbar .rn-topbar__link:focus {
+body #rn-header.rn-header .rn-topbar a.rn-topbar__link:hover,
+body #rn-header.rn-header .rn-topbar a.rn-topbar__link:focus {
+  background: transparent !important;
   color: #ffffff !important;
   text-decoration: underline !important;
   text-underline-offset: 3px;
 }
 
 .rn-topbar__sep {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
   color: rgba(255, 255, 255, 0.28);
-  font-size: 12px;
-  line-height: 1;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px !important;
+  font-weight: 500;
+  line-height: 1 !important;
 }
 
 .rn-header__inner {
