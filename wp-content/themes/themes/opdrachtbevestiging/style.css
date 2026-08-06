@@ -13,15 +13,6 @@ Text Domain: opdrachtbevestiging
 
 @import url("../hello-elementor/style.css");
 
-@font-face {
-    font-family: 'Balgin-Bold';
-    src: url('fonts/Balgin-Bold.woff2') format('woff2'),
-         url('fonts/Balgin-Bold.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
 :root {
   --color-primary: #7C5CFA;
   --color-primary-dk: #6344E0;
@@ -82,7 +73,7 @@ h1.entry-title {
 }
 
 h1, h2, h3, h4, h5 {
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     color: var(--color-text);
     line-height: 1;
     margin-top: 15px;

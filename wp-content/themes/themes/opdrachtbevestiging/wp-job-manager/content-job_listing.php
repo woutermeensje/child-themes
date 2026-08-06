@@ -246,7 +246,7 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
 
 .job_listing .job_listing_content h2 {
     margin: 0 0 5px 0;
-    font-family: "Balgin-Bold", Sans-serif;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     font-size: 20px;
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -276,7 +276,7 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
     line-height: 48px !important;
     border-radius: 0px !important;
     text-decoration: none !important;
-    font-family: Balgin-Bold !important;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
     font-size: 15px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
     transition: all .2s ease;
@@ -293,7 +293,7 @@ a.title-link {
     padding: 0 !important;
     color: #333333;
     text-decoration: none;
-    font-family: Balgin-Bold !important;
+    font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
 }
 
 .job_listing .background-wrapper .title {

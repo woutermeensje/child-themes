@@ -2,6 +2,8 @@
 // Exit if accessed directly
 if (!defined('ABSPATH')) exit;
 
+require_once get_stylesheet_directory() . '/inc/shortcode-opstellen-overzicht.php';
+
 // =========================================================
 // 1) Styles en fonts
 // =========================================================
@@ -11,7 +13,6 @@ add_action('wp_enqueue_scripts', function () {
     $theme_version = wp_get_theme()->get('Version');
     $parent_style  = get_template_directory() . '/style.css';
     $child_style   = $theme_dir . '/style.css';
-    $fonts_style   = $theme_dir . '/fonts/fonts.css';
     $header_style  = $theme_dir . '/css/header.css';
     $landing_style = $theme_dir . '/css/template.css';
 
@@ -25,10 +26,6 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;600;700;800&display=swap', [], null);
-
-    if (file_exists($fonts_style)) {
-        wp_enqueue_style('custom-fonts', $theme_uri . '/fonts/fonts.css', [], filemtime($fonts_style));
-    }
 
     if (file_exists($header_style)) {
         wp_enqueue_style('rn-header', $theme_uri . '/css/header.css', ['child-style'], filemtime($header_style));

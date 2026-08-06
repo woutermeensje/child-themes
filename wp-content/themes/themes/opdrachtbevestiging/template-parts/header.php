@@ -112,7 +112,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 #rn-header .rn-header__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 12px; }
 #rn-header .rn-btn {
   display: inline-flex !important; align-items: center; justify-content: center;
-  font-family: 'Balgin-Bold', serif !important;
+  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
   font-weight: 700 !important; font-size: 14px !important;
   line-height: 1 !important;
   padding: 12px 22px !important; border-radius: 8px !important;
