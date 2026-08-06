@@ -134,13 +134,20 @@ if ( $zoekterm !== '' ) {
                         $cat     = $cats ? $cats[0] : null;
                         $cat_lbl = $cat ? esc_html( $cat->name ) : '';
                         $cat_style = ( $cat && function_exists( 'sj_get_blog_category_style' ) ) ? sj_get_blog_category_style( $cat ) : '';
-                        $thumb   = get_the_post_thumbnail( $post, 'thumbnail' );
+                        $thumb   = get_the_post_thumbnail(
+                            $post,
+                            'medium_large',
+                            [
+                                'class' => 'sj-blog__row-img',
+                                'sizes' => '(max-width: 480px) calc(100vw - 32px), (max-width: 960px) calc(100vw - 48px), 270px',
+                            ]
+                        );
                         $auteur  = get_post_meta( $post->ID, '_sj_artikel_auteur', true );
                     ?>
                     <a href="<?php echo esc_url( $link ); ?>" class="sj-blog__row"<?php echo $cat_style ? ' style="' . esc_attr( $cat_style ) . '"' : ''; ?>>
                         <div class="sj-blog__row-img-wrap">
                             <?php if ( $thumb ) : ?>
-                                <?php echo str_replace( '<img ', '<img class="sj-blog__row-img" ', $thumb ); ?>
+                                <?php echo $thumb; ?>
                             <?php else : ?>
                                 <div class="sj-blog__row-placeholder"><?php echo $img_icon; ?></div>
                             <?php endif; ?>

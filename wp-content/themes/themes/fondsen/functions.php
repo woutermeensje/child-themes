@@ -156,6 +156,36 @@ add_filter('wp_mail_from_name', function () {
     return 'Fondsen.org';
 });
 
+if ( ! function_exists('fondsen_post_uses_newsarticle_schema') ) {
+    function fondsen_post_uses_newsarticle_schema( $post_id ) {
+        $post_id = absint($post_id);
+
+        if ( ! $post_id || get_post_type($post_id) !== 'post' ) {
+            return false;
+        }
+
+        return has_category('nieuws', $post_id);
+    }
+}
+
+add_filter('wpseo_schema_article_type', function ( $type, $indexable = null ) {
+    $post_id = 0;
+
+    if ( is_object($indexable) && isset($indexable->object_id) ) {
+        $post_id = absint($indexable->object_id);
+    }
+
+    if ( ! $post_id ) {
+        $post_id = get_queried_object_id();
+    }
+
+    if ( function_exists('fondsen_post_uses_newsarticle_schema') && fondsen_post_uses_newsarticle_schema($post_id) ) {
+        return 'NewsArticle';
+    }
+
+    return $type;
+}, 10, 2);
+
 add_filter('job_manager_multi_job_type', '__return_true');
 
 // =========================================================

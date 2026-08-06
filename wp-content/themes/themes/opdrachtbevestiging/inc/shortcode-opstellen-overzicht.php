@@ -27,25 +27,16 @@ function ob_opstellen_overzicht_shortcode($atts): string {
     ?>
     <div class="ob-opstellen-directory">
         <div class="ob-opstellen-directory__results">
-            <section class="ob-opstellen-directory__section">
-                <div class="ob-opstellen-directory__grid">
-                    <?php foreach ($items as $item): ?>
-                        <a
-                            class="ob-opstellen-directory__item"
-                            href="<?php echo esc_url($item['url']); ?>"
-                        >
-                            <span class="ob-opstellen-directory__badge" aria-hidden="true"><?php echo esc_html($item['initial']); ?></span>
-                            <span class="ob-opstellen-directory__content">
-                                <span class="ob-opstellen-directory__name"><?php echo esc_html($item['title']); ?></span>
-                                <?php if ($item['excerpt']): ?>
-                                    <span class="ob-opstellen-directory__meta"><?php echo esc_html($item['excerpt']); ?></span>
-                                <?php endif; ?>
-                            </span>
-                            <span class="ob-opstellen-directory__arrow" aria-hidden="true"></span>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-            </section>
+            <div class="ob-opstellen-directory__grid">
+                <?php foreach ($items as $item): ?>
+                    <a
+                        class="ob-opstellen-directory__item"
+                        href="<?php echo esc_url($item['url']); ?>"
+                    >
+                        <span class="ob-opstellen-directory__name"><?php echo esc_html($item['title']); ?></span>
+                    </a>
+                <?php endforeach; ?>
+            </div>
         </div>
     </div>
 
@@ -99,13 +90,9 @@ function ob_opstellen_overzicht_get_pages(string $base_path): array {
         }
 
         $title   = get_the_title($page);
-        $excerpt = get_the_excerpt($page);
-        $initial = function_exists('mb_substr') ? mb_substr($title, 0, 1) : substr($title, 0, 1);
         $items[] = [
-            'title'   => $title,
-            'url'     => get_permalink($page),
-            'excerpt' => $excerpt,
-            'initial' => strtoupper($initial),
+            'title' => $title,
+            'url'   => get_permalink($page),
         ];
     }
 
@@ -153,7 +140,6 @@ function ob_opstellen_overzicht_print_assets(): void {
     .ob-opstellen-directory__item {
         display: flex;
         align-items: center;
-        gap: 14px;
         min-height: 86px;
         padding: 18px;
         background: #ffffff;
@@ -172,29 +158,6 @@ function ob_opstellen_overzicht_print_assets(): void {
         outline: none;
     }
 
-    .ob-opstellen-directory__badge {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 42px;
-        height: 42px;
-        border-radius: 6px;
-        flex: 0 0 42px;
-        background: var(--color-bg-filter, #F0ECFE);
-        color: var(--color-primary, #7C5CFA);
-        font-family: 'Inter', sans-serif;
-        font-size: 18px;
-        font-weight: 700;
-    }
-
-    .ob-opstellen-directory__content {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-        min-width: 0;
-        flex: 1 1 auto;
-    }
-
     .ob-opstellen-directory__name {
         font-family: 'Inter', sans-serif;
         font-size: 16px;
@@ -202,33 +165,6 @@ function ob_opstellen_overzicht_print_assets(): void {
         line-height: 1.3;
         color: var(--color-text, #333333);
         overflow-wrap: anywhere;
-    }
-
-    .ob-opstellen-directory__meta {
-        display: -webkit-box;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 1;
-        overflow: hidden;
-        font-family: 'Poppins', sans-serif;
-        font-size: 13px;
-        font-weight: 400;
-        line-height: 1.35;
-        color: var(--color-text-muted, #777777);
-    }
-
-    .ob-opstellen-directory__arrow {
-        width: 10px;
-        height: 10px;
-        flex: 0 0 10px;
-        border-right: 2px solid var(--color-primary, #7C5CFA);
-        border-bottom: 2px solid var(--color-primary, #7C5CFA);
-        transform: rotate(-45deg);
-        transition: transform .18s ease;
-    }
-
-    .ob-opstellen-directory__item:hover .ob-opstellen-directory__arrow,
-    .ob-opstellen-directory__item:focus .ob-opstellen-directory__arrow {
-        transform: translateX(3px) rotate(-45deg);
     }
 
     @media (max-width: 768px) {

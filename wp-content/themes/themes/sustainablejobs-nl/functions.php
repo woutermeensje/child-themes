@@ -91,6 +91,36 @@ if (!function_exists('sj_get_blog_category_style')) {
     }
 }
 
+if (!function_exists('sj_post_uses_newsarticle_schema')) {
+    function sj_post_uses_newsarticle_schema($post_id) {
+        $post_id = absint($post_id);
+
+        if (!$post_id || get_post_type($post_id) !== 'post') {
+            return false;
+        }
+
+        return has_category('nieuws', $post_id);
+    }
+}
+
+add_filter('wpseo_schema_article_type', function ($type, $indexable = null) {
+    $post_id = 0;
+
+    if (is_object($indexable) && isset($indexable->object_id)) {
+        $post_id = absint($indexable->object_id);
+    }
+
+    if (!$post_id) {
+        $post_id = get_queried_object_id();
+    }
+
+    if (function_exists('sj_post_uses_newsarticle_schema') && sj_post_uses_newsarticle_schema($post_id)) {
+        return 'NewsArticle';
+    }
+
+    return $type;
+}, 10, 2);
+
 /**
  * Sta meerdere job types per vacature toe in WP Job Manager.
  */

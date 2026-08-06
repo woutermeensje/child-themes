@@ -109,68 +109,71 @@ body:not([class*=elementor-page-]) .sj-single-page {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 12px;
+    gap: 16px;
+    margin-bottom: 18px;
 }
 
 .sj-blog__hero-cat {
     display: inline-flex;
     align-items: center;
-    background: var(--sj-cat-bg, #C5D77F);
-    border: 1px solid var(--sj-cat-border, #C5D77F);
-    color: var(--sj-cat-text, #073d4f);
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
+    margin: 0;
+    padding: 0 0 6px;
+    border: 0;
+    border-bottom: 3px solid var(--sj-cat-marker, #9BCB86);
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
     font-weight: 700;
-    letter-spacing: 0;
-    line-height: 1.15;
-    text-transform: none;
-    padding: 4px 10px;
-    border-radius: 999px;
-    box-shadow: 0 8px 18px rgba(7, 61, 79, 0.16);
+    letter-spacing: 0.06em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.88);
 }
 
 .sj-blog__hero-title {
     font-family: 'Work Sans', sans-serif !important;
-    font-size: 30px !important;
-    font-weight: 700 !important;
+    font-size: clamp(24px, 3vw, 32px) !important;
+    font-weight: 800 !important;
     color: #fff !important;
-    line-height: 1.4 !important;
-    letter-spacing: -0.01em !important;
-    margin: 0 0 12px !important;
+    line-height: 1.2 !important;
+    letter-spacing: 0 !important;
+    margin: 0 !important;
     padding: 0 !important;
     border: none !important;
     text-transform: none !important;
+    text-wrap: balance;
 }
 
 .sj-blog__title-marker {
     display: inline;
-    padding: 0.2em 0.18em;
-    background: var(--sj-cat-marker, var(--sj-cat-bg, #C5D77F));
-    background: color-mix(in srgb, var(--sj-cat-marker, var(--sj-cat-bg, #C5D77F)) 72%, transparent);
+    padding: 0;
+    background: transparent;
     color: #ffffff;
-    -webkit-box-decoration-break: clone;
-    box-decoration-break: clone;
     text-shadow: 0 1px 8px rgba(7, 40, 52, 0.25);
 }
 
 .sj-blog__hero-meta {
     font-family: 'Poppins', sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 600;
-    color: #1a2e2e;
+    color: #ffffff;
     display: inline-flex;
     align-items: center;
     gap: 6px;
     flex-wrap: wrap;
-    padding: 4px 10px;
-    border-radius: 999px;
-    background: rgba(255, 255, 255, 0.88);
-    box-shadow: 0 8px 18px rgba(7, 61, 79, 0.14);
+    margin: 0;
+    padding: 0 0 6px;
+    border-bottom: 3px solid var(--sj-cat-marker, #9BCB86);
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    line-height: 1.2;
 }
 
 .sj-blog__hero-auteur {
-    color: var(--sj-cat-text, #168AAD);
+    color: #ffffff;
     font-weight: 600;
 }
 
