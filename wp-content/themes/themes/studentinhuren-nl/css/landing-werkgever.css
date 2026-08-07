@@ -4,8 +4,8 @@
    ============================================= */
 
 .fnd-hero {
-  --si-landing-primary: #3A89FF;
-  --si-landing-primary-dk: #3174D9;
+  --si-landing-primary: #2f5f80;
+  --si-landing-primary-dk: #244f6d;
   position: relative;
   width: 100%;
   height: 500px;
@@ -117,35 +117,27 @@
 }
 
 .fnd-hero__right--placeholder {
-  background: linear-gradient(135deg, rgba(58, 137, 255, 0.42), rgba(58, 137, 255, 0.62)) !important;
+  background: linear-gradient(135deg, rgba(47, 95, 128, 0.42), rgba(47, 95, 128, 0.62)) !important;
 }
 
-/* Knoppen (si-btn) specifiek voor de werkgever-hero */
+/* Knop (si-btn) specifiek voor de werkgever-hero
+   Eigen accentkleur (groen), los van de blauwe hero-achtergrond. */
+.fnd-hero {
+  --si-landing-accent: #80D424;
+  --si-landing-accent-dk: #6db81e;
+}
+
 .fnd-hero .si-btn--accent {
-  background: #ffffff !important;
-  border-color: #ffffff !important;
-  color: var(--si-landing-primary) !important;
+  background: var(--si-landing-accent) !important;
+  border-color: var(--si-landing-accent) !important;
+  color: #ffffff !important;
   box-shadow: 0 1px 2px rgba(17, 24, 39, 0.08);
 }
 
 .fnd-hero .si-btn--accent:hover,
 .fnd-hero .si-btn--accent:focus {
-  background: #f7fafc !important;
-  border-color: #f7fafc !important;
-  color: var(--si-landing-primary-dk) !important;
-}
-
-.fnd-hero .si-btn--secondary {
-  background: transparent !important;
-  border-color: rgba(255, 255, 255, 0.72) !important;
-  color: #ffffff !important;
-  box-shadow: none !important;
-}
-
-.fnd-hero .si-btn--secondary:hover,
-.fnd-hero .si-btn--secondary:focus {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-color: #ffffff !important;
+  background: var(--si-landing-accent-dk) !important;
+  border-color: var(--si-landing-accent-dk) !important;
   color: #ffffff !important;
 }
 

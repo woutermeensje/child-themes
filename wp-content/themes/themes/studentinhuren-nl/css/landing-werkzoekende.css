@@ -4,8 +4,8 @@
    ============================================= */
 
 .fnd-hero {
-  --si-landing-primary: #3A89FF;
-  --si-landing-primary-dk: #3174D9;
+  --si-landing-primary: #2f5f80;
+  --si-landing-primary-dk: #244f6d;
   position: relative;
   width: 100%;
   height: 500px;
@@ -117,24 +117,31 @@
 }
 
 .fnd-hero__right--placeholder {
-  background: linear-gradient(135deg, rgba(58, 137, 255, 0.42), rgba(58, 137, 255, 0.62)) !important;
+  background: linear-gradient(135deg, rgba(47, 95, 128, 0.42), rgba(47, 95, 128, 0.62)) !important;
 }
 
 /* Knoppen (wz-btn) specifiek voor de werkzoekende-hero
-   Eigen classes zodat parent/Elementor-stijlen deze nooit kunnen overschrijven. */
+   Eigen classes zodat parent/Elementor-stijlen deze nooit kunnen overschrijven.
+   Eigen accentkleur (groen), los van de blauwe hero-achtergrond.
+   Secundaire knop is een outline-variant van diezelfde kleur. */
+.fnd-hero {
+  --si-landing-accent: #80D424;
+  --si-landing-accent-dk: #6db81e;
+}
+
 .fnd-hero .wz-btn--primary {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   padding: 10px 24px !important;
   border-radius: 5px !important;
-  border: 2px solid #ffffff !important;
-  background: #ffffff !important;
+  border: 2px solid var(--si-landing-accent) !important;
+  background: var(--si-landing-accent) !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 15px !important;
   font-weight: 700 !important;
   line-height: 1.4 !important;
-  color: var(--si-landing-primary) !important;
+  color: #ffffff !important;
   text-decoration: none !important;
   white-space: nowrap !important;
   cursor: pointer !important;
@@ -144,9 +151,9 @@
 
 .fnd-hero .wz-btn--primary:hover,
 .fnd-hero .wz-btn--primary:focus {
-  background: #f7fafc !important;
-  border-color: #f7fafc !important;
-  color: var(--si-landing-primary-dk) !important;
+  background: var(--si-landing-accent-dk) !important;
+  border-color: var(--si-landing-accent-dk) !important;
+  color: #ffffff !important;
   transform: translateY(-1px) !important;
   text-decoration: none !important;
 }
@@ -157,13 +164,13 @@
   justify-content: center !important;
   padding: 10px 24px !important;
   border-radius: 5px !important;
-  border: 2px solid rgba(255, 255, 255, 0.72) !important;
+  border: 2px solid var(--si-landing-accent) !important;
   background: transparent !important;
   font-family: 'Inter', sans-serif !important;
   font-size: 15px !important;
   font-weight: 700 !important;
   line-height: 1.4 !important;
-  color: #ffffff !important;
+  color: var(--si-landing-accent) !important;
   text-decoration: none !important;
   white-space: nowrap !important;
   cursor: pointer !important;
@@ -172,8 +179,8 @@
 
 .fnd-hero .wz-btn--secondary:hover,
 .fnd-hero .wz-btn--secondary:focus {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-color: #ffffff !important;
+  background: var(--si-landing-accent) !important;
+  border-color: var(--si-landing-accent) !important;
   color: #ffffff !important;
   transform: translateY(-1px) !important;
   text-decoration: none !important;

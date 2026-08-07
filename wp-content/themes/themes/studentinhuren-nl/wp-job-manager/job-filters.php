@@ -393,7 +393,7 @@ body .filter-header a.unstyled-newsletter-link {
 }
 
 body .filter-header a.unstyled-newsletter-link:hover {
-  color: #3A89FF !important;
+  color: #2f5f80 !important;
   text-decoration: underline;
 }
 
@@ -428,7 +428,7 @@ body .filter-header a.unstyled-newsletter-link:hover {
 
 .search-basic input[type="text"]:focus {
   outline: none;
-  border-color: #3A89FF !important;
+  border-color: #2f5f80 !important;
   box-shadow: 0 0 0 3px rgba(58, 137, 255, 0.18);
 }
 
@@ -454,11 +454,11 @@ body .filter-header a.unstyled-newsletter-link:hover {
 }
 
 .search_keywords::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233A89FF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f5f80' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
 }
 
 .search_location::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233A89FF' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f5f80' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
 }
 
 .filter-box {
@@ -605,7 +605,7 @@ select.sj-hidden-select {
 
 .sj-search-input:focus {
   outline: none;
-  border-color: #3A89FF !important;
+  border-color: #2f5f80 !important;
   box-shadow: 0 0 0 2px rgba(58, 137, 255, 0.16);
 }
 
@@ -623,7 +623,7 @@ select.sj-hidden-select {
 }
 
 .sj-option.is-selected .sj-option-text {
-  color: #3A89FF !important;
+  color: #2f5f80 !important;
   font-weight: 700;
 }
 
@@ -655,16 +655,16 @@ select.sj-hidden-select {
 }
 
 .job_type .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233A89FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f5f80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
 }
 
 .job_vakgebied .sj-select-btn::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233A89FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f5f80' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 19.5A2.5 2.5 0 0 1 6.5 17H20'/%3E%3Cpath d='M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z'/%3E%3C/svg%3E");
 }
 
 .sj-select-btn:focus {
   outline: none;
-  border-color: #3A89FF !important;
+  border-color: #2f5f80 !important;
   box-shadow: 0 0 0 2px rgba(58, 137, 255, 0.18);
 }
 
@@ -691,7 +691,7 @@ span.active-filter {
 }
 
 .active-filter:hover {
-  border-color: #3A89FF !important;
+  border-color: #2f5f80 !important;
 }
 
 .active-filter-text {
@@ -699,7 +699,7 @@ span.active-filter {
 }
 
 button.active-filter-x {
-  color: #3A89FF !important;
+  color: #2f5f80 !important;
   font-weight: 700;
   font-size: 20px;
   line-height: 1;

@@ -178,7 +178,7 @@ if ( job_manager_user_can_view_job_listing( $post->ID ) ) : ?>
   --sj-muted: #6B7280;
   --sj-border: #DEDEDE;
   --sj-card: #FFFFFF;
-  --sj-blue: #3A89FF;
+  --sj-blue: #2f5f80;
   --sj-radius: 12px;
   --sj-shadow: 0 10px 40px -5px rgba(0,0,0,0.10);
 }
@@ -250,8 +250,8 @@ html, body {
   padding: 10px 14px;
   border-radius: 8px;
   background: rgba(58, 137, 255, 0.12) !important;
-  color: #3A89FF !important;
-  border: 1px solid #3A89FF !important;
+  color: #2f5f80 !important;
+  border: 1px solid #2f5f80 !important;
   text-decoration: none !important;
   font-family: Poppins, system-ui, sans-serif;
   font-weight: 600;
@@ -337,7 +337,7 @@ html, body {
   font-family: Poppins, system-ui, sans-serif;
   font-size: 14px;
   font-weight: 600;
-  color: #3A89FF !important;
+  color: #2f5f80 !important;
 }
 
 /* Content */
@@ -363,9 +363,9 @@ html, body {
   padding: 10px 14px;
   border-radius: 10px;
   background: rgba(58, 137, 255, 0.12) !important;
-  color: #3A89FF !important;
+  color: #2f5f80 !important;
   text-decoration: none !important;
-  border: 1px solid #3A89FF !important;
+  border: 1px solid #2f5f80 !important;
   font-family: Poppins, system-ui, sans-serif;
   font-weight: 700;
   font-size: 14px;
@@ -422,7 +422,7 @@ h2.sj-contact-title {
 }
 
 .sj-contact-link {
-  color: #3A89FF !important;
+  color: #2f5f80 !important;
   text-decoration: none !important;
 }
 
@@ -520,7 +520,7 @@ h2.sj-contact-title {
   font-family: Poppins, system-ui, sans-serif;
   font-size: 13px;
   font-weight: 700;
-  color: #3A89FF !important;
+  color: #2f5f80 !important;
 }
 
 h3.sj-recent-jobtitle {
@@ -549,7 +549,7 @@ h3.sj-recent-jobtitle {
 }
 
 .sj-recent-item:hover .sj-recent-jobtitle {
-  color: #3A89FF !important;
+  color: #2f5f80 !important;
 }
 
 @media (max-width: 768px) {
