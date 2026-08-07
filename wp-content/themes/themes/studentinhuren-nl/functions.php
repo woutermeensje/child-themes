@@ -139,10 +139,12 @@ if (!function_exists('si_build_admin_email')) {
 }
 
 require_once get_stylesheet_directory() . '/inc/activecampaign.php';
+require_once get_stylesheet_directory() . '/inc/platform-opdrachten-meta.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-informatie-aanvragen-compact.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-latest-opdrachten.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-opdracht-plaatsen.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-platform-opdrachten-paginas.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/split-hero-meta.php';
