@@ -265,19 +265,24 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('studentinhuren-buttons', get_stylesheet_directory_uri() . '/css/buttons.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/buttons.css'));
     }
 
-    // Werkzoekende knoppen (eigen classes, hardcoded kleuren)
-    if (file_exists(get_stylesheet_directory() . '/css/buttons-werkzoekende.css')) {
-        wp_enqueue_style('studentinhuren-buttons-werkzoekende', get_stylesheet_directory_uri() . '/css/buttons-werkzoekende.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/buttons-werkzoekende.css'));
-    }
-
     // Header CSS
     if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
         wp_enqueue_style('studentinhuren-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/header.css'));
     }
 
-    // Landing page CSS
-    if (file_exists(get_stylesheet_directory() . '/css/landing.css')) {
+    // Generieke Landingspagina CSS (page-landing.php)
+    if (is_page_template('page-landing.php') && file_exists(get_stylesheet_directory() . '/css/landing.css')) {
         wp_enqueue_style('studentinhuren-landing', get_stylesheet_directory_uri() . '/css/landing.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/landing.css'));
+    }
+
+    // Landingspagina Werkgever CSS — eigen, losstaand stylesheet
+    if (is_page_template('page-werkgever.php') && file_exists(get_stylesheet_directory() . '/css/landing-werkgever.css')) {
+        wp_enqueue_style('studentinhuren-landing-werkgever', get_stylesheet_directory_uri() . '/css/landing-werkgever.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/landing-werkgever.css'));
+    }
+
+    // Landingspagina Werkzoekende CSS — eigen, losstaand stylesheet
+    if (is_page_template('page-werkzoekende.php') && file_exists(get_stylesheet_directory() . '/css/landing-werkzoekende.css')) {
+        wp_enqueue_style('studentinhuren-landing-werkzoekende', get_stylesheet_directory_uri() . '/css/landing-werkzoekende.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/landing-werkzoekende.css'));
     }
 
     // Split hero page template CSS
