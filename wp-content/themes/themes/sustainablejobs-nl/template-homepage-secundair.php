@@ -82,7 +82,7 @@ get_header();
         <div class="sj-job-hero__inner">
             <span class="sj-job-hero__eyebrow">Sustainablejobs.nl</span>
             <div class="sj-job-hero__title-wrap">
-                <h1 class="sj-job-hero__title">Vacaturesite binnen de duurzaamheid, energietransitie, ecologie en banen met een positieve impact.</h1>
+                <h1 class="sj-job-hero__title">Bekijk alle <span class="sj-job-hero__title-accent">duurzame vacatures</span> in ons netwerk!</h1>
             </div>
             <p class="sj-job-hero__subtitle">Bekijk alle <a href="<?php echo esc_url( home_url( '/vacatures/#job_listings' ) ); ?>" class="sj-job-hero__vacatures-link"><span class="sj-hero-job-count sj-job-hero__accent"><?php echo esc_html( number_format_i18n( $hero_job_count ) ); ?></span> vacatures</a> of meld je direct aan voor onze <a href="<?php echo esc_url( home_url( '/nieuwsbrief/' ) ); ?>" class="sj-job-hero__link">vacature nieuwsbrief</a>.</p>
         </div>

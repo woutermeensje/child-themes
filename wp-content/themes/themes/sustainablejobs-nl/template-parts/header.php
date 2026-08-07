@@ -19,14 +19,14 @@ if (!$rn_mobile_logo_url) {
     <div class="rn-topbar">
         <div class="rn-topbar__inner">
             <div class="rn-topbar__left">
-                <a href="mailto:support@sustainablejobs.nl">support@sustainablejobs.nl</a>
+                <a class="rn-topbar__link" href="mailto:support@sustainablejobs.nl">support@sustainablejobs.nl</a>
                 <span class="rn-topbar__divider">|</span>
-                <a href="https://www.fondsen.org/" target="_blank" rel="noopener noreferrer">Fondsen.org</a>
+                <a class="rn-topbar__link" href="https://www.fondsen.org/" target="_blank" rel="noopener noreferrer">Fondsen.org</a>
             </div>
             <div class="rn-topbar__right">
-                <a href="https://platform.sustainablejobs.nl/aanmelden">Profiel aanmaken</a>
+                <a class="rn-topbar__link" href="https://platform.sustainablejobs.nl/aanmelden">Profiel aanmaken</a>
                 <span class="rn-topbar__divider">|</span>
-                <a href="https://platform.sustainablejobs.nl/aanmelden">Aanmelden Werkgever</a>
+                <a class="rn-topbar__link" href="https://platform.sustainablejobs.nl/aanmelden">Aanmelden Werkgever</a>
             </div>
         </div>
     </div>

@@ -62,15 +62,17 @@
   gap: 10px;
 }
 
-.rn-topbar a {
-  font-family: 'Roboto', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
+.rn-header .rn-topbar__link,
+.rn-header .rn-topbar__link:visited {
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 500 !important;
   color: rgba(255, 255, 255, 0.92) !important;
   text-decoration: none !important;
 }
 
-.rn-topbar a:hover {
+.rn-header .rn-topbar__link:hover,
+.rn-header .rn-topbar__link:focus {
   color: #fff !important;
   text-decoration: underline !important;
 }

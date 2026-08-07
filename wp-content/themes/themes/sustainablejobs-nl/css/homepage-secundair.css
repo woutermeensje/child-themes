@@ -63,10 +63,14 @@
 .sj-job-hero__title {
   font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
   font-weight: 800 !important;
-  font-size: clamp(20px, calc(3vw - 4px), 32px) !important;
+  font-size: clamp(28px, calc(3vw + 4px), 40px) !important;
   line-height: 1.2 !important;
   color: #ffffff !important;
   margin: 0 !important;
+}
+
+.sj-job-hero__title-accent {
+  color: #BDEB9A;
 }
 
 .sj-job-hero__subtitle {
@@ -127,7 +131,7 @@
   }
 
   .sj-job-hero__title {
-    font-size: clamp(20px, 5vw, 28px) !important;
+    font-size: clamp(28px, calc(5vw + 8px), 36px) !important;
     text-wrap: balance;
   }
 
