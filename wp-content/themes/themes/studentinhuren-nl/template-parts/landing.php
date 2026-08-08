@@ -6,15 +6,17 @@ if (!defined('ABSPATH')) {
 $page_id         = get_the_ID();
 $hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
 $intro           = get_post_field('post_excerpt', $page_id);
-$primary_label   = '085 239 2040';
-$primary_url     = 'tel:0852392040';
-$secondary_label = 'Informatie aanvragen';
-$secondary_url   = home_url('/informatie-aanvragen/');
+$primary_label   = $si_landing_primary_label ?? '085 239 2040';
+$primary_url     = $si_landing_primary_url ?? 'tel:0852392040';
+$secondary_label = $si_landing_secondary_label ?? 'Informatie aanvragen';
+$secondary_url   = $si_landing_secondary_url ?? home_url('/informatie-aanvragen/');
+$show_direct_link = $si_landing_show_direct_link ?? true;
+$page_class      = trim('fnd-page ' . ($si_landing_page_class ?? ''));
 $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@student-inhuren.nl';
 ?>
 
-<main id="content" <?php post_class('fnd-page'); ?>>
+<main id="content" <?php post_class($page_class); ?>>
     <section class="fnd-hero">
 
         <div class="fnd-hero__left">
@@ -31,21 +33,23 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@st
 
                 <div class="fnd-hero__actions">
                     <?php if ($primary_label && $primary_url) : ?>
-                        <a class="si-btn si-btn--accent" href="<?php echo esc_url($primary_url); ?>" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
+                        <a class="si-btn si-btn--accent" href="<?php echo esc_url($primary_url); ?>" style="font-family: 'Work Sans', sans-serif !important; font-weight: 700 !important;">
                             <?php echo esc_html($primary_label); ?>
                         </a>
                     <?php endif; ?>
 
                     <?php if ($secondary_label && $secondary_url) : ?>
-                        <a class="si-btn si-btn--secondary" href="<?php echo esc_url($secondary_url); ?>" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
+                        <a class="si-btn si-btn--secondary" href="<?php echo esc_url($secondary_url); ?>" style="font-family: 'Work Sans', sans-serif !important; font-weight: 700 !important;">
                             <?php echo esc_html($secondary_label); ?>
                         </a>
                     <?php endif; ?>
                 </div>
 
-                <p class="fnd-hero__direct-link">
-                    Of plaats een <a href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>" target="_blank" rel="noopener">gratis opdracht</a> in ons netwerk
-                </p>
+                <?php if ($show_direct_link) : ?>
+                    <p class="fnd-hero__direct-link">
+                        Of plaats een <a href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>" target="_blank" rel="noopener">gratis opdracht</a> in ons netwerk
+                    </p>
+                <?php endif; ?>
 
             </div>
 

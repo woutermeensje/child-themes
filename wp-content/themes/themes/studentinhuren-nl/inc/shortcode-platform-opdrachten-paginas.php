@@ -4,31 +4,46 @@ if (!defined('ABSPATH')) exit;
 /**
  * Shortcode: [platform_opdrachten_pagina's]
  * Alias: [platform_opdrachten_paginas]
+ * Preset: [platform_opdrachten_bekijk_ook]
  *
  * Toont alle pagina's waarbij het vinkje "Platform opdrachten" aan staat.
  */
 
 add_shortcode("platform_opdrachten_pagina's", 'si_platform_opdrachten_paginas_shortcode');
 add_shortcode('platform_opdrachten_paginas', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_bekijk_ook', 'si_platform_opdrachten_paginas_shortcode');
 
 function si_platform_opdrachten_paginas_shortcode($atts = [], $content = null, string $shortcode_tag = ''): string {
-    $atts = shortcode_atts([
+    $defaults = [
         'title'              => "Werkzaamheden waarvoor je opdrachten kunt plaatsen",
         'subtitle'           => "Bekijk voor welke werkzaamheden je via Studentinhuren.nl snel studenten, starters en young professionals kunt inhuren.",
         'section_title'      => 'Werkzaamheden',
         'search'             => 'true',
         'search_placeholder' => 'Zoek werkzaamheden..',
         'button_label'       => 'Bekijk mogelijkheden',
-    ], $atts, $shortcode_tag ?: 'platform_opdrachten_paginas');
+        'limit'              => 0,
+    ];
+
+    if ($shortcode_tag === 'platform_opdrachten_bekijk_ook') {
+        $defaults['title']         = 'Bekijk ook:';
+        $defaults['subtitle']      = '';
+        $defaults['section_title'] = '';
+        $defaults['search']        = 'false';
+        $defaults['limit']         = 12;
+    }
+
+    $atts = shortcode_atts($defaults, $atts, $shortcode_tag ?: 'platform_opdrachten_paginas');
 
     if (!defined('SI_PLATFORM_OPDRACHT_PAGE_META_KEY')) {
         return '';
     }
 
+    $limit = max(0, (int) $atts['limit']);
+
     $query_args = [
         'post_type'      => 'page',
         'post_status'    => 'publish',
-        'posts_per_page' => -1,
+        'posts_per_page' => $limit > 0 ? $limit : -1,
         'orderby'        => [
             'menu_order' => 'ASC',
             'title'      => 'ASC',
@@ -98,10 +113,14 @@ function si_platform_opdrachten_paginas_shortcode($atts = [], $content = null, s
 
         <div class="si-platform-pages__results">
             <section class="si-platform-pages__section" data-si-platform-pages-section>
-                <div class="si-platform-pages__section-header">
-                    <h2 class="si-platform-pages__heading"><?php echo esc_html($atts['section_title']); ?></h2>
-                    <span class="si-platform-pages__count" data-si-platform-pages-count><?php echo esc_html(number_format_i18n(count($items))); ?></span>
-                </div>
+                <?php if ($atts['section_title']): ?>
+                    <div class="si-platform-pages__section-header">
+                        <h2 class="si-platform-pages__heading"><?php echo esc_html($atts['section_title']); ?></h2>
+                        <span class="si-platform-pages__count" data-si-platform-pages-count><?php echo esc_html(number_format_i18n(count($items))); ?></span>
+                    </div>
+                <?php else: ?>
+                    <span class="si-platform-pages__count si-platform-pages__count--hidden" data-si-platform-pages-count><?php echo esc_html(number_format_i18n(count($items))); ?></span>
+                <?php endif; ?>
 
                 <div class="si-platform-pages__grid">
                     <?php foreach ($items as $item): ?>
@@ -316,6 +335,10 @@ function si_platform_opdrachten_paginas_print_assets(): void {
         line-height: 1;
     }
 
+    .si-platform-pages__count--hidden {
+        display: none !important;
+    }
+
     .si-platform-pages__grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -354,7 +377,7 @@ function si_platform_opdrachten_paginas_print_assets(): void {
         flex: 0 0 44px;
         background: rgba(var(--si-platform-pages-primary-rgb), .14);
         color: var(--si-platform-pages-primary);
-        font-family: 'Inter', sans-serif;
+        font-family: 'Work Sans', sans-serif;
         font-size: 18px;
         font-weight: 700;
     }
@@ -394,7 +417,7 @@ function si_platform_opdrachten_paginas_print_assets(): void {
         width: fit-content;
         margin-top: auto;
         color: var(--si-platform-pages-primary);
-        font-family: 'Inter', sans-serif;
+        font-family: 'Work Sans', sans-serif;
         font-size: 13px;
         font-weight: 700;
         line-height: 1.2;

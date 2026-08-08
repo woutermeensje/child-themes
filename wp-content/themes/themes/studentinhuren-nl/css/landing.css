@@ -39,7 +39,7 @@
 .fnd-hero__breadcrumb-nav,
 .fnd-hero__breadcrumb-nav span,
 .fnd-hero__breadcrumb-nav a {
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 13px;
   color: rgba(255, 255, 255, 0.7) !important;
   text-decoration: none !important;
@@ -185,6 +185,19 @@
 .fnd-hero .si-btn--secondary:focus {
   background: rgba(255, 255, 255, 0.12) !important;
   border-color: #ffffff !important;
+  color: #ffffff !important;
+}
+
+.fnd-page--opdracht .fnd-hero .si-btn--accent {
+  background: var(--color-accent, #80D424) !important;
+  border-color: var(--color-accent, #80D424) !important;
+  color: #ffffff !important;
+}
+
+.fnd-page--opdracht .fnd-hero .si-btn--accent:hover,
+.fnd-page--opdracht .fnd-hero .si-btn--accent:focus {
+  background: var(--color-accent-dk, #6db81e) !important;
+  border-color: var(--color-accent-dk, #6db81e) !important;
   color: #ffffff !important;
 }
 

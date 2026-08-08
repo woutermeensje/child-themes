@@ -272,8 +272,8 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('studentinhuren-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/header.css'));
     }
 
-    // Generieke Landingspagina CSS (page-landing.php)
-    if (is_page_template('page-landing.php') && file_exists(get_stylesheet_directory() . '/css/landing.css')) {
+    // Generieke Landingspagina CSS (page-landing.php + opdracht-landingspagina)
+    if (is_page_template(['page-landing.php', 'page-opdracht-landingspagina.php']) && file_exists(get_stylesheet_directory() . '/css/landing.css')) {
         wp_enqueue_style('studentinhuren-landing', get_stylesheet_directory_uri() . '/css/landing.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/landing.css'));
     }
 

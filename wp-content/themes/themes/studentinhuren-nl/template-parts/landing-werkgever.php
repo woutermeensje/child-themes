@@ -29,7 +29,7 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@st
 
                 <div class="fnd-hero__actions">
                     <?php if ($secondary_label && $secondary_url) : ?>
-                        <a class="si-btn si-btn--accent" href="<?php echo esc_url($secondary_url); ?>" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">
+                        <a class="si-btn si-btn--accent" href="<?php echo esc_url($secondary_url); ?>" style="font-family: 'Work Sans', sans-serif !important; font-weight: 700 !important;">
                             <?php echo esc_html($secondary_label); ?>
                         </a>
                     <?php endif; ?>

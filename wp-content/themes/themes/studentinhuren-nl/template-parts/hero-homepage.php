@@ -28,8 +28,8 @@ $contact_email  = get_post_meta($page_id, 'hero_email', true) ?: 'support@studen
                     <?php endif; ?>
 
                     <div class="welcome-v2__actions">
-                        <a href="https://platform.student-inhuren.nl/" target="_blank" rel="noopener" class="si-btn si-btn--accent" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Ik zoek werk</a>
-                        <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="si-btn si-btn--secondary" style="font-family: 'Inter', sans-serif !important; font-weight: 700 !important;">Ik zoek personeel</a>
+                        <a href="https://platform.student-inhuren.nl/" target="_blank" rel="noopener" class="si-btn si-btn--accent" style="font-family: 'Work Sans', sans-serif !important; font-weight: 700 !important;">Ik zoek werk</a>
+                        <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="si-btn si-btn--secondary" style="font-family: 'Work Sans', sans-serif !important; font-weight: 700 !important;">Ik zoek personeel</a>
                     </div>
 
                     <a class="welcome-v2__direct-link" href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>">Of plaats direct een gratis opdracht</a>
