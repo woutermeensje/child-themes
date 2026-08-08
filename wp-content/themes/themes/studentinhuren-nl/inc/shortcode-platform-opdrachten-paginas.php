@@ -5,6 +5,9 @@ if (!defined('ABSPATH')) exit;
  * Shortcode: [platform_opdrachten_pagina's]
  * Alias: [platform_opdrachten_paginas]
  * Preset: [platform_opdrachten_bekijk_ook]
+ * Categorieen: [platform_opdrachten_vertalers], [platform_opdrachten_online_marketing],
+ * [platform_opdrachten_office], [platform_opdrachten_logistiek], [platform_opdrachten_creative],
+ * [platform_opdrachten_werkstudent], [platform_opdrachten_freelance]
  *
  * Toont alle pagina's waarbij het vinkje "Platform opdrachten" aan staat.
  */
@@ -12,8 +15,17 @@ if (!defined('ABSPATH')) exit;
 add_shortcode("platform_opdrachten_pagina's", 'si_platform_opdrachten_paginas_shortcode');
 add_shortcode('platform_opdrachten_paginas', 'si_platform_opdrachten_paginas_shortcode');
 add_shortcode('platform_opdrachten_bekijk_ook', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_vertalers', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_online_marketing', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_office', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_logistiek', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_creative', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_werkstudent', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_freelance', 'si_platform_opdrachten_paginas_shortcode');
 
 function si_platform_opdrachten_paginas_shortcode($atts = [], $content = null, string $shortcode_tag = ''): string {
+    $category_shortcode = si_platform_opdrachten_paginas_category_from_shortcode($shortcode_tag);
+
     $defaults = [
         'title'              => "Werkzaamheden waarvoor je opdrachten kunt plaatsen",
         'subtitle'           => "Bekijk voor welke werkzaamheden je via Studentinhuren.nl snel studenten, starters en young professionals kunt inhuren.",
@@ -22,6 +34,7 @@ function si_platform_opdrachten_paginas_shortcode($atts = [], $content = null, s
         'search_placeholder' => 'Zoek werkzaamheden..',
         'button_label'       => 'Bekijk mogelijkheden',
         'limit'              => 0,
+        'category'           => $category_shortcode,
     ];
 
     if ($shortcode_tag === 'platform_opdrachten_bekijk_ook') {
@@ -32,6 +45,15 @@ function si_platform_opdrachten_paginas_shortcode($atts = [], $content = null, s
         $defaults['limit']         = 12;
     }
 
+    if ($category_shortcode) {
+        $category_label = si_platform_opdrachten_paginas_category_label($category_shortcode);
+
+        $defaults['title']         = $category_label;
+        $defaults['subtitle']      = '';
+        $defaults['section_title'] = '';
+        $defaults['search']        = 'false';
+    }
+
     $atts = shortcode_atts($defaults, $atts, $shortcode_tag ?: 'platform_opdrachten_paginas');
 
     if (!defined('SI_PLATFORM_OPDRACHT_PAGE_META_KEY')) {
@@ -39,6 +61,7 @@ function si_platform_opdrachten_paginas_shortcode($atts = [], $content = null, s
     }
 
     $limit = max(0, (int) $atts['limit']);
+    $category = sanitize_key((string) $atts['category']);
 
     $query_args = [
         'post_type'      => 'page',
@@ -55,6 +78,13 @@ function si_platform_opdrachten_paginas_shortcode($atts = [], $content = null, s
             ],
         ],
     ];
+
+    if ($category && function_exists('si_platform_opdracht_categories') && isset(si_platform_opdracht_categories()[$category])) {
+        $query_args['meta_query'][] = [
+            'key'   => si_platform_opdracht_category_meta_key($category),
+            'value' => '1',
+        ];
+    }
 
     $query = new WP_Query(apply_filters('si_platform_opdrachten_paginas_query_args', $query_args, $atts));
 
@@ -160,6 +190,32 @@ function si_platform_opdrachten_paginas_shortcode($atts = [], $content = null, s
 
 function si_platform_opdrachten_paginas_bool($value): bool {
     return in_array(strtolower((string) $value), ['1', 'true', 'yes', 'ja', 'on'], true);
+}
+
+function si_platform_opdrachten_paginas_category_from_shortcode(string $shortcode_tag): string {
+    $map = [
+        'platform_opdrachten_vertalers'        => 'vertalers',
+        'platform_opdrachten_online_marketing' => 'online-marketing',
+        'platform_opdrachten_office'           => 'office',
+        'platform_opdrachten_logistiek'        => 'logistiek',
+        'platform_opdrachten_creative'         => 'creative',
+        'platform_opdrachten_werkstudent'      => 'werkstudent',
+        'platform_opdrachten_freelance'        => 'freelance',
+    ];
+
+    return $map[$shortcode_tag] ?? '';
+}
+
+function si_platform_opdrachten_paginas_category_label(string $category): string {
+    if (function_exists('si_platform_opdracht_categories')) {
+        $categories = si_platform_opdracht_categories();
+
+        if (isset($categories[$category])) {
+            return $categories[$category];
+        }
+    }
+
+    return ucwords(str_replace('-', ' ', $category));
 }
 
 function si_platform_opdrachten_paginas_search_text(string $text): string {
