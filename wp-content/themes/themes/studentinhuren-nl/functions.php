@@ -147,6 +147,7 @@ require_once get_stylesheet_directory() . '/inc/shortcode-opdracht-plaatsen.php'
 require_once get_stylesheet_directory() . '/inc/shortcode-platform-opdrachten-paginas.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-plaatsen.php';
+require_once get_stylesheet_directory() . '/inc/admin-shortcodes-overview.php';
 require_once get_stylesheet_directory() . '/inc/split-hero-meta.php';
 
 /**

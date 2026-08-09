@@ -29,7 +29,7 @@ $contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'support@stu
                     <a class="wz-btn--primary" href="https://platform.student-inhuren.nl/opdrachten/" target="_blank" rel="noopener" style="font-family: 'Work Sans', sans-serif !important; font-weight: 700 !important;">
                         Opdrachten bekijken
                     </a>
-                    <a class="wz-btn--secondary" href="https://platform.student-inhuren.nl/aanmelden" style="font-family: 'Work Sans', sans-serif !important; font-weight: 700 !important;">
+                    <a class="wz-btn--secondary" href="https://platform.student-inhuren.nl/aanmelden-werkzoekende" style="font-family: 'Work Sans', sans-serif !important; font-weight: 700 !important;">
                         Account aanmaken
                     </a>
                 </div>
