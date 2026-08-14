@@ -1,6 +1,15 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
+// Schakel alleen de WP Job Manager admin-waarschuwing voor bijna verlopen vacatures uit.
+add_filter('job_manager_email_is_email_notification_enabled', function ($enabled, $email_notification_key) {
+    if ($email_notification_key === 'admin_expiring_job') {
+        return false;
+    }
+
+    return $enabled;
+}, 10, 2);
+
 // ── Register "expired" post status if WPJM is inactive ───────────────────────
 add_action('init', function () {
     if (!get_post_status_object('expired')) {
