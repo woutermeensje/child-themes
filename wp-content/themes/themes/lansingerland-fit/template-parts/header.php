@@ -81,9 +81,9 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
 #rn-header .rn-nav__link {
   display: inline-flex !important; align-items: center; gap: 5px;
   padding: 8px 12px !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 15px !important; font-weight: 300 !important;
-  color: var(--color-text) !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px !important; font-weight: 600 !important;
+  color: #333333 !important;
   text-decoration: none !important;
   border-radius: 6px; white-space: nowrap;
   height: 68px;
@@ -92,8 +92,8 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
   box-shadow: none !important;
   border: none !important;
 }
-#rn-header .rn-nav__link:hover { color: var(--color-primary) !important; background: transparent !important; }
-#rn-header .rn-nav__link.is-active { color: var(--color-primary) !important; font-weight: 600 !important; }
+#rn-header .rn-nav__link:hover { color: #333333 !important; background: transparent !important; }
+#rn-header .rn-nav__link.is-active { color: #333333 !important; font-weight: 600 !important; }
 
 /* Chevron */
 #rn-header .rn-nav__chev {
@@ -116,30 +116,43 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
 #rn-header .rn-nav__dropdown .rn-nav__item { width: 100%; }
 #rn-header .rn-nav__dropdown .rn-nav__link {
   display: block !important; height: auto !important; border-radius: 6px;
-  padding: 9px 14px !important; font-size: 14px !important; font-weight: 400 !important;
+  padding: 9px 14px !important; font-size: 15px !important; font-weight: 600 !important;
   width: 100%; box-shadow: none !important;
 }
 #rn-header .rn-nav__dropdown .rn-nav__link:hover { background: rgba(65, 136, 170, 0.10) !important; }
 
 /* ---- CTA knoppen ---- */
 #rn-header .rn-header__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
+#rn-header .rn-header__cta::before {
+  content: '|';
+  display: inline-flex;
+  align-items: center;
+  color: #333333;
+  font-family: 'Roboto', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+  margin: 0 4px 0 2px;
+}
 #rn-header .rn-btn {
   display: inline-flex !important; align-items: center; justify-content: center;
-  font-family: 'Poppins', sans-serif !important;
-  font-weight: 600 !important; font-size: 14px !important;
-  padding: 9px 20px !important; border-radius: 8px !important;
+  min-height: 36px;
+  font-family: "Work Sans", 'Inter', sans-serif !important;
+  font-weight: 700 !important; font-size: 15px !important;
+  line-height: 1.2 !important;
+  padding: 8px 14px !important; border-radius: 5px !important;
   white-space: nowrap; cursor: pointer;
   text-decoration: none !important;
   transition: background .15s ease, color .15s ease, transform .15s ease;
 }
 #rn-header .rn-btn--outline {
   background: transparent !important; color: var(--color-primary) !important;
-  border: 2px solid var(--color-primary) !important;
+  border: 1px solid var(--color-primary) !important;
 }
 #rn-header .rn-btn--outline:hover { background: var(--color-primary) !important; color: #fff !important; }
 #rn-header .rn-btn--accent {
-  background: var(--color-secondary) !important; color: #fff !important;
-  border: 2px solid var(--color-secondary) !important;
+  background: var(--color-tertiary) !important; color: #fff !important;
+  border: 1px solid var(--color-tertiary) !important;
   box-shadow: none !important;
 }
 #rn-header .rn-btn--accent:hover {
@@ -160,12 +173,12 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
   align-items: center;
   justify-content: center;
   margin-left: 0;
-  min-height: 38px;
-  padding: 8px 14px !important;
+  min-height: 36px;
+  padding: 7px 12px !important;
   border-radius: 5px !important;
-  background: var(--color-turquoise, #559EA3) !important;
+  background: var(--color-tertiary, #6DB49C) !important;
   color: #fff !important;
-  font-family: 'Inter', sans-serif !important;
+  font-family: "Work Sans", 'Inter', sans-serif !important;
   font-size: 14px !important;
   font-weight: 700 !important;
   line-height: 1 !important;
@@ -177,7 +190,7 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
 }
 #rn-header .rn-header__mobile-cta:hover,
 #rn-header .rn-header__mobile-cta:focus {
-  background: var(--color-steel, #39749B) !important;
+  background: var(--color-tertiary, #6DB49C) !important;
   color: #fff !important;
 }
 
@@ -230,13 +243,13 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
 .rn-mobile-nav__list li:last-child { border-bottom: none; }
 .rn-mobile-nav__list a {
   display: block !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 16px !important; font-weight: 400 !important;
-  color: #111827 !important; padding: 14px 4px !important;
+  font-family: 'Roboto', sans-serif !important;
+  font-size: 15px !important; font-weight: 600 !important;
+  color: #333333 !important; padding: 14px 4px !important;
   text-decoration: none !important; box-shadow: none !important;
   background: transparent !important;
 }
-.rn-mobile-nav__list a:hover { color: var(--color-primary) !important; }
+.rn-mobile-nav__list a:hover { color: #333333 !important; }
 .rn-mobile-nav__list .rn-nav__chev { display: none !important; }
 
 /* Submenu mobile */
@@ -245,12 +258,22 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
   background: transparent !important; position: static !important; box-shadow: none !important;
 }
 .rn-mobile-nav__list ul li { border-bottom: none !important; }
-.rn-mobile-nav__list ul a { font-size: 14px !important; padding: 8px 4px !important; color: #6b7280 !important; }
+.rn-mobile-nav__list ul a { font-size: 15px !important; font-weight: 600 !important; padding: 8px 4px !important; color: #333333 !important; }
 
 /* Divider + CTA knoppen */
 .rn-mobile-nav__divider { height: 1px; background: #e5e7eb; margin: 14px 0; }
 .rn-mobile-nav__ctas { display: flex !important; flex-direction: column; gap: 10px; }
-.rn-mobile-nav__cta { width: 100%; justify-content: center; font-size: 15px !important; font-weight: 600 !important; padding: 13px 16px !important; border-radius: 8px !important; }
+.rn-mobile-nav__cta {
+  width: 100%;
+  min-height: 36px;
+  justify-content: center;
+  font-family: "Work Sans", 'Inter', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  padding: 8px 14px !important;
+  border-radius: 5px !important;
+}
 
 /* ---- Responsive ---- */
 @media (max-width: 960px) {
@@ -308,8 +331,11 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
 
         <!-- CTA knoppen -->
         <div class="rn-header__cta">
-            <a href="https://lansingerlandfit.nl/contact/" class="rn-btn rn-btn--accent">
-                Contact opnemen
+            <a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>" class="rn-btn rn-btn--outline">
+                Contact
+            </a>
+            <a href="<?php echo esc_url( home_url( '/gratis-proefles/' ) ); ?>" class="rn-btn rn-btn--accent">
+                Proefles
             </a>
         </div>
 
@@ -347,8 +373,11 @@ if ( is_array( $logo_candidates ) && [] !== $logo_candidates ) {
         ?>
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
-            <a href="https://lansingerlandfit.nl/contact/" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
-                Contact opnemen
+            <a href="<?php echo esc_url( home_url( '/contact/' ) ); ?>" class="rn-btn rn-btn--outline rn-mobile-nav__cta">
+                Contact
+            </a>
+            <a href="<?php echo esc_url( home_url( '/gratis-proefles/' ) ); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
+                Proefles
             </a>
         </div>
     </div>

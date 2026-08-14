@@ -58,7 +58,7 @@
 }
 
 .lf-job-hero__title {
-    font-family: 'Balgin-Bold', serif !important;
+    font-family: "Work Sans", 'Inter', sans-serif !important;
     font-size: clamp(28px, 3.5vw, 44px) !important;
     line-height: 1.1 !important;
     color: #ffffff !important;
@@ -82,7 +82,7 @@
     padding: 12px 28px;
     background: var(--color-highlight);
     color: var(--color-navy-dark) !important;
-    font-family: 'Balgin-Bold', serif;
+    font-family: "Work Sans", 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 700;
     text-decoration: none !important;

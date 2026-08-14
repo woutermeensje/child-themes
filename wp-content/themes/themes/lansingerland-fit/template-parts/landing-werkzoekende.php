@@ -11,7 +11,8 @@ $subtitle      = has_excerpt($page_id)
     : 'Ontdek sport- en beweegmogelijkheden in Lansingerland.';
 $primary_label = get_post_meta($page_id, 'landing_primary_button_text', true) ?: 'Meer informatie';
 $primary_url   = get_post_meta($page_id, 'landing_primary_button_url', true)  ?: home_url('/');
-$eyebrow       = get_post_meta($page_id, 'landing_eyebrow', true) ?: 'Lansingerland Fit';
+$eyebrow       = get_post_meta($page_id, 'landing_eyebrow', true) ?: 'LansingerlandFit';
+$eyebrow       = str_replace('Lansingerland Fit', 'LansingerlandFit', $eyebrow);
 
 $bg_style = $hero_image ? ' style="background-image: url(\'' . esc_url($hero_image) . '\');"' : '';
 ?>

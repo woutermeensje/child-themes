@@ -32,7 +32,7 @@ get_header();
                 <p class="ob-home-hero__subtitle">Stel eenvoudig een professionele opdrachtbevestiging op die jouw klant binnen een paar seconden per e-mail kan accorderen.</p>
                 <div class="ob-home-hero__actions">
                     <a href="https://beheer.opdrachtbevestiging.nl/registreren" class="ob-home-hero__btn ob-home-hero__btn--primary" target="_blank" rel="noopener noreferrer">Gratis proberen</a>
-                    <a href="<?php echo esc_url(home_url('/tarieven/')); ?>" class="ob-home-hero__btn ob-home-hero__btn--secondary">Wat het kost</a>
+                    <a href="https://beheer.opdrachtbevestiging.nl/tarieven/" class="ob-home-hero__btn ob-home-hero__btn--secondary" target="_blank" rel="noopener noreferrer">Wat kost het</a>
                 </div>
 
                 <ul class="ob-home-hero__features">
