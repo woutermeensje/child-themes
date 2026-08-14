@@ -133,8 +133,13 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                     <div class="content-part-job-description">
                         <div class="top-div">
 
-                            <div class="job-title sj-single-title-row">
-                                <h1><?php wpjm_the_job_title(); ?></h1>
+                            <div class="job-title sj-single-title-row" style="margin-bottom: 40px !important;">
+                                <div class="sj-single-title-content">
+                                    <h1><?php wpjm_the_job_title(); ?></h1>
+                                    <time class="sj-single-posted-date" datetime="<?php echo esc_attr(get_the_date('c', $post_id)); ?>">
+                                        Geplaatst op <?php echo esc_html(get_the_date('j F Y', $post_id)); ?>
+                                    </time>
+                                </div>
                                 <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'single']); ?>
                             </div>
 
@@ -374,7 +379,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
         <p class="sj-vp-snel__desc">Wist je dat je met een profiel op ons platform ook benaderd kan worden door werkgevers?</p>
     </div>
     <div class="sj-vp-snel__contact">
-        <a href="https://platform.sustainablejobs.nl/aanmelden-werkzoekende" class="sj-vp-snel__btn">Profiel aanmaken</a>
+        <a href="https://platform.sustainablejobs.nl/aanmelden" class="sj-vp-snel__btn" target="_blank" rel="noopener noreferrer">Profiel aanmaken</a>
     </div>
     <button class="sj-vp-snel__close" aria-label="Sluiten" onclick="document.getElementById('sj-profiel-balk').classList.add('is-hidden')">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M205.66,194.34a8,8,0,0,1-11.32,11.32L128,139.31,61.66,205.66a8,8,0,0,1-11.32-11.32L116.69,128,50.34,61.66A8,8,0,0,1,61.66,50.34L128,116.69l66.34-66.35a8,8,0,0,1,11.32,11.32L139.31,128Z"/></svg>
@@ -669,6 +674,11 @@ a.sj-company-blok__name:hover {
 }
 
 /* ── Titel ───────────────────────────────────────────────── */
+.sj-single-title-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
 .job-title h1 {
     padding-bottom: 10px;
     border-bottom: 1px solid #DEDEDE;
@@ -678,6 +688,16 @@ a.sj-company-blok__name:hover {
     padding-top: 20px;
 }
 
+.sj-single-posted-date {
+    display: block;
+    margin-top: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-text-muted, #777777);
+}
+
 /* ── Beschrijving ────────────────────────────────────────── */
 .job_description {
     font-family: Poppins;
@@ -685,7 +705,7 @@ a.sj-company-blok__name:hover {
     font-weight: 400;
     line-height: 1.6;
     color: var(--color-text);
-    margin-top: 28px;
+    margin-top: 40px;
 }
 
 .job-manager-info {
@@ -1178,6 +1198,22 @@ h1.entry-title { display: none; }
 .sj-expired-banner a:hover {
     text-decoration: underline;
     color: var(--color-primary-hover, #2B6E8F);
+}
+
+/* ── Sticky profielbalk ──────────────────────────────────── */
+#sj-profiel-balk .sj-vp-snel__btn {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+    background-color: var(--color-primary, #2C8FAF);
+    border-color: var(--color-primary, #2C8FAF);
+    color: #fff !important;
+}
+
+#sj-profiel-balk .sj-vp-snel__btn:hover,
+#sj-profiel-balk .sj-vp-snel__btn:focus {
+    background-color: var(--color-primary-hover, #2B6E8F);
+    border-color: var(--color-primary-hover, #2B6E8F);
+    color: #fff !important;
 }
 
 /* ── Responsive ──────────────────────────────────────────── */

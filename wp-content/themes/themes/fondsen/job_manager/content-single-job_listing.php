@@ -528,6 +528,7 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
     font-size: 15px;
     line-height: 1.75;
     color: var(--fn-ink);
+    margin-top: 40px;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
