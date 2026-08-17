@@ -27,6 +27,19 @@ add_action('init', function () {
     }
 }, 12);
 
+// ── Verwijder het native WPJM vervaldatum-veld uit de "Vacaturegegevens" box ──
+// Zonder dit staan er twee losse velden voor dezelfde _job_expires meta:
+// het native WPJM-veld en de custom "Verlooptermijn" box hieronder. Omdat de
+// custom box op save_post_job_listing (na WPJM's eigen save_post-handler)
+// altijd de waarde terugschrijft die bij het laden van de pagina zichtbaar
+// was, overschrijft hij stilletjes elke wijziging die via het native veld is
+// gedaan. Door het native veld hier te verbergen is er nog maar één plek om
+// de vervaldatum te zetten, en verdwijnt die race condition.
+add_filter('job_manager_job_listing_data_fields', function ($fields) {
+    unset($fields['_job_expires']);
+    return $fields;
+});
+
 // ── Meta box ──────────────────────────────────────────────────────────────────
 add_action('add_meta_boxes', function () {
     add_meta_box(
@@ -224,31 +237,16 @@ if (!function_exists('sj_expire_spotlight_job_listings')) {
     }
 }
 
-// ── Cron: dagelijks verlopen vacatures offline zetten ────────────────────────
+// ── Cron: dagelijks spotlight (featured) status laten verlopen ──────────────
+// Het daadwerkelijk offline zetten van verlopen vacatures wordt al door WPJM
+// zelf gedaan (native hourly cron 'job_manager_check_for_expired_jobs', zie
+// WP_Job_Manager_Post_Types::check_for_expired_jobs()). Die draait vaker
+// (elk uur i.p.v. elke dag) en rekent correct met de site-tijdzone via
+// current_datetime(), dus een eigen duplicaat hiervan is overbodig en voegde
+// alleen een extra (tijdzone-onveilige) foutbron toe.
 add_action('init', function () {
     if (!wp_next_scheduled('sj_expire_job_listings')) {
         wp_schedule_event(time(), 'daily', 'sj_expire_job_listings');
-    }
-});
-
-add_action('sj_expire_job_listings', function () {
-    $today = date('Y-m-d');
-
-    $ids = get_posts([
-        'post_type'      => 'job_listing',
-        'post_status'    => 'publish',
-        'posts_per_page' => -1,
-        'fields'         => 'ids',
-        'meta_query'     => [[
-            'key'     => '_job_expires',
-            'value'   => $today,
-            'compare' => '<',
-            'type'    => 'DATE',
-        ]],
-    ]);
-
-    foreach ($ids as $id) {
-        wp_update_post(['ID' => $id, 'post_status' => 'expired']);
     }
 });
 

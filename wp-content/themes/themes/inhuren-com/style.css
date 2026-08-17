@@ -603,3 +603,31 @@ input[type="reset"]:hover {
 /* =============================================
    Einde fnd-hero
    ============================================= */
+
+/* WP Job Manager submit form: keep Location and Job type aligned. */
+#submit-job-form.job-manager-form .fieldset-job_location,
+#submit-job-form.job-manager-form .fieldset-job_type {
+    align-self: start !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+}
+
+#submit-job-form.job-manager-form .fieldset-job_location > label,
+#submit-job-form.job-manager-form .fieldset-job_type > label {
+    margin: 0 0 18px !important;
+}
+
+#submit-job-form.job-manager-form .fieldset-job_location > .field,
+#submit-job-form.job-manager-form .fieldset-job_type > .field {
+    align-self: stretch !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+#submit-job-form.job-manager-form .fieldset-job_type select,
+#submit-job-form.job-manager-form .fieldset-job_type .select2-container,
+#submit-job-form.job-manager-form .fieldset-job_type .chosen-container,
+#submit-job-form.job-manager-form .fieldset-job_type .job-manager-term-select-wrapper {
+    margin-top: 0 !important;
+}
