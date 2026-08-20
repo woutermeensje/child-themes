@@ -46,7 +46,7 @@
     var search = document.createElement('input');
     search.type = 'search';
     search.className = 'sj-gf-ms__search';
-    search.placeholder = 'Zoek dienstverband...';
+    search.placeholder = 'Zoek in dienstverband';
     search.autocomplete = 'off';
 
     var list = document.createElement('div');
@@ -67,7 +67,7 @@
       button.setAttribute('role', 'option');
       button.dataset.value = option.value;
       button.dataset.label = option.textContent.toLowerCase();
-      button.innerHTML = '<span class="sj-gf-ms__check" aria-hidden="true"></span><span>' + escapeHtml(option.textContent) + '</span>';
+      button.innerHTML = '<span class="sj-gf-ms__option-text">' + escapeHtml(option.textContent) + '</span>';
 
       button.addEventListener('click', function () {
         option.selected = !option.selected;
@@ -131,7 +131,7 @@
         return item.option.selected;
       });
 
-      value.textContent = selected.length ? selected.length + ' geselecteerd' : 'Selecteer dienstverbanden...';
+      value.textContent = selected.length ? selected.length + ' geselecteerd' : 'Dienstverband';
       tags.innerHTML = '';
 
       selected.slice(0, 3).forEach(function (item) {
