@@ -622,18 +622,20 @@
     font-family: 'Work Sans', sans-serif;
     font-size: 15px;
     font-weight: 600;
-    background-color: var(--color-secondary, #C5D77F);
-    border: 2px solid var(--color-secondary, #C5D77F);
-    color: var(--color-primary, #168AAD) !important;
-    padding: 10px 24px;
-    border-radius: 4px;
+    background: var(--color-primary, #168AAD);
+    border: 2px solid var(--color-primary, #168AAD);
+    color: #fff !important;
+    padding: 8px 16px;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(22, 138, 173, 0.22);
     text-decoration: none !important;
     white-space: nowrap;
-    transition: background-color .15s ease, border-color .15s ease;
+    transition: background .15s ease, color .15s ease, transform .15s ease, border-color .15s ease;
 }
 .sj-vp-snel__btn:hover {
-    background-color: var(--color-accent, #8FC689);
-    border-color: var(--color-accent, #8FC689);
+    background: var(--color-primary-hover, #2B6E8F);
+    border-color: var(--color-primary-hover, #2B6E8F);
+    transform: translateY(-1px);
 }
 
 /* ── Responsive: sticky balk ─────────────────────────────── */
