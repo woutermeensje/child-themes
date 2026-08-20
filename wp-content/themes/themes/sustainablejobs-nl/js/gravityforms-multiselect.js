@@ -131,6 +131,7 @@
         return item.option.selected;
       });
 
+      control.classList.toggle('has-value', selected.length > 0);
       value.textContent = selected.length ? selected.length + ' geselecteerd' : 'Dienstverband';
       tags.innerHTML = '';
 
