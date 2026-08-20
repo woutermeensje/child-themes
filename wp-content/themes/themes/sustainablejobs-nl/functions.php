@@ -178,7 +178,7 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style(
         'child-gf-styles',
         get_stylesheet_directory_uri() . '/css/gravity-forms.css',
-        [],
+        ['child-style'],
         filemtime(get_stylesheet_directory() . '/css/gravity-forms.css')
     );
 
