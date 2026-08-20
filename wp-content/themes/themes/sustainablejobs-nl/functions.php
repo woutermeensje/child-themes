@@ -183,6 +183,16 @@ add_action('wp_enqueue_scripts', function () {
         filemtime(get_stylesheet_directory() . '/css/gravity-forms.css')
     );
 
+    if (file_exists(get_stylesheet_directory() . '/js/gravityforms-multiselect.js')) {
+        wp_enqueue_script(
+            'sj-gravityforms-multiselect',
+            get_stylesheet_directory_uri() . '/js/gravityforms-multiselect.js',
+            [],
+            filemtime(get_stylesheet_directory() . '/js/gravityforms-multiselect.js'),
+            true
+        );
+    }
+
     // Header CSS
     if (file_exists(get_stylesheet_directory() . '/css/header.css')) {
         wp_enqueue_style(

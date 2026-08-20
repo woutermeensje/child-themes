@@ -12,7 +12,15 @@ if (!defined('SJ_GF_VACATURE_FORM_ID')) {
     define('SJ_GF_VACATURE_FORM_ID', 21);
 }
 
+if (!defined('SJ_GF_JOB_TYPE_FIELD_CLASS')) {
+    define('SJ_GF_JOB_TYPE_FIELD_CLASS', 'sj-gf-job-types');
+}
+
 add_action('gform_after_submission_' . SJ_GF_VACATURE_FORM_ID, 'sj_create_job_listing_from_gravity_form_21', 10, 2);
+add_filter('gform_pre_render_' . SJ_GF_VACATURE_FORM_ID, 'sj_gf21_populate_job_type_field_choices');
+add_filter('gform_pre_validation_' . SJ_GF_VACATURE_FORM_ID, 'sj_gf21_populate_job_type_field_choices');
+add_filter('gform_pre_submission_filter_' . SJ_GF_VACATURE_FORM_ID, 'sj_gf21_populate_job_type_field_choices');
+add_filter('gform_admin_pre_render_' . SJ_GF_VACATURE_FORM_ID, 'sj_gf21_populate_job_type_field_choices');
 
 function sj_create_job_listing_from_gravity_form_21($entry, $form) {
     $entry_id = absint($entry['id'] ?? 0);
@@ -159,6 +167,106 @@ function sj_gf21_apply_job_listing_terms($job_id, $data) {
     }
 }
 
+function sj_gf21_populate_job_type_field_choices($form) {
+    if (!is_array($form) || empty($form['fields']) || !is_array($form['fields'])) {
+        return $form;
+    }
+
+    $choices = sj_gf21_get_job_type_choices();
+    if (empty($choices)) {
+        return $form;
+    }
+
+    foreach ($form['fields'] as &$field) {
+        if (!sj_gf21_is_job_type_choices_field($field)) {
+            continue;
+        }
+
+        sj_gf21_add_field_class($field, SJ_GF_JOB_TYPE_FIELD_CLASS);
+        sj_gf21_set_field_prop($field, 'choices', $choices);
+        sj_gf21_set_field_prop($field, 'enableEnhancedUI', false);
+
+        if (sj_gf21_get_field_input_type($field) === 'checkbox') {
+            sj_gf21_set_field_prop($field, 'inputs', sj_gf21_build_checkbox_inputs($field, $choices));
+        }
+    }
+    unset($field);
+
+    return $form;
+}
+
+function sj_gf21_get_job_type_choices() {
+    if (!taxonomy_exists('job_listing_type')) {
+        return [];
+    }
+
+    $terms = get_terms([
+        'taxonomy'   => 'job_listing_type',
+        'hide_empty' => false,
+        'orderby'    => 'name',
+        'order'      => 'ASC',
+    ]);
+
+    if (is_wp_error($terms) || empty($terms)) {
+        return [];
+    }
+
+    $choices = [];
+
+    foreach ($terms as $term) {
+        $choices[] = [
+            'text'  => $term->name,
+            'value' => $term->slug,
+        ];
+    }
+
+    return apply_filters('sj_gf_vacature_form_21_job_type_choices', $choices, $terms);
+}
+
+function sj_gf21_is_job_type_choices_field($field) {
+    $input_type = sj_gf21_get_field_input_type($field);
+
+    if (!in_array($input_type, ['multiselect', 'checkbox'], true)) {
+        return false;
+    }
+
+    if (sj_gf21_field_has_class($field, SJ_GF_JOB_TYPE_FIELD_CLASS)) {
+        return true;
+    }
+
+    return sj_gf21_field_matches_config($field, [
+        'labels' => sj_gf21_get_field_mapping()['job_types']['labels'] ?? [],
+    ]);
+}
+
+function sj_gf21_get_field_input_type($field) {
+    $type       = (string) sj_gf21_field_prop($field, 'type', '');
+    $input_type = (string) sj_gf21_field_prop($field, 'inputType', '');
+
+    return $input_type ?: $type;
+}
+
+function sj_gf21_build_checkbox_inputs($field, $choices) {
+    $field_id = (string) sj_gf21_field_prop($field, 'id', '');
+    $inputs   = [];
+    $index    = 1;
+
+    foreach ($choices as $choice) {
+        if ($index % 10 === 0) {
+            $index++;
+        }
+
+        $inputs[] = [
+            'id'    => $field_id . '.' . $index,
+            'label' => $choice['text'],
+        ];
+
+        $index++;
+    }
+
+    return $inputs;
+}
+
 function sj_gf21_get_existing_job_listing_id($entry_id) {
     if (function_exists('gform_get_meta')) {
         $linked_id = absint(gform_get_meta($entry_id, 'sj_wpjm_job_listing_id'));
@@ -240,8 +348,9 @@ function sj_gf21_get_field_mapping($form = null) {
             'labels' => ['pakket', 'plaatsingspakket', 'vacaturepakket', 'vacature pakket'],
         ],
         'job_types' => [
-            'ids'    => [],
-            'labels' => ['type baan', 'dienstverband', 'dienstverbanden', 'soort dienstverband', 'job type', 'employment type'],
+            'ids'     => [],
+            'labels'  => ['type baan', 'dienstverband', 'dienstverbanden', 'soort dienstverband', 'job type', 'employment type'],
+            'classes' => [SJ_GF_JOB_TYPE_FIELD_CLASS],
         ],
         'sectors' => [
             'ids'    => [],
@@ -418,7 +527,24 @@ function sj_gf21_input_prop($input, $prop, $default = null) {
     return $default;
 }
 
+function sj_gf21_set_field_prop(&$field, $prop, $value) {
+    if (is_object($field)) {
+        $field->{$prop} = $value;
+        return;
+    }
+
+    if (is_array($field)) {
+        $field[$prop] = $value;
+    }
+}
+
 function sj_gf21_field_matches_config($field, $config) {
+    foreach ((array) ($config['classes'] ?? []) as $class) {
+        if (sj_gf21_field_has_class($field, $class)) {
+            return true;
+        }
+    }
+
     $labels = [
         sj_gf21_field_prop($field, 'label', ''),
         sj_gf21_field_prop($field, 'adminLabel', ''),
@@ -432,6 +558,33 @@ function sj_gf21_field_matches_config($field, $config) {
     }
 
     return false;
+}
+
+function sj_gf21_field_has_class($field, $class) {
+    $class = trim((string) $class);
+
+    if ($class === '') {
+        return false;
+    }
+
+    $field_classes = preg_split('/\s+/', (string) sj_gf21_field_prop($field, 'cssClass', ''), -1, PREG_SPLIT_NO_EMPTY);
+
+    return in_array($class, $field_classes, true);
+}
+
+function sj_gf21_add_field_class(&$field, $class) {
+    $class = trim((string) $class);
+
+    if ($class === '') {
+        return;
+    }
+
+    $field_classes = preg_split('/\s+/', (string) sj_gf21_field_prop($field, 'cssClass', ''), -1, PREG_SPLIT_NO_EMPTY);
+
+    if (!in_array($class, $field_classes, true)) {
+        $field_classes[] = $class;
+        sj_gf21_set_field_prop($field, 'cssClass', trim(implode(' ', $field_classes)));
+    }
 }
 
 function sj_gf21_input_matches_config($input, $config) {
