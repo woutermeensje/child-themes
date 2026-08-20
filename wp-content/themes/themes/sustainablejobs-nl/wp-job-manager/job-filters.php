@@ -924,6 +924,7 @@ span.active-filter {
 
   .filter-title {
     padding: 0 16px !important;
+    margin-top: 24px !important;
     font-size: 22px !important;
   }
 
