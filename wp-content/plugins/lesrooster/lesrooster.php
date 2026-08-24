@@ -431,51 +431,23 @@ final class Lesrooster_Plugin {
 			</div>
 
 			<div class="lr-schedule__panel is-active" data-lr-panel="weekday">
-				<div class="lr-schedule__grid lr-schedule__grid--weekday">
+				<div class="lr-agenda lr-agenda--weekday">
+					<?php echo $this->render_agenda_time_axis(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<?php foreach ( $weekday_keys as $day_key ) : ?>
 						<?php $day_label = $this->days[ $day_key ]; ?>
 						<?php $day_lessons = $grouped_lessons[ $day_key ]; ?>
-						<div class="lr-day-card">
-							<div class="lr-day-card__header">
-								<h3><?php echo esc_html( $day_label ); ?></h3>
-								<span><?php echo esc_html( count( $day_lessons ) ); ?> lessen</span>
-							</div>
-
-							<?php if ( empty( $day_lessons ) ) : ?>
-								<p class="lr-day-card__empty">Nog geen training ingepland.</p>
-							<?php else : ?>
-								<div class="lr-day-card__list">
-									<?php foreach ( $day_lessons as $lesson ) : ?>
-										<?php echo $this->render_lesson( $lesson, $day_label, $atts['button_text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-									<?php endforeach; ?>
-								</div>
-							<?php endif; ?>
-						</div>
+						<?php echo $this->render_agenda_day( $day_label, $day_lessons, $atts['button_text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<?php endforeach; ?>
 				</div>
 			</div>
 
 			<div class="lr-schedule__panel" data-lr-panel="weekend" hidden>
-				<div class="lr-schedule__grid lr-schedule__grid--weekend">
+				<div class="lr-agenda lr-agenda--weekend">
+					<?php echo $this->render_agenda_time_axis(); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<?php foreach ( $weekend_keys as $day_key ) : ?>
 						<?php $day_label = $this->days[ $day_key ]; ?>
 						<?php $day_lessons = $grouped_lessons[ $day_key ]; ?>
-						<div class="lr-day-card">
-							<div class="lr-day-card__header">
-								<h3><?php echo esc_html( $day_label ); ?></h3>
-								<span><?php echo esc_html( count( $day_lessons ) ); ?> lessen</span>
-							</div>
-
-							<?php if ( empty( $day_lessons ) ) : ?>
-								<p class="lr-day-card__empty">Nog geen training ingepland.</p>
-							<?php else : ?>
-								<div class="lr-day-card__list">
-									<?php foreach ( $day_lessons as $lesson ) : ?>
-										<?php echo $this->render_lesson( $lesson, $day_label, $atts['button_text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-									<?php endforeach; ?>
-								</div>
-							<?php endif; ?>
-						</div>
+						<?php echo $this->render_agenda_day( $day_label, $day_lessons, $atts['button_text'] ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 					<?php endforeach; ?>
 				</div>
 			</div>
@@ -890,7 +862,45 @@ final class Lesrooster_Plugin {
 		return home_url( $request_uri );
 	}
 
-	private function render_lesson( array $lesson, string $day_label, string $button_text ): string {
+	private function render_agenda_day( string $day_label, array $lessons, string $button_text ): string {
+		$hour_height = 72;
+		$agenda = '<div class="lr-agenda__day">';
+		$agenda .= '<div class="lr-agenda__day-header"><h3>' . esc_html( $day_label ) . '</h3><span>' . esc_html( count( $lessons ) ) . ' lessen</span></div>';
+		$agenda .= '<div class="lr-agenda__scroll"><div class="lr-agenda__body" style="--lr-hours:12; --lr-hour-height:' . esc_attr( $hour_height ) . 'px;"><div class="lr-agenda__column">';
+		for ( $hour = 0; $hour < 12; $hour++ ) {
+			$agenda .= '<span class="lr-agenda__hour-line" style="top:' . esc_attr( $hour * $hour_height ) . 'px;"></span>';
+		}
+
+		foreach ( $lessons as $lesson ) {
+			$time_parts = $this->parse_time_parts( $lesson['time'] );
+			$start = $this->time_to_minutes( $time_parts['start'] );
+			$end = $this->time_to_minutes( $time_parts['end'] );
+			if ( false === $start ) {
+				continue;
+			}
+			if ( false === $end || $end <= $start ) {
+				$end = $start + 60;
+			}
+			$top = max( 0, ( $start - 480 ) / 60 * $hour_height );
+			$height = max( 58, ( $end - $start ) / 60 * $hour_height - 6 );
+			$style = 'top:' . $top . 'px;height:' . $height . 'px;';
+			$agenda .= $this->render_lesson( $lesson, $day_label, $button_text, $style );
+		}
+
+		$agenda .= '</div></div></div></div>';
+		return $agenda;
+	}
+
+	private function render_agenda_time_axis(): string {
+		$hour_height = 72;
+		$axis = '<div class="lr-agenda__time-axis" aria-hidden="true"><div class="lr-agenda__time-axis-spacer"></div><div class="lr-agenda__time-labels">';
+		for ( $hour = 8; $hour <= 20; $hour++ ) {
+			$axis .= '<span style="top:' . esc_attr( ( $hour - 8 ) * $hour_height ) . 'px;">' . esc_html( sprintf( '%02d:00', $hour ) ) . '</span>';
+		}
+		return $axis . '</div></div>';
+	}
+
+	private function render_lesson( array $lesson, string $day_label, string $button_text, string $style = '' ): string {
 		$time_parts     = $this->parse_time_parts( $lesson['time'] );
 		$short_location = $lesson['location'] ? $this->get_short_location( $lesson['location'] ) : '';
 
@@ -918,13 +928,14 @@ final class Lesrooster_Plugin {
 		}
 
 		return sprintf(
-			'<article class="lr-lesson">'
+			'<article class="lr-lesson"%s>'
 			. '<h4 class="lr-lesson__title">%s</h4>'
 			. '<div class="lr-lesson__rows">%s</div>'
 			. '<button type="button" class="lr-lesson__button" data-lr-open-reservation '
 			. 'data-lr-activity="%s" data-lr-day="%s" data-lr-time="%s" '
 			. 'data-lr-location="%s" data-lr-trainer="%s">%s</button>'
 			. '</article>',
+			$style ? ' style="' . esc_attr( $style ) . '"' : '',
 			esc_html( $lesson['title'] ),
 			$rows, // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			esc_attr( $lesson['title'] ),
@@ -934,6 +945,13 @@ final class Lesrooster_Plugin {
 			esc_attr( $lesson['trainer'] ),
 			esc_html( $button_text )
 		);
+	}
+
+	private function time_to_minutes( string $time ) {
+		if ( preg_match( '/(\d{1,2}):(\d{2})/u', $time, $matches ) ) {
+			return ( (int) $matches[1] * 60 ) + (int) $matches[2];
+		}
+		return false;
 	}
 
 	private function parse_time_parts( string $time ): array {
