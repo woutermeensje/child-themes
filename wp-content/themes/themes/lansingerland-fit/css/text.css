@@ -1,8 +1,8 @@
 /* Shared editorial text styles */
 .lf-single-page .lf-single__content {
     --lf-content-font: 'Poppins', sans-serif;
-    --lf-content-size: 17px;
-    --lf-content-leading: 1.8;
+    --lf-content-size: 14px;
+    --lf-content-leading: 1.7;
     color: var(--color-paragraph) !important;
     font-family: var(--lf-content-font) !important;
     font-size: var(--lf-content-size) !important;
@@ -11,7 +11,8 @@
 }
 
 .lf-single-page .lf-single__content p,
-.lf-single-page .lf-single__content li {
+.lf-single-page .lf-single__content li,
+.lf-single-page .lf-single__content a {
     color: var(--color-paragraph) !important;
     font-family: var(--lf-content-font) !important;
     font-size: var(--lf-content-size) !important;
@@ -46,10 +47,3 @@
     margin-bottom: 4px !important;
 }
 
-@media (max-width: 540px) {
-    .lf-single-page .lf-single__content,
-    .lf-single-page .lf-single__content p,
-    .lf-single-page .lf-single__content li {
-        --lf-content-size: 16px;
-    }
-}
