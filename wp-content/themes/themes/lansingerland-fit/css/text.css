@@ -1,0 +1,55 @@
+/* Shared editorial text styles */
+.lf-single-page .lf-single__content {
+    --lf-content-font: 'Poppins', sans-serif;
+    --lf-content-size: 17px;
+    --lf-content-leading: 1.8;
+    color: var(--color-paragraph) !important;
+    font-family: var(--lf-content-font) !important;
+    font-size: var(--lf-content-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--lf-content-leading) !important;
+}
+
+.lf-single-page .lf-single__content p,
+.lf-single-page .lf-single__content li {
+    color: var(--color-paragraph) !important;
+    font-family: var(--lf-content-font) !important;
+    font-size: var(--lf-content-size) !important;
+    font-weight: 400 !important;
+    line-height: var(--lf-content-leading) !important;
+}
+
+.lf-single-page .lf-single__content p {
+    margin: 0 0 24px !important;
+}
+
+.lf-single-page .lf-single__content ul,
+.lf-single-page .lf-single__content ol {
+    margin: 0 0 24px !important;
+    padding-left: 28px !important;
+}
+
+.lf-single-page .lf-single__content li {
+    margin: 0 0 4px !important;
+    padding-left: 4px !important;
+}
+
+.lf-single-page .lf-single__content li:last-child {
+    margin-bottom: 0 !important;
+}
+
+.lf-single-page .lf-single__content ul ul,
+.lf-single-page .lf-single__content ol ol,
+.lf-single-page .lf-single__content ul ol,
+.lf-single-page .lf-single__content ol ul {
+    margin-top: 4px !important;
+    margin-bottom: 4px !important;
+}
+
+@media (max-width: 540px) {
+    .lf-single-page .lf-single__content,
+    .lf-single-page .lf-single__content p,
+    .lf-single-page .lf-single__content li {
+        --lf-content-size: 16px;
+    }
+}

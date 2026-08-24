@@ -71,6 +71,24 @@ add_action('wp_enqueue_scripts', function () {
             filemtime($theme_dir . '/css/trainingen.css')
         );
     }
+
+    if (is_singular('post') && file_exists($theme_dir . '/css/single.css')) {
+        wp_enqueue_style(
+            'lf-single',
+            $theme_uri . '/css/single.css',
+            ['child-style', 'lf-header'],
+            filemtime($theme_dir . '/css/single.css')
+        );
+    }
+
+    if (is_singular('post') && file_exists($theme_dir . '/css/text.css')) {
+        wp_enqueue_style(
+            'lf-text',
+            $theme_uri . '/css/text.css',
+            ['lf-single'],
+            filemtime($theme_dir . '/css/text.css')
+        );
+    }
 });
 
 
