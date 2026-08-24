@@ -11,9 +11,32 @@ $search_term = isset( $_GET['lf_s'] ) ? sanitize_text_field( wp_unslash( $_GET['
 $blog_page_id = get_option( 'page_for_posts' );
 $blog_url = $blog_page_id ? get_permalink( $blog_page_id ) : home_url( '/' );
 $posts = [];
-while ( have_posts() ) {
-    the_post();
-    $posts[] = get_post();
+$posts_query = $GLOBALS['wp_query'];
+
+if ( $posts_query->have_posts() ) {
+    while ( $posts_query->have_posts() ) {
+        $posts_query->the_post();
+        $posts[] = get_post();
+    }
+    wp_reset_postdata();
+} else {
+    // Some Elementor setups render the archive shell without populating the main loop.
+    $fallback_query = new WP_Query(
+        [
+            'post_type'      => 'post',
+            'post_status'    => 'publish',
+            'posts_per_page' => get_option( 'posts_per_page', 10 ),
+            'paged'          => max( 1, get_query_var( 'paged' ) ),
+            's'              => $search_term,
+        ]
+    );
+
+    while ( $fallback_query->have_posts() ) {
+        $fallback_query->the_post();
+        $posts[] = get_post();
+    }
+    $posts_query = $fallback_query;
+    wp_reset_postdata();
 }
 $featured_posts = $search_term ? [] : array_slice( $posts, 0, 2 );
 $list_posts = $search_term ? $posts : array_slice( $posts, 2 );
@@ -86,23 +109,22 @@ $list_posts = $search_term ? $posts : array_slice( $posts, 2 );
                     </div>
                 <?php endif; ?>
 
-                <?php global $wp_query; if ( $wp_query->max_num_pages > 1 ) : ?>
+                <?php if ( $posts_query->max_num_pages > 1 ) : ?>
                     <nav class="lf-blog__pagination" aria-label="Blogpaginering">
-                        <?php previous_posts_link( '&larr; Nieuwere artikelen' ); ?>
-                        <?php next_posts_link( 'Oudere artikelen &rarr;' ); ?>
+                        <?php if ( $posts_query->get( 'paged' ) > 1 ) : ?>
+                            <a href="<?php echo esc_url( get_pagenum_link( $posts_query->get( 'paged' ) - 1 ) ); ?>">&larr; Nieuwere artikelen</a>
+                        <?php endif; ?>
+                        <?php if ( $posts_query->get( 'paged' ) < $posts_query->max_num_pages ) : ?>
+                            <a href="<?php echo esc_url( get_pagenum_link( $posts_query->get( 'paged' ) + 1 ) ); ?>">Oudere artikelen &rarr;</a>
+                        <?php endif; ?>
                     </nav>
                 <?php endif; ?>
             </div>
 
             <aside class="lf-blog__sidebar">
-                <section class="lf-blog__newsletter">
-                    <p>Blijf op de hoogte</p>
-                    <h2>Praktische inspiratie voor een fitter Lansingerland</h2>
-                    <a href="<?php echo esc_url( home_url( '/nieuwsbrief/' ) ); ?>">Nieuwsbrief <span aria-hidden="true">&rarr;</span></a>
-                </section>
                 <div class="lf-blog__links">
-                    <a href="<?php echo esc_url( home_url( '/activiteiten/' ) ); ?>"><strong>Bekijk activiteiten</strong><span>Vind sport en beweging bij jou in de buurt</span><b aria-hidden="true">&rarr;</b></a>
-                    <a href="<?php echo esc_url( home_url( '/over-lansingerlandfit/' ) ); ?>"><strong>Over LansingerlandFit</strong><span>Samen werken aan een gezonde gemeente</span><b aria-hidden="true">&rarr;</b></a>
+                    <a href="https://lansingerlandfit.nl/gratis-proefles/"><strong>Gratis proefles</strong><span>Ontdek welke training bij jou past</span><b aria-hidden="true">&rarr;</b></a>
+                    <a href="https://lansingerlandfit.nl/trainingen/"><strong>Bekijk de trainingen</strong><span>Vind een training die bij jou past</span><b aria-hidden="true">&rarr;</b></a>
                 </div>
             </aside>
         </div>
