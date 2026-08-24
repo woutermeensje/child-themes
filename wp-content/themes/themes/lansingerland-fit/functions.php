@@ -27,6 +27,15 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('lf-buttons', $theme_uri . '/css/buttons.css', ['child-style', 'lf-header'], filemtime($theme_dir . '/css/buttons.css'));
     wp_enqueue_style('lf-elementor-forms', $theme_uri . '/css/elementor-forms.css', ['child-style'], filemtime($theme_dir . '/css/elementor-forms.css'));
 
+    if (file_exists($theme_dir . '/css/blog.css')) {
+        wp_enqueue_style(
+            'lf-blog',
+            $theme_uri . '/css/blog.css',
+            ['child-style', 'lf-header'],
+            filemtime($theme_dir . '/css/blog.css')
+        );
+    }
+
     if (file_exists($theme_dir . '/css/hero-homepage.css')) {
         wp_enqueue_style(
             'lf-hero-homepage',
