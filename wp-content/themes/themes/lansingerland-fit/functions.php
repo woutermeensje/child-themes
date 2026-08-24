@@ -62,6 +62,15 @@ add_action('wp_enqueue_scripts', function () {
             filemtime($theme_dir . '/css/landingspagina.css')
         );
     }
+
+    if (file_exists($theme_dir . '/css/trainingen.css')) {
+        wp_enqueue_style(
+            'lf-trainingen',
+            $theme_uri . '/css/trainingen.css',
+            ['child-style', 'lf-buttons'],
+            filemtime($theme_dir . '/css/trainingen.css')
+        );
+    }
 });
 
 
@@ -121,6 +130,87 @@ add_action('after_setup_theme', function() {
 add_shortcode('lf_header', function() {
     ob_start();
     include get_stylesheet_directory() . '/template-parts/header.php';
+    return ob_get_clean();
+});
+
+// =========================================================
+// Trainingen: pagina-markering en overzicht-shortcode
+// =========================================================
+add_action('add_meta_boxes_page', function() {
+    add_meta_box(
+        'lf_training_settings',
+        'LansingerlandFit training',
+        function($post) {
+            wp_nonce_field('lf_save_training_setting', 'lf_training_nonce');
+            $is_training = get_post_meta($post->ID, '_lf_is_training', true);
+            ?>
+            <label for="lf_is_training">
+                <input type="checkbox" name="lf_is_training" id="lf_is_training" value="1" <?php checked($is_training, '1'); ?>>
+                Toon deze pagina in het trainingenoverzicht
+            </label>
+            <?php
+        },
+        'page',
+        'side',
+        'default'
+    );
+});
+
+add_action('save_post_page', function($post_id) {
+    if (!isset($_POST['lf_training_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['lf_training_nonce'])), 'lf_save_training_setting')) {
+        return;
+    }
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+        return;
+    }
+    if (!current_user_can('edit_page', $post_id)) {
+        return;
+    }
+
+    if (isset($_POST['lf_is_training'])) {
+        update_post_meta($post_id, '_lf_is_training', '1');
+    } else {
+        delete_post_meta($post_id, '_lf_is_training');
+    }
+});
+
+add_shortcode('trainingen_overzicht', function() {
+    $training_query = new WP_Query([
+        'post_type'      => 'page',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'meta_key'       => '_lf_is_training',
+        'meta_value'     => '1',
+        'orderby'        => ['menu_order' => 'ASC', 'title' => 'ASC'],
+        'order'          => 'ASC',
+    ]);
+
+    if (!$training_query->have_posts()) {
+        return '<p class="lf-trainingen__empty">Er zijn nog geen trainingen toegevoegd.</p>';
+    }
+
+    ob_start();
+    ?>
+    <div class="lf-trainingen-overzicht">
+        <?php while ($training_query->have_posts()) : $training_query->the_post(); ?>
+            <a class="lf-training-card" href="<?php the_permalink(); ?>">
+                <span class="lf-training-card__image">
+                    <?php if (has_post_thumbnail()) : ?>
+                        <?php the_post_thumbnail('large', ['loading' => 'lazy']); ?>
+                    <?php else : ?>
+                        <span class="lf-training-card__placeholder" aria-hidden="true">LansingerlandFit</span>
+                    <?php endif; ?>
+                </span>
+                <span class="lf-training-card__body">
+                    <span class="lf-training-card__title"><?php the_title(); ?></span>
+                    <?php if (has_excerpt()) : ?><span class="lf-training-card__excerpt"><?php echo esc_html(get_the_excerpt()); ?></span><?php endif; ?>
+                    <span class="lf-training-card__link">Bekijk training <span aria-hidden="true">&rarr;</span></span>
+                </span>
+            </a>
+        <?php endwhile; ?>
+    </div>
+    <?php
+    wp_reset_postdata();
     return ob_get_clean();
 });
 

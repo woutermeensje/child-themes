@@ -1,0 +1,19 @@
+/* Training overview cards */
+.lf-trainingen-overzicht,
+.lf-trainingen-overzicht * { box-sizing: border-box; }
+.lf-trainingen-overzicht { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; width: 100%; }
+.lf-training-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--border-radius-lg); background: var(--color-surface); color: var(--color-text); box-shadow: var(--color-shadow-soft); text-decoration: none !important; transition: transform .2s ease, box-shadow .2s ease; }
+.lf-training-card:hover { color: var(--color-text); transform: translateY(-4px); box-shadow: var(--color-shadow); }
+.lf-training-card__image { display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--color-bg-soft); }
+.lf-training-card__image img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
+.lf-training-card:hover .lf-training-card__image img { transform: scale(1.04); }
+.lf-training-card__placeholder { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; padding: 24px; background: linear-gradient(135deg, var(--color-ocean), var(--color-primary)); color: #fff; font: 700 20px/1.2 'Work Sans', sans-serif; text-align: center; }
+.lf-training-card__body { display: flex; flex: 1; flex-direction: column; align-items: flex-start; padding: 24px; }
+.lf-training-card__title { display: block; color: var(--color-heading); font: 700 24px/1.15 'Work Sans', sans-serif; }
+.lf-training-card__excerpt { display: block; margin-top: 12px; color: var(--color-paragraph); font: 15px/1.6 'Poppins', sans-serif; }
+.lf-training-card__link { display: inline-flex; align-items: center; gap: 8px; margin-top: auto; padding-top: 22px; color: var(--color-primary-mid); font: 700 14px 'Poppins', sans-serif; }
+.lf-training-card__link span { font-size: 20px; line-height: .8; transition: transform .2s ease; }
+.lf-training-card:hover .lf-training-card__link span { transform: translateX(4px); }
+.lf-trainingen__empty { color: var(--color-paragraph); font: 15px/1.6 'Poppins', sans-serif; }
+@media (max-width: 900px) { .lf-trainingen-overzicht { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .lf-trainingen-overzicht { grid-template-columns: 1fr; gap: 18px; } .lf-training-card__title { font-size: 22px; } }
