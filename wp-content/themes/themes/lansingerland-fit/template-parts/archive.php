@@ -13,14 +13,11 @@ $blog_url = $blog_page_id ? get_permalink( $blog_page_id ) : home_url( '/' );
 $posts = [];
 $posts_query = $GLOBALS['wp_query'];
 
-if ( $posts_query->have_posts() ) {
-    while ( $posts_query->have_posts() ) {
-        $posts_query->the_post();
-        $posts[] = get_post();
-    }
-    wp_reset_postdata();
+if ( ! empty( $posts_query->posts ) && is_array( $posts_query->posts ) ) {
+    // Read the query result directly; Elementor can expose an inconsistent loop counter.
+    $posts = array_map( 'get_post', $posts_query->posts );
 } else {
-    // Some Elementor setups render the archive shell without populating the main loop.
+    // Some Elementor setups render the archive shell without populating the main query.
     $fallback_query = new WP_Query(
         [
             'post_type'      => 'post',
@@ -31,12 +28,8 @@ if ( $posts_query->have_posts() ) {
         ]
     );
 
-    while ( $fallback_query->have_posts() ) {
-        $fallback_query->the_post();
-        $posts[] = get_post();
-    }
+    $posts = is_array( $fallback_query->posts ) ? array_map( 'get_post', $fallback_query->posts ) : [];
     $posts_query = $fallback_query;
-    wp_reset_postdata();
 }
 $featured_posts = $search_term ? [] : array_slice( $posts, 0, 2 );
 $list_posts = $search_term ? $posts : array_slice( $posts, 2 );
