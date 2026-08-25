@@ -388,15 +388,6 @@ final class Lesrooster_Plugin {
 			'lesrooster'
 		);
 
-		wp_enqueue_style(
-			'lesrooster-style',
-			plugin_dir_url( __FILE__ ) . 'assets/lesrooster.css',
-			[],
-			file_exists( plugin_dir_path( __FILE__ ) . 'assets/lesrooster.css' )
-				? filemtime( plugin_dir_path( __FILE__ ) . 'assets/lesrooster.css' )
-				: self::VERSION
-		);
-
 		$lessons = get_posts(
 			[
 				'post_type' => self::POST_TYPE,

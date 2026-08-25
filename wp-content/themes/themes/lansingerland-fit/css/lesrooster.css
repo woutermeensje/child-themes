@@ -499,7 +499,6 @@ body.lr-modal-open {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
-
 @media (max-width: 1024px) {
   .lr-schedule .lr-schedule__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -629,25 +628,23 @@ body.lr-modal-open {
   }
 }
 
-/* ---- Agendaweergave 08:00-20:00 ---- */
-.lr-schedule .lr-agenda { display: grid; grid-template-columns: 58px repeat(5, minmax(0, 1fr)); gap: 0; max-height: 620px; overflow: auto; border: 1px solid rgba(37, 71, 107, .14); border-radius: 8px; background: #fff; }
+/* Agendaweergave 08:00-20:00 */
+.lr-schedule .lr-agenda { display: grid; grid-template-columns: 58px repeat(5, minmax(0, 1fr)); gap: 0; max-height: 620px; overflow: auto; border: 1px solid #dedede !important; border-radius: 8px; background: #fff; }
 .lr-schedule .lr-agenda--weekend { grid-template-columns: 58px repeat(2, minmax(0, 1fr)); }
 .lr-schedule .lr-agenda__time-axis { min-width: 0; background: #fff; }
 .lr-schedule .lr-agenda__time-axis-spacer { height: 66px; border-bottom: 1px solid #e8edf0; }
 .lr-schedule .lr-agenda__time-labels { position: relative; height: 864px; border-right: 1px solid #e8edf0; }
 .lr-schedule .lr-agenda__time-labels span { position: absolute; right: 8px; transform: translateY(-50%); color: #7c8e9b; font: 500 11px/1 Poppins, Inter, sans-serif; }
-.lr-schedule .lr-agenda__day { min-width: 0; overflow: hidden; border-right: 1px solid rgba(37, 71, 107, .14); background: #fff; }
+.lr-schedule .lr-agenda__day { min-width: 0; overflow: hidden; border-right: 1px solid #dedede; background: #fff; }
 .lr-schedule .lr-agenda__day:last-child { border-right: 0; }
 .lr-schedule .lr-agenda__day-header { min-height: 66px; padding: 14px 16px 12px; border-bottom: 1px solid #e8edf0; background: #fff; }
 .lr-schedule .lr-agenda__day-header h3 { margin: 0 0 5px; color: var(--lr-text) !important; font: 700 18px/1.1 Poppins, Inter, sans-serif !important; }
 .lr-schedule .lr-agenda__day-header span { color: var(--lr-muted) !important; font: 600 11px/1.2 Poppins, Inter, sans-serif !important; }
 .lr-schedule .lr-agenda__scroll { overflow: visible; }
 .lr-schedule .lr-agenda__body { position: relative; min-height: calc(var(--lr-hours) * var(--lr-hour-height)); background: linear-gradient(to bottom, transparent calc(var(--lr-hour-height) - 1px), #e8edf0 calc(var(--lr-hour-height) - 1px)); background-size: 100% var(--lr-hour-height); }
-.lr-schedule .lr-agenda__times { position: absolute; inset: 0 auto 0 0; width: 48px; pointer-events: none; }
-.lr-schedule .lr-agenda__times span { position: absolute; left: 8px; transform: translateY(-50%); color: #7c8e9b; font: 500 11px/1 Poppins, Inter, sans-serif; }
 .lr-schedule .lr-agenda__column { position: relative; min-height: calc(var(--lr-hours) * var(--lr-hour-height)); border-left: 1px solid #e8edf0; }
 .lr-schedule .lr-agenda__hour-line { position: absolute; right: 0; left: 0; height: 1px; background: #e8edf0; pointer-events: none; }
-.lr-schedule .lr-agenda .lr-lesson { position: absolute; right: 6px; left: 6px; z-index: 1; display: flex; min-height: 58px; overflow: hidden; padding: 10px; border: 1px solid rgba(50, 95, 141, .28); border-left: 4px solid var(--lr-accent); border-radius: 6px; background: #f1f8ee; box-shadow: 0 3px 9px rgba(37, 71, 107, .1); }
+.lr-schedule .lr-agenda .lr-lesson { position: absolute; right: 6px; left: 6px; z-index: 1; display: flex; min-height: 58px; overflow: hidden; padding: 10px; border: 1px solid #dedede; border-left: 4px solid var(--lr-accent); border-radius: 6px; background: #f1f8ee; box-shadow: 0 3px 9px rgba(37, 71, 107, .1); }
 .lr-schedule .lr-agenda .lr-lesson__title { margin: 0 0 5px; font-size: 13px; }
 .lr-schedule .lr-agenda .lr-lesson__rows { gap: 2px; margin-bottom: 5px; }
 .lr-schedule .lr-agenda .lr-lesson__row-text { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }

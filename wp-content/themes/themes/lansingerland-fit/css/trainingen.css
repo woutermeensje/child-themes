@@ -2,9 +2,9 @@
 .lf-trainingen-overzicht,
 .lf-trainingen-overzicht * { box-sizing: border-box; }
 .lf-trainingen-overzicht { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; width: 100%; }
-.lf-training-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid var(--color-border); border-radius: var(--border-radius-lg); background: var(--color-surface); color: var(--color-text); box-shadow: var(--color-shadow-soft); text-decoration: none !important; transition: transform .2s ease, box-shadow .2s ease; }
+.lf-training-card { display: flex; min-width: 0; flex-direction: column; overflow: hidden; border: 1px solid #dedede !important; border-radius: 5px !important; background: var(--color-surface); color: var(--color-text); box-shadow: var(--color-shadow-soft); text-decoration: none !important; transition: transform .2s ease, box-shadow .2s ease; }
 .lf-training-card:hover { color: var(--color-text); transform: translateY(-4px); box-shadow: var(--color-shadow); }
-.lf-training-card__image { display: block; aspect-ratio: 16 / 10; overflow: hidden; background: var(--color-bg-soft); }
+.lf-training-card__image { display: block; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 5px 5px 0 0 !important; background: var(--color-bg-soft); }
 .lf-training-card__image img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .35s ease; }
 .lf-training-card:hover .lf-training-card__image img { transform: scale(1.04); }
 .lf-training-card__placeholder { display: flex; width: 100%; height: 100%; align-items: center; justify-content: center; padding: 24px; background: linear-gradient(135deg, var(--color-ocean), var(--color-primary)); color: #fff; font: 700 20px/1.2 'Work Sans', sans-serif; text-align: center; }

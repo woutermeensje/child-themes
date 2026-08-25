@@ -7,6 +7,27 @@
     padding: 0;
 }
 
+/* Keep landing-page lists aligned with the theme's paragraph typography. */
+.lf-lp ul,
+.lf-lp ol {
+    margin: 0 0 24px !important;
+    padding-left: 28px !important;
+}
+
+.lf-lp li {
+    margin: 0 0 4px !important;
+    padding: 0 !important;
+    color: var(--color-paragraph) !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: 400 !important;
+    line-height: 1.7 !important;
+}
+
+.lf-lp li:last-child {
+    margin-bottom: 0 !important;
+}
+
 .lf-job-hero {
     position: relative;
     width: 100%;

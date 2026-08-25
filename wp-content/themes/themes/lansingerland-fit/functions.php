@@ -49,7 +49,7 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style(
             'lf-lesrooster',
             $theme_uri . '/css/lesrooster.css',
-            ['child-style', 'lesrooster-style'],
+            ['child-style'],
             filemtime($theme_dir . '/css/lesrooster.css')
         );
     }
@@ -157,7 +157,7 @@ add_shortcode('lf_header', function() {
 add_action('add_meta_boxes_page', function() {
     add_meta_box(
         'lf_training_settings',
-        'LansingerlandFit training',
+        'LansingerlandFit overzichten',
         function($post) {
             wp_nonce_field('lf_save_training_setting', 'lf_training_nonce');
             $is_training = get_post_meta($post->ID, '_lf_is_training', true);
@@ -166,6 +166,12 @@ add_action('add_meta_boxes_page', function() {
                 <input type="checkbox" name="lf_is_training" id="lf_is_training" value="1" <?php checked($is_training, '1'); ?>>
                 Toon deze pagina in het trainingenoverzicht
             </label>
+            <p>
+                <label for="lf_is_location">
+                    <input type="checkbox" name="lf_is_location" id="lf_is_location" value="1" <?php checked(get_post_meta($post->ID, '_lf_is_location', true), '1'); ?>>
+                    Toon deze pagina in het locatieoverzicht
+                </label>
+            </p>
             <?php
         },
         'page',
@@ -189,6 +195,12 @@ add_action('save_post_page', function($post_id) {
         update_post_meta($post_id, '_lf_is_training', '1');
     } else {
         delete_post_meta($post_id, '_lf_is_training');
+    }
+
+    if (isset($_POST['lf_is_location'])) {
+        update_post_meta($post_id, '_lf_is_location', '1');
+    } else {
+        delete_post_meta($post_id, '_lf_is_location');
     }
 });
 
@@ -223,6 +235,46 @@ add_shortcode('trainingen_overzicht', function() {
                     <span class="lf-training-card__title"><?php the_title(); ?></span>
                     <?php if (has_excerpt()) : ?><span class="lf-training-card__excerpt"><?php echo esc_html(get_the_excerpt()); ?></span><?php endif; ?>
                     <span class="lf-training-card__link">Bekijk training <span aria-hidden="true">&rarr;</span></span>
+                </span>
+            </a>
+        <?php endwhile; ?>
+    </div>
+    <?php
+    wp_reset_postdata();
+    return ob_get_clean();
+});
+
+add_shortcode('locaties', function() {
+    $location_query = new WP_Query([
+        'post_type'      => 'page',
+        'post_status'    => 'publish',
+        'posts_per_page' => -1,
+        'meta_key'       => '_lf_is_location',
+        'meta_value'     => '1',
+        'orderby'        => ['menu_order' => 'ASC', 'title' => 'ASC'],
+        'order'          => 'ASC',
+    ]);
+
+    if (!$location_query->have_posts()) {
+        return '<p class="lf-trainingen__empty">Er zijn nog geen locaties toegevoegd.</p>';
+    }
+
+    ob_start();
+    ?>
+    <div class="lf-trainingen-overzicht lf-locaties-overzicht">
+        <?php while ($location_query->have_posts()) : $location_query->the_post(); ?>
+            <a class="lf-training-card lf-location-card" href="<?php the_permalink(); ?>">
+                <span class="lf-training-card__image">
+                    <?php if (has_post_thumbnail()) : ?>
+                        <?php the_post_thumbnail('large', ['loading' => 'lazy']); ?>
+                    <?php else : ?>
+                        <span class="lf-training-card__placeholder" aria-hidden="true">LansingerlandFit</span>
+                    <?php endif; ?>
+                </span>
+                <span class="lf-training-card__body">
+                    <span class="lf-training-card__title"><?php the_title(); ?></span>
+                    <?php if (has_excerpt()) : ?><span class="lf-training-card__excerpt"><?php echo esc_html(get_the_excerpt()); ?></span><?php endif; ?>
+                    <span class="lf-training-card__link">Bekijk locatie <span aria-hidden="true">&rarr;</span></span>
                 </span>
             </a>
         <?php endwhile; ?>

@@ -33,7 +33,7 @@ body:not([class*=elementor-page-]) .lf-blog-page { max-width: 100% !important; w
 .lf-blog__list { display: flex; flex-direction: column; }
 .lf-blog__row { display: flex; align-items: flex-start; gap: 28px; padding: 28px 0; border-bottom: 1px solid var(--color-bg-soft); color: inherit; }
 .lf-blog__row:hover .lf-blog__row-title { color: var(--color-primary-mid); }
-.lf-blog__row-image { flex: 0 0 270px; height: 180px; overflow: hidden; border-radius: var(--border-radius); background: var(--color-bg-soft); }
+.lf-blog__row-image { flex: 0 0 270px; height: 180px; overflow: hidden; border: 1px solid #dedede; border-radius: var(--border-radius); background: var(--color-bg-soft); }
 .lf-blog__row-img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .3s ease; }
 .lf-blog__row:hover .lf-blog__row-img { transform: scale(1.03); }
 .lf-blog__row-image .lf-blog__placeholder { position: static; }
@@ -48,7 +48,7 @@ body:not([class*=elementor-page-]) .lf-blog-page { max-width: 100% !important; w
 .lf-blog__pagination a { border: 2px solid var(--color-primary-mid); color: var(--color-primary-mid); }
 .lf-blog__pagination a:hover { background: var(--color-primary-mid); color: #fff; }
 .lf-blog__links { display: flex; flex-direction: column; gap: 10px; }
-.lf-blog__links a { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 16px 18px; border: 1px solid var(--color-border); border-radius: var(--border-radius); background: #fff; color: inherit; transition: border-color .2s, box-shadow .2s; }
+.lf-blog__links a { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 16px 18px; border: 1px solid #dedede; border-radius: var(--border-radius); background: #fff; color: inherit; transition: border-color .2s, box-shadow .2s; }
 .lf-blog__links a:hover { border-color: var(--color-primary-mid); box-shadow: var(--color-shadow-soft); }
 .lf-blog__links strong { color: var(--color-heading); font: 700 15px 'Inter', sans-serif; }
 .lf-blog__links span { grid-column: 1; color: var(--color-text-muted); font: 12px/1.45 'Poppins', sans-serif; }
