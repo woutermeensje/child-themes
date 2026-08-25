@@ -166,8 +166,8 @@ function si_tarieven_shortcode(): string {
             $body .= "Telefoon: $telefoon\n\n";
             $body .= "--- Bericht ---\n" . wp_strip_all_tags($bericht) . "\n";
 
-            wp_mail(
-                get_option('admin_email'),
+            $mail_sent = wp_mail(
+                si_admin_notification_recipients(),
                 "Tarieven aanvraag van $voornaam $achternaam",
                 $body,
                 [
@@ -175,6 +175,10 @@ function si_tarieven_shortcode(): string {
                     'Reply-To: ' . $email,
                 ]
             );
+
+            if (!$mail_sent) {
+                error_log('[SI formulier] Notificatie tarievenaanvraag kon niet worden verzonden.');
+            }
 
             si_redirect_or_fallback(home_url('/bedankt-tarieven/'));
         }

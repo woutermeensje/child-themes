@@ -47,7 +47,7 @@ if (!function_exists('si_admin_mail_headers')) {
     function si_admin_mail_headers(string $reply_to = ''): array {
         $headers = [
             'Content-Type: text/html; charset=UTF-8',
-            'From: support@studentinhuren.nl',
+            'From: support@student-inhuren.nl',
         ];
 
         $reply_to = sanitize_email($reply_to);
@@ -56,6 +56,15 @@ if (!function_exists('si_admin_mail_headers')) {
         }
 
         return $headers;
+    }
+}
+
+if (!function_exists('si_admin_notification_recipients')) {
+    function si_admin_notification_recipients(): array {
+        return array_unique(array_filter([
+            'support@student-inhuren.nl',
+            sanitize_email(get_option('admin_email')),
+        ]));
     }
 }
 

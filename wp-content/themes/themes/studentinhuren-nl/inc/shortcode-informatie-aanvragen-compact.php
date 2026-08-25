@@ -76,12 +76,16 @@ function si_informatie_aanvragen_compact_shortcode(): string {
                 (int) $post_id
             );
 
-            wp_mail(
-                get_option('admin_email'),
+            $mail_sent = wp_mail(
+                si_admin_notification_recipients(),
                 "Informatieaanvraag van $voornaam $achternaam",
                 $body,
                 si_admin_mail_headers($email)
             );
+
+            if (!$mail_sent) {
+                error_log('[SI formulier] Notificatie compacte informatieaanvraag kon niet worden verzonden.');
+            }
 
             si_ac_subscribe_contact_to_list(STUDENTINHUREN_AC_AANVRAGEN_LIST_ID, [
                 'email'      => $email,

@@ -196,12 +196,16 @@ function si_opdracht_plaatsen_shortcode(): string {
                 (int) $post_id
             );
 
-            wp_mail(
-                get_option('admin_email'),
+            $mail_sent = wp_mail(
+                si_admin_notification_recipients(),
                 "Nieuwe opdracht van $voornaam $achternaam",
                 $body,
                 si_admin_mail_headers($email)
             );
+
+            if (!$mail_sent) {
+                error_log('[SI formulier] Notificatie opdracht kon niet worden verzonden.');
+            }
 
             si_ac_subscribe_contact_to_list(STUDENTINHUREN_AC_OPDRACHT_PLAATSEN_LIST_ID, [
                 'email'      => $email,
