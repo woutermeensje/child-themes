@@ -78,10 +78,10 @@ p {
 }
 
 li {
-    font-family: 'Inter', sans-serif;
-    font-size: 15px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
     font-weight: 400;
-    color: var(--color-text);
+  color: var(--color-paragraph);
     margin: 0 5px;
     padding: 0;
     list-style-type: disc;
