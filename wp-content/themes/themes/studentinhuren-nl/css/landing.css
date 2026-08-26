@@ -161,17 +161,17 @@
 }
 
 .fnd-hero .si-btn--accent {
-  background: #ffffff !important;
-  border-color: #ffffff !important;
-  color: var(--si-landing-primary) !important;
+  background: var(--color-accent, #80D424) !important;
+  border-color: var(--color-accent, #80D424) !important;
+  color: #ffffff !important;
   box-shadow: 0 1px 2px rgba(17, 24, 39, 0.08);
 }
 
 .fnd-hero .si-btn--accent:hover,
 .fnd-hero .si-btn--accent:focus {
-  background: #f7fafc !important;
-  border-color: #f7fafc !important;
-  color: var(--si-landing-primary-dk) !important;
+  background: var(--color-accent-dk, #6db81e) !important;
+  border-color: var(--color-accent-dk, #6db81e) !important;
+  color: #ffffff !important;
 }
 
 .fnd-hero .si-btn--secondary {
