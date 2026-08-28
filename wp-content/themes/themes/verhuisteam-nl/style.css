@@ -1,0 +1,158 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/*
+Theme Name: Verhuisteam.nl
+Theme URI: https://verhuisteam.nl/
+Description: Child theme voor Verhuisteam.nl gebaseerd op Hello Elementor.
+Author: [Jouw naam of bedrijf]
+Author URI: https://verhuisteam.nl/
+Template: hello-elementor
+Version: 1.0
+Text Domain: verhuisteam
+*/
+
+@import url("../hello-elementor/style.css");
+
+:root {
+  /* ── Merkkleur primair: platform blauw ── */
+  --color-primary:      #2f5f80;
+  --color-primary-dk:   #2f5f80;
+  --color-primary-rgb:  47, 95, 128;
+
+  /* ── Merkkleur secundair: oranje ── */
+  --color-secondary:    #FF8200;
+  --color-secondary-dk: #e07300;
+
+  /* ── Accent: groen (voor knoppen) ── */
+  --color-accent:       #80D424;
+  --color-accent-dk:    #6db81e;
+
+  /* ── Tekst ── */
+  --color-text:         #333333;
+  --color-text-muted:   #777777;
+
+  /* ── Achtergronden ── */
+  --color-bg:           #ffffff;
+  --color-bg-light:     #FBFAF8;
+
+  /* ── Borders ── */
+  --color-border:       #DEDEDE;
+  --color-border-light: #f3f4f6;
+}
+
+html, body {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: visible;
+}
+
+p {
+    font-family: Poppins;
+    font-size: 15px;
+    font-weight: 400; 
+    color: var(--color-text);
+}
+
+li {
+    font-family: Poppins;
+    font-size: 15px;
+    font-weight: 400; 
+    color: var(--color-text);
+    margin: 0 5px;
+    padding: 0;
+    list-style-type: disc;
+}
+
+ul {
+    margin-top: 15px; 
+    margin-bottom: 15px;
+}
+
+h1, h2, h3, h4, h5 {
+    font-family: 'Work Sans', sans-serif;
+    color: var(--color-text);
+    line-height: 0.8;
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+
+h1, h2 {
+    font-size: 25px;
+}
+
+h3 {
+    font-size: 18px;
+}
+
+h4, h5 {
+    font-size: 16px;
+}
+
+/* Styling specifieke links */
+.special {
+    color: var(--color-success);
+    font-style: italic;
+}
+
+.special:hover {
+    color: var(--color-success-hover);
+    text-decoration: underline;
+}
+
+/* Vacaturelijsten */
+.simple-job-listings {
+    margin-top: 20px;
+    display: grid;
+    gap: 20px;
+}
+
+.simple-job {
+    background: var(--color-bg);
+    padding: 20px;
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-primary);
+    border-radius: 4px;
+}
+
+.simple-job h3 {
+    margin: 0 0 10px;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 18px;
+}
+
+.simple-job h3 a {
+    text-decoration: none;
+    color: var(--color-primary);
+}
+
+.simple-job h3 a:hover {
+    text-decoration: underline;
+}
+
+.simple-location {
+    font-size: 14px;
+    color: var(--color-text-muted);
+    margin-bottom: 10px;
+}
+
+.simple-excerpt {
+    font-size: 14px;
+    color: var(--color-text);
+    line-height: 1.5;
+}
+
+ul {
+    margin: 20px 0px;
+	font-size: 15px
+}
+
+.job-manager-form h2,
+#job_preview .job_listing_preview_title h2,
+#job_preview .job_listing_preview h1,
+.job_summary_title,
+.job_listings .position h3,
+.job-widget-title,
+.jm-dashboard .job_title,
+.jm-notice__title {
+    font-family: 'Work Sans', sans-serif !important;
+}

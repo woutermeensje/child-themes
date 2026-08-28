@@ -1,0 +1,170 @@
+/* =============================================
+   Split hero — Verhuisteam.nl
+   Gebruikt door: page-split-hero.php
+   ============================================= */
+
+.si-split-page {
+  overflow-x: clip;
+}
+
+.si-split-hero {
+  --si-split-highlight: #e5f0f7;
+  position: relative;
+  width: 100vw;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--color-primary, #2f5f80) !important;
+  background-size: cover;
+  background-position: center top;
+  box-sizing: border-box;
+  isolation: isolate;
+}
+
+.si-split-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(24, 55, 76, 0.74);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.si-split-hero__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.si-split-hero__title-wrap {
+  max-width: 75%;
+  margin: 0;
+}
+
+.si-split-hero__title {
+  font-family: 'Work Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+  font-size: clamp(32px, 3vw, 44px) !important;
+  font-weight: 800 !important;
+  line-height: 1.2 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+  text-wrap: balance;
+}
+
+.si-split-hero__title-accent {
+  color: var(--si-split-highlight) !important;
+}
+
+.si-split-hero__description {
+  font-family: 'Poppins', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: #ffffff;
+  margin: 12px 0 0 !important;
+  max-width: 64ch;
+}
+
+.si-split-hero__description-link {
+  color: var(--si-split-highlight) !important;
+  font-weight: inherit;
+  text-decoration: none !important;
+}
+
+.si-split-hero__description-link:hover {
+  color: #ffffff !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px;
+}
+
+.si-split-hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.si-split-hero__personnel-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 24px;
+  border-radius: 5px;
+  border: 2px solid #ffffff !important;
+  background: #ffffff !important;
+  font-family: 'Work Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-primary, #2f5f80) !important;
+  text-decoration: none !important;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.08);
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.si-split-hero__personnel-btn:hover {
+  background: #f7fafc !important;
+  border-color: #f7fafc !important;
+  color: #244f6d !important;
+  transform: translateY(-1px);
+}
+
+.si-split-page__content {
+  background: transparent;
+}
+
+@media (max-width: 900px) {
+  .si-split-hero {
+    width: 100%;
+    left: 0;
+    right: auto;
+    margin-left: 0;
+    margin-right: 0;
+    height: 300px;
+  }
+
+  .si-split-hero__inner {
+    width: 100%;
+    max-width: none;
+    padding: 0 16px;
+    box-sizing: border-box;
+  }
+
+  .si-split-hero__title-wrap {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .si-split-hero__title {
+    font-size: clamp(30px, 5vw, 38px) !important;
+  }
+
+  .si-split-hero__description {
+    font-size: 14px;
+    line-height: 1.45;
+    max-width: 100%;
+  }
+
+  .si-split-hero__actions {
+    margin-top: 16px;
+  }
+
+}
+
+@media (max-width: 480px) {
+  .si-split-hero__personnel-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}

@@ -1,0 +1,289 @@
+/* =============================================
+   welcome-v2 — Homepage hero
+   Gebaseerd op het verhuisteam Laravel platform
+   ============================================= */
+
+/* ── Hero container ── */
+.welcome-v2__hero {
+  position: relative;
+  height: 500px;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+}
+
+/* ── Left: blauwe zijde met schuine clip ── */
+.welcome-v2__hero-left {
+  background: #2f5f80 !important;
+  color: #fff !important;
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  width: min(64%, 980px);
+  clip-path: polygon(0 0, 85% 0, 70% 100%, 0 100%);
+}
+
+/* ── Content wrapper binnen de linker zijde ── */
+.welcome-v2__hero-content {
+  width: min(560px, calc(100% - 150px));
+  margin: 0 auto 0 clamp(20px, 4vw, 72px);
+  height: 100%;
+  display: grid;
+  align-content: center;
+  gap: 14px;
+}
+
+.welcome-v2__hero-copy {
+  display: grid;
+  gap: 14px;
+}
+
+/* ── Freelancer-inhuren variant ── */
+.welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-content {
+  align-content: stretch;
+  grid-template-rows: 80fr 20fr;
+  gap: 0;
+  padding: 0;
+}
+
+.welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-left {
+  background: linear-gradient(
+    180deg,
+    #2f5f80 0%,
+    #2f5f80 80%,
+    #ffffff 80%,
+    #ffffff 100%
+  ) !important;
+}
+
+.welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-copy {
+  align-content: center;
+  padding: 40px 0 24px;
+}
+
+/* ── Breadcrumbs ── */
+.welcome-v2__hero--freelancer-inhuren .blog-breadcrumbs {
+  margin-bottom: 10px;
+}
+.welcome-v2__hero--freelancer-inhuren .blog-breadcrumbs,
+.welcome-v2__hero--freelancer-inhuren .blog-breadcrumbs a {
+  color: rgba(255, 255, 255, 0.85) !important;
+  font-size: 13px;
+  text-decoration: none !important;
+}
+.welcome-v2__hero--freelancer-inhuren .blog-breadcrumbs a:hover {
+  color: #fff;
+}
+
+/* ── Titel & lead ── */
+.welcome-v2 h1.si-home-hero__title,
+.welcome-v2__title {
+  display: block !important;
+  margin: 0 !important;
+  color: #ffffff !important;
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  line-height: 1.1 !important;
+  letter-spacing: 0 !important;
+  font-family: 'Work Sans', sans-serif !important;
+  text-transform: none !important;
+}
+
+.welcome-v2__lead {
+  margin: 0;
+  max-width: 52ch;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+/* ── CTA knoppen ── */
+.welcome-v2__actions {
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-start;
+}
+
+.welcome-v2__hero--freelancer-inhuren .welcome-v2__actions {
+  margin-top: 18px;
+}
+
+/* Direct link onder knoppen */
+.welcome-v2__direct-link {
+  margin-top: 4px;
+  display: inline-flex;
+  width: fit-content;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  text-decoration: underline !important;
+}
+
+.welcome-v2__direct-link:hover {
+  color: #fff !important;
+}
+
+/* ── Contact balk onderin ── */
+.welcome-v2__hero-actions-panel {
+  display: flex;
+  align-items: center;
+  margin-left: calc(clamp(20px, 4vw, 72px) * -1);
+  margin-right: -96px;
+  width: calc(100% + clamp(20px, 4vw, 72px) + 96px);
+  background: #ffffff;
+  padding: 16px calc(clamp(20px, 4vw, 72px) + 96px) 20px clamp(20px, 4vw, 72px);
+  border-top: 1px solid #DEDEDE;
+  border-bottom: 1px solid #DEDEDE;
+  box-shadow: 0 10px 24px rgba(17, 24, 39, 0.08);
+}
+
+.welcome-v2__hero-contact-list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 28px;
+}
+
+.welcome-v2__hero-contact-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #333333 !important;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  text-decoration: none !important;
+  font-family: 'Poppins', sans-serif;
+}
+
+.welcome-v2__hero-contact-item i {
+  color: #FF8200 !important;
+  font-size: 22px;
+  flex: 0 0 auto;
+}
+
+.welcome-v2__hero-contact-item:hover {
+  color: #2f5f80 !important;
+}
+
+/* ── Rechterkant: achtergrondafbeelding ── */
+.welcome-v2__hero-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  background-size: cover;
+  background-position: center 20%;
+  background-color: #FBFAF8;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .welcome-v2__hero {
+    height: auto;
+    display: grid;
+    background: #2f5f80 !important;
+  }
+
+  .welcome-v2__hero-left {
+    width: 100%;
+    min-height: auto;
+    clip-path: none;
+    order: 1;
+    background: #2f5f80 !important;
+  }
+
+  .welcome-v2__hero-content {
+    width: min(680px, calc(100% - 32px));
+    margin: 0 auto;
+    padding: 24px 0 0;
+    height: auto;
+    gap: 16px;
+  }
+
+  .welcome-v2__hero-right {
+    position: relative;
+    height: 220px;
+    order: -1;
+  }
+
+  .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-content {
+    grid-template-rows: auto;
+    gap: 16px;
+    padding: 24px 0 0;
+  }
+
+  .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-right {
+    display: none;
+  }
+
+  .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-left {
+    background: #2f5f80 !important;
+  }
+
+  .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-copy {
+    padding: 0;
+    gap: 12px;
+  }
+
+  .welcome-v2__hero--freelancer-inhuren .welcome-v2__hero-actions-panel {
+    margin-left: 0;
+    width: 100%;
+    padding: 18px 18px 20px;
+    border: 1px solid #DEDEDE;
+    border-radius: 12px;
+    box-shadow: none;
+  }
+
+  .welcome-v2__actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .welcome-v2 h1.si-home-hero__title,
+  .welcome-v2__title {
+    font-size: 24px !important;
+  }
+
+  .welcome-v2__lead {
+    max-width: 100%;
+    font-size: 14px;
+  }
+
+  .welcome-v2__direct-link {
+    width: 100%;
+  }
+
+  .welcome-v2__hero-contact-list {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .welcome-v2__hero-contact-item,
+  .welcome-v2 .si-btn,
+  .si-btn {
+    width: 100%;
+  }
+
+  .welcome-v2__hero-contact-item {
+    justify-content: flex-start;
+  }
+
+  .welcome-v2 .si-btn,
+  .si-btn {
+    justify-content: center;
+  }
+}
+
+/* =============================================
+   Einde welcome-v2 hero
+   ============================================= */
