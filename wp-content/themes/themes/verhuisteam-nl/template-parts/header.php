@@ -5,21 +5,6 @@ if (!defined('ABSPATH')) {
 ?>
 
 <header id="rn-header" class="rn-header" role="banner">
-    <div class="rn-topbar" aria-label="Snelle links">
-        <div class="rn-topbar__inner">
-            <div class="rn-topbar__group rn-topbar__group--left">
-                <a class="rn-topbar__link" href="https://platform.verhuisteam.nl/aanmelden" target="_blank" rel="noopener noreferrer">Aanmelden</a>
-                <span class="rn-topbar__sep" aria-hidden="true">|</span>
-                <a class="rn-topbar__link" href="https://platform.verhuisteam.nl/inloggen" target="_blank" rel="noopener noreferrer">Inloggen</a>
-            </div>
-            <div class="rn-topbar__group rn-topbar__group--right">
-                <a class="rn-topbar__link" href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>">Opdracht plaatsen</a>
-                <span class="rn-topbar__sep" aria-hidden="true">|</span>
-                <a class="rn-topbar__link" href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>">Personeel inhuren</a>
-            </div>
-        </div>
-    </div>
-
     <div class="rn-header__inner">
         <div class="rn-header__brand">
             <?php if (has_custom_logo()) : ?>
