@@ -158,6 +158,63 @@ require_once get_stylesheet_directory() . '/inc/shortcode-tarieven.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-vacature-plaatsen.php';
 require_once get_stylesheet_directory() . '/inc/admin-shortcodes-overview.php';
 require_once get_stylesheet_directory() . '/inc/split-hero-meta.php';
+require_once get_stylesheet_directory() . '/includes/blog-meta.php';
+
+if (!function_exists('si_get_blog_category_colors')) {
+    function si_get_blog_category_colors($category): array {
+        $slug = '';
+
+        if ($category instanceof WP_Term) {
+            $slug = $category->slug;
+        } elseif (is_numeric($category)) {
+            $term = get_term((int) $category, 'category');
+            $slug = ($term && !is_wp_error($term)) ? $term->slug : '';
+        } elseif (is_string($category)) {
+            $slug = $category;
+        }
+
+        $slug = sanitize_title($slug);
+
+        $fixed_colors = [
+            'event'         => ['bg' => '#FFF0D8', 'marker' => '#FFD8A8', 'text' => '#9A4A00', 'border' => '#F4C37F'],
+            'events'        => ['bg' => '#FFF0D8', 'marker' => '#FFD8A8', 'text' => '#9A4A00', 'border' => '#F4C37F'],
+            'interview'     => ['bg' => '#E6F1F8', 'marker' => '#C8E0EF', 'text' => '#1f3f55', 'border' => '#B8D3E4'],
+            'nieuws'        => ['bg' => '#EAF9DA', 'marker' => '#D9F3BF', 'text' => '#3F7F12', 'border' => '#C8E9A8'],
+            'opdrachten'    => ['bg' => '#E6F1F8', 'marker' => '#C8E0EF', 'text' => '#244f6d', 'border' => '#B8D3E4'],
+            'promotie'      => ['bg' => '#FFF0D8', 'marker' => '#FFD8A8', 'text' => '#9A4A00', 'border' => '#F4C37F'],
+            'studenten'     => ['bg' => '#EAF9DA', 'marker' => '#D9F3BF', 'text' => '#3F7F12', 'border' => '#C8E9A8'],
+            'werken'        => ['bg' => '#EDF5FA', 'marker' => '#D7E8F2', 'text' => '#244f6d', 'border' => '#BFD6E5'],
+            'uncategorized' => ['bg' => '#f4faec', 'marker' => '#dff4c4', 'text' => '#1f3f55', 'border' => '#d7edbd'],
+        ];
+
+        if (isset($fixed_colors[$slug])) {
+            return $fixed_colors[$slug];
+        }
+
+        $hue = $slug !== '' ? abs(crc32($slug)) % 360 : 205;
+
+        return [
+            'bg'     => sprintf('hsl(%d, 72%%, 93%%)', $hue),
+            'marker' => sprintf('hsl(%d, 80%%, 86%%)', $hue),
+            'text'   => sprintf('hsl(%d, 66%%, 28%%)', $hue),
+            'border' => sprintf('hsl(%d, 64%%, 80%%)', $hue),
+        ];
+    }
+}
+
+if (!function_exists('si_get_blog_category_style')) {
+    function si_get_blog_category_style($category): string {
+        $colors = si_get_blog_category_colors($category);
+
+        return sprintf(
+            '--si-cat-bg:%s;--si-cat-marker:%s;--si-cat-text:%s;--si-cat-border:%s;',
+            esc_attr($colors['bg']),
+            esc_attr($colors['marker'] ?? $colors['bg']),
+            esc_attr($colors['text']),
+            esc_attr($colors['border'])
+        );
+    }
+}
 
 /**
  * ✅ CUSTOM HEADER: geregeld via child theme header.php (overschrijft Hello Elementor).
@@ -317,6 +374,10 @@ add_action('wp_enqueue_scripts', function () {
     // Forms styling (informatie aanvragen, etc.)
     if (file_exists(get_stylesheet_directory() . '/css/forms.css')) {
         wp_enqueue_style('si-forms', get_stylesheet_directory_uri() . '/css/forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/forms.css'));
+    }
+
+    if ((is_home() || is_category() || is_tag() || is_date() || is_author() || is_singular('post')) && file_exists(get_stylesheet_directory() . '/css/blog.css')) {
+        wp_enqueue_style('si-blog', get_stylesheet_directory_uri() . '/css/blog.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/blog.css'));
     }
 
     // Quill.js rich text editor
@@ -543,6 +604,36 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
 
     return $query_args;
 }, 10, 2);
+
+add_action('pre_get_posts', function (WP_Query $query) {
+    if (!$query->is_main_query() || !is_home()) {
+        return;
+    }
+
+    $term = isset($_GET['si_s']) ? sanitize_text_field(wp_unslash($_GET['si_s'])) : '';
+    if ($term !== '') {
+        $query->set('s', $term);
+    }
+});
+
+add_action('pre_get_posts', function (WP_Query $query) {
+    if (is_admin() || !$query->is_main_query()) {
+        return;
+    }
+
+    if (!$query->is_home() && !$query->is_category() && !$query->is_tag() && !$query->is_date() && !$query->is_author()) {
+        return;
+    }
+
+    $tax_query   = (array) $query->get('tax_query');
+    $tax_query[] = [
+        'taxonomy' => 'post_tag',
+        'field'    => 'slug',
+        'terms'    => ['verborgen-overzicht'],
+        'operator' => 'NOT IN',
+    ];
+    $query->set('tax_query', $tax_query);
+});
 
 /**
  * ✅ DEBUG: laat zien wat er in de main WP_Query terecht komt
