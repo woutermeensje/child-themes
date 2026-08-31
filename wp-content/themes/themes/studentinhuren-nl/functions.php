@@ -329,6 +329,11 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@600;700;800;900&display=swap', [], null);
     wp_enqueue_style('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@500;600&display=swap', [], null);
 
+    // Generieke tekststyling
+    if (file_exists(get_stylesheet_directory() . '/css/text.css')) {
+        wp_enqueue_style('studentinhuren-text', get_stylesheet_directory_uri() . '/css/text.css', ['child-style', 'poppins-font'], filemtime(get_stylesheet_directory() . '/css/text.css'));
+    }
+
     // Globale knoppen
     if (file_exists(get_stylesheet_directory() . '/css/buttons.css')) {
         wp_enqueue_style('studentinhuren-buttons', get_stylesheet_directory_uri() . '/css/buttons.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/buttons.css'));

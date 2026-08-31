@@ -1,0 +1,106 @@
+/* Shared editorial text styles */
+.page-content,
+.si-single__content,
+.elementor-widget-text-editor,
+.elementor-widget-theme-post-content {
+    --si-content-font: 'Poppins', sans-serif;
+    --si-content-size: 15px;
+    --si-content-leading: 1.7;
+    --si-content-color: var(--color-text, #333333);
+    --si-content-block-gap: 1.5em;
+    --si-content-list-indent: 1.25em;
+
+    color: var(--si-content-color);
+    font-family: var(--si-content-font);
+    font-size: var(--si-content-size);
+    line-height: var(--si-content-leading);
+}
+
+.page-content p,
+.page-content li,
+.si-single__content p,
+.si-single__content li,
+.elementor-widget-text-editor p,
+.elementor-widget-text-editor li,
+.elementor-widget-theme-post-content p,
+.elementor-widget-theme-post-content li {
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: 400;
+    line-height: inherit;
+}
+
+.page-content p,
+.si-single__content p,
+.elementor-widget-text-editor p,
+.elementor-widget-theme-post-content p {
+    margin: 0 0 var(--si-content-block-gap);
+}
+
+.page-content ul,
+.page-content ol,
+.si-single__content ul,
+.si-single__content ol,
+.elementor-widget-text-editor ul,
+.elementor-widget-text-editor ol,
+.elementor-widget-theme-post-content ul,
+.elementor-widget-theme-post-content ol {
+    color: inherit;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    margin: 0 0 var(--si-content-block-gap);
+    padding-left: var(--si-content-list-indent);
+    list-style-position: outside;
+}
+
+.page-content ul > li,
+.si-single__content ul > li,
+.elementor-widget-text-editor ul > li,
+.elementor-widget-theme-post-content ul > li {
+    list-style-type: disc;
+}
+
+.page-content ol > li,
+.si-single__content ol > li,
+.elementor-widget-text-editor ol > li,
+.elementor-widget-theme-post-content ol > li {
+    list-style-type: decimal;
+}
+
+.page-content li,
+.si-single__content li,
+.elementor-widget-text-editor li,
+.elementor-widget-theme-post-content li {
+    margin: 0 0 0.45em;
+    padding-left: 0.15em;
+}
+
+.page-content li:last-child,
+.si-single__content li:last-child,
+.elementor-widget-text-editor li:last-child,
+.elementor-widget-theme-post-content li:last-child {
+    margin-bottom: 0;
+}
+
+.page-content li > ul,
+.page-content li > ol,
+.si-single__content li > ul,
+.si-single__content li > ol,
+.elementor-widget-text-editor li > ul,
+.elementor-widget-text-editor li > ol,
+.elementor-widget-theme-post-content li > ul,
+.elementor-widget-theme-post-content li > ol {
+    margin-top: 0.45em;
+    margin-bottom: 0.6em;
+}
+
+.page-content > :last-child,
+.si-single__content > :last-child,
+.elementor-widget-text-editor > :last-child,
+.elementor-widget-text-editor .elementor-widget-container > :last-child,
+.elementor-widget-theme-post-content > :last-child,
+.elementor-widget-theme-post-content .elementor-widget-container > :last-child {
+    margin-bottom: 0;
+}
