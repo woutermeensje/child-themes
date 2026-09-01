@@ -6,10 +6,8 @@ if (!defined('ABSPATH')) {
 $page_id         = get_the_ID();
 $hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
 $intro           = has_excerpt($page_id) ? get_the_excerpt($page_id)              : 'Sustainablejobs.nl is dé vacaturesite en contentplatform gericht op professionals en organisaties binnen duurzaamheid, energietransitie, ecologie, biodiversiteit, natuurbeheer, non-profits, overheid, gemeenten en ngo\'s.';
-$primary_label   = get_post_meta($page_id, 'landing_primary_button_text', true)   ?: 'Vacature Plaatsen';
-$primary_url     = get_post_meta($page_id, 'landing_primary_button_url', true)    ?: home_url('/vacature-plaatsen/');
-$secondary_label = get_post_meta($page_id, 'landing_secondary_button_text', true) ?: 'Pakketten';
-$secondary_url   = get_post_meta($page_id, 'landing_secondary_button_url', true)  ?: home_url('/tarieven/');
+$primary_label   = 'Account aanmaken';
+$primary_url     = 'https://platform.sustainablejobs.nl/aanmelden/werkgever';
 $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@sustainablejobs.nl';
 ?>
@@ -20,12 +18,6 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@su
         <div class="fnd-hero__left">
 
             <div class="fnd-hero__left-main">
-
-                <?php if (function_exists('yoast_breadcrumb')) : ?>
-                    <div class="fnd-hero__breadcrumbs">
-                        <?php yoast_breadcrumb('<nav class="fnd-hero__breadcrumb-nav" aria-label="Breadcrumb">', '</nav>'); ?>
-                    </div>
-                <?php endif; ?>
 
                 <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
 
@@ -38,11 +30,6 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@su
                         </a>
                     <?php endif; ?>
 
-                    <?php if ($secondary_label && $secondary_url) : ?>
-                        <a class="fnd-hero__btn fnd-hero__btn--secondary" href="<?php echo esc_url($secondary_url); ?>">
-                            <?php echo esc_html($secondary_label); ?>
-                        </a>
-                    <?php endif; ?>
                 </div>
 
             </div>
