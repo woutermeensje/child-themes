@@ -5,42 +5,30 @@ if (!defined('ABSPATH')) {
 
 $page_id         = get_the_ID();
 $hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
-$intro           = has_excerpt($page_id) ? get_the_excerpt($page_id)              : 'Sustainablejobs.nl is dé vacaturesite voor professionals die willen werken bij duurzame en maatschappelijk betrokken organisaties.';
-$primary_label   = get_post_meta($page_id, 'landing_primary_button_text', true)   ?: 'Profiel aanmaken';
-$primary_url     = get_post_meta($page_id, 'landing_primary_button_url', true)    ?: 'https://platform.sustainablejobs.nl/aanmelden-werkzoekende';
-$secondary_label = get_post_meta($page_id, 'landing_secondary_button_text', true) ?: 'Vacature Update';
-$secondary_url   = get_post_meta($page_id, 'landing_secondary_button_url', true)  ?: 'https://sustainablejobs.nl/job-alerts/';
+$intro           = has_excerpt($page_id) ? get_the_excerpt($page_id) : '';
+$primary_label   = 'Profiel aanmaken';
+$primary_url     = 'https://platform.sustainablejobs.nl/aanmelden/werkzoekende';
 $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@sustainablejobs.nl';
 ?>
 
-<main id="content" <?php post_class('fnd-page'); ?>>
+<main id="content" <?php post_class('fnd-page fnd-page--werkzoekende'); ?>>
     <section class="fnd-hero">
 
         <div class="fnd-hero__left">
 
             <div class="fnd-hero__left-main">
 
-                <?php if (function_exists('yoast_breadcrumb')) : ?>
-                    <div class="fnd-hero__breadcrumbs">
-                        <?php yoast_breadcrumb('<nav class="fnd-hero__breadcrumb-nav" aria-label="Breadcrumb">', '</nav>'); ?>
-                    </div>
-                <?php endif; ?>
-
                 <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
 
-                <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
+                <?php if ($intro) : ?>
+                    <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
+                <?php endif; ?>
 
                 <div class="fnd-hero__actions">
                     <?php if ($primary_label && $primary_url) : ?>
-                        <a class="fnd-hero__btn fnd-hero__btn--primary" href="<?php echo esc_url($primary_url); ?>">
+                        <a class="fnd-hero__btn fnd-hero__btn--primary" href="<?php echo esc_url($primary_url); ?>" target="_blank" rel="noopener noreferrer">
                             <?php echo esc_html($primary_label); ?>
-                        </a>
-                    <?php endif; ?>
-
-                    <?php if ($secondary_label && $secondary_url) : ?>
-                        <a class="fnd-hero__btn fnd-hero__btn--secondary" href="<?php echo esc_url($secondary_url); ?>">
-                            <?php echo esc_html($secondary_label); ?>
                         </a>
                     <?php endif; ?>
                 </div>

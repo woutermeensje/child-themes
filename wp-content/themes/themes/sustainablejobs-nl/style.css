@@ -148,6 +148,11 @@ html, body {
   margin-bottom: 18px;
 }
 
+.fnd-page--werkgever .fnd-hero__actions,
+.fnd-page--werkzoekende .fnd-hero__actions {
+  margin-top: 10px;
+}
+
 .fnd-hero__btn {
   display: inline-flex;
   align-items: center;
@@ -167,10 +172,22 @@ html, body {
   color: var(--color-midnight-blue) !important;
 }
 
+.fnd-page--werkgever .fnd-hero__btn--primary,
+.fnd-page--werkzoekende .fnd-hero__btn--primary {
+  color: #ffffff !important;
+  font-family: 'Work Sans', sans-serif;
+  font-weight: 700;
+}
+
 .fnd-hero__btn--primary:hover {
   background-color: #b5da9e;
   border-color: #b5da9e;
   color: var(--color-midnight-blue) !important;
+}
+
+.fnd-page--werkgever .fnd-hero__btn--primary:hover,
+.fnd-page--werkzoekende .fnd-hero__btn--primary:hover {
+  color: #ffffff !important;
 }
 
 .fnd-hero__btn--secondary {

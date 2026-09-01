@@ -12,7 +12,7 @@ $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 20
 $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@sustainablejobs.nl';
 ?>
 
-<main id="content" <?php post_class('fnd-page'); ?>>
+<main id="content" <?php post_class('fnd-page fnd-page--werkgever'); ?>>
     <section class="fnd-hero">
 
         <div class="fnd-hero__left">
@@ -27,7 +27,7 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@su
 
                 <div class="fnd-hero__actions">
                     <?php if ($primary_label && $primary_url) : ?>
-                        <a class="fnd-hero__btn fnd-hero__btn--primary" href="<?php echo esc_url($primary_url); ?>">
+                        <a class="fnd-hero__btn fnd-hero__btn--primary" href="<?php echo esc_url($primary_url); ?>" target="_blank" rel="noopener noreferrer">
                             <?php echo esc_html($primary_label); ?>
                         </a>
                     <?php endif; ?>
