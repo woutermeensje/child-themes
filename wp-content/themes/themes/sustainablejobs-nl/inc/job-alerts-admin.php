@@ -97,17 +97,81 @@ function sj_job_alerts_handle_actions(): ?string {
     return null;
 }
 
+function sj_get_monthly_signup_counts(string $table, int $year): array {
+    global $wpdb;
+
+    $counts = array_fill(1, 12, 0);
+    $start  = sprintf('%d-01-01 00:00:00', $year);
+    $end    = sprintf('%d-01-01 00:00:00', $year + 1);
+
+    $rows = $wpdb->get_results(
+        $wpdb->prepare(
+            "SELECT MONTH(created_at) AS signup_month, COUNT(*) AS signup_count
+             FROM {$table}
+             WHERE created_at >= %s AND created_at < %s
+             GROUP BY signup_month",
+            $start,
+            $end
+        ),
+        ARRAY_A
+    ) ?: [];
+
+    foreach ($rows as $row) {
+        $month = (int) ($row['signup_month'] ?? 0);
+        if ($month >= 1 && $month <= 12) {
+            $counts[$month] = (int) ($row['signup_count'] ?? 0);
+        }
+    }
+
+    return $counts;
+}
+
+function sj_render_monthly_signup_overview(string $title, array $counts, int $year): void {
+    $months = [
+        1  => 'januari',
+        2  => 'februari',
+        3  => 'maart',
+        4  => 'april',
+        5  => 'mei',
+        6  => 'juni',
+        7  => 'juli',
+        8  => 'augustus',
+        9  => 'september',
+        10 => 'oktober',
+        11 => 'november',
+        12 => 'december',
+    ];
+    ?>
+    <div style="background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:20px;margin-bottom:20px;">
+        <h2 style="margin-top:0;"><?php echo esc_html($title); ?></h2>
+        <p style="color:#555;font-size:13px;margin-top:0;">Aantal nieuwe aanmeldingen per maand in <?php echo esc_html((string) $year); ?>.</p>
+        <table style="font-size:13px;border-collapse:collapse;width:100%;">
+            <?php foreach ($months as $month_number => $month_name): ?>
+                <tr>
+                    <td style="padding:5px 0;color:#555;width:160px;"><?php echo esc_html($month_name . ':'); ?></td>
+                    <td style="padding:5px 0;font-weight:600;"><?php echo esc_html(number_format_i18n((int) ($counts[$month_number] ?? 0))); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
+    <?php
+}
+
 /**
  * Admin-pagina HTML.
  */
 function sj_job_alerts_admin_page(): void {
     global $wpdb;
-    $table   = $wpdb->prefix . 'sj_job_alerts';
-    $message = sj_job_alerts_handle_actions();
+    $table       = $wpdb->prefix . 'sj_job_alerts';
+    $nl_table    = $wpdb->prefix . 'sj_newsletter';
+    $message     = sj_job_alerts_handle_actions();
+    $signup_year = (int) wp_date('Y');
 
-    $subscribers  = $wpdb->get_results("SELECT * FROM {$table} ORDER BY created_at DESC", ARRAY_A) ?: [];
-    $sector_terms = get_terms(['taxonomy' => 'job_sector', 'hide_empty' => false, 'orderby' => 'name']) ?: [];
-    $next_cron    = wp_next_scheduled('sj_job_alerts_weekly');
+    $subscribers               = $wpdb->get_results("SELECT * FROM {$table} ORDER BY created_at DESC", ARRAY_A) ?: [];
+    $job_alert_monthly_counts  = sj_get_monthly_signup_counts($table, $signup_year);
+    $newsletter_monthly_counts = sj_get_monthly_signup_counts($nl_table, $signup_year);
+    $sector_terms              = get_terms(['taxonomy' => 'job_sector', 'hide_empty' => false, 'orderby' => 'name']) ?: [];
+    $next_cron                 = wp_next_scheduled('sj_job_alerts_weekly');
     ?>
     <div class="wrap">
         <h1>Job Alerts — beheer & test</h1>
@@ -179,6 +243,8 @@ function sj_job_alerts_admin_page(): void {
                         </tr>
                     </table>
                 </div>
+
+                <?php sj_render_monthly_signup_overview('Job alert aanmeldingen per maand', $job_alert_monthly_counts, $signup_year); ?>
 
                 <div style="background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:20px;">
                     <h2 style="margin-top:0;">Volledige verzending uitvoeren</h2>
@@ -272,8 +338,7 @@ function sj_job_alerts_admin_page(): void {
             <!-- Nieuwsbrief status & volledige verzending -->
             <div>
                 <?php
-                $nl_table    = $wpdb->prefix . 'sj_newsletter';
-                $nl_next     = wp_next_scheduled('sj_newsletter_weekly');
+                $nl_next = wp_next_scheduled('sj_newsletter_weekly');
                 ?>
                 <div style="background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:20px;margin-bottom:20px;">
                     <h2 style="margin-top:0;">Cron status nieuwsbrief</h2>
@@ -296,6 +361,8 @@ function sj_job_alerts_admin_page(): void {
                         </tr>
                     </table>
                 </div>
+
+                <?php sj_render_monthly_signup_overview('Nieuwsbrief aanmeldingen per maand', $newsletter_monthly_counts, $signup_year); ?>
 
                 <div style="background:#fff;border:1px solid #c3c4c7;border-radius:4px;padding:20px;">
                     <h2 style="margin-top:0;">Volledige verzending uitvoeren</h2>
