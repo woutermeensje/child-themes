@@ -5,7 +5,7 @@ if (!defined('ABSPATH')) {
 
 $page_id         = get_the_ID();
 $hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
-$intro           = has_excerpt($page_id) ? get_the_excerpt($page_id)              : 'Sustainablejobs.nl is dé vacaturesite en contentplatform gericht op professionals en organisaties binnen duurzaamheid, energietransitie, ecologie, biodiversiteit, natuurbeheer, non-profits, overheid, gemeenten en ngo\'s.';
+$intro           = has_excerpt($page_id) ? get_the_excerpt($page_id) : '';
 $primary_label   = 'Account aanmaken';
 $primary_url     = 'https://platform.sustainablejobs.nl/aanmelden/werkgever';
 $contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
@@ -21,7 +21,9 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'support@su
 
                 <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
 
-                <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
+                <?php if ($intro) : ?>
+                    <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
+                <?php endif; ?>
 
                 <div class="fnd-hero__actions">
                     <?php if ($primary_label && $primary_url) : ?>
