@@ -20,12 +20,6 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhur
 
             <div class="fnd-hero__left-main">
 
-                <?php if (function_exists('yoast_breadcrumb')) : ?>
-                    <div class="fnd-hero__breadcrumbs">
-                        <?php yoast_breadcrumb('<nav class="fnd-hero__breadcrumb-nav" aria-label="Breadcrumb">', '</nav>'); ?>
-                    </div>
-                <?php endif; ?>
-
                 <h1 class="fnd-hero__title"><?php the_title(); ?></h1>
 
                 <p class="fnd-hero__intro"><?php echo esc_html($intro); ?></p>
