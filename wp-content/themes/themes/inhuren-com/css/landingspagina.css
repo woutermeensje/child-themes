@@ -44,7 +44,7 @@
     display: flex;
     align-items: center;
     overflow: hidden;
-    background-color: var(--color-primary, #0458AB);
+    background-color: var(--color-primary, #2f5f80);
     background-size: cover;
     background-position: center top;
     box-sizing: border-box;
@@ -163,7 +163,7 @@
 }
 
 .omj-split-hero__fact:hover {
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
 }
 
 .omj-split-hero__fact-icon {

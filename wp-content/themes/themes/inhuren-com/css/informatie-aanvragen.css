@@ -18,7 +18,7 @@
 
 .iif-title {
     margin: 0 0 10px !important;
-    font-family: 'Balgin-Bold', 'Poppins', sans-serif !important;
+    font-family: 'Work Sans', 'Poppins', sans-serif !important;
     font-size: clamp(24px, 3vw, 34px) !important;
     line-height: 1.15 !important;
     color: #111827 !important;
@@ -85,7 +85,7 @@
 }
 
 .iif-field label span {
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
 }
 
 .iif-field input,
@@ -124,7 +124,7 @@
 
 .iif-field input:focus,
 .iif-field textarea:focus {
-    border-color: var(--color-primary, #0458AB) !important;
+    border-color: var(--color-primary, #2f5f80) !important;
     box-shadow: 0 0 0 3px rgba(4, 88, 171, 0.12), 0 1px 2px rgba(17, 24, 39, 0.04);
 }
 
@@ -171,12 +171,12 @@
 }
 
 .iif-wrap .ql-container.ql-snow:focus-within {
-    border-color: var(--color-primary, #0458AB) !important;
+    border-color: var(--color-primary, #2f5f80) !important;
     box-shadow: 0 0 0 3px rgba(4, 88, 171, 0.12), 0 1px 2px rgba(17, 24, 39, 0.04);
 }
 
 .iif-field:has(.ql-container.ql-snow:focus-within) .ql-toolbar.ql-snow {
-    border-color: var(--color-primary, #0458AB) !important;
+    border-color: var(--color-primary, #2f5f80) !important;
 }
 
 .iif-wrap .ql-editor {
@@ -210,7 +210,7 @@
 .iif-wrap .ql-toolbar button:focus,
 .iif-wrap .ql-toolbar button.ql-active {
     background: rgba(4, 88, 171, 0.08) !important;
-    color: var(--color-primary, #0458AB) !important;
+    color: var(--color-primary, #2f5f80) !important;
 }
 
 .iif-wrap .ql-toolbar .ql-stroke {
@@ -241,10 +241,10 @@
     justify-content: center !important;
     min-height: 42px !important;
     padding: 8px 20px !important;
-    border: 1.5px solid #0458AB !important;
+    border: 1.5px solid #2f5f80 !important;
     border-radius: 8px !important;
-    background: #0458AB !important;
-    background-color: #0458AB !important;
+    background: #2f5f80 !important;
+    background-color: #2f5f80 !important;
     color: #ffffff !important;
     font-family: 'Roboto', sans-serif !important;
     font-size: 15px !important;
@@ -270,9 +270,9 @@
 
 .iif-submit:hover,
 .iif-wrap .iif-form button.iif-submit[type="submit"]:hover {
-    background: #034085 !important;
-    background-color: #034085 !important;
-    border-color: #034085 !important;
+    background: #244f6d !important;
+    background-color: #244f6d !important;
+    border-color: #244f6d !important;
     color: #ffffff !important;
     transform: translateY(-1px) !important;
 }

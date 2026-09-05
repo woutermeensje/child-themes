@@ -8,7 +8,7 @@ get_header();
     position: relative;
     width: 100vw;
     height: 375px;
-    background-color: #0458AB; /* Hele achtergrond blauw */
+    background-color: #2f5f80; /* Hele achtergrond blauw */
     overflow: hidden;
     display: flex;
 }

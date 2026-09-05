@@ -23,13 +23,13 @@ Text Domain: Inhuren.com
 :root {
   /* 🔁 Verwisselbaar kleurenpalet voor branding */
   --logo-blauw: #3a89ff;
-  --color-primary: #0458AB;
-  --color-primary-dk: #034085;
+  --color-primary: #2f5f80;
+  --color-primary-dk: #244f6d;
   --color-secondary: #80D424;
   --color-primary-mid: #80D424;
   --color-tertiary: #FF8200;
   --color-tertiary-dk: #D96F00;
-  --color-accent: #0456AB66;
+  --color-accent: #2f5f8066;
 
   /* 🧱 Vaste kleuren voor tekst en contrast */
   --color-text: #333333;
@@ -154,7 +154,7 @@ ol:not([class]) ol ol {
 }
 
 h1, h2, h3, h4, h5 {
-    font-family: 'Balgin Bold';
+    font-family: 'Work Sans', sans-serif;
     color: var(--color-text);
     line-height: 0.8;
     margin-top: 15px;
@@ -294,9 +294,9 @@ input[type="submit"],
 input[type="button"],
 input[type="reset"] {
     border-radius: 8px;
-    background-color: #0458AB;
+    background-color: #2f5f80;
     color: #ffffff;
-    border: 1.5px solid #0458AB;
+    border: 1.5px solid #2f5f80;
     padding: 8px 20px !important;
     font-family: 'Roboto', sans-serif !important;
     font-size: 15px;
@@ -326,8 +326,8 @@ input[type="submit"]:hover,
 input[type="button"]:hover,
 input[type="reset"]:hover {
     transform: translateY(-1px);
-    background-color: #034085;
-    border-color: #034085;
+    background-color: #244f6d;
+    border-color: #244f6d;
 }
 
 /* Styling specifieke links */
@@ -358,7 +358,7 @@ input[type="reset"]:hover {
 
 .simple-job h3 {
     margin: 0 0 10px;
-    font-family: 'Balgin Bold', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 18px;
 }
 
@@ -430,7 +430,7 @@ input[type="reset"]:hover {
 .fnd-hero__breadcrumb-nav a:hover { color: #ffffff !important; }
 
 .fnd-hero .fnd-hero__title {
-  font-family: 'Balgin-Bold', serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 24px;
   line-height: 1.05;
   color: #ffffff;

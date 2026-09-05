@@ -26,6 +26,7 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('roboto-font', 'https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap', [], null);
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
+    wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@600;700;800;900&display=swap', [], null);
     wp_enqueue_style('montserrat-font', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap', [], null);
     wp_enqueue_style('league-spartan-font', 'https://fonts.googleapis.com/css2?family=League+Spartan:wght@900&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css', [], filemtime(get_stylesheet_directory() . '/fonts/fonts.css'));
@@ -251,10 +252,10 @@ add_shortcode('inhuren_info_form', function ($atts) {
         'justify-content: center !important',
         'min-height: 42px !important',
         'padding: 8px 20px !important',
-        'border: 1.5px solid #0458AB !important',
+        'border: 1.5px solid #2f5f80 !important',
         'border-radius: 8px !important',
-        'background: #0458AB !important',
-        'background-color: #0458AB !important',
+        'background: #2f5f80 !important',
+        'background-color: #2f5f80 !important',
         'color: #ffffff !important',
         'font-family: Roboto, sans-serif !important',
         'font-size: 15px !important',
@@ -592,7 +593,7 @@ add_shortcode('inhuren_opdrachten', function ($atts) {
         aspect-ratio: 4 / 3;
         border-radius: 12px;
         overflow: hidden;
-        background-color: #0458ab;
+        background-color: #2f5f80;
         background-size: cover;
         background-position: center;
         text-decoration: none !important;

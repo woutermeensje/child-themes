@@ -413,7 +413,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 }
 
 a.ih-company-blok__name:hover {
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
     text-decoration: underline;
 }
 
@@ -421,7 +421,7 @@ a.ih-company-blok__name:hover {
     font-family: 'Poppins', sans-serif;
     font-size: 13px;
     font-weight: 400;
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
     text-decoration: none;
     display: block;
 }
@@ -468,7 +468,7 @@ a.ih-company-blok__name:hover {
     font-size: 12px;
     font-weight: 700;
     font-family: 'Poppins', sans-serif;
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
     margin-right: 4px;
 }
 
@@ -485,7 +485,7 @@ a.ih-company-blok__name:hover {
     font-family: 'Poppins', sans-serif;
     font-size: 13px;
     font-weight: 400;
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
     text-decoration: none;
 }
 
@@ -526,19 +526,19 @@ a.ih-company-blok__name:hover {
 .job-apply-button a {
     padding: 12px;
     color: #fff;
-    background-color: var(--color-primary, #0458AB);
+    background-color: var(--color-primary, #2f5f80);
     border-radius: 5px;
     font-family: 'Work Sans', sans-serif;
     text-decoration: none;
     display: inline-block;
     margin-top: 20px;
-    border: 1px solid var(--color-primary, #0458AB);
+    border: 1px solid var(--color-primary, #2f5f80);
 }
 
 .job-apply-button a:hover {
     background: #fff;
-    color: var(--color-primary, #0458AB);
-    border: 1px solid var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
+    border: 1px solid var(--color-primary, #2f5f80);
 }
 
 h1.entry-title { display: none; }
@@ -591,7 +591,7 @@ h1.entry-title { display: none; }
     line-height: 1.4;
 }
 
-.ih-vraag-req { color: var(--color-primary, #0458AB); margin-left: 2px; }
+.ih-vraag-req { color: var(--color-primary, #2f5f80); margin-left: 2px; }
 
 .ih-vraag-blok__input {
     width: 100% !important;
@@ -612,7 +612,7 @@ h1.entry-title { display: none; }
 }
 
 .ih-vraag-blok__input:focus {
-    border-color: var(--color-primary, #0458AB) !important;
+    border-color: var(--color-primary, #2f5f80) !important;
     box-shadow: 0 0 0 3px rgba(4, 88, 171, .15) !important;
 }
 
@@ -633,7 +633,7 @@ h1.entry-title { display: none; }
 }
 
 .ih-vraag-blok__quill-wrap:focus-within {
-    border-color: var(--color-primary, #0458AB);
+    border-color: var(--color-primary, #2f5f80);
     box-shadow: 0 0 0 3px rgba(4, 88, 171, .15);
 }
 
@@ -663,11 +663,11 @@ h1.entry-title { display: none; }
 }
 
 .ih-vraag-blok__quill-wrap .ql-toolbar button:hover,
-.ih-vraag-blok__quill-wrap .ql-toolbar button.ql-active { color: var(--color-primary, #0458AB) !important; }
+.ih-vraag-blok__quill-wrap .ql-toolbar button.ql-active { color: var(--color-primary, #2f5f80) !important; }
 .ih-vraag-blok__quill-wrap .ql-toolbar button:hover .ql-stroke,
-.ih-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-stroke { stroke: var(--color-primary, #0458AB) !important; }
+.ih-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-stroke { stroke: var(--color-primary, #2f5f80) !important; }
 .ih-vraag-blok__quill-wrap .ql-toolbar button:hover .ql-fill,
-.ih-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-fill { fill: var(--color-primary, #0458AB) !important; }
+.ih-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-fill { fill: var(--color-primary, #2f5f80) !important; }
 
 /* CV Upload */
 .ih-vraag-blok__upload {
@@ -680,7 +680,7 @@ h1.entry-title { display: none; }
     min-height: 110px;
     padding: 24px 20px;
     background: #f7f8fa;
-    border: 2px dashed var(--color-primary, #0458AB);
+    border: 2px dashed var(--color-primary, #2f5f80);
     border-radius: 5px;
     cursor: pointer;
     text-align: center;
@@ -690,12 +690,12 @@ h1.entry-title { display: none; }
 }
 
 .ih-vraag-blok__upload:hover {
-    border-color: var(--color-primary, #0458AB);
+    border-color: var(--color-primary, #2f5f80);
     background: #eef2f7;
 }
 
 .ih-vraag-blok__upload svg {
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
     flex-shrink: 0;
 }
 
@@ -703,7 +703,7 @@ h1.entry-title { display: none; }
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
 }
 
 .ih-vraag-blok__upload-name {
@@ -739,8 +739,8 @@ h1.entry-title { display: none; }
     font-family: 'Work Sans', sans-serif;
     font-size: 15px;
     font-weight: 600;
-    background-color: var(--color-primary, #0458AB);
-    border: 2px solid var(--color-primary, #0458AB);
+    background-color: var(--color-primary, #2f5f80);
+    border: 2px solid var(--color-primary, #2f5f80);
     color: #fff !important;
     padding: 10px 28px;
     border-radius: 4px;
@@ -751,7 +751,7 @@ h1.entry-title { display: none; }
 
 .ih-vraag-blok__submit:hover {
     background-color: #fff;
-    color: var(--color-primary, #0458AB) !important;
+    color: var(--color-primary, #2f5f80) !important;
 }
 
 .ih-vraag-blok__success {
@@ -845,7 +845,7 @@ h1.entry-title { display: none; }
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
     text-decoration: none;
     transition: color .18s ease;
 }
@@ -884,7 +884,7 @@ h1.entry-title { display: none; }
 .ih-expired-banner a {
     margin-left: auto;
     font-weight: 600;
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
     text-decoration: none;
     white-space: nowrap;
 }

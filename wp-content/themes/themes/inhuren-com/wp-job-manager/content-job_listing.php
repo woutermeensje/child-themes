@@ -118,7 +118,7 @@ ul.job_listings li.ih-job {
 }
 
 .ih-job__card:focus-visible {
-    outline: 2px solid var(--color-primary, #0458AB) !important;
+    outline: 2px solid var(--color-primary, #2f5f80) !important;
     outline-offset: 2px;
 }
 
@@ -181,7 +181,7 @@ ul.job_listings li.ih-job {
 }
 
 .ih-job__card:hover .ih-job__title {
-    color: var(--color-primary, #0458AB) !important;
+    color: var(--color-primary, #2f5f80) !important;
 }
 
 /* ---- Rechts ---- */
@@ -240,7 +240,7 @@ ul.job_listings li.ih-job {
 }
 
 .ih-job__chip--type {
-    color: var(--color-primary, #0458AB);
+    color: var(--color-primary, #2f5f80);
     background: rgba(4, 88, 171, 0.08);
     border-color: rgba(4, 88, 171, 0.25);
 }
