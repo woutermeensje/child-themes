@@ -3,15 +3,14 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$page_id         = get_the_ID();
-$hero_image_url  = get_the_post_thumbnail_url($page_id, 'full');
-$intro           = has_excerpt($page_id) ? get_the_excerpt($page_id)
-                 : 'Inhuren.com is hét platform voor werkgevers die snel de juiste freelancer of ZZP\'er zoeken. Bereik duizenden professionals en vind de perfecte match voor uw opdracht.';
-$primary_label   = 'Opdracht doorgeven';
-$primary_url     = home_url('/opdracht-doorgeven/');
-$account_note    = 'Maak een account aan, bekijk de tarieven en voorwaarden en geef direct je opdracht door.';
-$contact_phone   = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
-$contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhuren.com';
+$page_id        = get_the_ID();
+$hero_image_url = get_the_post_thumbnail_url($page_id, 'full');
+$intro          = has_excerpt($page_id) ? get_the_excerpt($page_id)
+                : 'Inhuren.com brengt jou in contact met de beste opdrachtgevers. Maak een account aan en ontdek honderden opdrachten die bij jouw profiel passen.';
+$primary_label  = 'Account aanmaken';
+$primary_url    = 'https://platform.inhuren.com/werkzoekende/registreren';
+$contact_phone  = get_post_meta($page_id, 'landing_phone', true) ?: '085 239 2040';
+$contact_email  = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhuren.com';
 ?>
 
 <section class="fnd-hero">
@@ -32,15 +31,11 @@ $contact_email   = get_post_meta($page_id, 'landing_email', true) ?: 'team@inhur
 
                 <div class="fnd-hero__actions">
                     <?php if ($primary_label && $primary_url) : ?>
-                        <a class="fnd-hero__btn fnd-hero__btn--green" href="<?php echo esc_url($primary_url); ?>">
+                        <a class="fnd-hero__btn fnd-hero__btn--green" href="<?php echo esc_url($primary_url); ?>" target="_blank" rel="noopener noreferrer">
                             <?php echo esc_html($primary_label); ?>
                         </a>
                     <?php endif; ?>
                 </div>
-
-                <?php if ($account_note) : ?>
-                    <p class="fnd-hero__account-note"><?php echo esc_html($account_note); ?></p>
-                <?php endif; ?>
 
             </div>
 

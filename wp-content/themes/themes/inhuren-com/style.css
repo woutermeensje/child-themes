@@ -503,6 +503,18 @@ input[type="reset"]:hover {
   transform: translateY(-1px);
 }
 
+.fnd-hero__btn--green {
+  background-color: #80D424 !important;
+  border: 2px solid #80D424 !important;
+  color: #ffffff !important;
+}
+
+.fnd-hero__btn--green:hover {
+  background-color: #6db81e !important;
+  border-color: #6db81e !important;
+  transform: translateY(-1px);
+}
+
 .fnd-hero__account-note {
   max-width: min(90%, 620px);
   margin: 14px 0 0;

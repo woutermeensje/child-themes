@@ -41,9 +41,9 @@ get_header();
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: #6db81e;
+    background-color: #80D424;
     color: white;
-    border: 2px solid #6db81e;
+    border: 2px solid #80D424;
     padding: 8px 20px !important;
     font-family: 'Roboto', sans-serif !important;
     font-weight: 700 !important;
@@ -60,8 +60,8 @@ get_header();
 }
 
 .landing-left a:hover {
-    background-color: #80D424;
-    border-color: #80D424;
+    background-color: #6db81e;
+    border-color: #6db81e;
     transform: translateY(-1px);
 }
 
