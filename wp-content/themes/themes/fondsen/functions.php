@@ -19,6 +19,10 @@ require_once get_stylesheet_directory() . '/inc/job-alerts-cron.php';
 require_once get_stylesheet_directory() . '/inc/newsletter-cron.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-newsletter.php';
 require_once get_stylesheet_directory() . '/inc/newsletter-admin.php';
+require_once get_stylesheet_directory() . '/inc/non-profit-beroepen-meta.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-non-profit-beroepen.php';
+require_once get_stylesheet_directory() . '/inc/jobs-categorie-overzicht-meta.php';
+require_once get_stylesheet_directory() . '/inc/shortcode-jobs-categories-overzicht.php';
 
 // =========================================================
 // Pretty filter URLs: /vacatures/{slug}/
