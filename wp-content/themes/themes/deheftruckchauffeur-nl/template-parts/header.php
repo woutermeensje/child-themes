@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
                 <?php the_custom_logo(); ?>
             <?php else : ?>
                 <a href="<?php echo esc_url(home_url('/')); ?>">
-                    <span class="rn-header__site-name"><?php esc_html_e('Logo', 'verhuisteam'); ?></span>
+                    <span class="rn-header__site-name"><?php esc_html_e('Logo', 'deheftruckchauffeur'); ?></span>
                 </a>
             <?php endif; ?>
         </div>
@@ -29,7 +29,8 @@ if (!defined('ABSPATH')) {
         <div class="rn-header__divider"></div>
 
         <div class="rn-header__cta">
-            <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--accent">Informatie aanvragen</a>
+            <a href="https://platform.inhuren.com/registeren" class="rn-btn rn-btn--outline" target="_blank" rel="noopener noreferrer">Aanmelden</a>
+            <a href="https://platform.inhuren.com/opdrachten" class="rn-btn rn-btn--accent" target="_blank" rel="noopener noreferrer">Opdrachten</a>
         </div>
 
         <button class="rn-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="rn-mobile-nav">
@@ -51,7 +52,7 @@ if (!defined('ABSPATH')) {
                 <?php the_custom_logo(); ?>
             <?php else : ?>
                 <a href="<?php echo esc_url(home_url('/')); ?>">
-                    <span><?php esc_html_e('Logo', 'verhuisteam'); ?></span>
+                    <span><?php esc_html_e('Logo', 'deheftruckchauffeur'); ?></span>
                 </a>
             <?php endif; ?>
         </div>
@@ -68,20 +69,10 @@ if (!defined('ABSPATH')) {
 
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__section">
-            <p class="rn-mobile-nav__label">Snel naar</p>
-            <div class="rn-mobile-nav__utility" aria-label="Snelle links mobiel">
-                <a href="https://platform.verhuisteam.nl/aanmelden" target="_blank" rel="noopener noreferrer">Aanmelden</a>
-                <a href="https://platform.verhuisteam.nl/inloggen" target="_blank" rel="noopener noreferrer">Inloggen</a>
-                <a href="<?php echo esc_url(home_url('/opdracht-plaatsen/')); ?>">Opdracht plaatsen</a>
-                <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>">Personeel inhuren</a>
-            </div>
-        </div>
-
-        <div class="rn-mobile-nav__divider"></div>
-        <div class="rn-mobile-nav__section">
             <p class="rn-mobile-nav__label">Actie</p>
             <div class="rn-mobile-nav__ctas">
-                <a href="<?php echo esc_url(home_url('/informatie-aanvragen/')); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">Informatie aanvragen</a>
+                <a href="https://platform.inhuren.com/registeren" class="rn-btn rn-btn--outline rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">Aanmelden</a>
+                <a href="https://platform.inhuren.com/opdrachten" class="rn-btn rn-btn--accent rn-mobile-nav__cta" target="_blank" rel="noopener noreferrer">Opdrachten</a>
             </div>
         </div>
     </div>
