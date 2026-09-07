@@ -100,9 +100,6 @@ function fn_jobs_categories_overzicht_shortcode($atts): string {
                             <span class="fn-beroepen-directory__badge" aria-hidden="true"><?php echo esc_html($item['initial']); ?></span>
                             <span class="fn-beroepen-directory__content">
                                 <span class="fn-beroepen-directory__name"><?php echo esc_html($item['title']); ?></span>
-                                <?php if ($item['excerpt']): ?>
-                                    <span class="fn-beroepen-directory__meta"><?php echo esc_html($item['excerpt']); ?></span>
-                                <?php endif; ?>
                             </span>
                             <span class="fn-beroepen-directory__arrow" aria-hidden="true"></span>
                         </a>
