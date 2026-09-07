@@ -260,6 +260,15 @@ add_action('wp_enqueue_scripts', function () {
         );
     }
 
+    if (file_exists(get_stylesheet_directory() . '/css/text.css')) {
+        wp_enqueue_style(
+            'sj-text',
+            get_stylesheet_directory_uri() . '/css/text.css',
+            ['child-style', 'poppins-font'],
+            filemtime(get_stylesheet_directory() . '/css/text.css')
+        );
+    }
+
     // Quill.js rich text editor
     wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
     wp_enqueue_script('quill-js', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js', [], null, true);
