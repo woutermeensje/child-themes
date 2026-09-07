@@ -41,48 +41,11 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
         wp_reset_postdata();
     }
 
-    /* ── Vraag-formulier verwerking ── */
-    $vraag_success = false;
-    $vraag_error   = '';
-    if (
-        $_SERVER['REQUEST_METHOD'] === 'POST' &&
-        isset($_POST['sj_vraag_nonce']) &&
-        wp_verify_nonce($_POST['sj_vraag_nonce'], 'sj_stel_vraag_' . $post_id)
-    ) {
-        $v_naam    = sanitize_text_field($_POST['vraag_voornaam']   ?? '');
-        $v_ach     = sanitize_text_field($_POST['vraag_achternaam'] ?? '');
-        $v_email   = sanitize_email($_POST['vraag_email']           ?? '');
-        $v_tel     = sanitize_text_field($_POST['vraag_telefoon']   ?? '');
-        $v_vraag   = sanitize_textarea_field($_POST['vraag_tekst']  ?? '');
-        $to        = $con_email ?: 'support@sustainablejobs.nl';
-
-        $attachments = [];
-        if (!empty($_FILES['vraag_cv']['tmp_name'])) {
-            require_once ABSPATH . 'wp-admin/includes/file.php';
-            require_once ABSPATH . 'wp-admin/includes/media.php';
-            require_once ABSPATH . 'wp-admin/includes/image.php';
-            $upload = media_handle_upload('vraag_cv', 0);
-            if (!is_wp_error($upload)) {
-                $path = get_attached_file($upload);
-                if (file_exists($path)) $attachments[] = $path;
-            }
-        }
-
-        if ($v_naam && is_email($v_email) && $v_vraag) {
-            $subject = 'Vraag over vacature: ' . get_the_title($post_id);
-            $body    = "Vraag via de vacaturepagina:\n\nVan: $v_naam $v_ach <$v_email>";
-            if ($v_tel) $body .= "\nTelefoon: $v_tel";
-            $body   .= "\n\n$v_vraag";
-            wp_mail($to, $subject, $body, [
-                'Content-Type: text/plain; charset=UTF-8',
-                "Reply-To: $v_naam $v_ach <$v_email>",
-                'Bcc: support@sustainablejobs.nl',
-            ], $attachments);
-            $vraag_success = true;
-        } else {
-            $vraag_error = 'Vul alle verplichte velden in.';
-        }
-    }
+    $vraag_notice  = function_exists('sj_job_application_get_form_notice')
+        ? sj_job_application_get_form_notice($post_id)
+        : ['success' => false, 'error' => ''];
+    $vraag_success = (bool) ($vraag_notice['success'] ?? false);
+    $vraag_error   = (string) ($vraag_notice['error'] ?? '');
 ?>
 
     <div class="sj-single-layout">
