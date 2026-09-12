@@ -116,26 +116,38 @@ $job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
 <form class="job_filters">
   <?php do_action( 'job_manager_job_filters_start', $atts ); ?>
 
-  <h2 class="filter-title">Doorzoek alle Duurzame Vacatures.</h2>
-  <p class="filter-subtitle">Of maak direct een account aan in onze <a href="https://platform.sustainablejobs.nl/aanmelden/werkzoekende" target="_blank" rel="noopener">community</a>.</p>
-
-  <div class="filter-row">
+  <h2 class="filter-title">
+    Vind jouw nieuwe baan in de
+    <span class="filter-title-arrow" aria-hidden="true">→</span>
+    <span class="filter-title-term" data-filter-title-terms="Duurzaamheid|Energietransitie|Ecologie|Biodiversiteit|Natuurbeheer|Dierenwelzijn|Voedseltransitie|Warmtetransitie|Klimaatadaptatie|Circulaire economie|Duurzame energie|Fondsenwerving|Ruimtelijke ordening|ESG">Duurzaamheid</span>
+  </h2>
+  <div class="filter-search-row">
     <?php do_action( 'job_manager_job_filters_search_jobs_start', $atts ); ?>
 
-    <div class="search_keywords">
-      <input type="text" name="search_keywords" id="search_keywords"
-             placeholder="Functienaam, sector of onderwerp.."
-             value="<?php echo esc_attr( $keywords ); ?>" />
-    </div>
+    <div class="filter-search-shell">
+      <div class="search_keywords">
+        <input type="text" name="search_keywords" id="search_keywords"
+               placeholder="Functie of sector.."
+               value="<?php echo esc_attr( $keywords ); ?>" />
+      </div>
 
-    <div class="search_location">
-      <input type="text" name="search_location" id="search_location"
-             placeholder="Stad of plaats"
-             value="<?php echo esc_attr( $location ); ?>" />
+      <div class="search_location">
+        <input type="text" name="search_location" id="search_location"
+               placeholder="Stad of plaats"
+               value="<?php echo esc_attr( $location ); ?>" />
+      </div>
+
+      <button type="submit" class="filter-submit">
+        <span>Zoeken</span>
+      </button>
     </div>
 
     <?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
+  </div>
 
+  <p class="filter-subtitle">Of maak een account aan als <a href="https://platform.sustainablejobs.nl/aanmelden/werkzoekende" target="_blank" rel="noopener">werkzoekende</a> of <a href="https://platform.sustainablejobs.nl/aanmelden/werkgever" target="_blank" rel="noopener">werkgever</a> op Sustainablejobs.nl.</p>
+
+  <div class="filter-taxonomy-row">
     <!-- Dienstverband -->
     <div class="job_type">
       <select name="filter_job_types[]" id="filter_job_types"
@@ -204,12 +216,27 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form.job_filters");
   if (!form) return;
 
+  const rotatingTitleTerm = document.querySelector("[data-filter-title-terms]");
+  if (rotatingTitleTerm) {
+    const terms = rotatingTitleTerm.dataset.filterTitleTerms.split("|").filter(Boolean);
+    let termIndex = 0;
+
+    window.setInterval(() => {
+      termIndex = (termIndex + 1) % terms.length;
+      rotatingTitleTerm.classList.add("is-changing");
+
+      window.setTimeout(() => {
+        rotatingTitleTerm.textContent = terms[termIndex];
+        rotatingTitleTerm.classList.remove("is-changing");
+      }, 180);
+    }, 2600);
+  }
+
   const wpjmFilter = () => {
-    if (window.job_manager_job_filters && typeof window.job_manager_job_filters.filter_jobs === "function") {
-      window.job_manager_job_filters.filter_jobs();
-    } else {
-      form.dispatchEvent(new Event("submit", { bubbles: true, cancelable: true }));
-    }
+    const listings = form.closest("div.job_listings");
+    if (!listings || !window.jQuery) return;
+
+    window.jQuery(listings).triggerHandler("update_results", [1, false]);
   };
 
   const debounce = (fn, delay = 250) => {
@@ -502,9 +529,9 @@ jQuery(function($) {
   margin-top: 0;
   margin-bottom: 40px !important;
   height: auto !important;
-  min-height: 200px;
-  background: var(--color-bg-filter);
-  border-bottom: 1px solid var(--color-border);
+  min-height: 400px;
+  background: transparent;
+  border-bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -514,14 +541,15 @@ jQuery(function($) {
 }
 
 .job_filters.has-active-filters {
-  min-height: 0;
+  min-height: 400px;
   padding: 28px 0 34px;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 .filter-title,
 .filter-subtitle,
-.filter-row,
+.filter-search-row,
+.filter-taxonomy-row,
 .active-filters {
   width: 100%;
   max-width: 1200px;
@@ -535,22 +563,46 @@ jQuery(function($) {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-  font-size: 24px !important;
+  font-size: 32px !important;
   font-weight: 800 !important;
-  line-height: 1.2 !important;
+  line-height: 1.12 !important;
   letter-spacing: 0 !important;
+  text-align: center;
   color: #333333 !important;
+}
+
+.filter-title-term {
+  display: inline-block;
+  min-width: 9.8em;
+  text-align: left;
+  color: var(--color-primary);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.filter-title-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.6em;
+  color: var(--color-primary);
+  transform: translateY(-0.03em);
+}
+
+.filter-title-term.is-changing {
+  opacity: 0;
+  transform: translateY(4px);
 }
 
 .filter-subtitle {
   padding: 0 24px;
-  margin-top: 8px !important;
+  margin-top: 18px !important;
   margin-bottom: 0 !important;
   font-family: 'Poppins', sans-serif !important;
   font-size: 15px !important;
   font-weight: 400 !important;
   line-height: 1.45 !important;
   letter-spacing: 0 !important;
+  text-align: center;
   color: #333333 !important;
 }
 
@@ -565,27 +617,47 @@ jQuery(function($) {
   color: var(--color-primary-hover) !important;
 }
 
-.filter-row {
+.filter-search-row {
   display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 12px;
-  padding: 18px 24px 28px;
+  padding: 30px 24px 0;
 }
 
-.search_keywords,
-.search_location {
+.filter-search-shell {
+  width: min(100%, 760px);
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.8fr) 140px;
+  align-items: stretch;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #D3DDDA;
+  border-radius: 8px;
+  box-shadow: 0 18px 40px -30px rgba(37, 79, 110, 0.5);
+}
+
+.job_filters .search_keywords,
+.job_filters .search_location {
   flex: 1;
   display: flex;
   align-items: center;
   position: relative;
+  min-width: 0;
 }
 
-.filter-row input[type="text"] {
+.job_filters .search_keywords,
+.job_filters .search_location {
+  border-right: 1px solid #D3DDDA;
+}
+
+.filter-search-shell input[type="text"] {
   width: 100%;
-  padding: 11px 14px 11px 40px;
+  height: 44px;
+  padding: 0 14px 0 40px;
   font-size: 15px;
-  border: 1px solid #DDE8C5;
-  border-radius: 8px;
+  border: 0;
+  border-radius: 0;
   background-color: #ffffff;
   color: var(--color-text);
   transition: border-color .2s ease, box-shadow .2s ease;
@@ -594,21 +666,21 @@ jQuery(function($) {
   box-sizing: border-box;
 }
 
-.filter-row input[type="text"]:focus {
+.filter-search-shell input[type="text"]:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(22, 138, 173, 0.15);
+  box-shadow: inset 0 0 0 2px rgba(44, 143, 175, 0.18);
 }
 
-.search_keywords input::placeholder,
-.search_location input::placeholder {
+.job_filters .search_keywords input::placeholder,
+.job_filters .search_location input::placeholder {
   color: #7c7c7c;
   font-size: 15px !important;
   font-style: italic;
+  font-weight: 400;
 }
 
-.search_keywords::before,
-.search_location::before {
+.job_filters .search_keywords::before,
+.job_filters .search_location::before {
   content: '';
   position: absolute;
   left: 12px;
@@ -621,15 +693,60 @@ jQuery(function($) {
   pointer-events: none;
 }
 
-.search_keywords::before {
+.job_filters .search_keywords::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
 }
 
-.search_location::before {
+.job_filters .search_location::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23168AAD' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
 }
 
-.filter-row > div {
+.filter-submit {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 0;
+  background: var(--color-primary-dk);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  transition: background-color .18s ease, box-shadow .18s ease;
+}
+
+.filter-submit::before {
+  content: '';
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+}
+
+.filter-submit:hover,
+.filter-submit:focus {
+  outline: none;
+  background: var(--color-primary-hover);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18);
+}
+
+.filter-taxonomy-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 26px 24px 0;
+}
+
+.filter-taxonomy-row > div {
   flex: 0 0 auto;
   min-width: 0;
 }
@@ -862,8 +979,9 @@ select.sj-hidden-select {
 .active-filters {
   display: none;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
-  padding: 0 24px 28px;
+  padding: 18px 24px 0;
 }
 
 .job_filters.has-active-filters .active-filters {
@@ -913,32 +1031,71 @@ span.active-filter {
     min-height: 0 !important;
   }
 
-  .filter-row {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding: 16px !important;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
   .filter-title {
     padding: 0 16px !important;
     margin-top: 24px !important;
-    font-size: 22px !important;
+    font-size: 32px !important;
   }
 
   .filter-subtitle {
     padding: 0 16px !important;
+    font-size: 15px !important;
   }
 
-  .search_keywords,
-  .search_location {
+  .filter-search-row {
+    padding: 24px 16px 0 !important;
+  }
+
+  .filter-search-shell {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .job_filters .search_keywords,
+  .job_filters .search_location {
     flex: none;
     width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid #D3DDDA;
   }
 
-  .filter-row > div,
+  .filter-search-shell input[type="text"] {
+    height: 44px;
+    font-size: 15px;
+    padding-left: 40px;
+  }
+
+  .job_filters .search_keywords input::placeholder,
+  .job_filters .search_location input::placeholder {
+    font-size: 15px !important;
+  }
+
+  .job_filters .search_keywords::before,
+  .job_filters .search_location::before {
+    left: 12px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .filter-submit {
+    width: 100%;
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  .filter-taxonomy-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    padding: 20px 16px 0 !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .filter-taxonomy-row > div,
   .sj-select-wrap,
   .sj-select,
   .sj-select-btn {
