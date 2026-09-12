@@ -20,6 +20,11 @@ function si_platform_opdracht_categories(): array {
         'creative'         => 'Creative',
         'werkstudent'      => 'Werkstudent',
         'freelance'        => 'Freelance',
+        'bouw'             => 'Bouw',
+        'sport'            => 'Sport',
+        'techniek'         => 'Techniek',
+        'zorg'             => 'Zorg',
+        'hospitality'      => 'Hospitality',
     ];
 }
 

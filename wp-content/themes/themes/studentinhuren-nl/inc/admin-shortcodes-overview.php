@@ -30,6 +30,11 @@ function si_shortcodes_overview_platform_categories(): array {
         'creative'         => 'Creative',
         'werkstudent'      => 'Werkstudent',
         'freelance'        => 'Freelance',
+        'bouw'             => 'Bouw',
+        'sport'            => 'Sport',
+        'techniek'         => 'Techniek',
+        'zorg'             => 'Zorg',
+        'hospitality'      => 'Hospitality',
     ];
 }
 
@@ -55,6 +60,11 @@ function si_shortcodes_overview_category_shortcodes(): array {
         'creative'         => 'platform_opdrachten_creative',
         'werkstudent'      => 'platform_opdrachten_werkstudent',
         'freelance'        => 'platform_opdrachten_freelance',
+        'bouw'             => 'platform_opdrachten_bouw',
+        'sport'            => 'platform_opdrachten_sport',
+        'techniek'         => 'platform_opdrachten_techniek',
+        'zorg'             => 'platform_opdrachten_zorg',
+        'hospitality'      => 'platform_opdrachten_hospitality',
     ];
 
     foreach (si_shortcodes_overview_platform_categories() as $slug => $label) {

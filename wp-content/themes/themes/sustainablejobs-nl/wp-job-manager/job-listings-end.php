@@ -35,7 +35,7 @@ $banner_html = '
     <div class="sj-banner__content">
         <div class="sj-banner__text">
             <span class="sj-banner__eyebrow">Sustainablejobs community</span>
-            <h2 class="sj-banner__title">Maak een account aan<br>op ons platform.</h2>
+            <h2 class="sj-banner__title">Maak een account aan op ons platform.</h2>
             <p class="sj-banner__desc">De plek waar bedrijven, professionals en werkzoekenden binnen duurzaamheid, energietransitie en de impactwereld elkaar vinden.</p>
         </div>
         <a href="https://platform.sustainablejobs.nl/aanmelden" class="sj-banner__btn">
@@ -180,8 +180,8 @@ li.sj-marketing-block {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 40px;
-    padding: 44px 56px;
+    gap: 24px;
+    padding: 14px 32px;
     width: 100%;
 }
 
@@ -193,45 +193,51 @@ li.sj-marketing-block {
 .sj-banner__eyebrow {
     display: inline-block;
     font-family: 'Poppins', sans-serif !important;
-    font-size: 12px !important;
+    font-size: 11px !important;
     font-weight: 600 !important;
-    letter-spacing: .12em;
+    letter-spacing: .1em;
     text-transform: uppercase;
     color: var(--color-secondary, #C5E4A0) !important;
-    margin-bottom: 12px;
+    margin-bottom: 4px;
 }
 
 .sj-banner__title {
     font-family: 'Inter', sans-serif !important;
-    font-size: 26px !important;
+    font-size: 18px !important;
     font-weight: 700 !important;
     color: #ffffff !important;
-    margin: 0 0 14px !important;
-    line-height: 1.25 !important;
+    margin: 0 !important;
+    line-height: 1.3 !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .sj-banner__desc {
     font-family: 'Poppins', sans-serif !important;
-    font-size: 14px !important;
+    font-size: 13px !important;
     font-weight: 400 !important;
     color: rgba(255, 255, 255, 0.85) !important;
-    margin: 0 !important;
-    line-height: 1.7 !important;
+    margin: 2px 0 0 !important;
+    line-height: 1.4 !important;
     max-width: 500px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .sj-banner__btn {
     flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: var(--color-secondary, #C5E4A0) !important;
     color: var(--color-midnight-blue, #254F6E) !important;
     border: none !important;
-    border-radius: 6px !important;
-    padding: 14px 28px !important;
+    border-radius: 5px !important;
+    padding: 10px 20px !important;
     font-family: 'Poppins', sans-serif !important;
-    font-size: 15px !important;
+    font-size: 14px !important;
     font-weight: 700 !important;
     text-decoration: none !important;
     white-space: nowrap;
@@ -262,10 +268,17 @@ li.sj-marketing-block {
 
     .sj-banner__title {
         font-size: 22px !important;
+        margin: 0 0 14px !important;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
     }
 
     .sj-banner__desc {
         max-width: 100%;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
     }
 
     .sj-banner__btn {

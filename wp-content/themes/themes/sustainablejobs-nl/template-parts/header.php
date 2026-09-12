@@ -89,8 +89,11 @@ if (!$rn_mobile_logo_url) {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" width="36" height="36" aria-hidden="true"><line x1="19" y1="5" x2="5" y2="19"/><line x1="5" y1="5" x2="19" y2="19"/></svg>
         </button>
         <?php
+        // Gebruikt een los "Mobiel menu" als dat aan de mobile_nav-locatie is
+        // gekoppeld; valt anders terug op het primaire menu.
+        $sj_mobile_nav_location = has_nav_menu('mobile_nav') ? 'mobile_nav' : 'primary_nav';
         wp_nav_menu([
-            'theme_location' => 'primary_nav',
+            'theme_location' => $sj_mobile_nav_location,
             'container'      => false,
             'menu_class'     => 'rn-mobile-nav__list',
             'fallback_cb'    => false,

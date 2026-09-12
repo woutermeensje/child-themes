@@ -7,7 +7,9 @@ if (!defined('ABSPATH')) exit;
  * Preset: [platform_opdrachten_bekijk_ook]
  * Categorieen: [platform_opdrachten_vertalers], [platform_opdrachten_online_marketing],
  * [platform_opdrachten_office], [platform_opdrachten_logistiek], [platform_opdrachten_creative],
- * [platform_opdrachten_werkstudent], [platform_opdrachten_freelance]
+ * [platform_opdrachten_werkstudent], [platform_opdrachten_freelance], [platform_opdrachten_bouw],
+ * [platform_opdrachten_sport],
+ * [platform_opdrachten_techniek], [platform_opdrachten_zorg], [platform_opdrachten_hospitality]
  *
  * Toont alle pagina's waarbij het vinkje "Platform opdrachten" aan staat.
  */
@@ -22,6 +24,11 @@ add_shortcode('platform_opdrachten_logistiek', 'si_platform_opdrachten_paginas_s
 add_shortcode('platform_opdrachten_creative', 'si_platform_opdrachten_paginas_shortcode');
 add_shortcode('platform_opdrachten_werkstudent', 'si_platform_opdrachten_paginas_shortcode');
 add_shortcode('platform_opdrachten_freelance', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_bouw', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_sport', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_techniek', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_zorg', 'si_platform_opdrachten_paginas_shortcode');
+add_shortcode('platform_opdrachten_hospitality', 'si_platform_opdrachten_paginas_shortcode');
 
 function si_platform_opdrachten_paginas_shortcode($atts = [], $content = null, string $shortcode_tag = ''): string {
     $category_shortcode = si_platform_opdrachten_paginas_category_from_shortcode($shortcode_tag);
@@ -201,6 +208,11 @@ function si_platform_opdrachten_paginas_category_from_shortcode(string $shortcod
         'platform_opdrachten_creative'         => 'creative',
         'platform_opdrachten_werkstudent'      => 'werkstudent',
         'platform_opdrachten_freelance'        => 'freelance',
+        'platform_opdrachten_bouw'             => 'bouw',
+        'platform_opdrachten_sport'            => 'sport',
+        'platform_opdrachten_techniek'         => 'techniek',
+        'platform_opdrachten_zorg'             => 'zorg',
+        'platform_opdrachten_hospitality'      => 'hospitality',
     ];
 
     return $map[$shortcode_tag] ?? '';

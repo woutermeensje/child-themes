@@ -5,12 +5,8 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 global $post;
 
-$cover_image      = get_post_meta( $post->ID, '_cover_image', true );
-$background_image = $cover_image
-    ? $cover_image
-    : get_the_post_thumbnail_url( $post->ID, 'full' );
-
-$job_types = wpjm_get_the_job_types();
+$job_types        = wpjm_get_the_job_types();
+$has_company_logo = has_post_thumbnail( $post->ID );
 ?>
 
 <li <?php job_listing_class(); ?>
@@ -22,43 +18,19 @@ $job_types = wpjm_get_the_job_types();
         <!-- Desktop kaart -->
         <div class="job-card__desktop">
 
-            <div class="job-card__media">
-                <div class="background-wrapper">
-
-                    <div class="company-logo-absolute hide_on_single">
-                        <div class="company-logo-wrapper">
-                            <?php the_post_thumbnail(); ?>
-                        </div>
-                    </div>
-
-                    <?php if ( $background_image ) : ?>
-                        <div class="background-inner" style="
-                            background-image: url('<?php echo esc_url( $background_image ); ?>');
-                            background-size: cover;
-                            min-height: 100%;
-                            display: block;
-                            width: 100%;
-                            background-repeat: no-repeat;
-                            background-position: center center;
-                            background-attachment: scroll;
-                        "></div>
-                    <?php else : ?>
-                        <div class="background-inner background-inner--empty"></div>
-                    <?php endif; ?>
-
-                    <div class="block-bg-overlay"></div>
+            <?php if ( $has_company_logo ) : ?>
+                <div class="job-card__logo-badge">
+                    <?php the_post_thumbnail( 'thumbnail' ); ?>
                 </div>
-            </div>
+            <?php endif; ?>
 
             <div class="job-card__content">
                 <div class="job_listing_content">
+                    <span class="job-card__date"><?php the_job_publish_date(); ?></span>
+
                     <a href="<?php echo esc_url( get_permalink( $post->ID ) ); ?>" class="title-link">
                         <h2><?php wpjm_the_job_title(); ?></h2>
                     </a>
-
-                    <div class="job_text">
-                        <p><?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '...' ) ); ?></p>
-                    </div>
 
                     <ul class="job-card-meta">
                         <li class="job-card-meta__item job-card-meta__item--org">
@@ -88,14 +60,11 @@ $job_types = wpjm_get_the_job_types();
                                 <p class="job-card-meta__text"><?php echo esc_html( implode( ', ', wp_list_pluck( $job_types, 'name' ) ) ); ?></p>
                             </li>
                         <?php endif; ?>
-
-                        <li class="job-card-meta__item job-card-meta__item--date">
-                            <span class="job-card-meta__icon">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                            </span>
-                            <p class="job-card-meta__text"><?php the_job_publish_date(); ?></p>
-                        </li>
                     </ul>
+
+                    <div class="job_text">
+                        <p><?php echo esc_html( wp_trim_words( get_the_excerpt(), 15, '...' ) ); ?></p>
+                    </div>
 
                     <div class="jobs_buttons">
                         <a href="<?php the_job_permalink(); ?>">Opdracht bekijken</a>
@@ -188,12 +157,13 @@ ul.job_listings li.job_listing {
 
 /* ---- Card basis ---- */
 .job-card {
+    position: relative;
     background: #ffffff;
     border-radius: 6px;
     box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
     padding: 0;
     border: 1px solid #E0E0E0;
-    overflow: hidden;
+    overflow: visible;
     cursor: pointer;
     transition: box-shadow .2s ease, border-color .2s ease;
 }
@@ -219,86 +189,56 @@ ul.job_listings li.job_listing {
     flex-wrap: nowrap;
 }
 
-/* ---- Media (cover image) ---- */
-.job-card__media {
-    position: relative;
-    flex: 0 0 40%;
-    max-width: 40%;
-    display: flex;
-}
-
-.background-wrapper {
-    width: 100%;
-    flex: 1 1 auto;
-    position: relative;
-    min-height: 318px;
-    overflow: hidden;
-}
-
-.background-inner {
-    height: 100%;
-    min-height: 318px;
-}
-
-.background-inner--empty {
-    background: #2f5f80 !important;
-    opacity: 0.15;
-}
-
-.block-bg-overlay {
+/* ---- Bedrijfslogo badge (half buiten de kaart) ---- */
+.job-card__logo-badge {
     position: absolute;
-    width: 100%;
-    height: 100%;
     top: 0;
-    background-color: #2f5f80 !important;
-    opacity: 0.30;
-}
-
-/* ---- Bedrijfslogo overlay ---- */
-.company-logo-absolute {
-    position: absolute;
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    background: white;
-    z-index: 9;
-    left: 30px;
-    bottom: 30px;
-}
-
-ul.job_listings li.job_listing .company-logo-wrapper,
-.single_job_listing .company-logo-wrapper,
-.company-logo-wrapper {
-    height: 100px;
-    width: 100px;
-    text-align: left;
-}
-
-ul.job_listings li.job_listing .company-logo-wrapper img,
-.single_job_listing .company-logo-wrapper img,
-.company-logo-wrapper img {
-    border-radius: 50%;
-    width: 80px;
-    height: 80px;
-    border: 1px solid #eee;
-    padding: 5px;
-    object-fit: contain;
+    left: 32px;
+    transform: translateY(-50%);
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
     background: #fff;
+    border: 1px solid #E0E0E0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    z-index: 5;
+}
+
+.job-card__logo-badge img {
+    width: 46px;
+    height: 46px;
+    object-fit: contain;
+    border-radius: 0;
 }
 
 /* ---- Content paneel ---- */
 .job-card__content {
-    flex: 0 0 60%;
-    max-width: 60%;
+    position: relative;
+    flex: 0 0 100%;
+    max-width: 100%;
     display: flex;
     align-items: center;
     min-width: 0;
-    padding: 24px 0;
+    padding: 40px 0 24px;
 }
 
 .job_listing .job_listing_content {
     padding: 0 40px;
     min-width: 0;
+}
+
+/* ---- Publicatiedatum (rechtsboven) ---- */
+.job-card__date {
+    position: absolute;
+    top: 16px;
+    right: 24px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 12px;
+    color: #6B7280;
+    white-space: nowrap;
 }
 
 /* ---- Titel ---- */
@@ -312,6 +252,7 @@ a.title-link {
 
 .job_listing .job_listing_content h2 {
     margin: 0 0 5px 0;
+    padding-right: 70px;
     font-family: 'Work Sans', sans-serif !important;
     font-size: 20px;
     font-weight: 700;
@@ -340,7 +281,7 @@ a.title-link {
 /* ---- Meta lijst ---- */
 .job-card-meta {
     list-style: none !important;
-    margin: 0;
+    margin: 8px 0 4px;
     padding: 0;
     color: #333;
 }

@@ -364,6 +364,7 @@ add_action('after_setup_theme', function () {
     register_nav_menus([
         'primary_nav' => 'Primaire navigatie',
         'footer_nav'  => 'Footer navigatie',
+        'mobile_nav'  => 'Mobiel menu (uitklapmenu)',
     ]);
 });
 
