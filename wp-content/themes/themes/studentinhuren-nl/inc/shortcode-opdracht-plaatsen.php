@@ -271,7 +271,7 @@ function si_opdracht_plaatsen_shortcode(): string {
 
             <header class="sj-vp__header">
                 <h2 class="sj-vp__title">Opdracht plaatsen</h2>
-                <p class="sj-vp__subtitle">Vul de gegevens in en we nemen zo snel mogelijk contact met je op over je opdracht.</p>
+                <p class="sj-vp__subtitle">Vul de gegevens in en we nemen zo snel mogelijk contact met je op over je opdracht.<br><br>Na het indienen van de opdracht wordt deze voor jou geplaatst. Hier zitten geen kosten aan verbonden (tenzij je een premium plaatsing kiest).</p>
             </header>
 
             <form method="post" class="si-op__form" novalidate>
@@ -339,7 +339,6 @@ function si_opdracht_plaatsen_shortcode(): string {
 
                 <footer class="sj-vp__footer">
                     <button type="submit" class="sj-vp__submit">Opdracht versturen</button>
-                    <p class="sj-vp__footer-note">Na je aanvraag nemen we contact met je op. Vragen? Mail naar <a href="mailto:support@student-inhuren.nl">support@student-inhuren.nl</a>.</p>
                 </footer>
 
             </form>
