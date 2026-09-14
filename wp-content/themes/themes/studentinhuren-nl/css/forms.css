@@ -503,6 +503,10 @@
     font-style: normal !important;
     opacity: 1;
 }
+.sj-vp select.sj-vp__input {
+    appearance: auto;
+    cursor: pointer;
+}
 
 .sj-vp .sj-vp__pakket {
     position: relative;

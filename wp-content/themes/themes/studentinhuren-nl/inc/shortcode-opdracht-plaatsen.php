@@ -38,24 +38,33 @@ add_action('init', function () {
 /* ── Admin kolommen ─────────────────────────────────────────── */
 add_filter('manage_si_opdracht_posts_columns', function ($cols) {
     return [
-        'cb'              => $cols['cb'],
-        'title'           => 'Naam',
-        'si_op_email'     => 'E-mail',
-        'si_op_telefoon'  => 'Telefoon',
-        'si_op_website'   => 'Website',
+        'cb'                 => $cols['cb'],
+        'title'              => 'Opdracht',
+        'si_op_naam'         => 'Contactpersoon',
+        'si_op_email'        => 'E-mail',
+        'si_op_telefoon'     => 'Telefoon',
+        'si_op_pakket'       => 'Pakket',
+        'si_op_website'      => 'Website',
         'si_op_beschrijving' => 'Beschrijving (kort)',
-        'date'            => 'Datum',
+        'date'               => 'Datum',
     ];
 });
 
 add_action('manage_si_opdracht_posts_custom_column', function ($col, $post_id) {
     switch ($col) {
+        case 'si_op_naam':
+            $naam = trim(get_post_meta($post_id, '_si_op_voornaam', true) . ' ' . get_post_meta($post_id, '_si_op_achternaam', true));
+            echo esc_html($naam ?: '—');
+            break;
         case 'si_op_email':
             $v = get_post_meta($post_id, '_si_op_email', true);
             echo $v ? '<a href="mailto:' . esc_attr($v) . '">' . esc_html($v) . '</a>' : '—';
             break;
         case 'si_op_telefoon':
             echo esc_html(get_post_meta($post_id, '_si_op_telefoon', true) ?: '—');
+            break;
+        case 'si_op_pakket':
+            echo esc_html(get_post_meta($post_id, '_si_op_pakket', true) ?: '—');
             break;
         case 'si_op_website':
             $v = get_post_meta($post_id, '_si_op_website', true);
@@ -87,6 +96,8 @@ add_action('add_meta_boxes', function () {
 
 function si_opdracht_meta_box_cb(WP_Post $post): void {
     $fields = [
+        '_si_op_titel'       => 'Opdrachtnaam',
+        '_si_op_pakket'      => 'Plaatsing',
         '_si_op_voornaam'    => 'Voornaam',
         '_si_op_achternaam'  => 'Achternaam',
         '_si_op_email'       => 'E-mail',
@@ -119,6 +130,13 @@ function si_opdracht_meta_box_cb(WP_Post $post): void {
     }
 }
 
+function si_opdracht_plaatsing_options(): array {
+    return [
+        'gratis'  => 'Gratis opdracht plaatsing',
+        'premium' => 'Premium opdracht - €37,50 excl. 21% btw',
+    ];
+}
+
 /* ============================================================
    SHORTCODE: [si_opdracht_plaatsen]
    ============================================================ */
@@ -127,18 +145,22 @@ add_shortcode('si_opdracht_plaatsen', 'si_opdracht_plaatsen_shortcode');
 function si_opdracht_plaatsen_shortcode(): string {
 
     $errors = [];
+    $plaatsing_options = si_opdracht_plaatsing_options();
 
     if (
         $_SERVER['REQUEST_METHOD'] === 'POST' &&
         isset($_POST['si_op_nonce']) &&
         wp_verify_nonce($_POST['si_op_nonce'], 'si_opdracht_plaatsen')
     ) {
-        $voornaam     = sanitize_text_field($_POST['voornaam']     ?? '');
-        $achternaam   = sanitize_text_field($_POST['achternaam']   ?? '');
-        $email        = sanitize_email($_POST['email']             ?? '');
-        $telefoon     = sanitize_text_field($_POST['telefoon']     ?? '');
-        $website      = esc_url_raw($_POST['website']             ?? '');
-        $beschrijving = wp_kses_post($_POST['beschrijving']        ?? '');
+        $voornaam       = sanitize_text_field($_POST['voornaam']       ?? '');
+        $achternaam     = sanitize_text_field($_POST['achternaam']     ?? '');
+        $email          = sanitize_email($_POST['email']               ?? '');
+        $telefoon       = sanitize_text_field($_POST['telefoon']       ?? '');
+        $opdracht_titel = sanitize_text_field($_POST['opdracht_titel'] ?? '');
+        $plaatsing      = sanitize_key($_POST['plaatsing']             ?? '');
+        $website        = esc_url_raw($_POST['website']                ?? '');
+        $beschrijving   = wp_kses_post($_POST['beschrijving']          ?? '');
+        $plaatsing_label = $plaatsing_options[$plaatsing] ?? '';
 
         if (!si_rich_text_has_content($beschrijving)) {
             $beschrijving = '';
@@ -147,6 +169,8 @@ function si_opdracht_plaatsen_shortcode(): string {
         if (!$voornaam)           $errors[] = 'Vul je voornaam in.';
         if (!$achternaam)         $errors[] = 'Vul je achternaam in.';
         if (!is_email($email))    $errors[] = 'Vul een geldig e-mailadres in.';
+        if (!$opdracht_titel)     $errors[] = 'Vul de titel of naam van de opdracht in.';
+        if (!$plaatsing_label)    $errors[] = 'Kies een opdrachtplaatsing.';
         if (!$beschrijving)       $errors[] = 'Vul een opdrachtbeschrijving in.';
 
         if (empty($errors)) {
@@ -158,6 +182,8 @@ function si_opdracht_plaatsen_shortcode(): string {
                 'achternaam'    => $achternaam,
                 'email'         => strtolower($email),
                 'telefoon'      => $telefoon,
+                'opdracht'      => $opdracht_titel,
+                'plaatsing'     => $plaatsing,
                 'website'       => $website,
                 'beschrijving'  => wp_strip_all_tags($beschrijving),
             ])) {
@@ -167,12 +193,15 @@ function si_opdracht_plaatsen_shortcode(): string {
             // ── Opslaan in de database ──────────────────────────
             $post_id = wp_insert_post([
                 'post_type'   => 'si_opdracht',
-                'post_title'  => sanitize_text_field("$voornaam $achternaam"),
+                'post_title'  => $opdracht_titel,
                 'post_status' => 'publish',
                 'post_author' => 0,
             ]);
 
             if ($post_id && !is_wp_error($post_id)) {
+                update_post_meta($post_id, '_si_op_titel',       $opdracht_titel);
+                update_post_meta($post_id, '_si_op_plaatsing',   $plaatsing);
+                update_post_meta($post_id, '_si_op_pakket',      $plaatsing_label);
                 update_post_meta($post_id, '_si_op_voornaam',    $voornaam);
                 update_post_meta($post_id, '_si_op_achternaam',  $achternaam);
                 update_post_meta($post_id, '_si_op_email',       $email);
@@ -183,9 +212,11 @@ function si_opdracht_plaatsen_shortcode(): string {
 
             // ── E-mailnotificatie ────────────────────────────────
             $body = si_build_admin_email(
-                "Nieuwe opdracht van $voornaam $achternaam",
+                "Nieuwe opdracht: $opdracht_titel",
                 'Er is een nieuwe opdracht geplaatst via het formulier op Studentinhuren.nl.',
                 [
+                    ['label' => 'Opdracht', 'value' => $opdracht_titel],
+                    ['label' => 'Plaatsing', 'value' => $plaatsing_label],
                     ['label' => 'Naam', 'value' => "$voornaam $achternaam"],
                     ['label' => 'E-mail', 'value' => $email, 'type' => 'email'],
                     ['label' => 'Telefoon', 'value' => $telefoon, 'type' => 'tel'],
@@ -198,7 +229,7 @@ function si_opdracht_plaatsen_shortcode(): string {
 
             $mail_sent = wp_mail(
                 si_admin_notification_recipients(),
-                "Nieuwe opdracht van $voornaam $achternaam",
+                "Nieuwe opdracht: $opdracht_titel",
                 $body,
                 si_admin_mail_headers($email)
             );
@@ -276,6 +307,20 @@ function si_opdracht_plaatsen_shortcode(): string {
                 <div class="sj-vp__section">
                     <p class="sj-vp__section-title">Opdracht informatie</p>
                     <div class="sj-vp__grid sj-vp__grid--1">
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_opdracht_titel">Titel/naam van de opdracht <span class="sj-vp__req">*</span></label>
+                        <input type="text" name="opdracht_titel" id="si_op_opdracht_titel" class="sj-vp__input"
+                               value="<?php echo esc_attr($_POST['opdracht_titel'] ?? ''); ?>" required>
+                    </div>
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_plaatsing">Type opdrachtplaatsing <span class="sj-vp__req">*</span></label>
+                        <?php $selected_plaatsing = sanitize_key($_POST['plaatsing'] ?? 'gratis'); ?>
+                        <select name="plaatsing" id="si_op_plaatsing" class="sj-vp__input" required>
+                            <?php foreach ($plaatsing_options as $value => $label): ?>
+                                <option value="<?php echo esc_attr($value); ?>" <?php selected($selected_plaatsing, $value); ?>><?php echo esc_html($label); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                     <div class="sj-vp__field">
                         <label class="sj-vp__label" for="si_op_website">Link naar website <span class="sj-vp__opt">(optioneel)</span></label>
                         <input type="url" name="website" id="si_op_website" class="sj-vp__input"
