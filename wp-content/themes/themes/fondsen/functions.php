@@ -12,6 +12,7 @@ if ( ! defined('ABSPATH') ) exit;
 require_once get_stylesheet_directory() . '/inc/job-favorites.php';
 require_once get_stylesheet_directory() . '/inc/job-expiry.php';
 require_once get_stylesheet_directory() . '/inc/uitgelichte-werkgever.php';
+require_once get_stylesheet_directory() . '/inc/centraal-contact-email.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-hero.php';
 require_once get_stylesheet_directory() . '/inc/activecampaign.php';
 require_once get_stylesheet_directory() . '/inc/shortcode-job-alerts.php';

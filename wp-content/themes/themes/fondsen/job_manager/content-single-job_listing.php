@@ -36,8 +36,11 @@ if ( $post_id && job_manager_user_can_view_job_listing( $post_id ) ) :
         $v_email = sanitize_email($_POST['vraag_email']           ?? '');
         $v_tel   = sanitize_text_field($_POST['vraag_telefoon']   ?? '');
         $v_vraag  = sanitize_textarea_field($_POST['vraag_tekst']  ?? '');
-        $admin_cc = 'informatie@fondsen.org';
-        $to       = $con_email ?: $admin_cc;
+        $admin_cc      = 'informatie@fondsen.org';
+        $central_email = function_exists('fondsen_get_job_company_central_contact_email')
+            ? fondsen_get_job_company_central_contact_email($post_id)
+            : '';
+        $to = $central_email ?: ($con_email ?: $admin_cc);
 
         $attachments = [];
         if (!empty($_FILES['vraag_cv']['tmp_name'])) {
