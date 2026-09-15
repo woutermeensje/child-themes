@@ -133,7 +133,7 @@ function si_opdracht_meta_box_cb(WP_Post $post): void {
 function si_opdracht_plaatsing_options(): array {
     return [
         'gratis'  => 'Gratis opdracht plaatsing',
-        'premium' => 'Premium opdracht - €37,50 excl. 21% btw',
+        'premium' => 'Premium opdracht - €99,00 excl. 21% btw',
     ];
 }
 
@@ -271,12 +271,26 @@ function si_opdracht_plaatsen_shortcode(): string {
 
             <header class="sj-vp__header">
                 <h2 class="sj-vp__title">Opdracht plaatsen</h2>
-                <p class="sj-vp__subtitle">Vul de gegevens in en we nemen zo snel mogelijk contact met je op over je opdracht.<br><br>Na het indienen van de opdracht wordt deze voor jou geplaatst. Hier zitten geen kosten aan verbonden (tenzij je een premium plaatsing kiest).</p>
+                <p class="sj-vp__subtitle">Na het indienen van de opdracht wordt deze voor jou geplaatst. Hier zitten geen kosten aan verbonden (tenzij je een premium plaatsing kiest).</p>
             </header>
 
             <form method="post" class="si-op__form" novalidate>
                 <?php wp_nonce_field('si_opdracht_plaatsen', 'si_op_nonce'); ?>
                 <input type="hidden" name="si_submission_id" value="<?php echo esc_attr($_POST['si_submission_id'] ?? wp_generate_uuid4()); ?>">
+
+                <div class="sj-vp__section">
+                    <div class="sj-vp__grid sj-vp__grid--1">
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_plaatsing">Type opdrachtplaatsing <span class="sj-vp__req">*</span></label>
+                        <?php $selected_plaatsing = sanitize_key($_POST['plaatsing'] ?? 'gratis'); ?>
+                        <select name="plaatsing" id="si_op_plaatsing" class="sj-vp__input" required>
+                            <?php foreach ($plaatsing_options as $value => $label): ?>
+                                <option value="<?php echo esc_attr($value); ?>" <?php selected($selected_plaatsing, $value); ?>><?php echo esc_html($label); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    </div>
+                </div>
 
                 <div class="sj-vp__section">
                     <p class="sj-vp__section-title">Contactgegevens</p>
@@ -313,26 +327,17 @@ function si_opdracht_plaatsen_shortcode(): string {
                                value="<?php echo esc_attr($_POST['opdracht_titel'] ?? ''); ?>" required>
                     </div>
                     <div class="sj-vp__field">
-                        <label class="sj-vp__label" for="si_op_plaatsing">Type opdrachtplaatsing <span class="sj-vp__req">*</span></label>
-                        <?php $selected_plaatsing = sanitize_key($_POST['plaatsing'] ?? 'gratis'); ?>
-                        <select name="plaatsing" id="si_op_plaatsing" class="sj-vp__input" required>
-                            <?php foreach ($plaatsing_options as $value => $label): ?>
-                                <option value="<?php echo esc_attr($value); ?>" <?php selected($selected_plaatsing, $value); ?>><?php echo esc_html($label); ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div class="sj-vp__field">
-                        <label class="sj-vp__label" for="si_op_website">Link naar website <span class="sj-vp__opt">(optioneel)</span></label>
-                        <input type="url" name="website" id="si_op_website" class="sj-vp__input"
-                               value="<?php echo esc_attr($_POST['website'] ?? ''); ?>">
-                    </div>
-                    <div class="sj-vp__field">
                         <label class="sj-vp__label" for="si_op_beschrijving_hidden">Opdrachtbeschrijving <span class="sj-vp__req">*</span></label>
                         <div class="sj-vp__quill-wrap">
                             <div id="si_quill_opdracht" class="sj-vp__quill-editor" style="min-height:200px;"></div>
                         </div>
                         <textarea name="beschrijving" id="si_op_beschrijving_hidden" class="sj-vp__quill-hidden" aria-hidden="true"><?php echo esc_textarea($_POST['beschrijving'] ?? ''); ?></textarea>
                         <span class="sj-vp__hint">Beschrijf de opdracht, gewenste inzet en eventueel de context of planning.</span>
+                    </div>
+                    <div class="sj-vp__field">
+                        <label class="sj-vp__label" for="si_op_website">Link naar website <span class="sj-vp__opt">(optioneel)</span></label>
+                        <input type="url" name="website" id="si_op_website" class="sj-vp__input"
+                               value="<?php echo esc_attr($_POST['website'] ?? ''); ?>">
                     </div>
                     </div>
                 </div>

@@ -452,11 +452,13 @@
     border-bottom: none;
 }
 .sj-vp .sj-vp__section-title {
-    font-family: 'Work Sans', sans-serif;
-    font-size: 20px;
-    font-weight: 700;
+    display: block;
+    font-family: 'Work Sans', sans-serif !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
     color: #333333;
     margin: 0 0 16px;
+    line-height: 1.25;
 }
 
 .sj-vp .sj-vp__grid { display: grid; gap: 14px; }

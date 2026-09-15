@@ -407,6 +407,289 @@ add_filter('default_option_job_manager_hide_expired', '__return_true');
 add_filter('option_job_manager_hide_expired_content', '__return_true');
 add_filter('default_option_job_manager_hide_expired_content', '__return_true');
 
+if (!function_exists('sj_clean_jobs_shortcode_context_value')) {
+    function sj_clean_jobs_shortcode_context_value($value): string {
+        if (is_array($value)) {
+            $value = reset($value);
+        }
+
+        $value = trim((string) $value);
+        $value = trim($value, " \t\n\r\0\x0B'\"=");
+
+        return sanitize_key($value);
+    }
+}
+
+if (!function_exists('sj_jobs_shortcode_is_homepage_context')) {
+    function sj_jobs_shortcode_is_homepage_context($atts): bool {
+        if (!is_array($atts)) {
+            return false;
+        }
+
+        $homepage_values = ['homepage', 'home', 'frontpage', 'front-page', 'front_page'];
+
+        foreach (['variant', 'context', 'layout', 'view', 0] as $key) {
+            if (isset($atts[$key]) && in_array(sj_clean_jobs_shortcode_context_value($atts[$key]), $homepage_values, true)) {
+                return true;
+            }
+        }
+
+        if (isset($atts['homepage'])) {
+            $homepage = sj_clean_jobs_shortcode_context_value($atts['homepage']);
+            return in_array($homepage, array_merge($homepage_values, ['1', 'true', 'yes', 'on']), true);
+        }
+
+        return false;
+    }
+}
+
+if (!function_exists('sj_jobs_request_context_is_homepage')) {
+    function sj_jobs_request_context_is_homepage(): bool {
+        $context = '';
+
+        if (isset($_REQUEST['sj_jobs_context'])) {
+            $context = sj_clean_jobs_shortcode_context_value(wp_unslash($_REQUEST['sj_jobs_context']));
+        }
+
+        if (!$context && !empty($_REQUEST['form_data']) && is_scalar($_REQUEST['form_data'])) {
+            parse_str(wp_unslash((string) $_REQUEST['form_data']), $form_data);
+            if (isset($form_data['sj_jobs_context'])) {
+                $context = sj_clean_jobs_shortcode_context_value($form_data['sj_jobs_context']);
+            }
+        }
+
+        return in_array($context, ['homepage', 'home', 'frontpage', 'front-page', 'front_page'], true);
+    }
+}
+
+if (!function_exists('sj_current_jobs_shortcode_context_is_homepage')) {
+    function sj_current_jobs_shortcode_context_is_homepage(): bool {
+        $stack = $GLOBALS['sj_jobs_shortcode_context_stack'] ?? [];
+        $context = !empty($stack) ? end($stack) : '';
+
+        return $context === 'homepage';
+    }
+}
+
+if (!function_exists('sj_package_value_is_freemium')) {
+    function sj_package_value_is_freemium($value): bool {
+        $value = strtolower(remove_accents(wp_strip_all_tags((string) $value)));
+
+        return strpos($value, 'freemium') !== false;
+    }
+}
+
+if (!function_exists('sj_meta_value_is_enabled')) {
+    function sj_meta_value_is_enabled($value): bool {
+        return in_array(sj_clean_jobs_shortcode_context_value($value), ['1', 'true', 'yes', 'on'], true);
+    }
+}
+
+if (!function_exists('sj_job_listing_is_freemium')) {
+    function sj_job_listing_is_freemium($post_id): bool {
+        $post_id = (int) $post_id;
+
+        if (metadata_exists('post', $post_id, '_sj_is_freemium')) {
+            return sj_meta_value_is_enabled(get_post_meta($post_id, '_sj_is_freemium', true));
+        }
+
+        return sj_package_value_is_freemium(get_post_meta($post_id, '_sj_pakket', true));
+    }
+}
+
+if (!function_exists('sj_get_freemium_job_expiry_date')) {
+    function sj_get_freemium_job_expiry_date($post_id): string {
+        $post_id    = (int) $post_id;
+        $started_at = get_post_meta($post_id, '_sj_freemium_started_at', true);
+
+        if (!$started_at || !strtotime($started_at)) {
+            $started_at = current_time('mysql');
+            update_post_meta($post_id, '_sj_freemium_started_at', $started_at);
+        }
+
+        return date('Y-m-d', strtotime($started_at) + (7 * DAY_IN_SECONDS));
+    }
+}
+
+if (!function_exists('sj_maybe_set_freemium_job_expiry')) {
+    function sj_maybe_set_freemium_job_expiry($post_id): void {
+        $post_id = (int) $post_id;
+
+        if (get_post_type($post_id) !== 'job_listing') {
+            return;
+        }
+
+        if (!sj_job_listing_is_freemium($post_id)) {
+            $freemium_expiry = get_post_meta($post_id, '_sj_freemium_expiry_date', true);
+            $current_expiry  = get_post_meta($post_id, '_job_expires', true);
+
+            if ($freemium_expiry && $current_expiry === $freemium_expiry) {
+                delete_post_meta($post_id, '_job_expires');
+            }
+
+            delete_post_meta($post_id, '_sj_freemium_started_at');
+            delete_post_meta($post_id, '_sj_freemium_expiry_date');
+            return;
+        }
+
+        if (get_post_status($post_id) !== 'publish') {
+            return;
+        }
+
+        $target_date = sj_get_freemium_job_expiry_date($post_id);
+        $target_ts   = strtotime($target_date);
+        $expires     = get_post_meta($post_id, '_job_expires', true);
+        $expires_ts  = $expires ? strtotime($expires) : false;
+        $today_ts    = strtotime(current_time('Y-m-d'));
+
+        if ($expires_ts && $expires_ts >= $today_ts && $expires_ts <= $target_ts) {
+            return;
+        }
+
+        update_post_meta($post_id, '_job_expires', $target_date);
+        update_post_meta($post_id, '_sj_freemium_expiry_date', $target_date);
+    }
+}
+
+if (!function_exists('sj_exclude_freemium_jobs_from_query_args')) {
+    function sj_exclude_freemium_jobs_from_query_args(array $query_args): array {
+        if (!isset($query_args['meta_query']) || !is_array($query_args['meta_query'])) {
+            $query_args['meta_query'] = [];
+        }
+
+        if (isset($query_args['meta_query']['sj_exclude_freemium_jobs'])) {
+            return $query_args;
+        }
+
+        if (
+            isset($query_args['meta_query']['relation']) &&
+            strtoupper((string) $query_args['meta_query']['relation']) === 'OR'
+        ) {
+            $query_args['meta_query'] = [
+                'relation' => 'AND',
+                $query_args['meta_query'],
+            ];
+        } elseif (!isset($query_args['meta_query']['relation'])) {
+            $query_args['meta_query']['relation'] = 'AND';
+        }
+
+        $query_args['meta_query']['sj_exclude_freemium_jobs'] = [
+            'relation' => 'OR',
+            [
+                'relation' => 'AND',
+                [
+                    'key'     => '_sj_is_freemium',
+                    'compare' => 'EXISTS',
+                ],
+                [
+                    'key'     => '_sj_is_freemium',
+                    'value'   => ['1', 'true', 'yes', 'on'],
+                    'compare' => 'NOT IN',
+                ],
+            ],
+            [
+                'relation' => 'AND',
+                [
+                    'key'     => '_sj_is_freemium',
+                    'compare' => 'NOT EXISTS',
+                ],
+                [
+                    'relation' => 'OR',
+                    [
+                        'key'     => '_sj_pakket',
+                        'compare' => 'NOT EXISTS',
+                    ],
+                    [
+                        'key'     => '_sj_pakket',
+                        'value'   => 'freemium',
+                        'compare' => 'NOT LIKE',
+                    ],
+                ],
+            ],
+        ];
+
+        return $query_args;
+    }
+}
+
+add_filter('pre_do_shortcode_tag', function ($return, $tag, $attr) {
+    if ($return !== false || $tag !== 'jobs') {
+        return $return;
+    }
+
+    $atts = is_array($attr) ? $attr : [];
+    $GLOBALS['sj_jobs_shortcode_context_stack'][] = sj_jobs_shortcode_is_homepage_context($atts) ? 'homepage' : '';
+    $GLOBALS['sj_job_shortcode_atts'] = $atts;
+
+    return $return;
+}, 1000, 3);
+
+add_filter('do_shortcode_tag', function ($output, $tag) {
+    if ($tag !== 'jobs') {
+        return $output;
+    }
+
+    if (!empty($GLOBALS['sj_jobs_shortcode_context_stack']) && is_array($GLOBALS['sj_jobs_shortcode_context_stack'])) {
+        array_pop($GLOBALS['sj_jobs_shortcode_context_stack']);
+    }
+
+    $GLOBALS['sj_job_shortcode_atts'] = [];
+
+    return $output;
+}, 10, 2);
+
+add_filter('job_manager_output_jobs_args', function ($args) {
+    if (sj_current_jobs_shortcode_context_is_homepage()) {
+        $args['sj_jobs_context'] = 'homepage';
+    }
+
+    return $args;
+});
+
+add_filter('job_manager_get_listings_args', function ($args) {
+    if (sj_jobs_request_context_is_homepage()) {
+        $args['sj_jobs_context'] = 'homepage';
+    }
+
+    return $args;
+});
+
+add_filter('job_manager_jobs_shortcode_data_attributes', function ($data_attributes, $atts) {
+    if (sj_jobs_shortcode_is_homepage_context($atts)) {
+        $data_attributes['sj_jobs_context'] = 'homepage';
+    }
+
+    return $data_attributes;
+}, 10, 2);
+
+add_action('transition_post_status', function ($new_status, $old_status, $post) {
+    if (!$post || $post->post_type !== 'job_listing' || $new_status !== 'publish') {
+        return;
+    }
+
+    sj_maybe_set_freemium_job_expiry($post->ID);
+}, 10, 3);
+
+add_action('job_manager_save_job_listing', function ($post_id) {
+    sj_maybe_set_freemium_job_expiry($post_id);
+}, 99);
+
+add_action('added_post_meta', function ($meta_id, $post_id, $meta_key) {
+    if (!in_array($meta_key, ['_sj_pakket', '_sj_is_freemium'], true)) {
+        return;
+    }
+
+    sj_maybe_set_freemium_job_expiry($post_id);
+}, 10, 3);
+
+add_action('updated_post_meta', function ($meta_id, $post_id, $meta_key) {
+    if (!in_array($meta_key, ['_sj_pakket', '_sj_is_freemium'], true)) {
+        return;
+    }
+
+    sj_maybe_set_freemium_job_expiry($post_id);
+}, 10, 3);
+
 if (!function_exists('sj_get_open_job_listing_count')) {
     function sj_get_open_job_listing_count($args = []) {
         if (!function_exists('get_job_listings')) {
@@ -546,11 +829,31 @@ add_filter('job_manager_job_listing_data_fields', function ($fields) {
     $fields['_cover_image'] = [
         'label'       => __('Uitgelichte afbeelding / cover', 'job_manager'),
         'type'        => 'file',
+        'priority'    => 10.2,
         'description' => __('Gebruik dit veld voor de grote afbeelding op de vacaturekaart. Het bedrijfslogo blijft apart.', 'job_manager'),
+    ];
+
+    $fields['_sj_is_freemium'] = [
+        'label'              => __('Freemium vacature', 'sustainablejobs-nl'),
+        'type'               => 'checkbox',
+        'description'        => __('Niet tonen in de homepage-variant van [jobs] en automatisch maximaal 7 dagen online.', 'sustainablejobs-nl'),
+        'priority'           => 10.1,
+        'data_type'          => 'integer',
+        'show_in_admin'      => true,
+        'show_in_rest'       => false,
+        'auth_edit_callback' => [\WP_Job_Manager_Post_Types::class, 'auth_check_can_manage_job_listings'],
     ];
 
     return $fields;
 });
+
+add_filter('job_manager_job_listing_wp_admin_fields', function ($fields, $post_id) {
+    if (isset($fields['_sj_is_freemium']) && $post_id) {
+        $fields['_sj_is_freemium']['value'] = sj_job_listing_is_freemium((int) $post_id) ? 1 : 0;
+    }
+
+    return $fields;
+}, 10, 2);
 
 /**
  * ✅ REGISTER CUSTOM TAXONOMIES
@@ -1359,6 +1662,14 @@ add_filter('get_job_listings_query_args', function ($query_args, $args) {
         }
     }
 
+    if (
+        (!empty($args['sj_jobs_context']) && $args['sj_jobs_context'] === 'homepage') ||
+        sj_current_jobs_shortcode_context_is_homepage() ||
+        sj_jobs_request_context_is_homepage()
+    ) {
+        $query_args = sj_exclude_freemium_jobs_from_query_args($query_args);
+    }
+
     $custom_taxonomies = [
         'filter_job_tag'       => 'job_tag',
         'filter_job_sector'    => 'job_sector',
@@ -1681,6 +1992,12 @@ add_filter('job_manager_output_jobs_defaults', function($defaults) {
     $defaults['job_sector'] = '';
     $defaults['organisatie_type'] = '';
     $defaults['job_listing_type'] = '';
+    $defaults['variant'] = '';
+    $defaults['context'] = '';
+    $defaults['layout'] = '';
+    $defaults['view'] = '';
+    $defaults['homepage'] = '';
+    $defaults[0] = '';
     
     return $defaults;
 });

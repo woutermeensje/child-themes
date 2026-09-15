@@ -44,15 +44,38 @@ $keywords = isset( $keywords ) ? $keywords : ( $_GET['search_keywords'] ?? '' );
 $location = isset( $location ) ? $location : ( $_GET['search_location'] ?? '' );
 
 if ( ! function_exists( 'sj_get_open_job_filter_counts' ) ) {
-  function sj_get_open_job_filter_counts( $taxonomy ) {
+  function sj_get_open_job_filter_counts( $taxonomy, $exclude_freemium = false ) {
     static $counts_by_taxonomy = [];
     $taxonomy = sanitize_key( $taxonomy );
-    if ( isset( $counts_by_taxonomy[ $taxonomy ] ) ) return $counts_by_taxonomy[ $taxonomy ];
+    $cache_key = $taxonomy . '|' . ( $exclude_freemium ? 'exclude_freemium' : 'all' );
+    if ( isset( $counts_by_taxonomy[ $cache_key ] ) ) return $counts_by_taxonomy[ $cache_key ];
     if ( ! taxonomy_exists( $taxonomy ) ) {
-      $counts_by_taxonomy[ $taxonomy ] = [];
-      return $counts_by_taxonomy[ $taxonomy ];
+      $counts_by_taxonomy[ $cache_key ] = [];
+      return $counts_by_taxonomy[ $cache_key ];
     }
     global $wpdb;
+    $pakket_join  = '';
+    $pakket_where = '';
+    $params       = [ $taxonomy, current_time( 'Y-m-d' ) ];
+
+    if ( $exclude_freemium ) {
+      $pakket_join  = "
+       LEFT JOIN {$wpdb->postmeta} sj_is_freemium ON sj_is_freemium.post_id = p.ID AND sj_is_freemium.meta_key = '_sj_is_freemium'
+       LEFT JOIN {$wpdb->postmeta} sj_pakket ON sj_pakket.post_id = p.ID AND sj_pakket.meta_key = '_sj_pakket'";
+      $pakket_where = "
+         AND (
+           (
+             sj_is_freemium.meta_id IS NOT NULL
+             AND LOWER(sj_is_freemium.meta_value) NOT IN ('1', 'true', 'yes', 'on')
+           )
+           OR (
+             sj_is_freemium.meta_id IS NULL
+             AND (sj_pakket.meta_id IS NULL OR sj_pakket.meta_value NOT LIKE %s)
+           )
+         )";
+      $params[] = '%' . $wpdb->esc_like( 'freemium' ) . '%';
+    }
+
     $sql = $wpdb->prepare(
       "SELECT tt.term_id, COUNT(DISTINCT p.ID) AS open_jobs
        FROM {$wpdb->term_relationships} tr
@@ -60,21 +83,22 @@ if ( ! function_exists( 'sj_get_open_job_filter_counts' ) ) {
        INNER JOIN {$wpdb->posts} p ON p.ID = tr.object_id
        LEFT JOIN {$wpdb->postmeta} filled  ON filled.post_id  = p.ID AND filled.meta_key  = '_filled'      AND filled.meta_value  = '1'
        LEFT JOIN {$wpdb->postmeta} expires ON expires.post_id = p.ID AND expires.meta_key = '_job_expires'
+       {$pakket_join}
        WHERE tt.taxonomy = %s
          AND p.post_type   = 'job_listing'
          AND p.post_status = 'publish'
          AND filled.meta_id IS NULL
          AND (expires.meta_id IS NULL OR expires.meta_value = '' OR expires.meta_value >= %s)
+         {$pakket_where}
        GROUP BY tt.term_id",
-      $taxonomy,
-      current_time( 'Y-m-d' )
+      $params
     );
     $counts = [];
     foreach ( (array) $wpdb->get_results( $sql ) as $row ) {
       $counts[ (int) $row->term_id ] = (int) $row->open_jobs;
     }
-    $counts_by_taxonomy[ $taxonomy ] = $counts;
-    return $counts_by_taxonomy[ $taxonomy ];
+    $counts_by_taxonomy[ $cache_key ] = $counts;
+    return $counts_by_taxonomy[ $cache_key ];
   }
 }
 
@@ -107,13 +131,18 @@ if ( ! function_exists( 'sj_sort_terms_by_open_job_count' ) ) {
   }
 }
 
-$job_type_counts         = sj_get_open_job_filter_counts( 'job_listing_type' );
-$job_sector_counts       = sj_get_open_job_filter_counts( 'job_sector' );
-$organisatie_type_counts = sj_get_open_job_filter_counts( 'organisatie_type' );
-$job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
+$exclude_freemium_from_counts = function_exists( 'sj_jobs_shortcode_is_homepage_context' ) && sj_jobs_shortcode_is_homepage_context( $atts );
+$job_type_counts              = sj_get_open_job_filter_counts( 'job_listing_type', $exclude_freemium_from_counts );
+$job_sector_counts            = sj_get_open_job_filter_counts( 'job_sector', $exclude_freemium_from_counts );
+$organisatie_type_counts      = sj_get_open_job_filter_counts( 'organisatie_type', $exclude_freemium_from_counts );
+$job_company_counts           = sj_get_open_job_filter_counts( 'job_company', $exclude_freemium_from_counts );
 ?>
 
 <form class="job_filters">
+  <?php if ( function_exists( 'sj_jobs_shortcode_is_homepage_context' ) && sj_jobs_shortcode_is_homepage_context( $atts ) ) : ?>
+    <input type="hidden" name="sj_jobs_context" value="homepage" />
+  <?php endif; ?>
+
   <?php do_action( 'job_manager_job_filters_start', $atts ); ?>
 
   <h2 class="filter-title">
