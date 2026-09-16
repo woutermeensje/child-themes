@@ -336,11 +336,6 @@ function sj_beroepservaringen_shortcode($atts): string {
     sj_beroepservaringen_print_assets();
     ?>
     <section class="sj-beroepservaringen" id="sj-beroepservaringen">
-        <header class="sj-beroepservaringen__header">
-            <h2><?php echo esc_html($atts['title']); ?></h2>
-            <p>Werk jij in dit beroep? Deel jouw praktijkervaring en help anderen een beter beeld te krijgen van het werk.</p>
-        </header>
-
         <?php if (!empty($items)): ?>
             <div class="sj-beroepservaringen__list" aria-label="Ervaringen met dit beroep">
                 <?php foreach ($items as $item):
@@ -433,18 +428,18 @@ function sj_beroepservaringen_print_assets(): void {
     .sj-beroepservaringen,
     .sj-beroepservaringen * { box-sizing: border-box; }
     .sj-beroepservaringen {
-        margin: 42px 0;
+        margin: 0;
         color: #333;
         font-family: 'Poppins', system-ui, sans-serif;
     }
     .sj-beroepservaringen__header {
-        margin-bottom: 18px;
+        margin: 0;
     }
     .sj-beroepservaringen__header h2,
     .sj-beroepservaringen__form h3 {
         margin: 0 0 8px;
         color: #333;
-        font-family: 'Inter', system-ui, sans-serif;
+        font-family: 'Work Sans', system-ui, sans-serif;
         font-weight: 700;
         line-height: 1.25;
     }
@@ -466,10 +461,10 @@ function sj_beroepservaringen_print_assets(): void {
         margin-bottom: 24px;
     }
     .sj-beroepservaringen__item {
-        border: 1px solid #DEDEDE;
-        border-radius: 6px;
-        padding: 18px;
-        background: #fff;
+        border: 0;
+        border-radius: 0;
+        padding: 0;
+        background: transparent;
     }
     .sj-beroepservaringen__item-meta {
         display: flex;
@@ -495,10 +490,10 @@ function sj_beroepservaringen_print_assets(): void {
         margin-top: 10px;
     }
     .sj-beroepservaringen__form {
-        border: 1px solid #DEDEDE;
-        border-radius: 6px;
-        padding: 22px;
-        background: #fff;
+        border: 0;
+        border-radius: 0;
+        padding: 0;
+        background: transparent;
     }
     .sj-beroepservaringen__grid {
         display: grid;
@@ -522,7 +517,7 @@ function sj_beroepservaringen_print_assets(): void {
         width: 100%;
         border: 1px solid #D8D8D8;
         border-radius: 6px;
-        padding: 12px 13px;
+        padding: 8px 12px;
         background: #fff;
         color: #333;
         font: inherit;
@@ -600,7 +595,7 @@ function sj_beroepservaringen_print_assets(): void {
     }
     @media (max-width: 720px) {
         .sj-beroepservaringen__form {
-            padding: 18px;
+            padding: 0;
         }
         .sj-beroepservaringen__grid,
         .sj-beroepservaringen__footer {
