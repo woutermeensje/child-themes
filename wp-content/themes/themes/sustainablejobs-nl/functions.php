@@ -280,7 +280,8 @@ add_action('wp_enqueue_scripts', function () {
             true
         );
         wp_localize_script('sj-job-favorites', 'SJJobFavoritesConfig', [
-            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'ajaxUrl'    => admin_url('admin-ajax.php'),
+            'trackNonce' => wp_create_nonce('sj_job_favorite_tracking'),
         ]);
     }
 });

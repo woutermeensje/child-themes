@@ -1,5 +1,6 @@
 (function () {
     const storageKey = 'sjFavoriteJobs';
+    const visitorKey = 'sjFavoriteJobsVisitorId';
     const config = window.SJJobFavoritesConfig || {};
     let fetchedPageJobs = false;
 
@@ -61,6 +62,56 @@
         return unique;
     }
 
+    function getVisitorId() {
+        try {
+            let visitorId = window.localStorage.getItem(visitorKey);
+
+            if (!visitorId) {
+                visitorId = createVisitorId();
+                window.localStorage.setItem(visitorKey, visitorId);
+            }
+
+            return visitorId;
+        } catch (error) {
+            return '';
+        }
+    }
+
+    function createVisitorId() {
+        if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+            return window.crypto.randomUUID();
+        }
+
+        const randomPart = Math.random().toString(36).slice(2);
+        return `sj_${Date.now().toString(36)}_${randomPart}`;
+    }
+
+    function trackFavoriteEvent(jobId, state) {
+        if (!config.ajaxUrl || !config.trackNonce || !jobId) return;
+        if (state !== 'favorite' && state !== 'unfavorite') return;
+
+        const visitorId = getVisitorId();
+        if (!visitorId) return;
+
+        const params = new URLSearchParams({
+            action: 'sj_track_job_favorite',
+            nonce: config.trackNonce,
+            job_id: String(jobId),
+            favorite_state: state,
+            visitor_id: visitorId
+        });
+
+        window.fetch(config.ajaxUrl, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            body: params.toString(),
+            keepalive: true
+        }).catch(() => {});
+    }
+
     function getButtonJob(button) {
         return normalizeJob({
             id: button.dataset.jobId,
@@ -78,6 +129,7 @@
 
         const jobs = readJobs();
         const index = jobs.findIndex((item) => item.id === job.id);
+        const state = index >= 0 ? 'unfavorite' : 'favorite';
 
         if (index >= 0) {
             jobs.splice(index, 1);
@@ -86,11 +138,19 @@
         }
 
         refresh(writeJobs(jobs));
+        trackFavoriteEvent(job.id, state);
     }
 
     function removeJob(jobId) {
-        const jobs = readJobs().filter((job) => job.id !== String(jobId));
-        refresh(writeJobs(jobs));
+        const jobs = readJobs();
+        const removedJob = jobs.find((job) => job.id === String(jobId));
+        const remainingJobs = jobs.filter((job) => job.id !== String(jobId));
+
+        refresh(writeJobs(remainingJobs));
+
+        if (removedJob) {
+            trackFavoriteEvent(removedJob.id, 'unfavorite');
+        }
     }
 
     function refresh(jobs) {

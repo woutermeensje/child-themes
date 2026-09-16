@@ -55,6 +55,7 @@ if (!empty($org_types) && !is_wp_error($org_types)) {
 
 $geo_long = $post->geolocation_long ?? get_post_meta($post_id, '_geolocation_long', true);
 $geo_lat  = $post->geolocation_lat ?? get_post_meta($post_id, '_geolocation_lat', true);
+$sj_is_freemium_job = function_exists('sj_job_listing_is_freemium') && sj_job_listing_is_freemium($post_id);
 
 global $sj_featured_label_shown;
 if (is_position_featured($post_id) && !$sj_featured_label_shown) {
@@ -92,6 +93,7 @@ $sj_prev_activisme = $sj_is_activisme;
     if (function_exists('sj_is_featured_employer') && sj_is_featured_employer($post_id)) $card_classes .= ' job-card--featured-employer';
     if (function_exists('sj_is_recruitment_partner') && sj_is_recruitment_partner($post_id)) $card_classes .= ' job-card--recruitment-partner';
     if (function_exists('sj_is_activisme') && sj_is_activisme($post_id)) $card_classes .= ' job-card--activisme';
+    if ($sj_is_freemium_job) $card_classes .= ' job-card--freemium';
     ?>
     <div class="<?php echo esc_attr($card_classes); ?>" data-href="<?php the_job_permalink(); ?>">
         <div class="job-card__desktop">
@@ -107,9 +109,11 @@ $sj_prev_activisme = $sj_is_activisme;
             <?php endif; ?>
 
             <div class="job-card__content">
-                <div class="job-card__favorite">
-                    <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'card']); ?>
-                </div>
+                <?php if (!$sj_is_freemium_job && function_exists('sj_the_job_favorite_button')) : ?>
+                    <div class="job-card__favorite">
+                        <?php sj_the_job_favorite_button($post_id, ['context' => 'card']); ?>
+                    </div>
+                <?php endif; ?>
                 <div class="job_listing_content">
                     <a href="<?php echo esc_url(get_permalink($post_id)); ?>" class="title-link">
                         <h2 class="job-card__title"><?php wpjm_the_job_title(); ?></h2>
@@ -174,9 +178,11 @@ $sj_prev_activisme = $sj_is_activisme;
                     <a class="job-mobile__title-link" href="<?php the_job_permalink(); ?>">
                         <h2 class="job-mobile__title"><?php wpjm_the_job_title(); ?></h2>
                     </a>
-                    <div class="job-mobile__favorite">
-                        <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'card']); ?>
-                    </div>
+                    <?php if (!$sj_is_freemium_job && function_exists('sj_the_job_favorite_button')) : ?>
+                        <div class="job-mobile__favorite">
+                            <?php sj_the_job_favorite_button($post_id, ['context' => 'card']); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="job-mobile__body<?php echo $has_company_logo ? '' : ' job-mobile__body--no-logo'; ?>">
