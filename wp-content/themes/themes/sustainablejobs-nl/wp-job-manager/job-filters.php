@@ -174,7 +174,7 @@ $job_company_counts           = sj_get_open_job_filter_counts( 'job_company', $e
     <?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
   </div>
 
-  <p class="filter-subtitle">Of maak een account aan als <a href="https://platform.sustainablejobs.nl/aanmelden/werkzoekende" target="_blank" rel="noopener">werkzoekende</a> of <a href="https://platform.sustainablejobs.nl/aanmelden/werkgever" target="_blank" rel="noopener">werkgever</a> op Sustainablejobs.nl.</p>
+  <p class="filter-subtitle">Of stel als werkzoekende een <a href="<?php echo esc_url( home_url( '/job-alerts/' ) ); ?>">job alert</a> in of meld je aan voor de maandelijkse <a href="<?php echo esc_url( home_url( '/nieuwsbrief/' ) ); ?>">(vacature) nieuwsbrief</a>.</p>
 
   <div class="filter-taxonomy-row">
     <!-- Dienstverband -->
