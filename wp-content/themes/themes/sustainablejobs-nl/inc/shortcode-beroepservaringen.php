@@ -355,7 +355,7 @@ function sj_beroepservaringen_shortcode($atts): string {
         <?php endif; ?>
 
         <form class="sj-beroepservaringen__form" id="<?php echo esc_attr($form_id); ?>" method="post" action="<?php echo esc_url(get_permalink($page_id)); ?>#sj-beroepservaringen" novalidate>
-            <h3>Deel jouw ervaring met dit beroep</h3>
+            <h3>Vertel jouw ervaringen over dit beroep.</h3>
 
             <?php if ($notice['type'] === 'success'): ?>
                 <div class="sj-beroepservaringen__notice sj-beroepservaringen__notice--success">
@@ -435,9 +435,8 @@ function sj_beroepservaringen_print_assets(): void {
     .sj-beroepservaringen__header {
         margin: 0;
     }
-    .sj-beroepservaringen__header h2,
     .sj-beroepservaringen__form h3 {
-        margin: 0 0 8px;
+        margin: 0 0 24px;
         color: #333;
         font-family: 'Work Sans', system-ui, sans-serif;
         font-weight: 700;
