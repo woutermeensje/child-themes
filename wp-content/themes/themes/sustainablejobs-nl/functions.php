@@ -509,7 +509,7 @@ if (!function_exists('sj_get_freemium_job_expiry_date')) {
             update_post_meta($post_id, '_sj_freemium_started_at', $started_at);
         }
 
-        return date('Y-m-d', strtotime($started_at) + (7 * DAY_IN_SECONDS));
+        return date('Y-m-d', strtotime($started_at) + (5 * DAY_IN_SECONDS));
     }
 }
 
@@ -838,7 +838,7 @@ add_filter('job_manager_job_listing_data_fields', function ($fields) {
     $fields['_sj_is_freemium'] = [
         'label'              => __('Freemium vacature', 'sustainablejobs-nl'),
         'type'               => 'checkbox',
-        'description'        => __('Niet tonen in de homepage-variant van [jobs] en automatisch maximaal 7 dagen online.', 'sustainablejobs-nl'),
+        'description'        => __('Niet tonen in de homepage-variant van [jobs] en automatisch maximaal 5 dagen online.', 'sustainablejobs-nl'),
         'priority'           => 10.1,
         'data_type'          => 'integer',
         'show_in_admin'      => true,

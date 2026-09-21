@@ -31,10 +31,9 @@ function omj_snel_plaatsen_shortcode(): string {
             $body .= "Vacature URL: $url\n";
 
             $headers = ['Content-Type: text/plain; charset=UTF-8'];
-            $to = array_unique(array_filter([
-                'support@onlinemarketingjobs.nl',
+            $to = array_filter([
                 get_option('admin_email'),
-            ]));
+            ]);
             wp_mail($to, 'Snel plaatsen aanvraag', $body, $headers);
 
             $confirmation_body  = "Beste,\n\n";

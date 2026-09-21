@@ -111,138 +111,43 @@ $job_type_counts         = sj_get_open_job_filter_counts( 'job_listing_type' );
 $job_sector_counts       = sj_get_open_job_filter_counts( 'job_sector' );
 $organisatie_type_counts = sj_get_open_job_filter_counts( 'organisatie_type' );
 $job_company_counts      = sj_get_open_job_filter_counts( 'job_company' );
-
-if ( ! function_exists( 'sj_get_named_upload_image_url' ) ) {
-  function sj_get_named_upload_image_url( $basename ) {
-    $title    = sanitize_text_field( $basename );
-    $basename = sanitize_title( $basename );
-    if ( ! $basename ) return '';
-
-    $attachment = get_page_by_path( $basename, OBJECT, 'attachment' );
-    if ( $attachment instanceof WP_Post ) {
-      $url = wp_get_attachment_image_url( $attachment->ID, 'full' );
-      if ( $url ) return $url;
-    }
-
-    global $wpdb;
-    $attachment_id = (int) $wpdb->get_var(
-      $wpdb->prepare(
-        "SELECT p.ID
-         FROM {$wpdb->posts} p
-         LEFT JOIN {$wpdb->postmeta} alt ON alt.post_id = p.ID AND alt.meta_key = '_wp_attachment_image_alt'
-         WHERE p.post_type = 'attachment'
-           AND (
-             p.post_title = %s
-             OR p.post_excerpt = %s
-             OR alt.meta_value = %s
-           )
-         ORDER BY p.ID DESC
-         LIMIT 1",
-        $title,
-        $title,
-        $title
-      )
-    );
-
-    if ( $attachment_id ) {
-      $url = wp_get_attachment_image_url( $attachment_id, 'full' );
-      if ( $url ) return $url;
-    }
-
-    $like_with_dir = '%/' . $wpdb->esc_like( $basename ) . '%';
-    $like_filename = $wpdb->esc_like( $basename ) . '%';
-    $attachment_id = (int) $wpdb->get_var(
-      $wpdb->prepare(
-        "SELECT post_id FROM {$wpdb->postmeta}
-         WHERE meta_key = '_wp_attached_file'
-           AND (meta_value LIKE %s OR meta_value LIKE %s)
-         ORDER BY post_id DESC
-         LIMIT 1",
-        $like_with_dir,
-        $like_filename
-      )
-    );
-
-    if ( $attachment_id ) {
-      $url = wp_get_attachment_image_url( $attachment_id, 'full' );
-      if ( $url ) return $url;
-    }
-
-    $upload_dir = wp_get_upload_dir();
-    if ( ! empty( $upload_dir['error'] ) || empty( $upload_dir['basedir'] ) || empty( $upload_dir['baseurl'] ) ) return '';
-
-    foreach ( [ 'jpg', 'jpeg', 'png', 'webp' ] as $extension ) {
-      $relative_path = '2026/06/' . $basename . '.' . $extension;
-      $absolute_path = trailingslashit( $upload_dir['basedir'] ) . $relative_path;
-      if ( file_exists( $absolute_path ) ) {
-        return trailingslashit( $upload_dir['baseurl'] ) . $relative_path;
-      }
-
-      $matches = glob( trailingslashit( $upload_dir['basedir'] ) . '2026/06/' . $basename . '-*.' . $extension );
-      if ( ! empty( $matches[0] ) && is_readable( $matches[0] ) ) {
-        return trailingslashit( $upload_dir['baseurl'] ) . '2026/06/' . basename( $matches[0] );
-      }
-    }
-
-    return '';
-  }
-}
-
-if ( ! function_exists( 'sj_get_open_job_listing_count' ) ) {
-  function sj_get_open_job_listing_count( $args = [] ) {
-    if ( ! function_exists( 'get_job_listings' ) ) return 0;
-
-    $jobs = get_job_listings( wp_parse_args( $args, [
-      'posts_per_page' => 1,
-      'fields'         => 'ids',
-    ] ) );
-
-    return $jobs instanceof WP_Query ? (int) $jobs->found_posts : 0;
-  }
-}
-
-$hero_image = sj_get_named_upload_image_url( 'online-marketing-vacature-homepage' );
-$hero_count_args = [
-  'search_keywords' => is_scalar( $keywords ) ? sanitize_text_field( wp_unslash( (string) $keywords ) ) : '',
-  'search_location' => is_scalar( $location ) ? sanitize_text_field( wp_unslash( (string) $location ) ) : '',
-];
-$hero_job_count = function_exists( 'sj_get_open_job_listing_count' ) ? sj_get_open_job_listing_count( $hero_count_args ) : 0;
 ?>
-
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Work+Sans:wght@700;800;900&display=swap" rel="stylesheet">
-
-<div class="sj-job-hero"<?php if ( $hero_image ) : ?> style="background-image: url('<?php echo esc_url( $hero_image ); ?>');"<?php endif; ?>>
-    <div class="sj-job-hero__inner">
-        <span class="sj-job-hero__eyebrow">OnlineMarketingjobs.nl</span>
-        <div class="sj-job-hero__title-wrap">
-            <h1 class="sj-job-hero__title">De <span class="sj-job-hero__highlight">Vacaturesite</span> Voor Vacatures, Opdrachten En Stages In De <span class="sj-job-hero__highlight">Online Marketing</span> En Communicatie.</h1>
-        </div>
-        <p class="sj-job-hero__subtitle">Bekijk alle <a href="#job_listings" class="sj-job-hero__vacatures-link"><span class="sj-hero-job-count sj-job-hero__accent"><?php echo esc_html( number_format_i18n( $hero_job_count ) ); ?></span> vacatures</a> of meld je direct aan voor onze <a href="/nieuwsbrief/" class="sj-job-hero__link">vacature nieuwsbrief</a>.</p>
-    </div>
-</div>
 
 <form class="job_filters">
   <?php do_action( 'job_manager_job_filters_start', $atts ); ?>
 
-  <div class="filter-row">
+  <h2 class="filter-title">
+    Ga aan de slag als
+    <span class="filter-title-arrow" aria-hidden="true">→</span>
+    <span class="filter-title-term" data-filter-title-terms="Online marketeer|Content marketeer|Growth marketeer|SEO specialist|SEA specialist|Conversie specialist|Copy writer|Recruitment marketeer|Paid Ads Marketeer|Google Ads Specialist|TikTok Marketeer">Online marketeer</span>
+  </h2>
+  <div class="filter-search-row">
     <?php do_action( 'job_manager_job_filters_search_jobs_start', $atts ); ?>
 
-    <div class="search_keywords">
-      <input type="text" name="search_keywords" id="search_keywords"
-             placeholder="Functienaam, specialisme of onderwerp.."
-             value="<?php echo esc_attr( $keywords ); ?>" />
-    </div>
+    <div class="filter-search-shell">
+      <div class="search_keywords">
+        <input type="text" name="search_keywords" id="search_keywords"
+               placeholder="Functie of specialisme.."
+               value="<?php echo esc_attr( $keywords ); ?>" />
+      </div>
 
-    <div class="search_location">
-      <input type="text" name="search_location" id="search_location"
-             placeholder="Stad of plaats"
-             value="<?php echo esc_attr( $location ); ?>" />
+      <div class="search_location">
+        <input type="text" name="search_location" id="search_location"
+               placeholder="Stad of plaats"
+               value="<?php echo esc_attr( $location ); ?>" />
+      </div>
+
+      <button type="submit" class="filter-submit">
+        <span>Zoeken</span>
+      </button>
     </div>
 
     <?php do_action( 'job_manager_job_filters_search_jobs_end', $atts ); ?>
+  </div>
 
+  <p class="filter-subtitle">Of stel als werkzoekende een <a href="<?php echo esc_url( home_url( '/job-alerts/' ) ); ?>">job alert</a> in of meld je aan voor de maandelijkse <a href="<?php echo esc_url( home_url( '/nieuwsbrief/' ) ); ?>">(vacature) nieuwsbrief</a>.</p>
+
+  <div class="filter-taxonomy-row">
     <!-- Dienstverband -->
     <div class="job_type">
       <select name="filter_job_types[]" id="filter_job_types"
@@ -311,6 +216,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.querySelector("form.job_filters");
   if (!form) return;
 
+  const rotatingTitleTerm = document.querySelector("[data-filter-title-terms]");
+  if (rotatingTitleTerm) {
+    const terms = rotatingTitleTerm.dataset.filterTitleTerms.split("|").filter(Boolean);
+    let termIndex = 0;
+
+    window.setInterval(() => {
+      termIndex = (termIndex + 1) % terms.length;
+      rotatingTitleTerm.classList.add("is-changing");
+
+      window.setTimeout(() => {
+        rotatingTitleTerm.textContent = terms[termIndex];
+        rotatingTitleTerm.classList.remove("is-changing");
+      }, 180);
+    }, 2600);
+  }
+
   const wpjmFilter = () => {
     if (window.job_manager_job_filters && typeof window.job_manager_job_filters.filter_jobs === "function") {
       window.job_manager_job_filters.filter_jobs();
@@ -371,7 +292,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    activeFiltersEl.style.display = activeFiltersEl.children.length ? "flex" : "none";
+    const hasActiveFilters = activeFiltersEl.children.length > 0;
+    activeFiltersEl.style.display = hasActiveFilters ? "flex" : "none";
+    form.classList.toggle("has-active-filters", hasActiveFilters);
   };
 
   const buildSelect = (select) => {
@@ -596,142 +519,6 @@ jQuery(function($) {
 </script>
 
 <style>
-/* ── Hero section ── */
-.sj-job-hero {
-  position: relative;
-  width: 100vw;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
-  height: 400px;
-  background-color: var(--color-primary, #7C5CFA);
-  background-size: cover;
-  background-position: center top;
-  overflow: hidden;
-  isolation: isolate;
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-}
-
-.sj-job-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: rgba(35, 24, 77, 0.72);
-  z-index: 1;
-  pointer-events: none;
-}
-
-.sj-job-hero__inner {
-  position: relative;
-  z-index: 2;
-  max-width: 1200px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.sj-job-hero__eyebrow {
-  display: inline-block;
-  margin: 0 0 14px;
-  padding-bottom: 6px;
-  border-bottom: 3px solid var(--color-secondary, #b39cd0);
-  font-family: 'Poppins', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.88);
-}
-
-.sj-job-hero__title-wrap {
-  margin: 0 0 18px;
-  max-width: 75%;
-}
-
-.sj-job-hero__title {
-  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
-  font-weight: 800 !important;
-  font-size: clamp(20px, calc(3vw - 4px), 32px) !important;
-  line-height: 1.2 !important;
-  color: #ffffff !important;
-  margin: 0 !important;
-}
-
-.sj-job-hero__highlight {
-  color: var(--color-bg-filter, #F0ECFE);
-}
-
-.sj-job-hero__subtitle {
-  margin: 10px 0 0;
-  font-family: 'Poppins', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.sj-job-hero__accent {
-  color: var(--color-secondary, #b39cd0);
-}
-
-.sj-job-hero__vacatures-link {
-  color: #ffffff !important;
-  text-decoration: none !important;
-}
-
-.sj-job-hero__vacatures-link:hover {
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.sj-job-hero__vacatures-link .sj-job-hero__accent {
-  color: var(--color-secondary, #b39cd0) !important;
-}
-
-.sj-job-hero__link {
-  color: var(--color-secondary, #b39cd0) !important;
-  text-decoration: none !important;
-}
-
-.sj-job-hero__link:hover {
-  color: #d8d0ff !important;
-}
-
-@media (max-width: 960px) {
-  .sj-job-hero {
-    height: 280px;
-    left: 0;
-    right: auto;
-    margin-left: 0;
-    margin-right: 0;
-    width: 100%;
-  }
-
-  .sj-job-hero__inner {
-    max-width: none;
-    padding: 0 16px;
-    box-sizing: border-box;
-  }
-
-  .sj-job-hero__title-wrap {
-    width: 100%;
-    max-width: 100%;
-    margin-bottom: 0;
-  }
-
-  .sj-job-hero__title {
-    font-size: clamp(20px, 5vw, 28px) !important;
-    text-wrap: balance;
-  }
-
-  .sj-job-hero__subtitle {
-    max-width: 100%;
-    font-size: 14px;
-    line-height: 1.45;
-  }
-}
-
 /* ── Filter bar ── */
 .job_filters {
   width: 100vw;
@@ -742,45 +529,136 @@ jQuery(function($) {
   margin-right: -50vw;
   margin-top: 0;
   margin-bottom: 40px !important;
-  min-height: 100px;
-  background: var(--color-bg-filter);
-  border-bottom: 1px solid var(--color-border);
+  height: auto !important;
+  min-height: 400px;
+  background: transparent;
+  border-bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: visible;
   box-sizing: border-box;
   scroll-margin-top: 90px;
 }
 
-.filter-row,
+.job_filters.has-active-filters {
+  min-height: 400px;
+  padding: 28px 0 34px;
+  justify-content: center;
+}
+
+.filter-title,
+.filter-subtitle,
+.filter-search-row,
+.filter-taxonomy-row,
 .active-filters {
+  width: 100%;
   max-width: 1200px;
   margin-left: auto !important;
   margin-right: auto !important;
+  box-sizing: border-box;
 }
 
-.omj-listings-header {
-  display: none;
+.filter-title {
+  padding: 0 24px;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  font-family: "Work Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-size: 32px !important;
+  font-weight: 800 !important;
+  line-height: 1.12 !important;
+  letter-spacing: 0 !important;
+  text-align: center;
+  color: #333333 !important;
 }
 
-.filter-row {
-  display: flex;
+.filter-title-term {
+  display: inline-block;
+  min-width: 9.8em;
+  text-align: left;
+  color: var(--color-primary);
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.filter-title-arrow {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 28px 24px;
+  justify-content: center;
+  width: 1.6em;
+  color: var(--color-primary);
+  transform: translateY(-0.03em);
 }
 
-.search_keywords,
-.search_location {
+.filter-title-term.is-changing {
+  opacity: 0;
+  transform: translateY(4px);
+}
+
+.filter-subtitle {
+  padding: 0 24px;
+  margin-top: 18px !important;
+  margin-bottom: 0 !important;
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+  line-height: 1.45 !important;
+  letter-spacing: 0 !important;
+  text-align: center;
+  color: #333333 !important;
+}
+
+.filter-subtitle a {
+  color: var(--color-primary) !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+.filter-subtitle a:hover,
+.filter-subtitle a:focus {
+  color: var(--color-primary-dk) !important;
+}
+
+.filter-search-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 24px 0;
+}
+
+.filter-search-shell {
+  width: min(100%, 760px);
+  min-height: 44px;
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(180px, 0.8fr) 140px;
+  align-items: stretch;
+  overflow: hidden;
+  background: #ffffff;
+  border: 1px solid #DED7FF;
+  border-radius: 8px;
+  box-shadow: 0 18px 40px -30px rgba(124, 92, 250, 0.5);
+}
+
+.job_filters .search_keywords,
+.job_filters .search_location {
   flex: 1;
   display: flex;
   align-items: center;
   position: relative;
+  min-width: 0;
 }
 
-.filter-row input[type="text"] {
+.job_filters .search_keywords,
+.job_filters .search_location {
+  border-right: 1px solid #DED7FF;
+}
+
+.filter-search-shell input[type="text"] {
   width: 100%;
-  padding: 11px 14px 11px 40px;
+  height: 44px;
+  padding: 0 14px 0 40px;
   font-size: 15px;
-  border: 1px solid #DED7FF;
-  border-radius: 8px;
+  border: 0;
+  border-radius: 0;
   background-color: #ffffff;
   color: var(--color-text);
   transition: border-color .2s ease, box-shadow .2s ease;
@@ -789,21 +667,21 @@ jQuery(function($) {
   box-sizing: border-box;
 }
 
-.filter-row input[type="text"]:focus {
+.filter-search-shell input[type="text"]:focus {
   outline: none;
-  border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px rgba(124, 92, 250, 0.15);
+  box-shadow: inset 0 0 0 2px rgba(124, 92, 250, 0.18);
 }
 
-.search_keywords input::placeholder,
-.search_location input::placeholder {
+.job_filters .search_keywords input::placeholder,
+.job_filters .search_location input::placeholder {
   color: #7c7c7c;
   font-size: 15px !important;
   font-style: italic;
+  font-weight: 400;
 }
 
-.search_keywords::before,
-.search_location::before {
+.job_filters .search_keywords::before,
+.job_filters .search_location::before {
   content: '';
   position: absolute;
   left: 12px;
@@ -816,15 +694,60 @@ jQuery(function($) {
   pointer-events: none;
 }
 
-.search_keywords::before {
+.job_filters .search_keywords::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
 }
 
-.search_location::before {
+.job_filters .search_location::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237C5CFA' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
 }
 
-.filter-row > div {
+.filter-submit {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 0;
+  background: var(--color-primary-dk);
+  color: #ffffff;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  transition: background-color .18s ease, box-shadow .18s ease;
+}
+
+.filter-submit::before {
+  content: '';
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
+}
+
+.filter-submit:hover,
+.filter-submit:focus {
+  outline: none;
+  background: var(--color-primary-dk);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18);
+}
+
+.filter-taxonomy-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 26px 24px 0;
+}
+
+.filter-taxonomy-row > div {
   flex: 0 0 auto;
   min-width: 0;
 }
@@ -1057,8 +980,13 @@ select.sj-hidden-select {
 .active-filters {
   display: none;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 10px;
-  padding: 0 24px 28px;
+  padding: 18px 24px 0;
+}
+
+.job_filters.has-active-filters .active-filters {
+  padding-bottom: 0;
 }
 
 span.active-filter {
@@ -1068,7 +996,7 @@ span.active-filter {
   background: #ffffff;
   border: 1px solid var(--color-primary, #7C5CFA);
   border-radius: 999px;
-  box-shadow: 0 10px 24px -18px rgba(124, 92, 250, 0.28);
+  box-shadow: 0 10px 24px -18px rgba(124, 92, 250, 0.38);
   padding: 8px 12px;
   font-size: 14px;
   color: var(--color-primary, #7C5CFA);
@@ -1104,22 +1032,71 @@ span.active-filter {
     min-height: 0 !important;
   }
 
-  .filter-row {
+  .filter-title {
+    padding: 0 16px !important;
+    margin-top: 24px !important;
+    font-size: 32px !important;
+  }
+
+  .filter-subtitle {
+    padding: 0 16px !important;
+    font-size: 15px !important;
+  }
+
+  .filter-search-row {
+    padding: 24px 16px 0 !important;
+  }
+
+  .filter-search-shell {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .job_filters .search_keywords,
+  .job_filters .search_location {
+    flex: none;
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid #DED7FF;
+  }
+
+  .filter-search-shell input[type="text"] {
+    height: 44px;
+    font-size: 15px;
+    padding-left: 40px;
+  }
+
+  .job_filters .search_keywords input::placeholder,
+  .job_filters .search_location input::placeholder {
+    font-size: 15px !important;
+  }
+
+  .job_filters .search_keywords::before,
+  .job_filters .search_location::before {
+    left: 12px;
+    width: 17px;
+    height: 17px;
+  }
+
+  .filter-submit {
+    width: 100%;
+    min-height: 44px;
+    font-size: 15px;
+  }
+
+  .filter-taxonomy-row {
     flex-direction: column;
     align-items: stretch;
     gap: 10px;
-    padding: 16px !important;
+    padding: 20px 16px 0 !important;
     width: 100%;
     box-sizing: border-box;
   }
 
-  .search_keywords,
-  .search_location {
-    flex: none;
-    width: 100%;
-  }
-
-  .filter-row > div,
+  .filter-taxonomy-row > div,
   .sj-select-wrap,
   .sj-select,
   .sj-select-btn {

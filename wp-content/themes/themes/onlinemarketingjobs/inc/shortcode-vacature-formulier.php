@@ -37,14 +37,10 @@ function omj_vacature_plaatsen_shortcode(): string {
         if (!$omschrijving)    $errors[] = 'Vul een vacatureomschrijving in.';
 
         if (empty($errors)) {
-            $attachments    = [];
-            $upload         = null;
-            $upload_featured = null;
+            $attachments = [];
+            $upload      = null;
 
-            if (
-                !empty($_FILES['bedrijfslogo']['tmp_name']) ||
-                !empty($_FILES['uitgelichte_afbeelding']['tmp_name'])
-            ) {
+            if (!empty($_FILES['bedrijfslogo']['tmp_name'])) {
                 require_once ABSPATH . 'wp-admin/includes/file.php';
                 require_once ABSPATH . 'wp-admin/includes/media.php';
                 require_once ABSPATH . 'wp-admin/includes/image.php';
@@ -60,10 +56,6 @@ function omj_vacature_plaatsen_shortcode(): string {
                 }
             }
 
-            if (!empty($_FILES['uitgelichte_afbeelding']['tmp_name'])) {
-                $upload_featured = media_handle_upload('uitgelichte_afbeelding', 0);
-            }
-
             $type_baan_str = implode(', ', $type_baan);
             $body  = "Nieuwe vacature via het formulier:\n\n";
             $body .= "Pakket: $pakket\n";
@@ -76,15 +68,26 @@ function omj_vacature_plaatsen_shortcode(): string {
             $body .= "Hoe gevonden: $referral\n\n";
             $body .= "--- Vacature omschrijving ---\n" . strip_tags($omschrijving) . "\n\n";
 
-            $headers = ['Content-Type: text/plain; charset=UTF-8'];
+            $headers       = ['Content-Type: text/plain; charset=UTF-8'];
+            $admin_headers = array_merge($headers, [
+                sprintf('Reply-To: %s <%s>', trim("$voornaam $achternaam"), $email),
+            ]);
 
-            wp_mail(
-                'support@onlinemarketingjobs.nl',
+            $admin_recipients = array_filter([
+                get_option('admin_email'),
+            ]);
+
+            $notification_sent = wp_mail(
+                $admin_recipients,
                 "Nieuwe vacature: $vacaturetitel",
                 $body,
-                $headers,
+                $admin_headers,
                 $attachments
             );
+
+            if (!$notification_sent) {
+                error_log('[OMJ Vacature Plaatsen] Admin-notificatie niet verzonden voor: ' . $vacaturetitel);
+            }
 
             $confirmation_body  = "Beste $voornaam,\n\n";
             $confirmation_body .= "Bedankt voor het plaatsen van je vacature op Onlinemarketingjobs.nl.\n\n";
@@ -127,10 +130,6 @@ function omj_vacature_plaatsen_shortcode(): string {
                 if (!empty($upload) && !is_wp_error($upload)) {
                     update_post_meta($post_id, '_sj_logo_id', $upload);
                 }
-
-                if (!empty($upload_featured) && !is_wp_error($upload_featured)) {
-                    update_post_meta($post_id, '_sj_featured_image_id', $upload_featured);
-                }
             }
 
             /* ── Maak concept job_listing aan in WP Job Manager ── */
@@ -153,10 +152,6 @@ function omj_vacature_plaatsen_shortcode(): string {
 
                 if (!empty($upload) && !is_wp_error($upload)) {
                     update_post_meta($job_id, '_company_logo', wp_get_attachment_url($upload));
-                }
-
-                if (!empty($upload_featured) && !is_wp_error($upload_featured)) {
-                    update_post_meta($job_id, '_cover_image', wp_get_attachment_url($upload_featured));
                 }
 
                 if (!empty($type_baan)) {
@@ -361,7 +356,7 @@ function omj_vacature_plaatsen_shortcode(): string {
                             <span class="sj-vp__hint">Beschrijf de functie, vereisten en wat je organisatie biedt.</span>
                         </div>
 
-                        <div class="sj-vp__grid sj-vp__grid--2 sj-vp__upload-grid">
+                        <div class="sj-vp__grid sj-vp__grid--1 sj-vp__upload-grid">
                             <div class="sj-vp__field">
                                 <label class="sj-vp__label" for="omj_bedrijfslogo">Bedrijfslogo uploaden <span class="sj-vp__opt">(optioneel)</span></label>
                                 <label class="sj-vp__upload sj-vp__upload--square" for="omj_bedrijfslogo">
@@ -371,17 +366,6 @@ function omj_vacature_plaatsen_shortcode(): string {
                                     <input type="file" name="bedrijfslogo" id="omj_bedrijfslogo" accept="image/*" class="sj-vp__upload-input">
                                 </label>
                                 <span class="sj-vp__hint">PNG of JPG, liefst vierkant. Max. 2 MB.</span>
-                            </div>
-
-                            <div class="sj-vp__field">
-                                <label class="sj-vp__label" for="omj_uitgelichte_afbeelding">Uitgelichte afbeelding <span class="sj-vp__opt">(optioneel)</span></label>
-                                <label class="sj-vp__upload sj-vp__upload--square" for="omj_uitgelichte_afbeelding">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 256 256" fill="currentColor" aria-hidden="true"><path d="M216,40H40A16,16,0,0,0,24,56V200a16,16,0,0,0,16,16H216a16,16,0,0,0,16-16V56A16,16,0,0,0,216,40Zm0,16V158.75l-26.07-26.06a16,16,0,0,0-22.63,0l-20,20-44-44a16,16,0,0,0-22.62,0L40,149.37V56ZM40,200V172l52-52,44,44a8,8,0,0,0,11.31,0l24.38-24.37L216,184V200Z"/></svg>
-                                    <span class="sj-vp__upload-label">Kies afbeelding</span>
-                                    <span class="sj-vp__upload-name">Geen bestand gekozen</span>
-                                    <input type="file" name="uitgelichte_afbeelding" id="omj_uitgelichte_afbeelding" accept="image/*" class="sj-vp__upload-input">
-                                </label>
-                                <span class="sj-vp__hint">Uitgelichte afbeelding op de vacaturekaart. Liefst liggend, JPG of PNG.</span>
                             </div>
                         </div>
 

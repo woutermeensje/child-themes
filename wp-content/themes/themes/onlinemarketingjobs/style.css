@@ -122,9 +122,10 @@ h1.entry-title {
 }
 
 h1, h2, h3, h4, h5 {
-    font-family: 'Balgin Bold';
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
     color: var(--color-text);
-    line-height: 0.8;
+    line-height: 1.2;
     margin-top: 15px;
     margin-bottom: 15px;
 }
@@ -169,7 +170,7 @@ h4, h5 {
 
 .simple-job h3 {
     margin: 0 0 10px;
-    font-family: 'Balgin Bold', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 18px;
 }
 
@@ -276,7 +277,7 @@ h4, h5 {
 
 .sj-tarieven__title {
     margin: 0 0 10px;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 36px;
     line-height: 1;
     color: #2c2f33;
@@ -298,7 +299,7 @@ h4, h5 {
 
 .sj-tarieven__price {
     margin-bottom: 8px;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 48px;
     line-height: 0.95;
     color: var(--color-primary);
@@ -353,7 +354,7 @@ h4, h5 {
 }
 
 .omj-tax-archive__title {
-    font-family: 'Balgin Bold', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 32px;
     color: var(--color-text);
     margin: 0 0 10px;

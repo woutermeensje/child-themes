@@ -1,258 +1,44 @@
 <?php
 /**
- * Onlinemarketingjobs – Custom header template
+ * Onlinemarketingjobs - custom header template.
  */
-if ( ! defined( 'ABSPATH' ) ) exit;
+if (!defined('ABSPATH')) {
+    exit;
+}
 
-$omj_mobile_logo_url = get_site_icon_url(96) ?: get_stylesheet_directory_uri() . '/site-logo/online-marketing-jobs-logo.png';
+$omj_logo_url        = get_stylesheet_directory_uri() . '/site-logo/online-marketing-jobs-logo.png';
+$omj_mobile_logo_url = get_site_icon_url(96);
+
+if (!$omj_mobile_logo_url) {
+    $omj_mobile_logo_url = $omj_logo_url;
+}
+
+$omj_student_inhuren_url = 'https://platform.student-inhuren.nl/';
 ?>
 
-<style>
-/* ---- Header vars ---- */
-#rn-header, #rn-header *, #rn-header *::before, #rn-header *::after,
-.rn-mobile-nav, .rn-mobile-nav *, .rn-mobile-nav *::before, .rn-mobile-nav *::after { box-sizing: border-box; }
-
-/* ---- Header wrapper ---- */
-#rn-header.rn-header {
-  position: sticky !important;
-  top: 0 !important;
-  z-index: 9000 !important;
-  background: #ffffff !important;
-  box-shadow: 0 2px 16px rgba(0,0,0,0.08) !important;
-  width: 100% !important;
-}
-
-/* ---- Utility bar ---- */
-#rn-header .rn-topbar { background: var(--color-primary) !important; width: 100% !important; }
-#rn-header .rn-topbar__inner {
-  max-width: 1200px; margin: 0 auto; padding: 0 24px;
-  height: 36px; display: flex; align-items: center; justify-content: space-between;
-}
-#rn-header .rn-topbar__left,
-#rn-header .rn-topbar__right { display: flex; align-items: center; gap: 10px; }
-#rn-header .rn-topbar a {
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 13px !important; font-weight: 500 !important;
-  color: rgba(255,255,255,0.9) !important;
-  text-decoration: none !important;
-}
-#rn-header .rn-topbar a:hover { color: #fff !important; text-decoration: underline !important; }
-#rn-header .rn-topbar__divider { color: rgba(255,255,255,0.4); font-size: 13px; }
-
-/* ---- Main nav bar ---- */
-#rn-header .rn-header__inner {
-  max-width: 1200px; margin: 0 auto; padding: 0 24px;
-  height: 68px; display: flex; align-items: center; gap: 24px;
-}
-
-/* ---- Brand / Logo ---- */
-#rn-header .rn-header__brand { flex: 0 0 auto; display: flex; align-items: center; }
-#rn-header .rn-header__brand a { display: block; text-decoration: none !important; }
-#rn-header .rn-header__logo { display: block; height: 44px; width: auto; }
-
-/* ---- Desktop nav ---- */
-#rn-header .rn-header__nav { flex: 1 1 auto; display: flex; align-items: center; justify-content: flex-end; }
-#rn-header .rn-nav__list { list-style: none !important; margin: 0 !important; padding: 0 !important; display: flex !important; align-items: center; gap: 2px; }
-#rn-header .rn-nav__item { position: relative; list-style: none !important; margin: 0 !important; padding: 0 !important; }
-#rn-header .rn-nav__link {
-  display: inline-flex !important; align-items: center; gap: 5px;
-  padding: 8px 12px !important;
-  font-family: 'Roboto', sans-serif !important;
-  font-size: 15px !important; font-weight: 600 !important;
-  color: #333333 !important;
-  text-decoration: none !important;
-  border-radius: 6px; white-space: nowrap;
-  height: 68px;
-  transition: color .15s ease;
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-}
-#rn-header .rn-nav__link:hover { color: var(--color-primary) !important; background: transparent !important; }
-#rn-header .rn-nav__link.is-active { color: var(--color-primary) !important; font-weight: 600 !important; }
-
-/* Chevron */
-#rn-header .rn-nav__chev {
-  width: 7px; height: 7px;
-  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
-  transform: rotate(45deg) translateY(-2px); transition: transform .2s ease; flex-shrink: 0;
-}
-#rn-header .rn-nav__item--has-children:hover > .rn-nav__link .rn-nav__chev { transform: rotate(-135deg) translateY(-2px); }
-
-/* Dropdown */
-#rn-header .rn-nav__dropdown {
-  display: none; position: absolute; top: 100%; left: 0;
-  min-width: 210px; background: #fff;
-  border: 1px solid #e8ecf0; border-top: 3px solid var(--color-primary);
-  border-radius: 0 0 8px 8px;
-  box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-  padding: 6px; list-style: none; margin: 0; z-index: 9001;
-}
-#rn-header .rn-nav__item--has-children:hover > .rn-nav__dropdown { display: block; }
-#rn-header .rn-nav__dropdown .rn-nav__item { width: 100%; }
-#rn-header .rn-nav__dropdown .rn-nav__link {
-  display: block !important; height: auto !important; border-radius: 6px;
-  padding: 9px 14px !important; font-size: 14px !important; font-weight: 400 !important;
-  width: 100%; box-shadow: none !important;
-}
-#rn-header .rn-nav__dropdown .rn-nav__link:hover { background: rgba(124,92,250,0.08) !important; }
-
-/* ---- CTA knoppen ---- */
-#rn-header .rn-header__cta { flex: 0 0 auto; display: flex; align-items: center; gap: 10px; }
-#rn-header .rn-btn {
-  display: inline-flex !important; align-items: center; justify-content: center;
-  font-family: 'Roboto', sans-serif !important;
-  font-weight: 600 !important; font-size: 16px !important;
-  padding: 9px 14px !important; border-radius: 5px !important;
-  white-space: nowrap; cursor: pointer;
-  text-decoration: none !important;
-  transition: background .15s ease, color .15s ease, transform .15s ease;
-}
-#rn-header .rn-btn--outline {
-  background: transparent !important; color: var(--color-primary) !important;
-  border: 2px solid var(--color-primary) !important;
-}
-#rn-header .rn-btn--outline:hover { background: var(--color-primary) !important; color: #fff !important; }
-#rn-header .rn-btn--accent {
-  background: var(--color-primary-dk, #845ec2) !important; color: #fff !important;
-  border: 2px solid var(--color-primary-dk, #845ec2) !important;
-}
-#rn-header .rn-btn--accent:hover {
-  background: var(--color-primary) !important; border-color: var(--color-primary) !important;
-  transform: translateY(-1px);
-}
-
-/* ---- Hamburger ---- */
-#rn-header .rn-header__hamburger {
-  display: none; flex-direction: column; justify-content: center; gap: 5px;
-  width: 40px; height: 40px; background: transparent !important;
-  border: none !important; outline: none; box-shadow: none !important;
-  cursor: pointer; padding: 8px; margin-left: auto; flex-shrink: 0;
-}
-#rn-header .rn-header__hamburger:hover { background: transparent !important; }
-#rn-header .rn-hamburger__bar { display: block; width: 100%; height: 2px; background: #333333; border-radius: 2px; transition: transform .25s ease, opacity .25s ease; }
-#rn-header .rn-header__hamburger.is-open .rn-hamburger__bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-#rn-header .rn-header__hamburger.is-open .rn-hamburger__bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
-#rn-header .rn-header__hamburger.is-open .rn-hamburger__bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-
-/* ---- Mobile sections (standaard verborgen op desktop) ---- */
-#rn-header .rn-header__mobile-left,
-#rn-header .rn-header__mobile-brand,
-#rn-header .rn-header__mobile-right { display: none !important; }
-
-/* ---- Mobile icon links ---- */
-#rn-header .rn-mobile-icon-link {
-  display: inline-flex !important; align-items: center; justify-content: center;
-  width: 40px; height: 40px; border-radius: 999px;
-  color: var(--color-primary) !important; text-decoration: none !important;
-  background: transparent; transition: color .18s ease, background .18s ease;
-}
-#rn-header .rn-mobile-icon-link:hover { opacity: 0.75; }
-#rn-header .rn-mobile-icon-link svg { width: 24px; height: 24px; fill: currentColor; }
-#rn-header .rn-header__mobile-logo {
-  display: block; width: 44px; height: 44px;
-  border-radius: 999px; object-fit: cover;
-}
-
-/* ---- Mobile nav (side drawer) ---- */
-.rn-mobile-nav {
-  display: none; position: fixed !important; top: 0; left: 0;
-  width: 100vw; height: 100dvh;
-  background: rgba(17,24,39,.32);
-  z-index: 9100 !important; opacity: 0; visibility: hidden;
-  transition: opacity .2s ease, visibility .2s ease;
-}
-.rn-mobile-nav.is-open { opacity: 1 !important; visibility: visible !important; }
-.rn-mobile-nav__panel {
-  position: absolute !important; top: 0; right: 0;
-  width: 80vw; max-width: 420px; min-width: 280px;
-  height: 100dvh; background: #fff !important;
-  border-left: 1px solid #e5e7eb;
-  overflow-y: auto; -webkit-overflow-scrolling: touch;
-  padding: 76px 18px 18px;
-  transform: translateX(100%); transition: transform .2s ease;
-}
-.rn-mobile-nav.is-open .rn-mobile-nav__panel { transform: translateX(0) !important; }
-
-/* Close button */
-.rn-mobile-nav__close {
-  position: absolute; top: 16px; right: 16px;
-  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
-  background: transparent !important; border: 1px solid #e5e7eb !important;
-  border-radius: 8px; cursor: pointer; color: #333;
-}
-.rn-mobile-nav__close:hover { background: #f3f4f6 !important; }
-
-/* Nav links */
-.rn-mobile-nav__list,
-.rn-mobile-nav__list ul { list-style: none !important; margin: 0 !important; padding: 0 !important; display: flex !important; flex-direction: column !important; }
-.rn-mobile-nav__list li { list-style: none !important; width: 100%; display: block !important; border-bottom: 1px solid #e5e7eb; }
-.rn-mobile-nav__list li:last-child { border-bottom: none; }
-.rn-mobile-nav__list a {
-  display: block !important;
-  font-family: 'Poppins', sans-serif !important;
-  font-size: 16px !important; font-weight: 400 !important;
-  color: #111827 !important; padding: 14px 4px !important;
-  text-decoration: none !important; box-shadow: none !important;
-  background: transparent !important;
-}
-.rn-mobile-nav__list a:hover { color: var(--color-primary) !important; }
-.rn-mobile-nav__list .rn-nav__chev { display: none !important; }
-
-/* Submenu mobile */
-.rn-mobile-nav__list ul {
-  border-left: 3px solid #e5e7eb !important; padding: 0 0 8px 12px !important;
-  background: transparent !important; position: static !important; box-shadow: none !important;
-}
-.rn-mobile-nav__list ul li { border-bottom: none !important; }
-.rn-mobile-nav__list ul a { font-size: 14px !important; padding: 8px 4px !important; color: #6b7280 !important; }
-
-/* Divider + CTA knoppen */
-.rn-mobile-nav__divider { height: 1px; background: #e5e7eb; margin: 14px 0; }
-.rn-mobile-nav__ctas { display: flex !important; flex-direction: column; gap: 10px; }
-.rn-mobile-nav__cta { width: 100%; justify-content: center; font-size: 15px !important; font-weight: 600 !important; padding: 13px 16px !important; border-radius: 8px !important; }
-
-/* ---- Responsive ---- */
-@media (max-width: 960px) {
-  #rn-header .rn-header__inner {
-    display: grid !important;
-    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr) !important;
-    gap: 0 !important; height: 64px !important; padding: 0 16px !important;
-  }
-  #rn-header .rn-header__brand,
-  #rn-header .rn-header__nav,
-  #rn-header .rn-header__cta { display: none !important; }
-  #rn-header .rn-header__mobile-left { display: flex !important; align-items: center; justify-self: start; gap: 8px; }
-  #rn-header .rn-header__mobile-brand { display: flex !important; align-items: center; justify-self: center; text-decoration: none !important; }
-  #rn-header .rn-header__mobile-right { display: flex !important; align-items: center; justify-self: end; gap: 4px; }
-  #rn-header .rn-header__hamburger { display: flex !important; margin: 0 !important; align-self: center; }
-  .rn-mobile-nav { display: block; }
-  #rn-header .rn-topbar { display: none !important; }
-}
-@media (min-width: 961px) {
-  .rn-mobile-nav { display: none !important; }
-}
-@media (max-width: 480px) {
-  #rn-header .rn-header__inner { padding: 0 12px !important; }
-  #rn-header .rn-topbar__inner { padding: 0 16px !important; }
-}
-</style>
-
 <header id="rn-header" class="rn-header" role="banner">
+    <div class="rn-topbar">
+        <div class="rn-topbar__inner">
+            <div class="rn-topbar__left">
+                <a class="rn-topbar__link" href="mailto:team@onlinemarketingjobs.nl">team@onlinemarketingjobs.nl</a>
+                <span class="rn-topbar__divider">|</span>
+                <a class="rn-topbar__link" href="<?php echo esc_url(home_url('/vacatures/')); ?>">Vacatures</a>
+            </div>
+            <div class="rn-topbar__right">
+                <a class="rn-topbar__link" href="<?php echo esc_url(home_url('/mijn-vacatures/')); ?>">Mijn vacatures</a>
+                <span class="rn-topbar__divider">|</span>
+                <a class="rn-topbar__link" href="<?php echo esc_url($omj_student_inhuren_url); ?>" target="_blank" rel="noopener noreferrer">Student Inhuren</a>
+            </div>
+        </div>
+    </div>
 
-    <!-- Main nav -->
     <div class="rn-header__inner">
-
-        <!-- Logo -->
         <div class="rn-header__brand">
-            <a href="<?php echo esc_url( home_url( '/' ) ); ?>">
-                <img src="<?php echo esc_url( get_stylesheet_directory_uri() . '/site-logo/online-marketing-jobs-logo.png' ); ?>"
-                     alt="<?php bloginfo( 'name' ); ?>"
-                     class="rn-header__logo">
+            <a href="<?php echo esc_url(home_url('/')); ?>">
+                <img src="<?php echo esc_url($omj_logo_url); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" class="rn-header__logo">
             </a>
         </div>
 
-        <!-- Desktop nav -->
         <nav class="rn-header__nav" aria-label="Primaire navigatie">
             <?php
             wp_nav_menu([
@@ -265,18 +51,14 @@ $omj_mobile_logo_url = get_site_icon_url(96) ?: get_stylesheet_directory_uri() .
             ?>
         </nav>
 
-        <!-- CTA knoppen -->
         <div class="rn-header__cta">
             <?php if (function_exists('sj_the_job_favorites_nav_link')) sj_the_job_favorites_nav_link('rn-header__favorite-link'); ?>
-            <a class="rn-mobile-icon-link rn-mobile-icon-link--account" href="<?php echo esc_url( home_url( '/inloggen/' ) ); ?>" aria-label="Naar mijn account">
+            <a class="rn-mobile-icon-link rn-mobile-icon-link--account" href="<?php echo esc_url($omj_student_inhuren_url); ?>" target="_blank" rel="noopener noreferrer" aria-label="Student Inhuren">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.76-3.58-5-8-5Z"/></svg>
             </a>
-            <a href="<?php echo esc_url( home_url( '/vacature-plaatsen/' ) ); ?>" class="rn-btn rn-btn--accent">
-                Plaats Vacature
-            </a>
+            <a href="<?php echo esc_url(home_url('/vacature-plaatsen/')); ?>" class="rn-btn rn-btn--accent">Vacature Plaatsen</a>
         </div>
 
-        <!-- Mobile left: hamburger -->
         <div class="rn-header__mobile-left">
             <button class="rn-header__hamburger" aria-label="Menu openen" aria-expanded="false" aria-controls="rn-mobile-nav">
                 <span class="rn-hamburger__bar"></span>
@@ -285,33 +67,28 @@ $omj_mobile_logo_url = get_site_icon_url(96) ?: get_stylesheet_directory_uri() .
             </button>
         </div>
 
-        <!-- Mobile brand: gecentreerd logo -->
-        <a class="rn-header__mobile-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" aria-label="<?php echo esc_attr( get_bloginfo('name') ); ?>">
-            <img src="<?php echo esc_url( $omj_mobile_logo_url ); ?>" alt="<?php echo esc_attr( get_bloginfo('name') ); ?>" class="rn-header__mobile-logo">
+        <a class="rn-header__mobile-brand" href="<?php echo esc_url(home_url('/')); ?>" aria-label="<?php echo esc_attr(get_bloginfo('name')); ?>">
+            <img src="<?php echo esc_url($omj_mobile_logo_url); ?>" alt="<?php echo esc_attr(get_bloginfo('name')); ?>" class="rn-header__mobile-logo">
         </a>
 
-        <!-- Mobile right: favorites + account -->
         <div class="rn-header__mobile-right">
             <?php if (function_exists('sj_the_job_favorites_nav_link')) sj_the_job_favorites_nav_link('rn-header__favorite-link'); ?>
-            <a class="rn-mobile-icon-link rn-mobile-icon-link--account" href="<?php echo esc_url( home_url( '/inloggen/' ) ); ?>" aria-label="Naar mijn account">
+            <a class="rn-mobile-icon-link rn-mobile-icon-link--account" href="<?php echo esc_url($omj_student_inhuren_url); ?>" target="_blank" rel="noopener noreferrer" aria-label="Student Inhuren">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm0 2c-4.42 0-8 2.24-8 5v1a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-1c0-2.76-3.58-5-8-5Z"/></svg>
             </a>
         </div>
-
-    </div><!-- /.rn-header__inner -->
-
-
+    </div>
 </header>
 
-<!-- Mobile nav (side drawer) – buiten <header> zodat position:fixed correct werkt -->
 <div id="rn-mobile-nav" class="rn-mobile-nav" aria-hidden="true">
     <div class="rn-mobile-nav__panel">
         <button class="rn-mobile-nav__close" aria-label="Menu sluiten">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round" width="36" height="36" aria-hidden="true"><line x1="19" y1="5" x2="5" y2="19"/><line x1="5" y1="5" x2="19" y2="19"/></svg>
         </button>
         <?php
+        $omj_mobile_nav_location = has_nav_menu('mobile_nav') ? 'mobile_nav' : 'primary_nav';
         wp_nav_menu([
-            'theme_location' => 'primary_nav',
+            'theme_location' => $omj_mobile_nav_location,
             'container'      => false,
             'menu_class'     => 'rn-mobile-nav__list',
             'fallback_cb'    => false,
@@ -320,14 +97,10 @@ $omj_mobile_logo_url = get_site_icon_url(96) ?: get_stylesheet_directory_uri() .
         <div class="rn-mobile-nav__divider"></div>
         <div class="rn-mobile-nav__ctas">
             <?php if (function_exists('sj_the_job_favorites_nav_link')) sj_the_job_favorites_nav_link('rn-mobile-nav__favorites'); ?>
-            <a href="<?php echo esc_url( home_url( '/vacature-plaatsen/' ) ); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">
-                Plaats Vacature
-            </a>
+            <a href="<?php echo esc_url(home_url('/vacature-plaatsen/')); ?>" class="rn-btn rn-btn--accent rn-mobile-nav__cta">Vacature Plaatsen</a>
         </div>
     </div>
 </div>
-
-
 
 <script>
 (function () {
@@ -356,25 +129,20 @@ $omj_mobile_logo_url = get_site_icon_url(96) ?: get_stylesheet_directory_uri() .
     mobileNav.classList.contains('is-open') ? closeMenu() : openMenu();
   });
 
-  // Close button inside panel
   if (closeBtn) closeBtn.addEventListener('click', closeMenu);
 
-  // Click on backdrop (outside panel) closes menu
-  mobileNav.addEventListener('click', (e) => {
-    if (!e.target.closest('.rn-mobile-nav__panel')) closeMenu();
+  mobileNav.addEventListener('click', (event) => {
+    if (!event.target.closest('.rn-mobile-nav__panel')) closeMenu();
   });
 
-  // Close on nav link click
-  mobileNav.querySelectorAll('a').forEach(link => {
+  mobileNav.querySelectorAll('a').forEach((link) => {
     link.addEventListener('click', closeMenu);
   });
 
-  // Close on Escape
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeMenu();
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMenu();
   });
 
-  // Close on resize to desktop
   window.addEventListener('resize', () => {
     if (window.innerWidth > 960) closeMenu();
   });

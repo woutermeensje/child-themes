@@ -395,7 +395,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 }
 
 .sj-sidebar__block-title {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 16px;
     font-weight: 700;
     color: #111827;
@@ -434,7 +434,7 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
 }
 
 .sj-company-blok__name {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 15px;
     font-weight: 700;
     color: var(--color-midnight-blue);
@@ -564,7 +564,7 @@ a.sj-company-blok__name:hover {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 14px;
     background-color: #b39cd0;
     border: 2px solid #b39cd0;
@@ -638,7 +638,7 @@ a.sj-company-blok__name:hover {
 .job-title h1 {
     padding-bottom: 10px;
     border-bottom: 1px solid #DEDEDE;
-    font-family: Inter, sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-weight: 700;
     font-size: 20px;
     padding-top: 20px;
@@ -671,7 +671,7 @@ a.sj-company-blok__name:hover {
     color: var(--color-bg);
     background-color: var(--color-primary);
     border-radius: 5px;
-    font-family: Balgin-Bold;
+    font-family: 'Work Sans', sans-serif;
     text-decoration: none;
     display: inline-block;
     margin-top: 20px;
@@ -733,7 +733,7 @@ a.sj-company-blok__name:hover {
     color: var(--color-text);
     text-decoration: none;
     transition: color 0.2s ease-in-out;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-weight: 700;
 }
 
@@ -824,7 +824,7 @@ h1.entry-title { display: none; }
 }
 
 .sj-vraag-blok__title {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 20px;
     font-weight: 700;
     color: var(--color-text, #333333);
@@ -1005,7 +1005,7 @@ h1.entry-title { display: none; }
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Balgin-Bold', serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 15px;
     font-weight: 600;
     background-color: var(--color-secondary, #b39cd0);
@@ -1054,7 +1054,7 @@ h1.entry-title { display: none; }
 }
 
 .sj-expired__title {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 22px;
     font-weight: 700;
     color: var(--color-midnight-blue, #845ec2);
