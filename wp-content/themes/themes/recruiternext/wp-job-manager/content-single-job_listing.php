@@ -20,7 +20,9 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
     $job_company_term   = (!is_wp_error($job_company_terms) && !empty($job_company_terms)) ? $job_company_terms[0] : null;
     $job_company_slug   = $job_company_term ? $job_company_term->slug : '';
     $job_company_url    = $job_company_slug ? home_url('/vacatures/' . $job_company_slug . '/') : '';
-    $company_logo       = has_post_thumbnail($post_id) ? get_the_post_thumbnail($post_id, 'thumbnail') : '';
+    $company_logo       = function_exists('sj_get_company_logo_html')
+        ? sj_get_company_logo_html($post_id, 'thumbnail')
+        : (has_post_thumbnail($post_id) ? get_the_post_thumbnail($post_id, 'thumbnail') : '');
 
     $vacancy_count = 0;
     if ($job_company_term) {
@@ -127,7 +129,13 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                         <div class="top-div">
 
                             <div class="job-title sj-single-title-row">
-                                <h1><?php wpjm_the_job_title(); ?></h1>
+                                <div class="sj-single-title-content">
+                                    <h1><?php wpjm_the_job_title(); ?></h1>
+                                    <time class="sj-single-posted-date" datetime="<?php echo esc_attr(get_the_date('c', $post_id)); ?>">
+                                        Geplaatst op <?php echo esc_html(get_the_date('j F Y', $post_id)); ?>
+                                    </time>
+                                </div>
+                                <?php if (function_exists('sj_the_job_favorite_button')) sj_the_job_favorite_button($post_id, ['context' => 'single']); ?>
                             </div>
 
                             <div class="job_description">
@@ -199,11 +207,11 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                         </div>
 
                         <div class="sj-vraag-blok__field">
-                            <label class="sj-vraag-blok__label" for="vraag_tekst">Je vraag of motivatie <span class="sj-vraag-req">*</span></label>
-                            <textarea name="vraag_tekst" id="vraag_tekst"
-                                      class="sj-vraag-blok__input sj-vraag-blok__textarea"
-                                      rows="6"
-                                      placeholder="Stel je vraag of schrijf een korte motivatie..." required><?php echo esc_textarea($_POST['vraag_tekst'] ?? ''); ?></textarea>
+                            <label class="sj-vraag-blok__label">Je vraag of motivatie <span class="sj-vraag-req">*</span></label>
+                            <div class="sj-vraag-blok__quill-wrap">
+                                <div id="rn_vraag_quill" style="min-height:160px;"></div>
+                            </div>
+                            <textarea name="vraag_tekst" id="rn_vraag_hidden" class="sj-vraag-blok__hidden" aria-hidden="true"><?php echo esc_textarea($_POST['vraag_tekst'] ?? ''); ?></textarea>
                         </div>
 
                         <div class="sj-vraag-blok__field">
@@ -294,7 +302,38 @@ $post_id = isset( $post->ID ) ? (int) $post->ID : 0;
                         <span class="sj-sidebar__detail-value"><?php echo esc_html($hours); ?></span>
                     </div>
                     <?php endif; ?>
+                    <?php
+                    $sectors = get_the_terms($post_id, 'job_sector');
+                    if (!is_wp_error($sectors) && !empty($sectors)):
+                    ?>
+                    <div class="sj-sidebar__detail-row">
+                        <span class="sj-sidebar__detail-label">Sector</span>
+                        <span class="sj-sidebar__detail-value">
+                            <?php foreach ($sectors as $sector): ?>
+                            <span class="sj-sidebar__chip"><?php echo esc_html($sector->name); ?></span>
+                            <?php endforeach; ?>
+                        </span>
+                    </div>
+                    <?php endif; ?>
+                    <?php
+                    $provinces = get_the_terms($post_id, 'organization_type');
+                    if (!is_wp_error($provinces) && !empty($provinces)):
+                    ?>
+                    <div class="sj-sidebar__detail-row">
+                        <span class="sj-sidebar__detail-label">Provincie</span>
+                        <span class="sj-sidebar__detail-value">
+                            <?php foreach ($provinces as $province): ?>
+                            <span class="sj-sidebar__chip"><?php echo esc_html($province->name); ?></span>
+                            <?php endforeach; ?>
+                        </span>
+                    </div>
+                    <?php endif; ?>
                 </div>
+            </div>
+
+            <div class="sj-single-sidebar">
+                <p class="sj-sidebar__block-title">Job alert</p>
+                <?php echo do_shortcode('[rn-job-alerts-sidebar]'); ?>
             </div>
 
             <?php if ($con_first || $con_last || $con_email): ?>
@@ -540,6 +579,21 @@ a.sj-company-blok__name:hover {
     justify-content: space-between;
 }
 
+.sj-single-title-content {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.sj-single-posted-date {
+    display: block;
+    margin-top: 8px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--color-text-muted, #777777);
+}
+
 .job-title h1 {
     padding-bottom: 10px;
     border-bottom: 1px solid #DEDEDE;
@@ -658,11 +712,6 @@ h1.entry-title { display: none; }
     line-height: 1.5 !important;
 }
 
-.sj-vraag-blok__textarea {
-    resize: vertical;
-    min-height: 140px;
-}
-
 .sj-vraag-blok__input:focus {
     border-color: var(--color-primary, #0458ab) !important;
     box-shadow: 0 0 0 3px rgba(4, 88, 171, .15) !important;
@@ -674,6 +723,52 @@ h1.entry-title { display: none; }
     font-weight: 300 !important;
     color: var(--color-text-muted, #777777) !important;
 }
+
+.sj-vraag-blok__hidden { display: none !important; }
+
+.sj-vraag-blok__quill-wrap {
+    border: 1px solid #DEDEDE;
+    border-radius: 5px;
+    overflow: hidden;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+.sj-vraag-blok__quill-wrap:focus-within {
+    border-color: var(--color-primary, #0458ab);
+    box-shadow: 0 0 0 3px rgba(4, 88, 171, .15);
+}
+
+.sj-vraag-blok__quill-wrap .ql-toolbar {
+    border: none !important;
+    border-bottom: 1px solid #DEDEDE !important;
+    background: #f8f9fb;
+    padding: 8px 12px !important;
+}
+
+.sj-vraag-blok__quill-wrap .ql-container {
+    border: none !important;
+    font-family: 'Poppins', sans-serif !important;
+    font-size: 15px !important;
+}
+
+.sj-vraag-blok__quill-wrap .ql-editor {
+    padding: 14px !important;
+    color: var(--color-text, #333333) !important;
+    line-height: 1.7 !important;
+}
+
+.sj-vraag-blok__quill-wrap .ql-editor.ql-blank::before {
+    color: var(--color-text-muted, #777777) !important;
+    font-style: normal !important;
+    font-weight: 300 !important;
+}
+
+.sj-vraag-blok__quill-wrap .ql-toolbar button:hover,
+.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active { color: var(--color-primary, #0458ab) !important; }
+.sj-vraag-blok__quill-wrap .ql-toolbar button:hover .ql-stroke,
+.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-stroke { stroke: var(--color-primary, #0458ab) !important; }
+.sj-vraag-blok__quill-wrap .ql-toolbar button:hover .ql-fill,
+.sj-vraag-blok__quill-wrap .ql-toolbar button.ql-active .ql-fill { fill: var(--color-primary, #0458ab) !important; }
 
 /* CV Upload */
 .sj-vraag-blok__upload {
@@ -1025,3 +1120,28 @@ h1.entry-title { display: none; }
     }
 }
 </style>
+
+<script>
+(function () {
+    function initVraagQuill() {
+        if (typeof Quill === 'undefined') { setTimeout(initVraagQuill, 80); return; }
+
+        var hidden = document.getElementById('rn_vraag_hidden');
+        if (!hidden) return;
+
+        var quill = new Quill('#rn_vraag_quill', {
+            theme: 'snow',
+            placeholder: 'Stel je vraag of schrijf een korte motivatie...',
+            modules: { toolbar: [['bold','italic','underline'], [{'list':'ordered'},{'list':'bullet'}], ['link'], ['clean']] }
+        });
+
+        if (hidden.value) quill.root.innerHTML = hidden.value;
+
+        quill.on('text-change', function () { hidden.value = quill.root.innerHTML; });
+
+        var form = hidden.closest('form');
+        if (form) form.addEventListener('submit', function () { hidden.value = quill.root.innerHTML; });
+    }
+    initVraagQuill();
+})();
+</script>

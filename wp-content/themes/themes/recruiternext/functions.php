@@ -21,6 +21,10 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('rn-shortcodes', get_stylesheet_directory_uri() . '/css/shortcodes.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/shortcodes.css'));
     wp_enqueue_style('rn-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
 
+    // Quill.js rich text editor (vraag-formulier op de single vacaturepagina)
+    wp_enqueue_style('quill-snow', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.snow.css', [], null);
+    wp_enqueue_script('quill-js', 'https://cdn.jsdelivr.net/npm/quill@2/dist/quill.js', [], null, true);
+
     if (
         ( is_home() || is_category() || is_tag() || is_date() || is_author() || is_singular( 'post' ) ) &&
         file_exists( get_stylesheet_directory() . '/css/blog.css' )
