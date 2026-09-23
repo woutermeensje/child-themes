@@ -1,42 +1,12 @@
 <?php
 if (!defined('ABSPATH')) exit;
 
-$banner_posts = get_posts([
-    'post_type'      => 'attachment',
-    'post_status'    => 'inherit',
-    'posts_per_page' => 1,
-    'title'          => 'recruiternext-recruitment-vacatures',
-]);
-
-if (empty($banner_posts)) {
-    $banner_posts = get_posts([
-        'post_type'      => 'attachment',
-        'post_status'    => 'inherit',
-        'posts_per_page' => 1,
-        'meta_query'     => [
-            [
-                'key'     => '_wp_attached_file',
-                'value'   => 'recruiternext-recruitment-vacatures',
-                'compare' => 'LIKE',
-            ],
-        ],
-    ]);
-}
-
-$banner_url = !empty($banner_posts) ? wp_get_attachment_url($banner_posts[0]->ID) : '';
-
-$bg_style = $banner_url
-    ? 'background-color:#0458ab;background-image:url(\'' . esc_url($banner_url) . '\');background-size:cover;background-position:center;'
-    : 'background:#0458ab;';
-
 $banner_html = '
 <div class="rn-banner">
-    <div class="rn-banner__bg" style="' . $bg_style . '"></div>
-    <div class="rn-banner__overlay"></div>
     <div class="rn-banner__content">
         <div class="rn-banner__text">
             <span class="rn-banner__eyebrow">Maandelijkse vacature update</span>
-            <h2 class="rn-banner__title">De nieuwste recruitment vacatures in je inbox.</h2>
+            <h2 class="rn-banner__title">Maak een gratis account aan op ons platform.</h2>
             <p class="rn-banner__desc">Ontvang iedere maand een selectie van actuele vacatures, opdrachten en kansen binnen recruitment.</p>
         </div>
         <a href="' . esc_url(home_url('/nieuwsbrief/')) . '" class="rn-banner__btn">
@@ -137,25 +107,7 @@ li.rn-marketing-block {
     border-radius: 6px;
     overflow: hidden;
     display: flex;
-}
-
-.rn-banner__bg {
-    position: absolute;
-    inset: 0;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-}
-
-.rn-banner__overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-        115deg,
-        rgba(4, 88, 171, 0.96) 0%,
-        rgba(4, 88, 171, 0.9) 58%,
-        rgba(4, 88, 171, 0.78) 100%
-    );
+    background: var(--color-primary, #0458ab);
 }
 
 .rn-banner__content {
@@ -186,9 +138,9 @@ li.rn-marketing-block {
 }
 
 .rn-banner__title {
-    font-family: 'Inter', sans-serif !important;
+    font-family: 'Work Sans', sans-serif !important;
     font-size: 26px !important;
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     color: #ffffff !important;
     margin: 0 0 14px !important;
     line-height: 1.25 !important;

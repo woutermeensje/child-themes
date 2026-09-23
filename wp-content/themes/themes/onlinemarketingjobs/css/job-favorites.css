@@ -411,7 +411,8 @@ ul.job_listings li.job_listing .job-card__content .job_listing_content {
 }
 
 @media (max-width: 960px) {
-  .rn-header__mobile-right .sj-favorites-nav {
+  .rn-header__mobile-right .sj-favorites-nav,
+  .rn-header__mobile-actions .sj-favorites-nav {
     width: 42px;
     height: 42px;
   }

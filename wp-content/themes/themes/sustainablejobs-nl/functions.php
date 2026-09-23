@@ -40,6 +40,94 @@ add_filter('wp_mail_from_name', function ($from_name) {
     return 'Sustainablejobs.nl';
 });
 
+if (!function_exists('sj_replace_legacy_cloudways_asset_url')) {
+    function sj_replace_legacy_cloudways_asset_url($url) {
+        if (!is_string($url) || strpos($url, 'cloudwaysapps.com') === false) {
+            return $url;
+        }
+
+        return preg_replace(
+            '#https?://[a-z0-9-]+\.cloudwaysapps\.com(?::\d+)?#i',
+            untrailingslashit(home_url()),
+            $url
+        );
+    }
+}
+
+if (!function_exists('sj_elementor_local_font_css_has_legacy_url')) {
+    function sj_elementor_local_font_css_has_legacy_url($font_data) {
+        if (!is_array($font_data) || empty($font_data['url'])) {
+            return false;
+        }
+
+        $url_path = wp_parse_url($font_data['url'], PHP_URL_PATH);
+        if (!is_string($url_path) || strpos($url_path, '/elementor/google-fonts/css/') === false) {
+            return false;
+        }
+
+        $filename = sanitize_file_name(basename($url_path));
+        if (!$filename) {
+            return false;
+        }
+
+        $uploads = wp_upload_dir(null, false);
+        if (!empty($uploads['error']) || empty($uploads['basedir'])) {
+            return false;
+        }
+
+        $css_file = trailingslashit($uploads['basedir']) . 'elementor/google-fonts/css/' . $filename;
+        if (!is_readable($css_file)) {
+            return false;
+        }
+
+        $css = file_get_contents($css_file);
+
+        return is_string($css) && strpos($css, 'cloudwaysapps.com') !== false;
+    }
+}
+
+add_filter('upload_dir', function ($uploads) {
+    if (!is_array($uploads)) {
+        return $uploads;
+    }
+
+    foreach (['url', 'baseurl'] as $key) {
+        if (!empty($uploads[$key])) {
+            $uploads[$key] = sj_replace_legacy_cloudways_asset_url($uploads[$key]);
+        }
+    }
+
+    return $uploads;
+}, 20);
+
+add_filter('option__elementor_local_google_fonts', function ($fonts) {
+    if (!is_array($fonts)) {
+        return $fonts;
+    }
+
+    $has_stale_css = false;
+
+    foreach ($fonts as $font => $font_data) {
+        if (sj_elementor_local_font_css_has_legacy_url($font_data)) {
+            $has_stale_css = true;
+        }
+
+        if (is_array($font_data) && !empty($font_data['url'])) {
+            $fonts[$font]['url'] = sj_replace_legacy_cloudways_asset_url($font_data['url']);
+        }
+    }
+
+    if ($has_stale_css) {
+        return [];
+    }
+
+    return $fonts;
+});
+
+add_filter('style_loader_src', function ($src) {
+    return sj_replace_legacy_cloudways_asset_url($src);
+}, 20);
+
 if (!function_exists('sj_get_blog_category_colors')) {
     function sj_get_blog_category_colors($category) {
         $slug = '';

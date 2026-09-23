@@ -58,7 +58,10 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('league-spartan-font', 'https://fonts.googleapis.com/css2?family=League+Spartan:wght@900&display=swap', [], null);
     wp_enqueue_style('montserrat-font', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
-    wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], wp_get_theme()->get('Version'));
+    $header_css = get_stylesheet_directory() . '/css/header.css';
+    if (file_exists($header_css)) {
+        wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style'], filemtime($header_css));
+    }
     wp_enqueue_style('child-gf-styles', get_stylesheet_directory_uri() . '/css/gravity-forms.css');
     wp_enqueue_style('omj-elementor-forms', get_stylesheet_directory_uri() . '/css/elementor-forms.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/elementor-forms.css'));
     wp_enqueue_style('omj-landingspagina', get_stylesheet_directory_uri() . '/css/landingspagina.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/landingspagina.css'));

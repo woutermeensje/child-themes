@@ -15,7 +15,7 @@ add_action('wp_enqueue_scripts', function () {
     wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, filemtime(get_stylesheet_directory() . '/style.css'));
     wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
     wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Roboto:wght@400;600&display=swap', [], null);
-    wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@700;800;900&display=swap', [], null);
+    wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@600;700;800;900&display=swap', [], null);
     wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css', [], filemtime(get_stylesheet_directory() . '/fonts/fonts.css'));
     wp_enqueue_style('rn-header', get_stylesheet_directory_uri() . '/css/header.css', ['child-style', 'work-sans-font'], filemtime(get_stylesheet_directory() . '/css/header.css'));
     wp_enqueue_style('rn-shortcodes', get_stylesheet_directory_uri() . '/css/shortcodes.css', ['child-style'], filemtime(get_stylesheet_directory() . '/css/shortcodes.css'));
