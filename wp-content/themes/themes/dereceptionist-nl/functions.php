@@ -19,9 +19,7 @@ add_action('wp_enqueue_scripts', function() {
     wp_enqueue_style('child-style', get_stylesheet_directory_uri() . '/style.css', $dependencies, wp_get_theme()->get('Version'));
 
     // Fonts
-    wp_enqueue_style('poppins-font', 'https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap', [], null);
-    wp_enqueue_style('inter-font', 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap', [], null);
-    wp_enqueue_style('custom-fonts', get_stylesheet_directory_uri() . '/fonts/fonts.css');
+    wp_enqueue_style('work-sans-font', 'https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&display=swap', [], null);
 
     // Header CSS
     if ( file_exists( get_stylesheet_directory() . '/css/header.css' ) ) {
@@ -412,3 +410,8 @@ add_filter('submit_job_form_fields', function($fields) {
     ];
     return $fields;
 });
+
+/**
+ * ✅ VACATURE META: salaris, uren per week en contactpersoon
+ */
+require_once get_stylesheet_directory() . '/inc/job-listing-meta.php';

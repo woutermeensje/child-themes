@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 /*
 Theme Name: deReceptionist.nl
 Theme URI: https://dereceptionist.nl/
@@ -12,15 +10,6 @@ Text Domain: dereceptionist-nl
 */
 
 @import url("../hello-elementor/style.css");
-
-@font-face {
-    font-family: 'Balgin-Bold';
-    src: url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff2') format('woff2'),
-         url('/wp-content/themes/sustainablejobs-nl/fonts/Balgin-Bold.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
 
 
 :root {

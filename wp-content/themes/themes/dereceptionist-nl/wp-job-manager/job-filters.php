@@ -34,23 +34,23 @@ foreach ($selected as $key => &$value) {
 unset($value);
 ?>
 
-<form class="job_filters">
+<form class="job_filters dr-job-filters">
     <?php do_action('job_manager_job_filters_start', $atts); ?>
 
-    <div class="filter-header" style="padding: 0 20px 10px 20px;">
-        <h2>Bekijk alle vacatures en opdrachten!</h2>
-        <p>Of stel een <a href="https://dereceptionist.nl/inschrijven/" target="_blank" class="unstyled-newsletter-link">vacature alert in!</a></p>
+    <div class="filter-header">
+        <h2 class="dr-filters__title">Bekijk alle vacatures en opdrachten!</h2>
+        <p class="dr-filters__intro">Of stel een <a href="https://dereceptionist.nl/inschrijven/" target="_blank" class="dr-filters__alert-link">vacature alert in!</a></p>
     </div>
 
     <div class="search-basic">
         <?php do_action('job_manager_job_filters_search_jobs_start', $atts); ?>
 
         <div class="search_keywords">
-            <input type="text" name="search_keywords" id="search_keywords" placeholder="Functienaam, sector of onderwerp.." value="<?php echo esc_attr($keywords); ?>" />
+            <input type="text" class="dr-filters__input" name="search_keywords" id="search_keywords" placeholder="Functienaam, sector of onderwerp.." value="<?php echo esc_attr($keywords); ?>" />
         </div>
 
         <div class="search_location">
-            <input type="text" name="search_location" id="search_location" placeholder="Stad of plaats" value="<?php echo esc_attr($location); ?>" />
+            <input type="text" class="dr-filters__input" name="search_location" id="search_location" placeholder="Stad of plaats" value="<?php echo esc_attr($location); ?>" />
         </div>
 
         <?php do_action('job_manager_job_filters_search_jobs_end', $atts); ?>
@@ -171,12 +171,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   const closeAll = () => {
-    document.querySelectorAll(".sj-select.active").forEach((el) => {
+    document.querySelectorAll(".dr-select.active").forEach((el) => {
       el.classList.remove("active");
-      const searchInput = el.querySelector(".sj-search-input");
+      const searchInput = el.querySelector(".dr-search-input");
       if (searchInput) {
         searchInput.value = "";
-        el.querySelectorAll(".sj-option").forEach((option) => {
+        el.querySelectorAll(".dr-option").forEach((option) => {
           option.style.display = "";
         });
       }
@@ -219,30 +219,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const placeholder = select.dataset.placeholder || "Selecteer";
 
     const wrap = document.createElement("div");
-    wrap.className = "sj-select-wrap";
+    wrap.className = "dr-select-wrap";
     select.parentNode.insertBefore(wrap, select);
     wrap.appendChild(select);
-    select.classList.add("sj-hidden-select");
+    select.classList.add("dr-hidden-select");
 
     const root = document.createElement("div");
-    root.className = "sj-select";
+    root.className = "dr-select";
     root.dataset.type = isSingle ? "single" : "multi";
 
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "sj-select-btn";
+    btn.className = "dr-select-btn";
     btn.innerHTML = `
-      <span class="sj-btn-content">
-        <span class="sj-placeholder">${placeholder}</span>
-        <span class="sj-tags" aria-hidden="true"></span>
+      <span class="dr-btn-content">
+        <span class="dr-placeholder">${placeholder}</span>
+        <span class="dr-tags" aria-hidden="true"></span>
       </span>
-      <span class="sj-actions">
-        <button type="button" class="sj-clear" aria-label="Wis selectie" title="Wis selectie">×</button>
-        <span class="sj-chev" aria-hidden="true"></span>
+      <span class="dr-actions">
+        <button type="button" class="dr-clear" aria-label="Wis selectie" title="Wis selectie">×</button>
+        <span class="dr-chev" aria-hidden="true"></span>
       </span>
     `;
 
-    const clearBtn = btn.querySelector(".sj-clear");
+    const clearBtn = btn.querySelector(".dr-clear");
     clearBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       e.preventDefault();
@@ -252,27 +252,27 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const list = document.createElement("div");
-    list.className = "sj-options";
+    list.className = "dr-options";
     list.setAttribute("role", "listbox");
     if (!isSingle) list.setAttribute("aria-multiselectable", "true");
 
     let searchInput = null;
     if (!isSingle) {
       const searchWrap = document.createElement("div");
-      searchWrap.className = "sj-search";
-      searchWrap.innerHTML = `<input type="text" class="sj-search-input" placeholder="Zoek in ${placeholder.toLowerCase()}">`;
-      searchInput = searchWrap.querySelector(".sj-search-input");
+      searchWrap.className = "dr-search";
+      searchWrap.innerHTML = `<input type="text" class="dr-search-input" placeholder="Zoek in ${placeholder.toLowerCase()}">`;
+      searchInput = searchWrap.querySelector(".dr-search-input");
       list.appendChild(searchWrap);
     }
 
     const makeOptionRow = (opt) => {
       const row = document.createElement("div");
-      row.className = "sj-option";
+      row.className = "dr-option";
       row.dataset.value = opt.value;
       row.setAttribute("role", "option");
       row.setAttribute("aria-selected", opt.selected ? "true" : "false");
-      row.innerHTML = `<span class="sj-option-text"></span>`;
-      row.querySelector(".sj-option-text").textContent = opt.textContent;
+      row.innerHTML = `<span class="dr-option-text"></span>`;
+      row.querySelector(".dr-option-text").textContent = opt.textContent;
 
       const syncSelected = () => {
         row.classList.toggle("is-selected", opt.selected);
@@ -320,8 +320,8 @@ document.addEventListener("DOMContentLoaded", () => {
       searchInput.addEventListener("keydown", (e) => e.stopPropagation());
     }
 
-    const tagsEl = btn.querySelector(".sj-tags");
-    const placeholderEl = btn.querySelector(".sj-placeholder");
+    const tagsEl = btn.querySelector(".dr-tags");
+    const placeholderEl = btn.querySelector(".dr-placeholder");
 
     const renderState = () => {
       optionRows.forEach(({ opt, syncSelected }) => syncSelected());
@@ -354,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderState();
 
     btn.addEventListener("click", (e) => {
-      if (e.target.closest(".sj-clear")) return;
+      if (e.target.closest(".dr-clear")) return;
       e.preventDefault();
       const wasOpen = root.classList.contains("active");
       closeAll();
@@ -383,7 +383,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderActiveFilters();
 
   document.addEventListener("click", (e) => {
-    if (!e.target.closest(".sj-select")) closeAll();
+    if (!e.target.closest(".dr-select")) closeAll();
   });
 
   document.addEventListener("keydown", (e) => {
@@ -393,7 +393,11 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <style>
-.job_filters {
+/*
+ * Alle regels zijn gescoped op .dr-job-filters zodat de globale Elementor-styling
+ * (.elementor-kit-N a/h2/button/input) deze elementen niet overschrijft.
+ */
+.dr-job-filters {
   width: 100vw;
   position: relative;
   left: 50%;
@@ -412,55 +416,55 @@ document.addEventListener("DOMContentLoaded", () => {
   box-sizing: border-box;
 }
 
-.filter-header,
-.search-basic,
-.filter-box,
-.active-filters {
+.dr-job-filters .filter-header,
+.dr-job-filters .search-basic,
+.dr-job-filters .filter-box,
+.dr-job-filters .active-filters {
   max-width: 1200px;
   margin-left: auto !important;
   margin-right: auto !important;
 }
 
-.filter-header {
+.dr-job-filters .filter-header {
   padding: 0 24px 18px !important;
 }
 
-.filter-header h2 {
+.dr-job-filters .dr-filters__title {
   margin: 0;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 28px;
   line-height: 1.1;
   font-weight: 700;
   color: #2C2C31;
 }
 
-.filter-header p {
+.dr-job-filters .dr-filters__intro {
   margin: 10px 0 0;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 15px;
   color: #2C2C31;
 }
 
-body .filter-header a.unstyled-newsletter-link {
+.dr-job-filters .dr-filters__alert-link {
   color: #2C2C31;
   font-weight: 400;
   text-decoration: underline;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Work Sans', sans-serif;
 }
 
-body .filter-header a.unstyled-newsletter-link:hover {
-  color: #FCAF2B !important;
+.dr-job-filters .dr-filters__alert-link:hover {
+  color: #E09B1A;
   text-decoration: underline;
 }
 
-.search-basic {
+.dr-job-filters .search-basic {
   display: flex;
   gap: 16px;
   padding: 0 24px;
 }
 
-.search_location,
-.search_keywords {
+.dr-job-filters .search_location,
+.dr-job-filters .search_keywords {
   flex-basis: 50%;
   max-width: 50%;
   display: flex;
@@ -468,7 +472,8 @@ body .filter-header a.unstyled-newsletter-link:hover {
   position: relative;
 }
 
-.search-basic input[type="text"] {
+/* Extra specificiteit: Elementor stijlt inputs met input:not([type=button]):not([type=submit]) */
+form.dr-job-filters input.dr-filters__input[type="text"] {
   width: 100%;
   padding: 13px 14px 13px 40px;
   font-size: 15px;
@@ -477,26 +482,24 @@ body .filter-header a.unstyled-newsletter-link:hover {
   background-color: #ffffff;
   color: #2C2C31;
   box-shadow: none;
-  transition: border-color .2s ease, box-shadow .2s ease;
-  font-family: 'Poppins', sans-serif;
+  transition: border-color .2s ease;
+  font-family: 'Work Sans', sans-serif;
   font-weight: 400;
 }
 
-.search-basic input[type="text"]:focus {
+form.dr-job-filters input.dr-filters__input[type="text"]:focus {
   outline: none;
   border-color: #FCAF2B;
-  box-shadow: 0 0 0 3px rgba(252, 175, 43, 0.28);
 }
 
-.search_keywords input::placeholder,
-.search_location input::placeholder {
+.dr-job-filters .dr-filters__input::placeholder {
   color: #7c7c7c;
   font-size: 15px !important;
   font-style: italic;
 }
 
-.search_keywords::before,
-.search_location::before {
+.dr-job-filters .search_keywords::before,
+.dr-job-filters .search_location::before {
   content: '';
   position: absolute;
   left: 12px;
@@ -509,27 +512,27 @@ body .filter-header a.unstyled-newsletter-link:hover {
   pointer-events: none;
 }
 
-.search_keywords::before {
+.dr-job-filters .search_keywords::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232C2C31' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E");
 }
 
-.search_location::before {
+.dr-job-filters .search_location::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232C2C31' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
 }
 
-.filter-box {
+.dr-job-filters .filter-box {
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
   padding: 16px 24px 0;
 }
 
-.filter-box > div {
+.dr-job-filters .filter-box > div {
   flex: 0 0 auto !important;
   min-width: 0 !important;
 }
 
-select.sj-hidden-select {
+select.dr-hidden-select {
   position: absolute !important;
   left: -9999px !important;
   width: 1px !important;
@@ -537,14 +540,14 @@ select.sj-hidden-select {
   opacity: 0 !important;
 }
 
-.sj-select-wrap,
-.sj-select {
+.dr-select-wrap,
+.dr-select {
   position: relative;
   width: auto;
   display: inline-block;
 }
 
-.sj-select-btn {
+.dr-job-filters .dr-select-btn {
   width: auto;
   display: inline-flex;
   align-items: center;
@@ -555,15 +558,18 @@ select.sj-hidden-select {
   background-color: #ffffff !important;
   padding: 12px;
   min-height: 44px;
+  line-height: 1.2;
+  text-transform: none;
+  letter-spacing: normal;
   cursor: pointer;
   user-select: none;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   font-weight: 700;
   font-size: 16px;
   color: #111111 !important;
 }
 
-.sj-btn-content {
+.dr-btn-content {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -571,35 +577,35 @@ select.sj-hidden-select {
   min-width: 0;
 }
 
-.sj-placeholder {
+.dr-placeholder {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   font-weight: 700;
   color: #2C2C31;
   font-size: 15px;
 }
 
-.sj-tags {
+.dr-tags {
   display: none;
   gap: 6px;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.sj-actions {
+.dr-actions {
   display: inline-flex;
   align-items: center;
   gap: 0 !important;
   margin-left: 10px;
 }
 
-.sj-clear {
+.dr-clear {
   display: none !important;
 }
 
-.sj-chev {
+.dr-chev {
   width: 10px;
   height: 10px;
   border-right: 2px solid #111;
@@ -608,11 +614,11 @@ select.sj-hidden-select {
   transition: transform .2s ease;
 }
 
-.sj-select.active .sj-chev {
+.dr-select.active .dr-chev {
   transform: rotate(-135deg);
 }
 
-.sj-options {
+.dr-options {
   display: none;
   position: absolute;
   left: 0;
@@ -623,18 +629,17 @@ select.sj-hidden-select {
   background: #fff;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
-  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
   padding: 8px;
   max-height: 280px;
   overflow: auto;
   z-index: 9999;
 }
 
-.sj-select.active .sj-options {
+.dr-select.active .dr-options {
   display: block;
 }
 
-.sj-search {
+.dr-search {
   position: sticky;
   top: 0;
   z-index: 2;
@@ -642,30 +647,29 @@ select.sj-hidden-select {
   padding: 4px 4px 10px;
 }
 
-.sj-search-input {
+form.dr-job-filters input.dr-search-input[type="text"] {
   width: 100%;
   min-width: 220px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 11px 12px;
-  font-family: 'Poppins', sans-serif;
+  font-family: 'Work Sans', sans-serif;
   font-size: 14px;
   color: #2C2C31;
   background: #ffffff;
   box-sizing: border-box;
 }
 
-.sj-search-input::placeholder {
+.dr-search-input::placeholder {
   color: #7c7c7c;
 }
 
-.sj-search-input:focus {
+form.dr-job-filters input.dr-search-input[type="text"]:focus {
   outline: none;
   border-color: #FCAF2B;
-  box-shadow: 0 0 0 2px rgba(252, 175, 43, 0.28);
 }
 
-.sj-option {
+.dr-option {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -674,40 +678,40 @@ select.sj-hidden-select {
   cursor: pointer;
 }
 
-.sj-option:hover {
+.dr-option:hover {
   background: #f8f8f8;
 }
 
-.sj-option.is-selected {
+.dr-option.is-selected {
   background: #FEEAD5;
 }
 
-.sj-option.is-selected .sj-option-text {
+.dr-option.is-selected .dr-option-text {
   color: #2C2C31;
   font-weight: 700;
 }
 
-.sj-option-text {
-  font-family: 'Poppins', sans-serif;
+.dr-option-text {
+  font-family: 'Work Sans', sans-serif;
   font-weight: 600;
   color: #2C2C31;
 }
 
 /* Filter-knop iconen */
-.job_type .sj-select-btn,
-.job_sector .sj-select-btn,
-.job_regio .sj-select-btn,
-.job_name .sj-select-btn,
-.job_company .sj-select-btn {
+.dr-job-filters .job_type .dr-select-btn,
+.dr-job-filters .job_sector .dr-select-btn,
+.dr-job-filters .job_regio .dr-select-btn,
+.dr-job-filters .job_name .dr-select-btn,
+.dr-job-filters .job_company .dr-select-btn {
   padding-left: 38px !important;
   position: relative;
 }
 
-.job_type .sj-select-btn::before,
-.job_sector .sj-select-btn::before,
-.job_regio .sj-select-btn::before,
-.job_name .sj-select-btn::before,
-.job_company .sj-select-btn::before {
+.job_type .dr-select-btn::before,
+.job_sector .dr-select-btn::before,
+.job_regio .dr-select-btn::before,
+.job_name .dr-select-btn::before,
+.job_company .dr-select-btn::before {
   content: '';
   position: absolute;
   left: 12px;
@@ -722,37 +726,39 @@ select.sj-hidden-select {
 }
 
 /* Briefcase - Dienstverband */
-.job_type .sj-select-btn::before {
+.job_type .dr-select-btn::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232C2C31' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='2' y='7' width='20' height='14' rx='2'/%3E%3Cpath d='M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2'/%3E%3Cline x1='12' y1='12' x2='12' y2='17'/%3E%3Cline x1='9.5' y1='14.5' x2='14.5' y2='14.5'/%3E%3C/svg%3E");
 }
 
 /* Grid - Sector */
-.job_sector .sj-select-btn::before {
+.job_sector .dr-select-btn::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232C2C31' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='7'/%3E%3Crect x='14' y='3' width='7' height='7'/%3E%3Crect x='3' y='14' width='7' height='7'/%3E%3Crect x='14' y='14' width='7' height='7'/%3E%3C/svg%3E");
 }
 
 /* Map pin - Regio */
-.job_regio .sj-select-btn::before {
+.job_regio .dr-select-btn::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232C2C31' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2a7 7 0 0 1 7 7c0 5.25-7 13-7 13S5 14.25 5 9a7 7 0 0 1 7-7z'/%3E%3Ccircle cx='12' cy='9' r='2.5'/%3E%3C/svg%3E");
 }
 
 /* Person - Beroep */
-.job_name .sj-select-btn::before {
+.job_name .dr-select-btn::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232C2C31' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='12' cy='7' r='4'/%3E%3C/svg%3E");
 }
 
 /* Building - Organisatie */
-.job_company .sj-select-btn::before {
+.job_company .dr-select-btn::before {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232C2C31' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z'/%3E%3Cpolyline points='9 22 9 12 15 12 15 22'/%3E%3C/svg%3E");
 }
 
-.sj-select-btn:focus {
+.dr-job-filters .dr-select-btn:hover,
+.dr-job-filters .dr-select-btn:focus {
   outline: none;
-  border-color: #FCAF2B;
-  box-shadow: 0 0 0 2px rgba(252, 175, 43, 0.28);
+  background-color: #ffffff !important;
+  border-color: #FCAF2B !important;
+  color: #111111 !important;
 }
 
-.active-filters {
+.dr-job-filters .active-filters {
   display: none;
   flex-wrap: wrap;
   gap: 10px;
@@ -766,7 +772,6 @@ span.active-filter {
   background: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 999px;
-  box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
   padding: 8px 12px;
   font-size: 16px;
   color: #111;
@@ -782,7 +787,7 @@ span.active-filter {
   color: #2C2C31;
 }
 
-button.active-filter-x {
+.dr-job-filters .active-filter-x {
   color: #FCAF2B;
   font-weight: 700;
   font-size: 20px;
@@ -794,7 +799,8 @@ button.active-filter-x {
   cursor: pointer;
 }
 
-button.active-filter-x:hover {
+.dr-job-filters .active-filter-x:hover,
+.dr-job-filters .active-filter-x:focus {
   color: #E09B1A;
   background: none;
 }
@@ -809,44 +815,44 @@ button.active-filter-x:hover {
     padding: 24px 0 !important;
   }
 
-  .filter-header {
+  .dr-job-filters .filter-header {
     padding: 0 16px 12px !important;
   }
 
-  .search-basic {
+  .dr-job-filters .search-basic {
     flex-direction: column;
     gap: 10px;
     padding: 0 16px !important;
   }
 
-  .search_location,
-  .search_keywords {
+  .dr-job-filters .search_location,
+  .dr-job-filters .search_keywords {
     max-width: 100%;
     flex-basis: 100%;
     width: 100%;
   }
 
-  .filter-box {
+  .dr-job-filters .filter-box {
     flex-direction: column;
     padding: 12px 16px 0 !important;
     gap: 10px;
   }
 
-  .filter-box > div,
-  .sj-select-wrap,
-  .sj-select,
-  .sj-select-btn {
+  .dr-job-filters .filter-box > div,
+  .dr-job-filters .dr-select-wrap,
+  .dr-job-filters .dr-select,
+  .dr-job-filters .dr-select-btn {
     width: 100% !important;
   }
 
-  .sj-options {
+  .dr-options {
     width: 100% !important;
     min-width: 0 !important;
     left: 0 !important;
     right: 0 !important;
   }
 
-  .active-filters {
+  .dr-job-filters .active-filters {
     margin: 12px 16px 0 !important;
   }
 }

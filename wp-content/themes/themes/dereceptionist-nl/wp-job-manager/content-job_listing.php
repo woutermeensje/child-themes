@@ -17,7 +17,7 @@ $background_image = $cover_image ? $cover_image : (function_exists('get_secondar
     data-longitude="<?php echo esc_attr($post->geolocation_long); ?>"
     data-latitude="<?php echo esc_attr($post->geolocation_lat); ?>"
 >
-    <div class="job-card" data-href="<?php the_job_permalink(); ?>">
+    <div class="job-card dr-job-card" data-href="<?php the_job_permalink(); ?>">
         <div class="job-card__desktop">
             <div class="job-card__media">
                 <div class="background-wrapper">
@@ -47,12 +47,12 @@ $background_image = $cover_image ? $cover_image : (function_exists('get_secondar
 
             <div class="job-card__content">
                 <div class="job_listing_content">
-                    <a href="<?php echo esc_url(get_permalink($post->ID)); ?>" class="title-link">
-                        <h2><?php wpjm_the_job_title(); ?></h2>
+                    <a href="<?php echo esc_url(get_permalink($post->ID)); ?>" class="title-link dr-job-card__title-link">
+                        <h2 class="dr-job-card__title"><?php wpjm_the_job_title(); ?></h2>
                     </a>
 
                     <div class="job_text">
-                        <p><?php echo wp_trim_words(get_the_excerpt(), 15, '...'); ?></p>
+                        <p class="dr-job-card__excerpt"><?php echo wp_trim_words(get_the_excerpt(), 15, '...'); ?></p>
                     </div>
 
                     <ul class="job-card-meta">
@@ -91,7 +91,7 @@ $background_image = $cover_image ? $cover_image : (function_exists('get_secondar
                     </ul>
 
                     <div class="jobs_buttons">
-                        <a href="<?php the_job_permalink(); ?>">Vacature bekijken</a>
+                        <a href="<?php the_job_permalink(); ?>" class="dr-job-card__button">Vacature bekijken</a>
                     </div>
                 </div>
             </div>
@@ -164,16 +164,11 @@ ul.job_listings li.job_listing {
 .job-card {
     background: #ffffff;
     border-radius: 6px;
-    box-shadow: 0 10px 40px -5px rgba(0, 0, 0, 0.15);
     padding: 0;
     border: 1px solid #e0e0e0;
     margin-top: 4px;
     margin-bottom: 4px;
     overflow: hidden;
-}
-
-a.title-link {
-    background-color: #ffffff !important;
 }
 
 .job-card,
@@ -221,8 +216,8 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
     border-radius: 50%;
     width: 80px;
     height: 80px;
-    border: 1px solid #cccccc;
-    padding: 5px;
+    border: 4px solid #ffffff;
+    padding: 0;
     object-fit: contain;
     background: #fff;
 }
@@ -239,33 +234,38 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
 }
 
 .job_listing .job_listing_content {
-    padding: 0 40px;
+    padding: 8px 40px;
     min-width: 0;
 }
 
-.job_listing .job_listing_content h2 {
-    margin: 0 0 5px 0;
-    font-family: "Balgin-Bold", Sans-serif;
-    font-size: 20px;
+/* Links, titels en knoppen gescoped op .dr-job-card zodat Elementor (.elementor-kit-N a/h2) ze niet overschrijft */
+.dr-job-card .dr-job-card__title {
+    margin: 0;
+    font-family: 'Work Sans', sans-serif;
+    font-size: 23px;
+    font-weight: 700;
+    line-height: 1.3;
+    color: #2C2C31;
     overflow-wrap: anywhere;
     word-break: break-word;
 }
 
 .job_listing .job_listing_content .job_text {
-    margin: 20px 0;
+    margin: 28px 0 24px;
 }
 
-.job_listing .job_listing_content .job_text p {
-    margin-top: 0;
-    margin-bottom: 10px;
+.dr-job-card .dr-job-card__excerpt {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.45;
     color: #2C2C31;
 }
 
 .jobs_buttons {
-    margin-top: 24px;
+    margin-top: 28px;
 }
 
-.jobs_buttons a {
+.dr-job-card .dr-job-card__button {
     display: inline-block !important;
     background: #FCAF2B !important;
     color: #2C2C31 !important;
@@ -275,25 +275,27 @@ ul.job_listings li.job_listing .company-logo-wrapper img,
     line-height: 48px !important;
     border-radius: 0px !important;
     text-decoration: none !important;
-    font-family: Balgin-Bold !important;
-    font-size: 15px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, .08);
+    font-family: 'Work Sans', sans-serif !important;
+    font-size: 16px;
+    font-weight: 700;
     transition: all .2s ease;
-    max-width: 50%;
+    min-width: 208px;
     text-align: center;
 }
 
-.jobs_buttons a:hover {
+.dr-job-card .dr-job-card__button:hover,
+.dr-job-card .dr-job-card__button:focus {
     background: #E09B1A !important;
     border-color: #E09B1A !important;
     color: #2C2C31 !important;
 }
 
-a.title-link {
+.dr-job-card .dr-job-card__title-link {
+    display: block;
     padding: 0 !important;
-    color: #2C2C31;
-    text-decoration: none;
-    font-family: Balgin-Bold !important;
+    background-color: transparent !important;
+    color: #2C2C31 !important;
+    text-decoration: none !important;
 }
 
 .job_listing .background-wrapper .title {
@@ -332,10 +334,16 @@ a.title-link {
 
 .job-card-meta__item {
     display: flex;
-    align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 6px;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
     flex-direction: row !important;
+    font-size: 16px;
+    line-height: 1.4;
+}
+
+.job-card-meta__item:last-child {
+    margin-bottom: 0;
 }
 
 .job-card-meta__icon {
@@ -345,9 +353,21 @@ a.title-link {
     color: #FCAF2B;
 }
 
+.job-card-meta__icon svg {
+    width: 18px;
+    height: 18px;
+    stroke-width: 1.6;
+}
+
 .job-card-meta__text,
 .job-card-meta__title {
     margin: 0;
+    font-size: 16px;
+}
+
+.job-card-meta__text small,
+.job-card-meta__text .remote {
+    font-size: 13px;
 }
 
 .job-card-meta__title {
@@ -364,10 +384,12 @@ a.title-link {
     display: none;
 }
 
-.job-mobile__link {
+.dr-job-card .job-mobile__link,
+.dr-job-card .job-mobile__link:hover {
     display: block;
+    padding: 0 !important;
     text-decoration: none !important;
-    color: inherit;
+    color: #2C2C31 !important;
 }
 
 .job-mobile__top {
@@ -401,16 +423,16 @@ a.title-link {
 }
 
 .job-mobile__company {
-    font-family: Poppins, system-ui, sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-weight: 700;
     font-size: 14px;
     color: #2C2C31;
     line-height: 1.2;
 }
 
-.job-mobile__title {
+.dr-job-card .job-mobile__title {
     margin: 4px 0 0 0;
-    font-family: Poppins, system-ui, sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-weight: 700;
     font-size: 18px;
     line-height: 1.25;
@@ -421,7 +443,7 @@ a.title-link {
 
 .job-mobile__excerpt {
     margin-top: 12px;
-    font-family: Poppins, system-ui, sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 14px;
     line-height: 1.6;
     color: #2C2C31;
@@ -450,7 +472,7 @@ a.title-link {
 }
 
 .job-mobile__text {
-    font-family: Poppins, system-ui, sans-serif;
+    font-family: 'Work Sans', sans-serif;
     font-size: 14px;
     color: #2C2C31;
     min-width: 0;

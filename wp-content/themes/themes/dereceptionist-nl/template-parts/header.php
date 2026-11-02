@@ -24,14 +24,8 @@ if (!defined('ABSPATH')) {
 
     <div class="dr-header__inner">
         <div class="dr-header__brand">
-            <a href="<?php echo esc_url(home_url('/')); ?>">
-                <?php
-                if (has_custom_logo()) {
-                    the_custom_logo();
-                } else {
-                    echo '<span class="dr-header__site-name">' . esc_html(get_bloginfo('name')) . '</span>';
-                }
-                ?>
+            <a class="dr-header__logo-link" href="<?php echo esc_url(home_url('/')); ?>" aria-label="deReceptionist.nl – naar de homepage">
+                <span class="dr-header__logo"><span class="dr-header__logo-accent">de</span>Receptionist<span class="dr-header__logo-accent">.nl</span></span>
             </a>
         </div>
 
